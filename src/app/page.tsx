@@ -7,6 +7,7 @@ import HowItWorks from "@/components/landing/how-it-works";
 import Testimonials from "@/components/landing/testimonials";
 import CtaBanner from "@/components/landing/cta-banner";
 import Footer from "@/components/landing/footer";
+import ScrollToTop from "@/components/scroll-to-top";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <CtaBanner />
       </main>
       <Footer />
+      <ScrollToTop />
     </>
   );
 }

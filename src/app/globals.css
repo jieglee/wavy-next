@@ -23,6 +23,10 @@
   --color-border-hangat: #E5E1DA;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-plum-black);
   color: var(--color-off-white);

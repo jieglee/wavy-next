@@ -4,10 +4,15 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 const navLinks = [
-  { label: 'Beranda', href: '#' },
+  { label: 'Beranda', href: '#hero' },
   { label: 'Cari Konser', href: '#featured' },
   { label: 'Tentang', href: '#about' },
 ]
+
+function scrollTo(id: string) {
+  const el = document.querySelector(id)
+  if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -21,13 +26,13 @@ export default function Navbar() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
-            <Link
+            <button
               key={link.label}
-              href={link.href}
+              onClick={() => scrollTo(link.href)}
               className="text-sm font-medium text-lavender-gray transition-colors hover:text-off-white"
             >
               {link.label}
-            </Link>
+            </button>
           ))}
         </nav>
 
@@ -70,14 +75,13 @@ export default function Navbar() {
         <div className="border-t border-border-dark bg-graphite-plum px-4 pb-4 md:hidden">
           <nav className="flex flex-col gap-3 pt-4">
             {navLinks.map((link) => (
-              <Link
+              <button
                 key={link.label}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium text-lavender-gray transition-colors hover:text-off-white"
+                onClick={() => { scrollTo(link.href); setMenuOpen(false) }}
+                className="text-left text-sm font-medium text-lavender-gray transition-colors hover:text-off-white"
               >
                 {link.label}
-              </Link>
+              </button>
             ))}
           </nav>
           <div className="mt-4 flex flex-col gap-2">
