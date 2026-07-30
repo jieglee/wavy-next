@@ -6,7 +6,7 @@ const categories = [
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden px-4 pb-24 pt-16 sm:px-6 sm:pt-20 lg:px-8 lg:pt-28">
+    <section data-aos="fade-down" className="relative overflow-hidden px-4 pb-24 pt-16 sm:px-6 sm:pt-20 lg:px-8 lg:pt-28">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-coral-spotlight/10 blur-[120px]"

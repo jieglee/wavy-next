@@ -33,7 +33,7 @@ const concerts = [
 
 export default function Featured() {
   return (
-    <section id="featured" className="px-4 pb-24 sm:px-6 lg:px-8">
+    <section id="featured" data-aos="fade-up" className="px-4 pb-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="flex items-end justify-between">
           <div>
@@ -53,10 +53,12 @@ export default function Featured() {
         </div>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {concerts.map((concert) => (
+          {concerts.map((concert, i) => (
             <Link
               key={concert.title}
               href="#"
+              data-aos="fade-up"
+              data-aos-delay={i * 100}
               className="group relative flex flex-col overflow-hidden rounded-xl border border-border-dark bg-graphite-plum transition-colors hover:border-coral-spotlight/40"
             >
               <div className="aspect-[4/3] w-full bg-gradient-to-br from-graphite-plum via-plum-black to-border-dark" />

@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function CtaBanner() {
   return (
-    <section className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
+    <section data-aos="zoom-in" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-2xl border border-border-dark bg-graphite-plum px-6 py-14 text-center sm:px-14">
           <div

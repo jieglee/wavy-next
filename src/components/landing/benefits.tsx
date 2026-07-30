@@ -19,7 +19,7 @@ const benefits = [
 
 export default function Benefits() {
   return (
-    <section className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
+    <section data-aos="fade-up" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-off-white sm:text-3xl">
@@ -31,9 +31,11 @@ export default function Benefits() {
         </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2">
-          {benefits.map((b) => (
+          {benefits.map((b, i) => (
             <div
               key={b.title}
+              data-aos="fade-up"
+              data-aos-delay={i * 100}
               className="rounded-xl border border-border-dark bg-graphite-plum p-5 transition-colors hover:border-coral-spotlight/30 sm:p-6"
             >
               <h3 className="font-display text-base font-medium text-off-white">

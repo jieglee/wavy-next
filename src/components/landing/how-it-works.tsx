@@ -21,7 +21,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="about" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
+    <section id="about" data-aos="fade-up" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-off-white sm:text-3xl">
@@ -34,7 +34,7 @@ export default function HowItWorks() {
 
         <div className="mt-14 grid gap-8 sm:grid-cols-3">
           {steps.map((step, i) => (
-            <div key={step.number} className="relative flex flex-col items-center text-center">
+            <div key={step.number} data-aos="fade-up" data-aos-delay={i * 150} className="relative flex flex-col items-center text-center">
               {i < steps.length - 1 && (
                 <div
                   aria-hidden

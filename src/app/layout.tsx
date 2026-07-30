@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { spaceGrotesk, inter, ibmPlexMono } from "@/lib/fonts";
+import AosProvider from "@/components/aos-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export default function RootLayout({
       lang="id"
       className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
     >
-      <body className="min-h-dvh flex flex-col">{children}</body>
+      <body className="min-h-dvh flex flex-col">
+        <AosProvider>{children}</AosProvider>
+      </body>
     </html>
   );
 }
