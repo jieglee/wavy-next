@@ -9,14 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "framer-motion": "^12.43.0",
-    "lucide-react": "^1.28.0",
+    "aos": "^2.3.4",
     "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/aos": "^3.0.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
