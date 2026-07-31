@@ -9,11 +9,11 @@ export default function Hero() {
     <section id="hero" data-aos="fade-down" className="relative overflow-hidden px-4 pb-24 pt-16 sm:px-6 sm:pt-20 lg:px-8 lg:pt-28">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-coral-spotlight/10 blur-[120px]"
+        className="pointer-events-none absolute -top-40 right-0 h-125 w-125 rounded-full bg-coral-spotlight/10 blur-[120px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-40 left-0 h-[400px] w-[400px] rounded-full bg-coral-spotlight/5 blur-[100px]"
+        className="pointer-events-none absolute -bottom-40 left-0 h-100 w-100 rounded-full bg-coral-spotlight/5 blur-[100px]"
       />
 
       <div className="relative mx-auto max-w-7xl">
