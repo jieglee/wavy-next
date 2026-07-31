@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
 import "./globals.css";
+import SplashWrapper from "@/components/splash-wrapper";
 
 export const metadata: Metadata = {
   title: "Wavy — One Platform. Every Concert. Every Moment.",
@@ -21,6 +22,7 @@ export default function RootLayout({
     >
       <body className="min-h-dvh flex flex-col">
         <AosProvider>{children}</AosProvider>
+        <SplashWrapper>{children}</SplashWrapper>
       </body>
     </html>
   );
