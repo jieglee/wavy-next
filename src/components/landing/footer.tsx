@@ -23,6 +23,7 @@ const paymentMethods = [
 const paymentLogos: Record<string, { src: string; width: number; height: number }> = {
   QRIS: { src: "/images/footer/Logo_QRIS.svg.webp", width: 3840, height: 1456 },
   BCA: { src: "/images/footer/Bank_Central_Asia.svg.webp", width: 3840, height: 1204 },
+  BRI: { src: "/images/footer/bri.png", width: 658, height: 370 },
 }
 
 function InstagramIcon({ className }: { className?: string }) {
