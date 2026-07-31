@@ -32,6 +32,7 @@ const paymentLogos: Record<string, { src: string; width: number; height: number 
   DANA: { src: "/images/footer/Dana_logo.png", width: 480, height: 141 },
   ShopeePay: { src: "/images/footer/shopeepay.png", width: 842, height: 370 },
   Visa: { src: "/images/footer/Visa_Inc._logo_(2021–present).svg.webp", width: 3840, height: 1247 },
+  Mastercard: { src: "/images/footer/Mastercard-logo.svg.webp", width: 3840, height: 2983 },
 }
 
 function InstagramIcon({ className }: { className?: string }) {
