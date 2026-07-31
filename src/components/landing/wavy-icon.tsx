@@ -1,4 +1,4 @@
-export function WavyIcon({ size = 24 }: { size?: number }) {
+export function WavyIcon({ size = 24, className }: { size?: number; className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,7 +7,7 @@ export function WavyIcon({ size = 24 }: { size?: number }) {
       viewBox="0 0 512 512"
       role="img"
       aria-label="Wavy logo"
-      className="shrink-0 text-wavy-accent"
+      className={`shrink-0 text-wavy-accent ${className ?? ""}`}
     >
       <path d="M0 0h512v512H0z" fill="none" />
       <path

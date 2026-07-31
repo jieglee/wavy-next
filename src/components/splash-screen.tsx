@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { WavyIcon } from "@/components/landing/wavy-icon";
 
 interface SplashScreenProps {
     isVisible: boolean;
@@ -51,31 +52,7 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                         className="flex flex-col items-center gap-6 relative"
                     >
-                        <svg
-                            width="72"
-                            height="72"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            className="drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]"
-                        >
-                            <path
-                                d="M2 15 Q6 5, 10 15 T18 15 T26 15"
-                                stroke="#FF5470"
-                                strokeWidth="2.4"
-                                strokeLinecap="round"
-                                fill="none"
-                            />
-                            <circle cx="20" cy="4.5" r="2.4" fill="#FF5470" />
-                        </svg>
-
-                        <div className="text-center">
-                            <h1 className="font-display font-bold text-wavy-text-primary m-0 leading-none tracking-[-0.03em] text-[2.6rem]">
-                                Wavy
-                            </h1>
-                            <p className="text-[0.68rem] text-wavy-text-secondary tracking-[0.18em] uppercase font-medium mt-3 mb-0">
-                                Marketplace Tiket Konser
-                            </p>
-                        </div>
+                        <WavyIcon size={108} className="drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]" />
                     </motion.div>
                 </motion.div>
             )}
