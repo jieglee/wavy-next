@@ -1,22 +1,8 @@
-import { Space_Grotesk, Inter, IBM_Plex_Mono } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 
-export const spaceGrotesk = Space_Grotesk({
+export const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['500', '600'],
+  weight: ['400', '500', '600'],
   display: 'swap',
-  variable: '--font-space-grotesk',
-})
-
-export const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  display: 'swap',
-  variable: '--font-inter',
-})
-
-export const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  display: 'swap',
-  variable: '--font-ibm-plex-mono',
+  variable: '--font-poppins',
 })

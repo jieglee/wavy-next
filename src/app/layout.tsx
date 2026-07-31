@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { spaceGrotesk, inter, ibmPlexMono } from "@/lib/fonts";
+import { poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
 import "./globals.css";
 
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
+      className={`${poppins.variable} antialiased`}
     >
       <body className="min-h-dvh flex flex-col">
         <AosProvider>{children}</AosProvider>
