@@ -20,6 +20,11 @@ const paymentMethods = [
   "Visa", "Mastercard", "Alfamart", "Indomaret",
 ]
 
+const paymentLogos: Record<string, { src: string; width: number; height: number }> = {
+  QRIS: { src: "/images/footer/Logo_QRIS.svg.webp", width: 3840, height: 1456 },
+  BCA: { src: "/images/footer/Bank_Central_Asia.svg.webp", width: 3840, height: 1204 },
+}
+
 function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -147,10 +152,12 @@ export default function Footer() {
                   key={method}
                   className="flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary"
                 >
-                  {method === "QRIS" ? (
-                    <img
-                      src="/images/footer/Logo_QRIS.svg.webp"
-                      alt="QRIS"
+                  {paymentLogos[method] ? (
+                    <Image
+                      src={paymentLogos[method].src}
+                      alt={method}
+                      width={paymentLogos[method].width}
+                      height={paymentLogos[method].height}
                       className="h-4 w-auto"
                     />
                   ) : (
