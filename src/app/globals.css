@@ -21,6 +21,13 @@
   --color-lime-pucat: #EAF5D0;
   --color-olive-gelap: #4B7A23;
   --color-border-hangat: #E5E1DA;
+
+  --color-wavy-bg: #14131C;
+  --color-wavy-surface: #2B2938;
+  --color-wavy-accent: #FF5470;
+  --color-wavy-border: #33313F;
+  --color-wavy-text-primary: #EDEBF2;
+  --color-wavy-text-secondary: #8B889C;
 }
 
 html {

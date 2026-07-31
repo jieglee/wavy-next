@@ -19,10 +19,6 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-4 flex items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border-dark bg-graphite-plum px-3 py-1 text-xs font-medium text-lavender-gray">
-              <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-              Marketplace tiket konser #1 di Indonesia
-            </span>
           </div>
 
           <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight text-off-white sm:text-5xl lg:text-6xl">
