@@ -164,7 +164,7 @@ export default function Footer() {
               {paymentMethods.map((method) => (
                 <span
                   key={method}
-                  className="flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary"
+                  className="flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary transition-all duration-200 ring-1 ring-transparent hover:-translate-y-0.5 hover:text-wavy-text-primary hover:ring-wavy-accent/60 hover:shadow-[0_4px_16px_rgba(255,84,112,0.25)]"
                 >
                   {paymentLogos[method] ? (
                     <Image
