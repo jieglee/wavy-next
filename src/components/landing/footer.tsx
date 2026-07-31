@@ -26,6 +26,7 @@ const paymentLogos: Record<string, { src: string; width: number; height: number 
   BRI: { src: "/images/footer/bri.png", width: 658, height: 370 },
   BNI: { src: "/images/footer/Bank_Negara_Indonesia_logo.svg.webp", width: 3840, height: 1113 },
   Mandiri: { src: "/images/footer/Bank_Mandiri_logo_2016.svg.webp", width: 3840, height: 1121 },
+  BSI: { src: "/images/footer/Bank_Syariah_Indonesia.svg.webp", width: 960, height: 268 },
 }
 
 function InstagramIcon({ className }: { className?: string }) {
