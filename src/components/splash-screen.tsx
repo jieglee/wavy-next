@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { cn } from "@/lib/utils";
 
 interface SplashScreenProps {
     isVisible: boolean;
@@ -24,15 +23,27 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                         transition: { duration: 1.1, ease: [0.76, 0, 0.24, 1] },
                     }}
                 >
-                    {[380, 560].map((size) => (
-                        <div
-                            key={size}
-                            className={cn(
-                                "absolute pointer-events-none rounded-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 border",
-                                size === 380 ? "w-[380px] h-[380px] border-wavy-accent/10" : "w-[560px] h-[560px] border-wavy-accent/[0.06]"
-                            )}
+                    <motion.svg
+                        className="pointer-events-none absolute inset-x-0 bottom-10 w-full overflow-visible"
+                        viewBox="0 0 400 60"
+                        fill="none"
+                        preserveAspectRatio="none"
+                        initial={{ opacity: 0 }}
+                        exit={{
+                            opacity: 1,
+                            transition: { duration: 0.5, ease: "easeOut" },
+                        }}
+                        style={{ height: 52 }}
+                    >
+                        <path
+                            d="M0,32 C50,6 100,6 150,32 C200,58 250,58 300,32 C340,12 370,10 400,18"
+                            stroke="#FF5470"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            fill="none"
+                            style={{ filter: "drop-shadow(0 0 8px rgba(255,84,112,0.45))" }}
                         />
-                    ))}
+                    </motion.svg>
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
