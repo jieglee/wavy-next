@@ -33,6 +33,7 @@ const paymentLogos: Record<string, { src: string; width: number; height: number 
   ShopeePay: { src: "/images/footer/shopeepay.png", width: 842, height: 370 },
   Visa: { src: "/images/footer/Visa_Inc._logo_(2021–present).svg.webp", width: 3840, height: 1247 },
   Mastercard: { src: "/images/footer/Mastercard-logo.svg.webp", width: 3840, height: 2983 },
+  Alfamart: { src: "/images/footer/alfamart.png", width: 998, height: 370 },
 }
 
 function InstagramIcon({ className }: { className?: string }) {
