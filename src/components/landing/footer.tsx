@@ -31,6 +31,7 @@ const paymentLogos: Record<string, { src: string; width: number; height: number 
   OVO: { src: "/images/footer/Logo_ovo_purple.svg.webp", width: 960, height: 300 },
   DANA: { src: "/images/footer/Dana_logo.png", width: 480, height: 141 },
   ShopeePay: { src: "/images/footer/shopeepay.png", width: 842, height: 370 },
+  Visa: { src: "/images/footer/Visa_Inc._logo_(2021–present).svg.webp", width: 3840, height: 1247 },
 }
 
 function InstagramIcon({ className }: { className?: string }) {
