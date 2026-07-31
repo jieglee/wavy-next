@@ -28,6 +28,7 @@ const paymentLogos: Record<string, { src: string; width: number; height: number 
   Mandiri: { src: "/images/footer/Bank_Mandiri_logo_2016.svg.webp", width: 3840, height: 1121 },
   BSI: { src: "/images/footer/Bank_Syariah_Indonesia.svg.webp", width: 960, height: 268 },
   GoPay: { src: "/images/footer/Gopay_logo.svg.webp", width: 3840, height: 976 },
+  OVO: { src: "/images/footer/Logo_ovo_purple.svg.webp", width: 960, height: 300 },
 }
 
 function InstagramIcon({ className }: { className?: string }) {
