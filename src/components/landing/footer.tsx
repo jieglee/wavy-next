@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import { WavyIcon } from "@/components/landing/wavy-icon"
 
 const menuLinks = [
   { label: "Tentang Kami", href: "#" },
@@ -88,7 +89,8 @@ export default function Footer() {
             <p className="font-display text-xs font-bold uppercase tracking-wide text-wavy-accent">
               #EveryConcert
             </p>
-            <Link href="/" className="mt-1 block font-display text-2xl font-bold tracking-tight text-wavy-text-primary">
+            <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-wavy-text-primary">
+              <WavyIcon size={26} />
               Wavy
             </Link>
 
