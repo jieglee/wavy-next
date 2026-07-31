@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 const menuLinks = [
   { label: "Tentang Kami", href: "#" },
@@ -144,9 +145,17 @@ export default function Footer() {
               {paymentMethods.map((method) => (
                 <span
                   key={method}
-                  className="rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary"
+                  className="flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary"
                 >
-                  {method}
+                  {method === "QRIS" ? (
+                    <img
+                      src="/images/footer/Logo_QRIS.svg.webp"
+                      alt="QRIS"
+                      className="h-4 w-auto"
+                    />
+                  ) : (
+                    method
+                  )}
                 </span>
               ))}
             </div>
