@@ -46,7 +46,7 @@ export default function Featured() {
           </div>
           <Link
             href="#"
-            className="hidden text-sm font-medium text-coral-spotlight transition-colors hover:brightness-110 sm:inline-flex"
+            className="hidden text-sm font-medium text-azure transition-colors hover:brightness-110 sm:inline-flex"
           >
             Lihat semua &rarr;
           </Link>
@@ -61,7 +61,7 @@ export default function Featured() {
               data-aos-delay={i * 100}
               className="group relative flex flex-col overflow-hidden rounded-xl border border-border-dark bg-graphite-plum transition-colors hover:border-coral-spotlight/40"
             >
-              <div className="aspect-[4/3] w-full bg-gradient-to-br from-graphite-plum via-plum-black to-border-dark" />
+              <div className="aspect-[4/3] w-full bg-gradient-to-br from-coral-spotlight/25 via-azure/20 to-coral-spotlight/25" />
               <div className="flex flex-col gap-1.5 p-4">
                 <h3 className="font-display text-base font-medium text-off-white group-hover:text-coral-spotlight">
                   {concert.title}
@@ -79,7 +79,7 @@ export default function Featured() {
         <div className="mt-6 text-center sm:hidden">
           <Link
             href="#"
-            className="text-sm font-medium text-coral-spotlight transition-colors hover:brightness-110"
+            className="text-sm font-medium text-azure transition-colors hover:brightness-110"
           >
             Lihat semua &rarr;
           </Link>

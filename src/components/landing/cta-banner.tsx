@@ -4,10 +4,14 @@ export default function CtaBanner() {
   return (
     <section data-aos="zoom-in" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-2xl border border-border-dark bg-graphite-plum px-6 py-14 text-center sm:px-14">
+        <div className="relative overflow-hidden rounded-2xl border border-border-dark bg-graphite-plum px-6 py-14 text-center shadow-[0_24px_80px_rgba(27,26,36,0.08)] sm:px-14">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-coral-spotlight/10 blur-[100px]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-azure/10 blur-[100px]"
           />
 
           <div className="relative">
@@ -27,7 +31,7 @@ export default function CtaBanner() {
               </Link>
               <Link
                 href="/auth/register"
-                className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-border-dark px-6 text-sm font-semibold text-lavender-gray transition-colors hover:border-lavender-gray hover:text-off-white sm:w-auto"
+                className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-border-dark px-6 text-sm font-semibold text-lavender-gray transition-colors hover:border-azure hover:text-azure sm:w-auto"
               >
                 Daftar Jadi EO
               </Link>

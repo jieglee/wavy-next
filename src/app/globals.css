@@ -5,13 +5,14 @@
   --font-sans: var(--font-poppins), "Poppins", sans-serif;
   --font-mono: var(--font-poppins), "Poppins", sans-serif;
 
-  --color-plum-black: #14131C;
-  --color-graphite-plum: #211F2B;
-  --color-off-white: #EDEBF2;
-  --color-lavender-gray: #8B889C;
+  --color-plum-black: #1B1A24;
+  --color-graphite-plum: #F0EFF7;
+  --color-off-white: #1B1A24;
+  --color-lavender-gray: #6E6B80;
   --color-coral-spotlight: #FF5470;
+  --color-azure: #1E40AF;
   --color-lime: #C6FF5C;
-  --color-border-dark: #33313F;
+  --color-border-dark: #E6E4F0;
 
   --color-ivory: #F7F4EF;
   --color-white-pure: #FFFFFF;
@@ -22,12 +23,13 @@
   --color-olive-gelap: #4B7A23;
   --color-border-hangat: #E5E1DA;
 
-  --color-wavy-bg: #14131C;
-  --color-wavy-surface: #2B2938;
+  --color-wavy-bg: #FFFFFF;
+  --color-wavy-surface: #F0EFF7;
   --color-wavy-accent: #FF5470;
-  --color-wavy-border: #33313F;
-  --color-wavy-text-primary: #EDEBF2;
-  --color-wavy-text-secondary: #8B889C;
+  --color-wavy-blue: #1E40AF;
+  --color-wavy-border: #E6E4F0;
+  --color-wavy-text-primary: #1B1A24;
+  --color-wavy-text-secondary: #6E6B80;
 }
 
 html {
@@ -35,7 +37,7 @@ html {
 }
 
 body {
-  background-color: var(--color-plum-black);
+  background-color: var(--color-white-pure);
   color: var(--color-off-white);
   font-family: var(--font-sans);
 }

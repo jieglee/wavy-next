@@ -86,7 +86,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
           {/* Brand + Social */}
           <div className="col-span-2 sm:col-span-1">
-            <p className="font-display text-xs font-bold uppercase tracking-wide text-wavy-accent">
+            <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-wavy-accent to-wavy-blue bg-clip-text text-transparent">
               #EveryConcert
             </p>
             <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-wavy-text-primary">
@@ -161,10 +161,14 @@ export default function Footer() {
               Pilihan Pembayaran
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {paymentMethods.map((method) => (
+              {paymentMethods.map((method, i) => (
                 <span
                   key={method}
-                  className="flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary transition-all duration-200 ring-1 ring-transparent hover:-translate-y-0.5 hover:text-wavy-text-primary hover:ring-wavy-accent/60 hover:shadow-[0_4px_16px_rgba(255,84,112,0.25)]"
+                  className={`flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary transition-all duration-200 ring-1 ring-transparent hover:-translate-y-0.5 hover:text-wavy-text-primary ${
+                    i % 2 === 0
+                      ? "hover:ring-wavy-accent/60 hover:shadow-[0_4px_16px_rgba(255,84,112,0.25)]"
+                      : "hover:ring-wavy-blue/60 hover:shadow-[0_4px_16px_rgba(30,64,175,0.25)]"
+                  }`}
                 >
                   {paymentLogos[method] ? (
                     <Image

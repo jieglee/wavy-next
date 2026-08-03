@@ -52,7 +52,11 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                         className="flex flex-col items-center gap-6 relative"
                     >
-                        <WavyIcon size={108} className="drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]" />
+                        <div
+                            aria-hidden
+                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-azure/20 blur-[80px]"
+                        />
+                        <WavyIcon size={108} className="relative drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]" />
                     </motion.div>
                 </motion.div>
             )}

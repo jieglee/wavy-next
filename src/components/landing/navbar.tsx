@@ -38,9 +38,9 @@ export default function Navbar() {
         <nav
           className={cn(
             "flex items-center h-13 transition-all duration-400 backdrop-blur-[20px] saturate-180",
-            scrolled
-              ? "w-[min(88%,780px)] max-w-195 rounded-full pl-5 pr-2 bg-wavy-surface/95 shadow-[0_8px_32px_rgba(255,84,112,0.18),inset_0_1px_0_rgba(255,255,255,0.06)]"
-              : "w-full max-w-300 rounded-2xl pl-4 pr-2 bg-wavy-surface/70 shadow-[0_4px_24px_rgba(0,0,0,0.25)]"
+          scrolled
+            ? "w-[min(88%,780px)] max-w-195 rounded-full pl-5 pr-2 bg-wavy-surface/95 shadow-[0_8px_32px_rgba(255,84,112,0.18),inset_0_1px_0_rgba(255,255,255,0.8)]"
+            : "w-full max-w-300 rounded-2xl pl-4 pr-2 bg-wavy-surface/70 shadow-[0_4px_24px_rgba(27,26,36,0.06)]"
           )}
         >
           <Link href="/" className="flex items-center gap-2 no-underline shrink-0 mr-1">
@@ -69,7 +69,7 @@ export default function Navbar() {
           <div className="flex items-center gap-1.5 shrink-0">
             <Link
               href="/auth/login"
-              className="flex items-center gap-1.5 px-3.5 py-1.75 rounded-[9px] text-[0.75rem] font-semibold whitespace-nowrap no-underline transition-all duration-200 text-wavy-text-secondary hover:text-wavy-text-primary hover:bg-wavy-bg/40"
+              className="flex items-center gap-1.5 px-3.5 py-1.75 rounded-[9px] text-[0.75rem] font-semibold whitespace-nowrap no-underline transition-all duration-200 text-wavy-text-secondary hover:text-wavy-text-primary hover:bg-wavy-text-primary/5"
             >
               <IconLogin size={12} />
               Masuk
@@ -87,7 +87,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-wavy-surface/95 backdrop-blur-lg shadow-[0_2px_16px_rgba(0,0,0,0.3)]">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-wavy-surface/95 backdrop-blur-lg shadow-[0_2px_16px_rgba(27,26,36,0.08)]">
         <div className="flex items-center justify-between px-4 h-14">
           <Link href="/" className="flex items-center gap-2 no-underline">
             <WavyIcon size={22} />
@@ -136,7 +136,7 @@ export default function Navbar() {
                 <Link
                   href="/auth/login"
                   onClick={() => setMenuOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[0.85rem] font-semibold text-wavy-text-secondary no-underline hover:bg-wavy-bg/40"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[0.85rem] font-semibold text-wavy-text-secondary no-underline hover:bg-wavy-text-primary/5"
                 >
                   <IconLogin size={14} />
                   Masuk

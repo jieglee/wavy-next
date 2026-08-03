@@ -1,5 +1,5 @@
-import AuthCard from "@/components/auth-card";
+import AuthPageShell from "@/components/AuthPageShell";
 
 export default function RegisterPage() {
-  return <AuthCard initialMode="register" />;
+  return <AuthPageShell defaultMode="register" />;
 }

@@ -12,7 +12,11 @@ export default function Stats() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
           {stats.map((s, i) => (
             <div key={s.label} data-aos="fade-up" data-aos-delay={i * 100} className="flex flex-col items-center text-center">
-              <span className="font-display text-3xl font-semibold text-off-white sm:text-4xl">
+              <span
+                className={`font-display text-3xl font-semibold sm:text-4xl ${
+                  i % 2 === 0 ? "text-coral-spotlight" : "text-azure"
+                }`}
+              >
                 {s.value}
               </span>
               <span className="mt-1 text-xs text-lavender-gray sm:text-sm">

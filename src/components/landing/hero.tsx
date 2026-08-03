@@ -13,7 +13,7 @@ export default function Hero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-40 left-0 h-100 w-100 rounded-full bg-coral-spotlight/5 blur-[100px]"
+        className="pointer-events-none absolute -bottom-40 left-0 h-100 w-100 rounded-full bg-azure/10 blur-[100px]"
       />
 
       <div className="relative mx-auto max-w-7xl">
@@ -26,7 +26,7 @@ export default function Hero() {
             <br />
             <span className="text-coral-spotlight">Every Concert.</span>
             <br />
-            Every Moment.
+            <span className="text-azure">Every Moment.</span>
           </h1>
 
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-lavender-gray sm:text-lg">
@@ -44,7 +44,7 @@ export default function Hero() {
             </Link>
             <Link
               href="/auth/register"
-              className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-border-dark px-6 text-sm font-semibold text-lavender-gray transition-colors hover:border-lavender-gray hover:text-off-white sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-border-dark px-6 text-sm font-semibold text-lavender-gray transition-colors hover:border-azure hover:text-azure sm:w-auto"
             >
               Daftar jadi Event Organizer
             </Link>
@@ -52,11 +52,15 @@ export default function Hero() {
         </div>
 
         <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
-          {categories.map((cat) => (
+          {categories.map((cat, i) => (
             <Link
               key={cat}
               href="#"
-              className="rounded-full border border-border-dark bg-graphite-plum px-4 py-2 text-sm font-medium text-lavender-gray transition-colors hover:border-coral-spotlight hover:text-coral-spotlight"
+              className={`rounded-full border border-border-dark bg-graphite-plum px-4 py-2 text-sm font-medium text-lavender-gray transition-colors ${
+                i % 2 === 0
+                  ? "hover:border-coral-spotlight hover:text-coral-spotlight"
+                  : "hover:border-azure hover:text-azure"
+              }`}
             >
               {cat}
             </Link>

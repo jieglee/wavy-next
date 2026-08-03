@@ -41,7 +41,9 @@ export default function Testimonials() {
               className="relative flex flex-col rounded-xl border border-border-dark bg-graphite-plum p-5 sm:p-6"
             >
               <svg
-                className="mb-3 h-5 w-5 text-coral-spotlight/40"
+                className={`mb-3 h-5 w-5 ${
+                  i % 2 === 0 ? "text-coral-spotlight/40" : "text-azure/40"
+                }`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >

@@ -36,7 +36,11 @@ export default function Benefits() {
               key={b.title}
               data-aos="fade-up"
               data-aos-delay={i * 100}
-              className="rounded-xl border border-border-dark bg-graphite-plum p-5 transition-colors hover:border-coral-spotlight/30 sm:p-6"
+              className={`rounded-xl border border-border-dark bg-graphite-plum p-5 transition-colors sm:p-6 ${
+                i % 2 === 0
+                  ? "hover:border-coral-spotlight/40"
+                  : "hover:border-azure/40"
+              }`}
             >
               <h3 className="font-display text-base font-medium text-off-white">
                 {b.title}

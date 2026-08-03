@@ -42,7 +42,11 @@ export default function HowItWorks() {
                   style={{ left: "calc(50% + 2rem)" }}
                 />
               )}
-              <span className="font-display text-4xl font-semibold text-coral-spotlight/30">
+              <span
+                className={`font-display text-4xl font-semibold ${
+                  i % 2 === 0 ? "text-coral-spotlight/30" : "text-azure/30"
+                }`}
+              >
                 {step.number}
               </span>
               <h3 className="mt-4 font-display text-lg font-medium text-off-white">
