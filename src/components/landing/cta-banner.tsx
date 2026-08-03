@@ -29,12 +29,6 @@ export default function CtaBanner() {
               >
                 Cari Konser Sekarang
               </Link>
-              <Link
-                href="/auth/register"
-                className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-border-dark px-6 text-sm font-semibold text-lavender-gray transition-colors hover:border-azure hover:text-azure sm:w-auto"
-              >
-                Daftar Jadi EO
-              </Link>
             </div>
           </div>
         </div>

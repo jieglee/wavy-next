@@ -8,22 +8,25 @@ import Testimonials from "@/components/landing/testimonials";
 import CtaBanner from "@/components/landing/cta-banner";
 import Footer from "@/components/landing/footer";
 import ScrollToTop from "@/components/scroll-to-top";
+import SplashWrapper from "@/components/splash-wrapper";
 
 export default function Home() {
   return (
-    <>
-      <Navbar />
-      <main className="flex-1">
-        <Hero />
-        <Stats />
-        <Featured />
-        <Benefits />
-        <HowItWorks />
-        <Testimonials />
-        <CtaBanner />
-      </main>
-      <Footer />
-      <ScrollToTop />
-    </>
+    <SplashWrapper>
+      <>
+        <Navbar />
+        <main className="flex-1">
+          <Hero />
+          <Stats />
+          <Featured />
+          <Benefits />
+          <HowItWorks />
+          <Testimonials />
+          <CtaBanner />
+        </main>
+        <Footer />
+        <ScrollToTop />
+      </>
+    </SplashWrapper>
   );
 }

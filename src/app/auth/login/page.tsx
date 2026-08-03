@@ -1,5 +1,5 @@
-import AuthPageShell from "@/components/AuthPageShell";
+import LoginOtpCard from "@/components/auth/login-otp";
 
 export default function LoginPage() {
-  return <AuthPageShell defaultMode="login" />;
+  return <LoginOtpCard />;
 }

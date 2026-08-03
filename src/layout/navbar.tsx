@@ -38,12 +38,6 @@ export default function Navbar() {
           >
             Masuk
           </Link>
-          <Link
-            href="/auth/register"
-            className="rounded-lg bg-coral-spotlight px-4 py-2 text-sm font-medium text-plum-black transition-colors hover:brightness-110"
-          >
-            Daftar
-          </Link>
         </div>
 
         <button
@@ -87,13 +81,6 @@ export default function Navbar() {
               className="rounded-lg border border-border-dark px-4 py-2 text-center text-sm font-medium text-lavender-gray transition-colors hover:border-lavender-gray hover:text-off-white"
             >
               Masuk
-            </Link>
-            <Link
-              href="/auth/register"
-              onClick={() => setMenuOpen(false)}
-              className="rounded-lg bg-coral-spotlight px-4 py-2 text-center text-sm font-medium text-plum-black transition-colors hover:brightness-110"
-            >
-              Daftar
             </Link>
           </div>
         </div>

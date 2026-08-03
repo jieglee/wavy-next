@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
 import "./globals.css";
-import SplashWrapper from "@/components/splash-wrapper";
 
 export const metadata: Metadata = {
   title: "Wavy — One Platform. Every Concert. Every Moment.",
@@ -21,9 +20,7 @@ export default function RootLayout({
       className={`${poppins.variable} antialiased`}
     >
       <body className="min-h-dvh flex flex-col">
-        <AosProvider>
-          <SplashWrapper>{children}</SplashWrapper>
-        </AosProvider>
+        <AosProvider>{children}</AosProvider>
       </body>
     </html>
   );

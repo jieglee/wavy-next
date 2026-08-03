@@ -1,6 +1,7 @@
 export interface RegisterPayload {
     name: string;
     email: string;
+    phone?: string;
     password: string;
 }
 
@@ -23,6 +24,7 @@ export interface ResetResult {
 interface StoredUser {
     name: string;
     email: string;
+    phone?: string;
     password: string;
     role: string;
 }
@@ -55,6 +57,7 @@ export async function registerUser(
     users.push({
         name: payload.name.trim(),
         email,
+        phone: payload.phone?.trim() ?? "",
         password: payload.password,
         role: "user",
     });
