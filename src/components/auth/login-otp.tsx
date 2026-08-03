@@ -130,10 +130,7 @@ export default function LoginOtpCard() {
                 <div className="pointer-events-none absolute -bottom-[10%] left-[10%] h-[80%] w-[80%] rounded-full bg-white/[0.08]" />
 
                 <div className="relative z-10 flex items-center gap-3">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 15 Q6 8, 9 15 T15 15 T21 15" stroke="white" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-                        <circle cx="19" cy="6" r="2.2" fill="white" />
-                    </svg>
+                    <WavyIcon size={48} style={{ color: "#fff" }} />
                     <span className="font-display text-4xl font-bold tracking-tight text-white">Wavy</span>
                 </div>
             </div>

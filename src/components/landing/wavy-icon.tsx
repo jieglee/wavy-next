@@ -1,4 +1,4 @@
-export function WavyIcon({ size = 24, className }: { size?: number; className?: string }) {
+export function WavyIcon({ size = 24, className, style }: { size?: number; className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,6 +7,7 @@ export function WavyIcon({ size = 24, className }: { size?: number; className?: 
       viewBox="0 0 512 512"
       role="img"
       aria-label="Wavy logo"
+      style={style}
       className={`shrink-0 text-wavy-accent ${className ?? ""}`}
     >
       <path d="M0 0h512v512H0z" fill="none" />
