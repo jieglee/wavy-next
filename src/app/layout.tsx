@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 import { poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
 import "./globals.css";
@@ -21,6 +22,7 @@ export default function RootLayout({
     >
       <body className="min-h-dvh flex flex-col">
         <AosProvider>{children}</AosProvider>
+        <Toaster />
       </body>
     </html>
   );

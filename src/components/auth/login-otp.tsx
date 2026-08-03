@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 
 type Step = "email" | "otp";
@@ -48,6 +49,7 @@ export default function LoginOtpCard() {
         setLoading(true);
         try {
             await sendOtp(email);
+            toast.success("Silakan cek email Anda untuk mendapatkan kode OTP");
             setStep("otp");
             setResendIn(RESEND_SECONDS);
             setTimeout(() => inputsRef.current[0]?.focus(), 100);
@@ -216,13 +218,17 @@ export default function LoginOtpCard() {
                                     Ganti email
                                 </button>
 
-                                <h1 className="font-display text-2xl font-bold text-wavy-text-primary">Masukkan Kode OTP</h1>
-                                <p className="mt-2 text-sm text-wavy-text-secondary">
-                                    Kode 6 digit sudah dikirim ke <span className="font-mono text-wavy-text-primary">{email}</span>
+                                <h1 className="font-display text-3xl font-bold text-wavy-text-primary">
+                                    Masukkan kode OTP
+                                </h1>
+                                <p className="mt-3 text-sm text-wavy-text-secondary">
+                                    Silakan periksa email Anda. Kode OTP telah dikirim ke
+                                    <br />
+                                    <span className="font-semibold text-wavy-accent">{email}</span>
                                 </p>
 
                                 <form onSubmit={handleVerify} className="mt-8 flex flex-col gap-4">
-                                    <div className="flex justify-between gap-2">
+                                    <div className="flex gap-3">
                                         {otp.map((digit, i) => (
                                             <input
                                                 key={i}
@@ -236,29 +242,38 @@ export default function LoginOtpCard() {
                                                 onChange={(e) => handleOtpChange(i, e.target.value)}
                                                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
                                                 onPaste={handleOtpPaste}
-                                                className="h-12 w-10 rounded-lg bg-wavy-surface text-center font-mono text-lg text-wavy-text-primary outline-none focus:ring-2 focus:ring-wavy-accent"
+                                                className="h-14 w-12 rounded-xl border-2 border-wavy-border bg-transparent text-center font-mono text-xl text-wavy-text-primary outline-none transition-colors focus:border-wavy-accent"
                                             />
                                         ))}
                                     </div>
 
                                     {error && <p className="text-xs text-red-400">{error}</p>}
 
+                                    <p className="text-sm text-wavy-text-secondary">
+                                        Belum menerima kode OTP?{" "}
+                                        {resendIn > 0 ? (
+                                            <span className="font-semibold text-wavy-accent">
+                                                {resendIn} detik untuk mengirim ulang
+                                            </span>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleResend}
+                                                disabled={loading}
+                                                className="font-semibold text-wavy-accent hover:underline disabled:opacity-50"
+                                            >
+                                                Kirim ulang kode
+                                            </button>
+                                        )}
+                                    </p>
+
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-60"
+                                        className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-60"
                                     >
                                         <ArrowRight className="h-4 w-4" />
-                                        {loading ? "Memverifikasi..." : "Verifikasi & Masuk"}
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        onClick={handleResend}
-                                        disabled={resendIn > 0 || loading}
-                                        className="text-xs text-wavy-text-secondary disabled:opacity-50"
-                                    >
-                                        {resendIn > 0 ? `Kirim ulang dalam ${resendIn}s` : "Kirim ulang kode"}
+                                        {loading ? "Memverifikasi..." : "Masuk"}
                                     </button>
                                 </form>
                             </motion.div>
