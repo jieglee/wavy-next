@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { WavyIcon } from "@/components/landing/wavy-icon";
 
 type Step = "email" | "otp";
 
@@ -160,10 +161,7 @@ export default function LoginOtpCard() {
                                 transition={{ duration: 0.25 }}
                             >
                                 <div className="mb-6 flex items-center gap-2">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                        <path d="M3 15 Q6 8, 9 15 T15 15 T21 15" stroke="#FF5470" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-                                        <circle cx="19" cy="6" r="2.2" fill="#FF5470" />
-                                    </svg>
+                                    <WavyIcon size={28} />
                                     <span className="font-display text-xl font-bold tracking-tight text-wavy-text-primary">Wavy</span>
                                 </div>
                                 <h1 className="font-display text-2xl font-bold text-wavy-text-primary">
