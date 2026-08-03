@@ -21,8 +21,9 @@ export default function RootLayout({
       className={`${poppins.variable} antialiased`}
     >
       <body className="min-h-dvh flex flex-col">
-        <AosProvider>{children}</AosProvider>
-        <SplashWrapper>{children}</SplashWrapper>
+        <AosProvider>
+          <SplashWrapper>{children}</SplashWrapper>
+        </AosProvider>
       </body>
     </html>
   );
