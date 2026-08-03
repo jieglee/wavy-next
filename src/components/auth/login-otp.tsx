@@ -124,16 +124,14 @@ export default function LoginOtpCard() {
 
     return (
         <div className="flex min-h-screen w-full">
-            {/* Panel kiri: full-bleed, dekorasi lingkaran */}
-            <div className="relative hidden w-[55%] items-center justify-center overflow-hidden bg-wavy-accent md:flex">
-                {/* Lingkaran konsentris dekoratif */}
-                <div className="pointer-events-none absolute -bottom-1/3 -left-1/4 h-[140%] w-[140%] rounded-full bg-white/[0.06]" />
-                <div className="pointer-events-none absolute -bottom-1/4 -left-[10%] h-[110%] w-[110%] rounded-full bg-white/[0.07]" />
-                <div className="pointer-events-none absolute -bottom-[10%] left-[10%] h-[80%] w-[80%] rounded-full bg-white/[0.08]" />
-
+            {/* Panel kiri: full-bleed, background foto */}
+            <div
+                className="relative hidden w-[55%] items-center justify-center overflow-hidden md:flex"
+                style={{ backgroundImage: "url(/images/login-otp.png)", backgroundSize: "cover", backgroundPosition: "center" }}
+            >
                 <div className="relative z-10 flex items-center gap-3">
                     <WavyIcon size={48} style={{ color: "#fff" }} />
-                    <span className="font-display text-4xl font-bold tracking-tight text-white">Wavy</span>
+                    <span className="font-display text-4xl font-bold tracking-tight text-white drop-shadow-lg">Wavy</span>
                 </div>
             </div>
 
