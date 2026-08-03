@@ -9,7 +9,7 @@ import { WavyIcon } from "@/components/landing/wavy-icon";
 type Step = "email" | "otp";
 
 const OTP_LENGTH = 6;
-const RESEND_SECONDS = 30;
+const RESEND_SECONDS = 60;
 
 // TODO: ganti isi 2 fungsi ini pas backend udah siap
 async function sendOtp(email: string): Promise<void> {
