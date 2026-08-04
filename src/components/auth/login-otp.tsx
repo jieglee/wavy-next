@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
+import { WavyIconAnimated } from "../landing/wavy-icon-animated";
 
 type Step = "email" | "otp";
 
@@ -38,6 +39,13 @@ export default function LoginOtpCard() {
     }, [resendIn]);
 
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    const [showBrandName, setShowBrandName] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowBrandName(true), 500);
+        return () => clearTimeout(timer);
+    }, []);
 
     async function handleSendOtp(e: React.FormEvent) {
         e.preventDefault();
@@ -129,10 +137,30 @@ export default function LoginOtpCard() {
                 className="relative hidden w-[55%] items-center justify-center overflow-hidden md:flex"
                 style={{ backgroundImage: "url(/images/login-otp.png)", backgroundSize: "cover", backgroundPosition: "center" }}
             >
-                <div className="relative z-10 flex items-center gap-3">
-                    <WavyIcon size={48} style={{ color: "#fff" }} />
-                    <span className="font-display text-4xl font-bold tracking-tight text-white drop-shadow-lg">Wavy</span>
-                </div>
+                <motion.div layout className="relative z-10 flex items-center gap-3">
+                    <motion.div layout transition={{ duration: 0.6, ease: "easeOut" }}>
+                        <WavyIconAnimated
+                            size={48}
+                            color="#fff"
+                            drawDuration={1.1}
+                            onFirstDrawComplete={() => setShowBrandName(true)}
+                        />
+                    </motion.div>
+                    <AnimatePresence>
+                        {showBrandName && (
+                            <motion.span
+                                key="brand-name"
+                                initial={{ opacity: 0, x: -12 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                                className="font-display text-4xl font-bold tracking-tight text-white drop-shadow-lg"
+                            >
+                                Wavy
+                            </motion.span>
+                        )}
+                    </AnimatePresence>
+                </motion.div>
             </div>
 
             {/* Panel kanan: form */}
