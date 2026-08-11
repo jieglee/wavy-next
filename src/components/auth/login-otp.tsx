@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "../landing/wavy-icon-animated";
 
@@ -24,6 +25,7 @@ async function verifyOtp(email: string, otp: string): Promise<boolean> {
 }
 
 export default function LoginOtpCard() {
+    const t = useTranslations("Auth");
     const [step, setStep] = useState<Step>("email");
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
@@ -50,19 +52,19 @@ export default function LoginOtpCard() {
     async function handleSendOtp(e: React.FormEvent) {
         e.preventDefault();
         if (!emailValid) {
-            setError("Masukkan email yang valid.");
+            setError(t("invalidEmail"));
             return;
         }
         setError("");
         setLoading(true);
         try {
             await sendOtp(email);
-            toast.success("Silakan cek email Anda untuk mendapatkan kode OTP");
+            toast.success(t("otpSentToast"));
             setStep("otp");
             setResendIn(RESEND_SECONDS);
             setTimeout(() => inputsRef.current[0]?.focus(), 100);
         } catch {
-            setError("Gagal mengirim OTP. Coba lagi.");
+            setError(t("otpSendFailed"));
         } finally {
             setLoading(false);
         }
@@ -97,7 +99,7 @@ export default function LoginOtpCard() {
         e.preventDefault();
         const code = otp.join("");
         if (code.length < OTP_LENGTH) {
-            setError("Masukkan 6 digit kode OTP.");
+            setError(t("invalidOtp"));
             return;
         }
         setError("");
@@ -105,13 +107,13 @@ export default function LoginOtpCard() {
         try {
             const ok = await verifyOtp(email, code);
             if (!ok) {
-                setError("Kode OTP salah atau kedaluwarsa.");
+                setError(t("otpWrong"));
                 return;
             }
             // TODO: redirect setelah login berhasil
             console.log("Login berhasil untuk", email);
         } catch {
-            setError("Terjadi kesalahan. Coba lagi.");
+            setError(t("otpVerifyFailed"));
         } finally {
             setLoading(false);
         }
@@ -190,19 +192,19 @@ export default function LoginOtpCard() {
                                     <span className="font-display text-xl font-bold tracking-tight text-wavy-text-primary">Wavy</span>
                                 </div>
                                 <h1 className="font-display text-2xl font-bold text-wavy-text-primary">
-                                    Selamat datang kembali!
+                                    {t("welcomeBack")}
                                 </h1>
                                 <p className="mt-2 text-sm text-wavy-text-secondary">
-                                    Masukkan email untuk lanjut ke akun kamu.
+                                    {t("emailPrompt")}
                                 </p>
 
                                 <form onSubmit={handleSendOtp} className="mt-8 flex flex-col gap-4">
                                     <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-wavy-text-primary">Email</label>
+                                        <label className="mb-1.5 block text-sm font-medium text-wavy-text-primary">{t("emailLabel")}</label>
                                         <input
                                             type="email"
                                             autoFocus
-                                            placeholder="Email"
+                                            placeholder={t("emailPlaceholder")}
                                             value={email}
                                             onChange={(e) => {
                                                 setEmail(e.target.value);
@@ -220,7 +222,7 @@ export default function LoginOtpCard() {
                                         className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
                                     >
                                         <ArrowRight className="h-4 w-4" />
-                                        {loading ? "Mengirim..." : "Lanjutkan"}
+                                        {loading ? t("sending") : t("continue")}
                                     </button>
                                 </form>
                             </motion.div>
@@ -241,14 +243,14 @@ export default function LoginOtpCard() {
                                     className="mb-4 flex items-center gap-1 text-xs text-wavy-text-secondary hover:text-wavy-text-primary"
                                 >
                                     <ArrowLeft className="h-3.5 w-3.5" />
-                                    Ganti email
+                                    {t("changeEmail")}
                                 </button>
 
                                 <h1 className="font-display text-3xl font-bold text-wavy-text-primary">
-                                    Masukkan kode OTP
+                                    {t("enterOtpTitle")}
                                 </h1>
                                 <p className="mt-3 text-sm text-wavy-text-secondary">
-                                    Silakan periksa email Anda. Kode OTP telah dikirim ke
+                                    {t("otpPrompt")}
                                     <br />
                                     <span className="font-semibold text-wavy-accent">{email}</span>
                                 </p>
@@ -276,10 +278,10 @@ export default function LoginOtpCard() {
                                     {error && <p className="text-xs text-red-400">{error}</p>}
 
                                     <p className="text-sm text-wavy-text-secondary">
-                                        Belum menerima kode OTP?{" "}
+                                        {t("noOtpReceived")}{" "}
                                         {resendIn > 0 ? (
                                             <span className="font-semibold text-wavy-accent">
-                                                {resendIn} detik untuk mengirim ulang
+                                                {t("resendIn", { count: resendIn })}
                                             </span>
                                         ) : (
                                             <button
@@ -288,7 +290,7 @@ export default function LoginOtpCard() {
                                                 disabled={loading}
                                                 className="font-semibold text-wavy-accent hover:underline disabled:opacity-50"
                                             >
-                                                Kirim ulang kode
+                                                {t("resendButton")}
                                             </button>
                                         )}
                                     </p>
@@ -299,7 +301,7 @@ export default function LoginOtpCard() {
                                         className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-60"
                                     >
                                         <ArrowRight className="h-4 w-4" />
-                                        {loading ? "Memverifikasi..." : "Masuk"}
+                                        {loading ? t("verifying") : t("signIn")}
                                     </button>
                                 </form>
                             </motion.div>

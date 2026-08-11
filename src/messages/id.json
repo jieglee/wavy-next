@@ -8,5 +8,34 @@
         "searchPlaceholder": "Cari konser, artist, atau venue",
         "kerjasama": "Kerjasama dengan Kami",
         "akun": "Akun"
+    },
+    "Auth": {
+        "welcomeBack": "Selamat datang kembali!",
+        "emailPrompt": "Masukkan email untuk lanjut ke akun kamu.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Email",
+        "invalidEmail": "Masukkan email yang valid.",
+        "sending": "Mengirim...",
+        "continue": "Lanjutkan",
+        "otpSentToast": "Silakan cek email Anda untuk mendapatkan kode OTP",
+        "otpSendFailed": "Gagal mengirim OTP. Coba lagi.",
+        "changeEmail": "Ganti email",
+        "enterOtpTitle": "Masukkan kode OTP",
+        "otpPrompt": "Silakan periksa email Anda. Kode OTP telah dikirim ke",
+        "invalidOtp": "Masukkan 6 digit kode OTP.",
+        "otpWrong": "Kode OTP salah atau kedaluwarsa.",
+        "otpVerifyFailed": "Terjadi kesalahan. Coba lagi.",
+        "noOtpReceived": "Belum menerima kode OTP?",
+        "resendIn": "{count} detik untuk mengirim ulang",
+        "resendButton": "Kirim ulang kode",
+        "verifying": "Memverifikasi...",
+        "signIn": "Masuk"
+    },
+    "FeaturedEvents": {
+        "title": "Event Seru Untukmu",
+        "prev": "Sebelumnya",
+        "next": "Berikutnya",
+        "byOrganizer": "Oleh {organizer}",
+        "startingFrom": "Mulai dari"
     }
 }

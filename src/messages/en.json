@@ -8,5 +8,34 @@
         "searchPlaceholder": "Search concerts, artists, or venues",
         "kerjasama": "Partner With Us",
         "akun": "Account"
+    },
+    "Auth": {
+        "welcomeBack": "Welcome back!",
+        "emailPrompt": "Enter your email to continue to your account.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Email",
+        "invalidEmail": "Please enter a valid email address.",
+        "sending": "Sending...",
+        "continue": "Continue",
+        "otpSentToast": "Please check your email for the OTP code",
+        "otpSendFailed": "Failed to send OTP. Please try again.",
+        "changeEmail": "Change email",
+        "enterOtpTitle": "Enter the OTP code",
+        "otpPrompt": "Please check your email. An OTP code has been sent to",
+        "invalidOtp": "Please enter the 6-digit OTP code.",
+        "otpWrong": "The OTP code is incorrect or has expired.",
+        "otpVerifyFailed": "Something went wrong. Please try again.",
+        "noOtpReceived": "Didn't receive the OTP code?",
+        "resendIn": "{count} seconds until you can resend",
+        "resendButton": "Resend code",
+        "verifying": "Verifying...",
+        "signIn": "Sign In"
+    },
+    "FeaturedEvents": {
+        "title": "Exciting Events For You",
+        "prev": "Previous",
+        "next": "Next",
+        "byOrganizer": "By {organizer}",
+        "startingFrom": "Starting from"
     }
 }

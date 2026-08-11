@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 const events = [
     { id: 1, title: "The Legends Infinity", organizer: "TRUST Orchestra", location: "Jakarta Selatan", price: "300.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
@@ -50,6 +51,7 @@ function ArrowRightIcon({ className }: { className?: string }) {
 const SCROLL_AMOUNT = 580;
 
 export default function FeaturedEvents() {
+    const t = useTranslations("FeaturedEvents");
     const scrollerRef = useRef<HTMLDivElement>(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
@@ -96,7 +98,7 @@ export default function FeaturedEvents() {
                         </g>
                     </svg>
                     <h2 className="font-display text-xl font-bold text-wavy-text-primary sm:text-2xl">
-                        Event Seru Untukmu
+                        {t("title")}
                     </h2>
                 </div>
 
@@ -104,7 +106,7 @@ export default function FeaturedEvents() {
                     {canScrollLeft && (
                         <button
                             onClick={() => scrollByCard(-1)}
-                            aria-label="Sebelumnya"
+                            aria-label={t("prev")}
                             className="absolute -left-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
                         >
                             <ArrowLeftIcon className="h-4 w-4" />
@@ -114,7 +116,7 @@ export default function FeaturedEvents() {
                     {canScrollRight && (
                         <button
                             onClick={() => scrollByCard(1)}
-                            aria-label="Berikutnya"
+                            aria-label={t("next")}
                             className="absolute -right-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
                         >
                             <ArrowRightIcon className="h-4 w-4" />
@@ -141,11 +143,11 @@ export default function FeaturedEvents() {
                                     {event.title}
                                 </h3>
                                 <p className="mt-0.5 truncate text-xs text-wavy-text-secondary">
-                                    Oleh {event.organizer}
+                                    {t("byOrganizer", { organizer: event.organizer })}
                                 </p>
 
                                 <div className="mt-3 border-t border-wavy-border pt-2.5">
-                                    <p className="text-[0.65rem] text-wavy-text-secondary">Mulai dari</p>
+                                    <p className="text-[0.65rem] text-wavy-text-secondary">{t("startingFrom")}</p>
                                     <p className="font-mono text-sm font-semibold text-wavy-text-primary">
                                         Rp{event.price}
                                     </p>
