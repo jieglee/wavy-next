@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 interface PromoSlide {
   id: string;
@@ -41,9 +41,65 @@ const slides: PromoSlide[] = [
     ctaHref: "#",
     gradient: "linear-gradient(135deg, #FF5470 0%, #14131C 100%)",
   },
+  {
+    id: "promo-4",
+    eyebrow: "Concert Drop",
+    title: "Coldplay: Music of the Spheres",
+    subtitle: "Penjualan dibuka 20:00 WIB, siapkan akun kamu",
+    ctaLabel: "Set pengingat",
+    ctaHref: "#",
+    gradient: "linear-gradient(135deg, #14131C 0%, #C6395A 100%)",
+  },
+  {
+    id: "promo-5",
+    eyebrow: "Keamanan Tiket",
+    title: "Transfer Tiket Resmi, Anti Penipuan",
+    subtitle: "QR berubah kepemilikan cuma lewat aplikasi",
+    ctaLabel: "Pelajari lebih lanjut",
+    ctaHref: "#",
+    gradient: "linear-gradient(135deg, #211F2B 0%, #FF5470 100%)",
+  },
+  {
+    id: "promo-6",
+    eyebrow: "Wavy Wallet",
+    title: "Semua Tiket dalam Satu Genggaman",
+    subtitle: "Walau beli dari EO berbeda-beda",
+    ctaLabel: "Lihat fitur QR Wallet",
+    ctaHref: "#",
+    gradient: "linear-gradient(135deg, #FF5470 0%, #211F2B 60%, #14131C 100%)",
+  },
 ];
 
 const AUTO_PLAY_MS = 5000;
+
+function ArrowLeftIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className={className}>
+      <path d="M0 0h1024v1024H0z" fill="none" />
+      <path
+        fill="currentColor"
+        d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0"
+      />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1024 1024"
+      className={className}
+      style={{ transform: "scaleX(-1)" }}
+    >
+      <path d="M0 0h1024v1024H0z" fill="none" />
+      <path
+        fill="currentColor"
+        d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0"
+      />
+    </svg>
+  );
+}
 
 export default function PromoCarousel() {
   const [index, setIndex] = useState(0);
@@ -72,7 +128,6 @@ export default function PromoCarousel() {
             className="relative flex h-[220px] w-full shrink-0 items-center overflow-hidden px-8 sm:h-[280px] sm:px-16 md:h-[340px]"
             style={{ background: slide.gradient }}
           >
-            {/* Dekorasi sparkle */}
             <Sparkles className="absolute right-16 top-8 h-6 w-6 text-white/20" />
             <Sparkles className="absolute bottom-10 right-40 h-4 w-4 text-white/15" />
             <Sparkles className="absolute left-1/3 top-12 h-5 w-5 text-white/10" />
@@ -103,16 +158,16 @@ export default function PromoCarousel() {
       <button
         onClick={prev}
         aria-label="Sebelumnya"
-        className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-wavy-bg shadow-md transition-colors hover:bg-white sm:left-5"
+        className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-md transition-colors hover:brightness-95 sm:left-5"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ArrowLeftIcon className="h-4 w-4" />
       </button>
       <button
         onClick={next}
         aria-label="Berikutnya"
-        className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-wavy-bg shadow-md transition-colors hover:bg-white sm:right-5"
+        className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-md transition-colors hover:brightness-95 sm:right-5"
       >
-        <ChevronRight className="h-5 w-5" />
+        <ArrowRightIcon className="h-4 w-4" />
       </button>
 
       {/* Dot indicator */}
