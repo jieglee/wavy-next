@@ -1,7 +1,7 @@
 import Navbar from "@/components/landing/navbar";
 import PromoCarousel from "@/components/landing/promo-carousel";
 import Stats from "@/components/landing/stats";
-import Featured from "@/components/landing/featured";
+import FeaturedEvents from "@/components/landing/featured-events";
 import Benefits from "@/components/landing/benefits";
 import HowItWorks from "@/components/landing/how-it-works";
 import Testimonials from "@/components/landing/testimonials";
@@ -18,7 +18,7 @@ export default function Home() {
         <main className="flex-1">
           <PromoCarousel />
           <Stats />
-          <Featured />
+          <FeaturedEvents />
           <Benefits />
           <HowItWorks />
           <Testimonials />

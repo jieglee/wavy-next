@@ -41,3 +41,11 @@ body {
   color: var(--color-off-white);
   font-family: var(--font-sans);
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
