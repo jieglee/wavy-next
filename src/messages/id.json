@@ -1,4 +1,8 @@
 {
+    "Metadata": {
+        "title": "Wavy — Satu Platform. Setiap Konser. Setiap Momen.",
+        "description": "Platform marketplace tiket konser yang menghubungkan Event Organizer dengan customer dalam satu ekosistem."
+    },
     "Navbar": {
         "kategori": "Kategori",
         "searchPlaceholder": "Cari konser, artist, atau venue",

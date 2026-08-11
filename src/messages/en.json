@@ -1,4 +1,8 @@
 {
+    "Metadata": {
+        "title": "Wavy — One Platform. Every Concert. Every Moment.",
+        "description": "A concert ticket marketplace connecting Event Organizers with customers in one ecosystem."
+    },
     "Navbar": {
         "kategori": "Category",
         "searchPlaceholder": "Search concerts, artists, or venues",

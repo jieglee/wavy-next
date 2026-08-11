@@ -1,28 +1,60 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Toaster } from "react-hot-toast";
 import { poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
-import "./globals.css";
+import { routing } from "@/i18n/routing";
+import "../globals.css";
 
-export const metadata: Metadata = {
-  title: "Wavy — One Platform. Every Concert. Every Moment.",
-  description:
-    "Platform marketplace tiket konser yang menghubungkan Event Organizer dengan customer dalam satu ekosistem.",
-};
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
-export default function RootLayout({
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as "id" | "en")) {
+    return { title: "Wavy" };
+  }
+
+  setRequestLocale(locale);
+  const t = await getTranslations("Metadata");
+
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+
+export default async function LocaleLayout({
   children,
-}: Readonly<{
+  params,
+}: {
   children: React.ReactNode;
-}>) {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as "id" | "en")) {
+    notFound();
+  }
+
+  setRequestLocale(locale);
+  const messages = await getMessages();
+
   return (
-    <html
-      lang="id"
-      className={`${poppins.variable} antialiased`}
-    >
+    <html lang={locale} className={`${poppins.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col">
-        <AosProvider>{children}</AosProvider>
-        <Toaster />
+        <NextIntlClientProvider messages={messages}>
+          <AosProvider>{children}</AosProvider>
+          <Toaster />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
