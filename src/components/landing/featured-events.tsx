@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 const events = [
     { id: 1, title: "The Legends Infinity", organizer: "TRUST Orchestra", location: "Jakarta Selatan", price: "300.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
@@ -21,13 +20,61 @@ const events = [
     { id: 15, title: "Festival Musisi Muda 2026", organizer: "Raw Vision Collective", location: "Tangerang", price: "225.000", gradient: "linear-gradient(135deg,#14131C,#C6395A)" },
 ];
 
+function ArrowLeftIcon({ className }: { className?: string }) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className={className}>
+            <path
+                fill="currentColor"
+                d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0"
+            />
+        </svg>
+    );
+}
+
+function ArrowRightIcon({ className }: { className?: string }) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1024 1024"
+            className={className}
+            style={{ transform: "scaleX(-1)" }}
+        >
+            <path
+                fill="currentColor"
+                d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0"
+            />
+        </svg>
+    );
+}
+
+const SCROLL_AMOUNT = 580;
+
 export default function FeaturedEvents() {
     const scrollerRef = useRef<HTMLDivElement>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
 
-    const scrollByCard = (dir: number) => {
+    const updateArrows = useCallback(() => {
         const el = scrollerRef.current;
         if (!el) return;
-        el.scrollBy({ left: dir * 300, behavior: "smooth" });
+        setCanScrollLeft(el.scrollLeft > 4);
+        setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    }, []);
+
+    useEffect(() => {
+        updateArrows();
+        const el = scrollerRef.current;
+        if (!el) return;
+        el.addEventListener("scroll", updateArrows, { passive: true });
+        window.addEventListener("resize", updateArrows);
+        return () => {
+            el.removeEventListener("scroll", updateArrows);
+            window.removeEventListener("resize", updateArrows);
+        };
+    }, [updateArrows]);
+
+    const scrollByCard = (dir: number) => {
+        scrollerRef.current?.scrollBy({ left: dir * SCROLL_AMOUNT, behavior: "smooth" });
     };
 
     return (
@@ -43,27 +90,43 @@ export default function FeaturedEvents() {
                 </div>
 
                 <div className="relative">
-                    <div
-                        ref={scrollerRef}
-                        className="scrollbar-hide flex gap-4 overflow-x-auto pb-2"
-                    >
+                    {canScrollLeft && (
+                        <button
+                            onClick={() => scrollByCard(-1)}
+                            aria-label="Sebelumnya"
+                            className="absolute -left-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+                        >
+                            <ArrowLeftIcon className="h-4 w-4" />
+                        </button>
+                    )}
+
+                    {canScrollRight && (
+                        <button
+                            onClick={() => scrollByCard(1)}
+                            aria-label="Berikutnya"
+                            className="absolute -right-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+                        >
+                            <ArrowRightIcon className="h-4 w-4" />
+                        </button>
+                    )}
+
+                    {/* pt-2 & pb-4 tambahan biar ada ruang buat shadow gambar pas naik, gak kepotong parent */}
+                    <div ref={scrollerRef} className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
                         {events.map((event) => (
-                            <a
-                                key={event.id}
-                                href="#"
-                                className="group w-[260px] shrink-0 transition-transform duration-300 ease-out hover:-translate-y-1.5 sm:w-[280px]"
-                            >
-                                <div className="relative aspect-video overflow-hidden rounded-lg border-l-2 border-dashed border-wavy-border">
-                                    <div
-                                        className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
-                                        style={{ background: event.gradient }}
-                                    />
-                                    <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-                                    <div className="pointer-events-none absolute inset-0 bg-wavy-accent/25 opacity-0 backdrop-blur-[1px] transition-opacity duration-500 group-hover:opacity-100" />
+                            <a key={event.id} href="#" className="group w-[260px] shrink-0 sm:w-[280px]">
+                                {/* Shadow + translate ditaro di wrapper LUAR (gak overflow-hidden), rounded+overflow-hidden dipindah ke dalam */}
+                                <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
+                                    <div className="relative aspect-video overflow-hidden rounded-lg border-l-2 border-dashed border-wavy-border shadow-none transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_28px_-8px_rgba(0,0,0,0.5)]">
+                                        <div
+                                            className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
+                                            style={{ background: event.gradient }}
+                                        />
+                                        <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                                    </div>
                                 </div>
 
                                 <p className="mt-3 text-xs text-wavy-text-secondary">{event.location}</p>
-                                <h3 className="mt-1 truncate font-display text-sm font-bold text-wavy-text-primary transition-colors group-hover:text-wavy-accent">
+                                <h3 className="mt-1 inline-block origin-left truncate font-display text-sm font-bold text-wavy-text-primary transition-all duration-300 group-hover:scale-[1.03] group-hover:text-wavy-accent">
                                     {event.title}
                                 </h3>
                                 <p className="mt-0.5 truncate text-xs text-wavy-text-secondary">
@@ -79,21 +142,6 @@ export default function FeaturedEvents() {
                             </a>
                         ))}
                     </div>
-
-                    <button
-                        onClick={() => scrollByCard(-1)}
-                        aria-label="Sebelumnya"
-                        className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-md transition-colors hover:brightness-95 sm:left-5"
-                    >
-                        <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <button
-                        onClick={() => scrollByCard(1)}
-                        aria-label="Berikutnya"
-                        className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-md transition-colors hover:brightness-95 sm:right-5"
-                    >
-                        <ChevronRight className="h-5 w-5" />
-                    </button>
                 </div>
             </div>
         </section>
