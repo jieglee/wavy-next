@@ -29,7 +29,8 @@
         "resendIn": "{count} detik untuk mengirim ulang",
         "resendButton": "Kirim ulang kode",
         "verifying": "Memverifikasi...",
-        "signIn": "Masuk"
+        "signIn": "Masuk",
+        "loginSuccess": "Berhasil masuk! Selamat datang kembali."
     },
     "FeaturedEvents": {
         "title": "Event Seru Untukmu",

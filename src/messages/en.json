@@ -29,7 +29,8 @@
         "resendIn": "{count} seconds until you can resend",
         "resendButton": "Resend code",
         "verifying": "Verifying...",
-        "signIn": "Sign In"
+        "signIn": "Sign In",
+        "loginSuccess": "Signed in! Welcome back."
     },
     "FeaturedEvents": {
         "title": "Exciting Events For You",
