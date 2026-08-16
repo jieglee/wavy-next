@@ -27,8 +27,11 @@ async function sendOtp(email: string): Promise<void> {
 async function verifyOtp(email: string, otp: string): Promise<boolean> {
   try {
     const res = await apiPost<VerifyResult>("/auth/verify-otp", { email, code: otp });
-    localStorage.setItem("wavy_token", res.access_token);
-    localStorage.setItem("wavy_customer", JSON.stringify(res.customer));
+    await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ access_token: res.access_token, customer: res.customer }),
+    });
     return true;
   } catch (e) {
     if (e instanceof ApiError && e.status === 401) return false;
