@@ -24,6 +24,7 @@ const events = [
 function ArrowLeftIcon({ className }: { className?: string }) {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className={className}>
+            <path d="M0 0h1024v1024H0z" fill="none" />
             <path
                 fill="currentColor"
                 d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0"
@@ -40,6 +41,7 @@ function ArrowRightIcon({ className }: { className?: string }) {
             className={className}
             style={{ transform: "scaleX(-1)" }}
         >
+            <path d="M0 0h1024v1024H0z" fill="none" />
             <path
                 fill="currentColor"
                 d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0"
@@ -107,7 +109,7 @@ export default function FeaturedEvents() {
                         <button
                             onClick={() => scrollByCard(-1)}
                             aria-label={t("prev")}
-                            className="absolute -left-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+                            className="absolute -left-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
                         >
                             <ArrowLeftIcon className="h-4 w-4" />
                         </button>
@@ -117,7 +119,7 @@ export default function FeaturedEvents() {
                         <button
                             onClick={() => scrollByCard(1)}
                             aria-label={t("next")}
-                            className="absolute -right-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-bg shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+                            className="absolute -right-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
                         >
                             <ArrowRightIcon className="h-4 w-4" />
                         </button>
