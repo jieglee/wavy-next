@@ -4,6 +4,7 @@
   --font-display: var(--font-poppins), "Poppins", sans-serif;
   --font-sans: var(--font-poppins), "Poppins", sans-serif;
   --font-mono: var(--font-poppins), "Poppins", sans-serif;
+  --font-brand: var(--font-bagel-fat-one), "Bagel Fat One", cursive;
 
   --color-plum-black: #1B1A24;
   --color-graphite-plum: #F0EFF7;

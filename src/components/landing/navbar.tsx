@@ -27,7 +27,7 @@ export default function Navbar() {
         {/* Logo + nama */}
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
-          <span className="font-display text-xl font-bold tracking-tight" style={{ color: NAVY }}>
+          <span className="font-brand text-xl tracking-tight" style={{ color: NAVY }}>
             Wavy
           </span>
         </Link>

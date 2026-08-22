@@ -89,7 +89,7 @@ export default function Footer() {
             <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-wavy-accent to-wavy-blue bg-clip-text text-transparent">
               #EveryConcert
             </p>
-            <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-wavy-text-primary">
+            <Link href="/" className="mt-1 flex items-center gap-2 font-brand text-2xl tracking-tight text-wavy-text-primary">
               <WavyIcon size={26} />
               Wavy
             </Link>

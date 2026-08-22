@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Toaster } from "react-hot-toast";
-import { poppins } from "@/lib/fonts";
+import { bagelFatOne, poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -49,7 +49,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${poppins.variable} antialiased`}>
+    <html lang={locale} className={`${poppins.variable} ${bagelFatOne.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col">
         <NextIntlClientProvider messages={messages}>
           <AosProvider>{children}</AosProvider>
