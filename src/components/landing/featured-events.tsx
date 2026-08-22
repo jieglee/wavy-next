@@ -128,7 +128,7 @@ export default function FeaturedEvents() {
                             <a key={event.id} href="#" className="group w-[260px] shrink-0 sm:w-[280px]">
                                 {/* Shadow + translate ditaro di wrapper LUAR (gak overflow-hidden), rounded+overflow-hidden dipindah ke dalam */}
                                 <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                                    <div className="relative aspect-video overflow-hidden rounded-lg border-l-2 border-dashed border-wavy-border shadow-none transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_28px_-8px_rgba(0,0,0,0.5)]">
+                                    <div className="relative aspect-video overflow-hidden rounded-lg border-l-2 border-dashed border-wavy-border shadow-none transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_28px_-8px_rgba(30,64,175,0.5)]">
                                         <div
                                             className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
                                             style={{ background: event.gradient }}
