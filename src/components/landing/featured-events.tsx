@@ -123,7 +123,6 @@ export default function FeaturedEvents() {
                         </button>
                     )}
 
-                    {/* pt-2 & pb-4 tambahan biar ada ruang buat shadow gambar pas naik, gak kepotong parent */}
                     <div ref={scrollerRef} className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
                         {events.map((event) => (
                             <a key={event.id} href="#" className="group w-[260px] shrink-0 sm:w-[280px]">
