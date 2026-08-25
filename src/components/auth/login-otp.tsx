@@ -16,28 +16,28 @@ const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
 interface VerifyResult {
-  access_token: string;
-  customer: { id: number; name: string | null; email: string };
+    access_token: string;
+    customer: { id: number; name: string | null; email: string };
 }
 
 async function sendOtp(email: string): Promise<void> {
-  await apiPost("/auth/send-otp", { email });
+    await apiPost("/auth/send-otp", { email });
 }
 
 async function verifyOtp(email: string, otp: string): Promise<boolean> {
-  try {
-    const res = await apiPost<VerifyResult>("/auth/verify-otp", { email, code: otp });
-    setAuthToken(res.access_token, "customer", res.customer);
-    await fetch("/api/auth/session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ access_token: res.access_token, customer: res.customer }),
-    });
-    return true;
-  } catch (e) {
-    if (e instanceof ApiError && e.status === 401) return false;
-    throw e;
-  }
+    try {
+        const res = await apiPost<VerifyResult>("/auth/verify-otp", { email, code: otp });
+        setAuthToken(res.access_token, "customer", res.customer);
+        await fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access_token: res.access_token, customer: res.customer }),
+        });
+        return true;
+    } catch (e) {
+        if (e instanceof ApiError && e.status === 401) return false;
+        throw e;
+    }
 }
 
 export default function LoginOtpCard() {
@@ -185,8 +185,19 @@ export default function LoginOtpCard() {
             </div>
 
             {/* Panel kanan: form */}
-            <div className="flex w-full items-center bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
-                <div className="w-full max-w-sm">
+            <div className="flex w-full flex-col bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
+                <div className="pt-6" />
+                <div className="flex flex-1 items-center pb-10">
+                    <div className="w-full max-w-sm">
+                    <button
+                        type="button"
+                        onClick={() => router.push("/")}
+                        className="relative -top-8 mb-8 inline-flex min-h-9 items-center gap-2 rounded-md px-2 text-sm font-medium text-wavy-text-secondary transition-colors hover:bg-wavy-surface hover:text-wavy-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wavy-accent focus-visible:ring-offset-2"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span>Kembali</span>
+                    </button>
+
                     <div className="mb-8 flex items-center justify-between md:hidden">
                         <div className="flex items-center gap-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -326,6 +337,7 @@ export default function LoginOtpCard() {
                             </motion.div>
                         )}
                     </AnimatePresence>
+                </div>
                 </div>
             </div>
         </div>
