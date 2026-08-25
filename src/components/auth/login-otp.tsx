@@ -186,17 +186,18 @@ export default function LoginOtpCard() {
 
             {/* Panel kanan: form */}
             <div className="flex w-full flex-col bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
-                <div className="pt-6" />
-                <div className="flex flex-1 items-center pb-10">
-                    <div className="w-full max-w-sm">
+                <div className="pt-6">
                     <button
                         type="button"
-                        onClick={() => router.push("/")}
-                        className="relative -top-8 mb-8 inline-flex min-h-9 items-center gap-2 rounded-md px-2 text-sm font-medium text-wavy-text-secondary transition-colors hover:bg-wavy-surface hover:text-wavy-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wavy-accent focus-visible:ring-offset-2"
+                        onClick={() => router.back()}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
                     >
-                        <ArrowLeft className="h-4 w-4" />
-                        <span>Kembali</span>
+                        <ArrowLeft className="h-3.5 w-3.5" />
+                        Kembali
                     </button>
+                </div>
+                <div className="flex flex-1 items-center">
+                    <div className="w-full max-w-sm pb-10">
 
                     <div className="mb-8 flex items-center justify-between md:hidden">
                         <div className="flex items-center gap-2">
