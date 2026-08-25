@@ -42,5 +42,24 @@
         "next": "Next",
         "byOrganizer": "By {organizer}",
         "startingFrom": "Starting from"
+    },
+    "AppNav": {
+        "browse": "Browse Concerts",
+        "searchPlaceholder": "Search your favorite concerts...",
+        "myTickets": "My Tickets",
+        "profileLevel": "Profile & Level",
+        "organizerPortal": "Organizer Portal",
+        "logout": "Log Out"
+    },
+    "AppFooter": {
+        "browse": "Browse Concerts",
+        "myTickets": "My Tickets",
+        "profile": "Profile & Level",
+        "rights": "All rights reserved."
+    },
+    "Home": {
+        "greeting": "Hi, {name}!",
+        "greetingFallback": "Hi there!",
+        "subtitle": "What concert are you watching today?"
     }
 }

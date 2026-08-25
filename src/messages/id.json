@@ -42,5 +42,24 @@
         "next": "Berikutnya",
         "byOrganizer": "Oleh {organizer}",
         "startingFrom": "Mulai dari"
+    },
+    "AppNav": {
+        "browse": "Jelajah Konser",
+        "searchPlaceholder": "Cari konser favoritmu...",
+        "myTickets": "Tiket Saya",
+        "profileLevel": "Profil & Level",
+        "organizerPortal": "Portal Organizer",
+        "logout": "Keluar"
+    },
+    "AppFooter": {
+        "browse": "Jelajah Konser",
+        "myTickets": "Tiket Saya",
+        "profile": "Profil & Level",
+        "rights": "Hak cipta dilindungi."
+    },
+    "Home": {
+        "greeting": "Halo, {name}!",
+        "greetingFallback": "Halo!",
+        "subtitle": "Mau menonton konser apa hari ini?"
     }
 }

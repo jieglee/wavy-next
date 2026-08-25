@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Search, LayoutGrid, Ticket, User, LogOut, Calendar } from "lucide-react";
-import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { getAuthToken, getAuthUser, clearAuthSession } from "@/lib/api";
 
@@ -10,6 +11,7 @@ const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
 
 export default function AppNavbar() {
+  const t = useTranslations("AppNav");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [userOpen, setUserOpen] = useState(false);
@@ -47,21 +49,21 @@ export default function AppNavbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6">
-        <a href="/home" className="flex shrink-0 items-center gap-2">
+        <Link href="/home" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
           <span className="font-display text-xl font-bold tracking-tight" style={{ color: NAVY }}>
             Wavy
           </span>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/concerts"
           className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-70 sm:flex"
           style={{ color: NAVY }}
         >
           <LayoutGrid className="h-4 w-4" style={{ color: PINK }} />
-          Jelajah Konser
-        </a>
+          {t("browse")}
+        </Link>
 
         <form
           onSubmit={handleSearch}
@@ -72,19 +74,19 @@ export default function AppNavbar() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari konser favoritmu..."
+            placeholder={t("searchPlaceholder")}
             className="w-full bg-transparent text-sm outline-none placeholder:text-[#8B889C]"
             style={{ color: NAVY }}
           />
         </form>
 
-        <a
+        <Link
           href="/tickets"
           className="ml-auto flex shrink-0 items-center gap-1.5 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A] md:ml-0"
         >
           <Ticket className="h-4 w-4" style={{ color: PINK }} />
-          Tiket Saya
-        </a>
+          {t("myTickets")}
+        </Link>
 
         <div ref={menuRef} className="relative shrink-0">
           <button
@@ -95,7 +97,7 @@ export default function AppNavbar() {
               {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : "U"}
             </div>
             <span className="hidden max-w-[100px] truncate md:inline">
-              {currentUser?.name || currentUser?.email || "Akun"}
+              {currentUser?.name || currentUser?.email || "Wavy"}
             </span>
           </button>
 
@@ -106,32 +108,32 @@ export default function AppNavbar() {
                 <p className="truncate text-xs text-[#8B889C]">{currentUser?.email}</p>
               </div>
 
-              <a
+              <Link
                 href="/me"
                 onClick={() => setUserOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <User className="h-4 w-4 text-[#FF5470]" />
-                Profil & Level
-              </a>
+                {t("profileLevel")}
+              </Link>
 
-              <a
+              <Link
                 href="/tickets"
                 onClick={() => setUserOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <Ticket className="h-4 w-4 text-[#1B1A3A]" />
-                Tiket Saya
-              </a>
+                {t("myTickets")}
+              </Link>
 
-              <a
+              <Link
                 href="/organizer/dashboard"
                 onClick={() => setUserOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <Calendar className="h-4 w-4 text-[#1B1A3A]" />
-                Portal Organizer
-              </a>
+                {t("organizerPortal")}
+              </Link>
 
               <div className="mt-1 border-t border-[#EDEBF2] pt-1">
                 <button
@@ -139,7 +141,7 @@ export default function AppNavbar() {
                   className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4" />
-                  Keluar
+                  {t("logout")}
                 </button>
               </div>
             </div>
