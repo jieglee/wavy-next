@@ -6,8 +6,12 @@
     "Navbar": {
         "kategori": "Kategori",
         "searchPlaceholder": "Cari konser, artist, atau venue",
-        "kerjasama": "Kerjasama dengan Kami",
-        "akun": "Akun"
+        "kerjasama": "Kerjasama EO",
+        "akun": "Akun",
+        "tickets": "Tiket Saya",
+        "organizer": "Portal EO",
+        "admin": "Admin",
+        "logout": "Keluar"
     },
     "Auth": {
         "welcomeBack": "Selamat datang kembali!",

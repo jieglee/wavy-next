@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { apiPost, ApiError } from "@/lib/api";
+import { apiPost, ApiError, setAuthToken } from "@/lib/api";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "../landing/wavy-icon-animated";
 
@@ -27,6 +27,7 @@ async function sendOtp(email: string): Promise<void> {
 async function verifyOtp(email: string, otp: string): Promise<boolean> {
   try {
     const res = await apiPost<VerifyResult>("/auth/verify-otp", { email, code: otp });
+    setAuthToken(res.access_token, "customer", res.customer);
     await fetch("/api/auth/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
