@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Toaster } from "react-hot-toast";
-import { poppins } from "@/lib/fonts";
+import { bagelFatOne, poppins } from "@/lib/fonts";
 import AosProvider from "@/components/aos-provider";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
