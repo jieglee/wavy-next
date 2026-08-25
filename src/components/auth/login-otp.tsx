@@ -128,7 +128,7 @@ export default function LoginOtpCard() {
                 return;
             }
             toast.success(t("loginSuccess"));
-            router.replace("/");
+            router.replace("/home");
         } catch {
             setError(t("otpVerifyFailed"));
         } finally {
