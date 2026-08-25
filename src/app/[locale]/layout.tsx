@@ -49,7 +49,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${poppins.variable} ${bagelFatOne.variable} antialiased`}>
+    <html lang={locale} data-scroll-behavior="smooth" className={`${poppins.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col">
         <NextIntlClientProvider messages={messages}>
           <AosProvider>{children}</AosProvider>

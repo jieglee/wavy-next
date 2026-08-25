@@ -6,8 +6,12 @@
     "Navbar": {
         "kategori": "Category",
         "searchPlaceholder": "Search concerts, artists, or venues",
-        "kerjasama": "Partner With Us",
-        "akun": "Account"
+        "kerjasama": "Partner EO",
+        "akun": "Account",
+        "tickets": "My Tickets",
+        "organizer": "EO Portal",
+        "admin": "Admin",
+        "logout": "Logout"
     },
     "Auth": {
         "welcomeBack": "Welcome back!",
@@ -29,7 +33,8 @@
         "resendIn": "{count} seconds until you can resend",
         "resendButton": "Resend code",
         "verifying": "Verifying...",
-        "signIn": "Sign In"
+        "signIn": "Sign In",
+        "loginSuccess": "Signed in! Welcome back."
     },
     "FeaturedEvents": {
         "title": "Exciting Events For You",

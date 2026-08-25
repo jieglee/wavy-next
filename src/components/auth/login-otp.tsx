@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { apiPost, ApiError, setAuthToken } from "@/lib/api";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "../landing/wavy-icon-animated";
 
@@ -13,19 +15,34 @@ type Step = "email" | "otp";
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
-// TODO: ganti isi 2 fungsi ini pas backend udah siap
+interface VerifyResult {
+    access_token: string;
+    customer: { id: number; name: string | null; email: string };
+}
+
 async function sendOtp(email: string): Promise<void> {
-    await new Promise((r) => setTimeout(r, 900));
-    console.log("OTP dikirim ke", email);
+    await apiPost("/auth/send-otp", { email });
 }
 
 async function verifyOtp(email: string, otp: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 900));
-    return otp === "123456"; // dummy, hapus pas connect backend asli
+    try {
+        const res = await apiPost<VerifyResult>("/auth/verify-otp", { email, code: otp });
+        setAuthToken(res.access_token, "customer", res.customer);
+        await fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access_token: res.access_token, customer: res.customer }),
+        });
+        return true;
+    } catch (e) {
+        if (e instanceof ApiError && e.status === 401) return false;
+        throw e;
+    }
 }
 
 export default function LoginOtpCard() {
     const t = useTranslations("Auth");
+    const router = useRouter();
     const [step, setStep] = useState<Step>("email");
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
@@ -110,8 +127,8 @@ export default function LoginOtpCard() {
                 setError(t("otpWrong"));
                 return;
             }
-            // TODO: redirect setelah login berhasil
-            console.log("Login berhasil untuk", email);
+            toast.success(t("loginSuccess"));
+            router.replace("/");
         } catch {
             setError(t("otpVerifyFailed"));
         } finally {
@@ -127,6 +144,8 @@ export default function LoginOtpCard() {
             setResendIn(RESEND_SECONDS);
             setOtp(Array(OTP_LENGTH).fill(""));
             inputsRef.current[0]?.focus();
+        } catch {
+            setError(t("otpSendFailed"));
         } finally {
             setLoading(false);
         }
@@ -166,8 +185,20 @@ export default function LoginOtpCard() {
             </div>
 
             {/* Panel kanan: form */}
-            <div className="flex w-full items-center bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
-                <div className="w-full max-w-sm">
+            <div className="flex w-full flex-col bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
+                <div className="pt-6">
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
+                    >
+                        <ArrowLeft className="h-3.5 w-3.5" />
+                        Kembali
+                    </button>
+                </div>
+                <div className="flex flex-1 items-center">
+                    <div className="w-full max-w-sm pb-10">
+
                     <div className="mb-8 flex items-center justify-between md:hidden">
                         <div className="flex items-center gap-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -307,6 +338,7 @@ export default function LoginOtpCard() {
                             </motion.div>
                         )}
                     </AnimatePresence>
+                </div>
                 </div>
             </div>
         </div>
