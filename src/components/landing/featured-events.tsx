@@ -178,7 +178,7 @@ export default function FeaturedEvents() {
                 </div>
 
                 <p className="mt-3 text-xs text-[#8B889C]">{event.location}</p>
-                <h3 className="mt-1 inline-block origin-left truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">
+                <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">
                   {event.title}
                 </h3>
                 <p className="mt-0.5 truncate text-xs text-[#6B6875]">
