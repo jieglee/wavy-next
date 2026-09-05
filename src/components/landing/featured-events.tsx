@@ -13,6 +13,7 @@ interface DisplayEvent {
   location: string;
   price: string;
   gradient: string;
+  poster_url?: string;
 }
 
 const fallbackEvents: DisplayEvent[] = [
@@ -67,6 +68,7 @@ export default function FeaturedEvents() {
             location: e.venue || "Indonesia",
             price: e.min_price ? Number(e.min_price).toLocaleString("id-ID") : "150.000",
             gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
+            poster_url: e.poster_url,
           }));
           setEvents(mapped);
         }
@@ -158,10 +160,19 @@ export default function FeaturedEvents() {
               <Link key={event.id} href={`/concerts/${event.id}`} className="group w-[260px] shrink-0 sm:w-[280px]">
                 <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
                   <div className="relative aspect-video overflow-hidden rounded-xl border border-[#EDEBF2] shadow-sm transition-all duration-300 group-hover:shadow-[0_16px_28px_-8px_rgba(27,26,58,0.25)]">
-                    <div
-                      className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
-                      style={{ background: event.gradient }}
-                    />
+                    {event.poster_url ? (
+                      <img
+                        src={event.poster_url}
+                        alt={event.title}
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div
+                        className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
+                        style={{ background: event.gradient }}
+                      />
+                    )}
                     <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                   </div>
                 </div>

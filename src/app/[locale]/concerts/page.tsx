@@ -187,12 +187,26 @@ export default function ConcertsPage() {
                 >
                   {/* Poster / Gradient Header */}
                   <div className="relative aspect-video w-full overflow-hidden">
-                    <div
-                      className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                      style={{ background: gradient }}
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
+                    {concert.poster_url ? (
+                      <>
+                        <img
+                          src={concert.poster_url}
+                          alt={concert.title}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+                          style={{ background: gradient }}
+                        />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </>
+                    )}
+
                     <span className="absolute left-3 top-3 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
                       {concert.category}
                     </span>
