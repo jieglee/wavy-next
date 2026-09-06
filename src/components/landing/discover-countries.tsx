@@ -68,19 +68,21 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     thailand: "🇹🇭",
     "south-korea": "🇰🇷",
   };
-  // Alternating pink / blue Wavy shadow
+  // Shadow pink/biru selang-seling, miring seragam ke kanan kayak contoh Kuala Lumpur
   const isPink = idx % 2 === 0;
   const shadowPink = "drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]";
   const shadowBlue = "drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
   const shadowClass = isPink ? shadowPink : shadowBlue;
+  const tiltClass = "rotate-[4deg]";
+  const tiltHoverClass = "group-hover/illus:rotate-[4deg]";
 
   return (
-    <div className="group/illus relative z-10 h-20 w-20 shrink-0 overflow-visible sm:h-[88px] sm:w-[88px]">
-      {/* Try real image - zoom keluar garis card saat hover di area gambar */}
+    <div className="group/illus relative z-10 h-24 w-24 shrink-0 overflow-visible sm:h-[104px] sm:w-[104px]">
+      {/* Try real image - agak digedein + zoom miring keluar garis card saat hover di area gambar */}
       <img
         src={city.illustration}
         alt={city.label2 || city.label1}
-        className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover/illus:scale-[1.35] group-hover/illus:${shadowClass} hover:scale-[1.35] hover:${shadowClass}`}
+        className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover/illus:scale-[1.38] group-hover/illus:${tiltHoverClass} group-hover/illus:${shadowClass} hover:scale-[1.38] hover:${tiltClass} hover:${shadowClass}`}
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).style.display = "none";
           const fallback = (e.currentTarget.nextElementSibling as HTMLElement | null);
@@ -89,7 +91,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
       />
       <div
         style={{ display: "none" }}
-        className={`absolute inset-0 items-center justify-center text-4xl leading-none transition-all duration-300 will-change-transform group-hover/illus:scale-[1.35] group-hover/illus:${shadowClass}`}
+        className={`absolute inset-0 items-center justify-center text-5xl leading-none transition-all duration-300 will-change-transform group-hover/illus:scale-[1.38] group-hover/illus:${tiltHoverClass} group-hover/illus:${shadowClass}`}
       >
         {emojiMap[city.id] ?? "🏙️"}
       </div>
