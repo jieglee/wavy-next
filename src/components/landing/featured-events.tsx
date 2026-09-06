@@ -70,40 +70,78 @@ export default function FeaturedEvents() {
 
   useEffect(() => {
     async function fetchFeatured() {
-      try {
-        const data = await apiGet<{ featured_events?: Concert[] }>("/homepage");
-        if (data?.featured_events && data.featured_events.length > 0) {
-          let mapped: DisplayEvent[] = data.featured_events.map((e, idx) => ({
-            id: e.id,
-            title: e.title,
-            organizer: e.organizer_name || "Event Organizer",
-            location: e.venue || "Indonesia",
-            price: e.min_price ? Number(e.min_price).toLocaleString("id-ID") : "150.000",
-            gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
-            poster_url: e.poster_url,
+      const toDisplay = (c: Concert, idx: number): DisplayEvent => ({
+        id: c.id,
+        title: c.title,
+        organizer: c.organizer_name || "Event Organizer",
+        location: c.venue || "Indonesia",
+        price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : "150.000",
+        gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
+        poster_url: c.poster_url,
+      });
+
+      const padTo20 = (mapped: DisplayEvent[]) => {
+        if (mapped.length >= 20) return mapped.slice(0, 20);
+        const existingIds = new Set(mapped.map((m) => m.id));
+        const extras = fallbackEvents
+          .filter((f) => !existingIds.has(f.id))
+          .slice(0, 20 - mapped.length);
+        let padded = [...mapped, ...extras];
+        if (padded.length < 20) {
+          const remaining = 20 - padded.length;
+          const more = fallbackEvents.slice(0, remaining).map((f, i) => ({
+            ...f,
+            id: 10000 + i,
           }));
-          // Pad to always show 20 cards
-          if (mapped.length < 20) {
-            const existingIds = new Set(mapped.map((m) => m.id));
-            const extras = fallbackEvents
-              .filter((f) => !existingIds.has(f.id))
-              .slice(0, 20 - mapped.length);
-            // If still not enough (IDs overlapped), fill remaining with fallback copies with offset IDs
-            let padded = [...mapped, ...extras];
-            if (padded.length < 20) {
-              const remaining = 20 - padded.length;
-              const more = fallbackEvents.slice(0, remaining).map((f, i) => ({
-                ...f,
-                id: 10000 + i,
-              }));
-              padded = [...padded, ...more];
-            }
-            mapped = padded;
+          padded = [...padded, ...more];
+        }
+        return padded.slice(0, 20);
+      };
+
+      const extractConcerts = (data: unknown): Concert[] => {
+        if (Array.isArray(data)) return data as Concert[];
+        if (data && typeof data === "object") {
+          const d = data as Record<string, unknown>;
+          if (Array.isArray(d.concerts)) return d.concerts as Concert[];
+          if (Array.isArray(d.data)) return d.data as Concert[];
+          if (Array.isArray(d.featured_events)) return d.featured_events as Concert[];
+          if (Array.isArray(d.events)) return d.events as Concert[];
+          // some APIs wrap in { concerts: { data: [] } }
+          if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) {
+            return (d.concerts as Record<string, unknown>).data as Concert[];
           }
-          setEvents(mapped.slice(0, 20));
+        }
+        return [];
+      };
+
+      try {
+        // Primary: same fetch as Jelajahi Semua Konser (/concerts)
+        const data = await apiGet<unknown>("/concerts");
+        const concerts = extractConcerts(data);
+        if (concerts.length > 0) {
+          const mapped = concerts.map(toDisplay);
+          setEvents(padTo20(mapped));
+          return;
+        }
+        // Fallback: homepage featured_events if /concerts empty
+        const home = await apiGet<unknown>("/homepage");
+        const homeConcerts = extractConcerts(home);
+        if (homeConcerts.length > 0) {
+          const mapped = homeConcerts.map(toDisplay);
+          setEvents(padTo20(mapped));
         }
       } catch {
-        // use fallbackEvents
+        // Last fallback: try homepage if /concerts failed
+        try {
+          const home = await apiGet<unknown>("/homepage");
+          const homeConcerts = extractConcerts(home);
+          if (homeConcerts.length > 0) {
+            const mapped = homeConcerts.map(toDisplay);
+            setEvents(padTo20(mapped));
+          }
+        } catch {
+          // keep 20 fallbackEvents
+        }
       }
     }
     fetchFeatured();
@@ -186,7 +224,7 @@ export default function FeaturedEvents() {
             {events.map((event) => (
               <Link key={event.id} href={`/concerts/${event.id}`} className="group w-[290px] shrink-0 snap-start sm:w-[320px]">
                 <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                  <div className="relative aspect-[16/7] overflow-hidden rounded-xl border border-[#EDEBF2] shadow-sm transition-all duration-300 group-hover:shadow-[0_16px_28px_-8px_rgba(27,26,58,0.25)]">
+                  <div className="relative aspect-[16/7] overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)] group-hover:border-wavy-blue/30">
                     {event.poster_url ? (
                       <img
                         src={event.poster_url}
