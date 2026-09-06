@@ -111,12 +111,12 @@ export default function DiscoverCountries() {
           <p className="mt-1 text-sm text-[#6E6B80]">Discover concerts from around the world</p>
         </div>
 
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-5 pt-3 snap-x snap-mandatory">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {cities.map((city, idx) => (
             <Link
               key={city.id}
               href={city.href}
-              className={`group relative flex h-[112px] w-[232px] shrink-0 snap-start items-center justify-between overflow-visible rounded-2xl border bg-white px-5 py-3 transition-all duration-200 sm:h-[118px] sm:w-[250px] ${
+              className={`group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border bg-white px-5 py-3 transition-all duration-200 sm:h-[118px] ${
                 city.active
                   ? "border-wavy-blue shadow-[0_6px_20px_rgba(30,64,175,0.12)]"
                   : "border-[#E6E4F0] shadow-sm hover:border-[#D8D5E8] hover:shadow-md"
