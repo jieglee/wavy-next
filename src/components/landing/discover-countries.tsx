@@ -86,7 +86,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
             <img
                 src={city.illustration}
                 alt={city.label2 || city.label1}
-                className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover:scale-[1.32] ${tiltClass} ${shadowClass}`}
+                className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.28] ${tiltClass} ${shadowClass}`}
                 style={{ filter: undefined }}
                 onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display = "none";
@@ -96,7 +96,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
             />
       <div
         style={{ display: "none" }}
-        className={`absolute inset-0 z-10 items-center justify-center text-4xl leading-none transition-all duration-300 will-change-transform group-hover:scale-[1.32] ${tiltClass} ${shadowClass}`}
+        className={`absolute inset-0 z-10 items-center justify-center text-4xl leading-none transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.28] ${tiltClass} ${shadowClass}`}
       >
         {emojiMap[city.id] ?? "🏙️"}
       </div>
