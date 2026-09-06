@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 
 interface City {
   id: string;
@@ -13,7 +12,7 @@ interface City {
   illustration: string;
 }
 
-// Loket-style: white card, left text + arrow, right 3D landmark, bottom colored bar
+// Loket-style: white card, left text, right 3D landmark, bottom colored bar
 // Hanya 5 negara sesuai request: Indonesia, Singapore, Malaysia, Thailand, South Korea (Japan dihapus)
 // Ambil dari /images/negara/* - fallback ke emoji kalau file belum ada
 const cities: City[] = [
@@ -115,7 +114,7 @@ export default function DiscoverCountries() {
                   : "border-[#E6E4F0] shadow-sm hover:border-[#D8D5E8] hover:shadow-md"
               }`}
             >
-              {/* Left: text + arrow */}
+              {/* Left: text */}
               <div className="flex flex-col justify-center">
                 <p className={`font-display text-[15px] font-bold leading-tight ${city.active ? "text-wavy-blue" : "text-[#1B1A24]"}`}>
                   {city.label1}
@@ -125,11 +124,6 @@ export default function DiscoverCountries() {
                     {city.label2}
                   </p>
                 )}
-                <ArrowUpRight
-                  className={`mt-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
-                    city.active ? "text-wavy-blue" : "text-wavy-blue"
-                  }`}
-                />
               </div>
 
               {/* Right: 3D illustration */}
