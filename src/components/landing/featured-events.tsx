@@ -204,7 +204,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label={t("prev")}
-              className="absolute -left-4 top-[63px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[70px]"
+              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -214,7 +214,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label={t("next")}
-              className="absolute -right-4 top-[63px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[70px]"
+              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>
@@ -222,9 +222,9 @@ export default function FeaturedEvents() {
 
           <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
             {events.map((event) => (
-              <Link key={event.id} href={`/concerts/${event.id}`} className="group w-[290px] shrink-0 snap-start sm:w-[320px]">
+              <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
                 <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                  <div className="relative aspect-[16/7] overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)] group-hover:border-wavy-blue/30">
+                  <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)] group-hover:border-wavy-blue/30">
                     {event.poster_url ? (
                       <img
                         src={event.poster_url}
@@ -238,7 +238,7 @@ export default function FeaturedEvents() {
                         style={{ background: event.gradient }}
                       />
                     )}
-                    <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                    <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                   </div>
                 </div>
 
@@ -246,7 +246,7 @@ export default function FeaturedEvents() {
                 <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">
                   {event.title}
                 </h3>
-                <p className="mt-0.5 truncate text-xs text-[#6B6875]">
+                <p className="mt-0.5 truncate text-xs text-abu-ungu">
                   {t("byOrganizer", { organizer: event.organizer })}
                 </p>
 

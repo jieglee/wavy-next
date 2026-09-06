@@ -8,6 +8,7 @@ import CtaBanner from "@/components/landing/cta-banner";
 import Footer from "@/components/landing/footer";
 import ScrollToTop from "@/components/scroll-to-top";
 import SplashWrapper from "@/components/splash-wrapper";
+import DiscoverCountries from "@/components/landing/discover-countries";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         <main className="flex-1">
           <PromoCarousel />
           <FeaturedEvents />
+          <DiscoverCountries />
           <Benefits />
           <HowItWorks />
           <Testimonials />

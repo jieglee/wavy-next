@@ -125,7 +125,7 @@ export default function PromoCarousel() {
         {slides.map((slide) => (
           <div
             key={slide.id}
-            className="relative flex h-[220px] w-full shrink-0 items-center overflow-hidden px-8 sm:h-[280px] sm:px-16 md:h-[340px]"
+            className="relative flex h-55 w-full shrink-0 items-center overflow-hidden px-8 sm:h-70 sm:px-16 md:h-85"
             style={{ background: slide.gradient }}
           >
             <Sparkles className="absolute right-16 top-8 h-6 w-6 text-white/20" />
