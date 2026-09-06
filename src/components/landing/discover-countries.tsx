@@ -1,95 +1,147 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { Compass, ArrowUpRight, ChevronRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-interface Country {
+interface City {
   id: string;
-  name: string;
-  image: string;
+  label1: string;
+  label2: string;
   href: string;
-  gradient: string;
+  accent: string;
+  active?: boolean;
+  illustration: string;
 }
 
-const countries: Country[] = [
-  { id: "id", name: "Indonesia", image: "/images/negara/indonesia.png", href: "/concerts?country=id", gradient: "linear-gradient(90deg,#FF5470,#C6FF5C)" },
-  { id: "sg", name: "Singapore", image: "/images/negara/singapore.png", href: "/concerts?country=sg", gradient: "linear-gradient(90deg,#FF5470,#FF8FA3)" },
-  { id: "my", name: "Malaysia", image: "/images/negara/malaysia.png", href: "/concerts?country=my", gradient: "linear-gradient(90deg,#8B889C,#C6FF5C)" },
-  { id: "th", name: "Thailand", image: "/images/negara/thailand.png", href: "/concerts?country=th", gradient: "linear-gradient(90deg,#C6FF5C,#FF5470)" },
-  { id: "kr", name: "South Korea", image: "/images/negara/south-korea.png", href: "/concerts?country=kr", gradient: "linear-gradient(90deg,#FF5470,#8B889C)" },
-  { id: "jp", name: "Japan", image: "/images/negara/japan.png", href: "/concerts?country=jp", gradient: "linear-gradient(90deg,#C6395A,#FF5470)" },
+// Loket-style: white card, left text + arrow, right 3D landmark, bottom colored bar
+// Hanya 5 negara sesuai request: Indonesia, Singapore, Malaysia, Thailand, South Korea (Japan dihapus)
+// Ambil dari /images/negara/* - fallback ke emoji kalau file belum ada
+const cities: City[] = [
+  {
+    id: "indonesia",
+    label1: "Indonesia",
+    label2: "",
+    href: "/concerts?country=id",
+    accent: "#FF8A65",
+    active: true,
+    illustration: "/images/negara/indonesia.png",
+  },
+  {
+    id: "singapore",
+    label1: "Singapore",
+    label2: "",
+    href: "/concerts?country=sg",
+    accent: "#FF3B30",
+    illustration: "/images/negara/singapore.png",
+  },
+  {
+    id: "malaysia",
+    label1: "Malaysia",
+    label2: "",
+    href: "/concerts?country=my",
+    accent: "#FF7A7A",
+    illustration: "/images/negara/malaysia.png",
+  },
+  {
+    id: "thailand",
+    label1: "Thailand",
+    label2: "",
+    href: "/concerts?country=th",
+    accent: "#7AA8FF",
+    illustration: "/images/negara/thailand.png",
+  },
+  {
+    id: "south-korea",
+    label1: "South",
+    label2: "Korea",
+    href: "/concerts?country=kr",
+    accent: "#7FC4A0",
+    illustration: "/images/negara/south-korea.png",
+  },
 ];
 
-const SELECTED_ID = "id"; // Indonesia disorot karena home base Wavy
+function CityIllustration({ city }: { city: City }) {
+  // Fallback emoji map if image not available
+  const emojiMap: Record<string, string> = {
+    indonesia: "🇮🇩",
+    singapore: "🇸🇬",
+    malaysia: "🇲🇾",
+    thailand: "🇹🇭",
+    "south-korea": "🇰🇷",
+  };
+  return (
+    <div className="relative h-20 w-20 shrink-0 sm:h-22 sm:w-22">
+      {/* Try real image, hidden fallback emoji stays if image fails */}
+      <img
+        src={city.illustration}
+        alt={city.label2 || city.label1}
+        className="h-full w-full object-contain object-bottom drop-shadow-sm"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).style.display = "none";
+          const fallback = (e.currentTarget.nextElementSibling as HTMLElement | null);
+          if (fallback) fallback.style.display = "flex";
+        }}
+      />
+      <div
+        style={{ display: "none" }}
+        className="absolute inset-0 items-center justify-center text-4xl leading-none"
+      >
+        {emojiMap[city.id] ?? "🏙️"}
+      </div>
+    </div>
+  );
+}
 
 export default function DiscoverCountries() {
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8">
+    <section className="px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Compass className="h-5 w-5 text-wavy-accent" />
-            <h2 className="font-display text-xl font-bold text-wavy-text-primary sm:text-2xl">
-              Discover concerts from around the world
-            </h2>
-          </div>
-          <Link
-            href="/concerts"
-            className="flex shrink-0 items-center gap-1 text-sm font-semibold text-wavy-accent hover:underline"
-          >
-            Lihat Semua
-            <ChevronRight className="h-4 w-4" />
-          </Link>
+        {/* Header like Loket: Jelajahi Event di Kotamu */}
+        <div className="mb-6">
+          <h2 className="font-display text-xl font-bold text-[#1B1A24] sm:text-2xl">
+            Jelajahi Event di Kotamu
+          </h2>
+          <p className="mt-1 text-sm text-[#6E6B80]">Discover concerts from around the world</p>
         </div>
 
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-1">
-          {countries.map((country) => {
-            const isSelected = country.id === SELECTED_ID;
-            return (
-              <Link
-                key={country.id}
-                href={country.href}
-                className={`group relative h-[190px] w-[220px] shrink-0 overflow-hidden rounded-xl border bg-wavy-surface p-5 transition-colors sm:w-[240px] ${
-                  isSelected
-                    ? "border-wavy-accent"
-                    : "border-wavy-border hover:border-wavy-text-secondary"
-                }`}
-              >
-                <div className="relative z-10">
-                  <h3
-                    className={`font-display text-lg font-bold leading-snug ${
-                      isSelected ? "text-wavy-accent" : "text-wavy-text-primary"
-                    }`}
-                  >
-                    {country.name}
-                  </h3>
-                  <ArrowUpRight
-                    className={`mt-2 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
-                      isSelected ? "text-wavy-accent" : "text-wavy-text-secondary"
-                    }`}
-                  />
-                </div>
-
-                {/* Ilustrasi negara */}
-                <div className="pointer-events-none absolute bottom-2 right-0 h-24 w-28 transition-transform duration-300 group-hover:scale-110">
-                  <Image
-                    src={country.image}
-                    alt={country.name}
-                    fill
-                    className="object-contain object-bottom"
-                    sizes="140px"
-                  />
-                </div>
-
-                {/* Garis gradient bawah */}
-                <div
-                  className="absolute inset-x-0 bottom-0 h-1"
-                  style={{ background: country.gradient }}
+        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-3 pt-1 snap-x snap-mandatory">
+          {cities.map((city) => (
+            <Link
+              key={city.id}
+              href={city.href}
+              className={`group relative flex h-[118px] w-[212px] shrink-0 snap-start items-center justify-between overflow-visible rounded-2xl border bg-white px-4 py-3 transition-all duration-200 sm:h-[122px] sm:w-[220px] ${
+                city.active
+                  ? "border-wavy-blue shadow-[0_6px_20px_rgba(30,64,175,0.12)]"
+                  : "border-[#E6E4F0] shadow-sm hover:border-[#D8D5E8] hover:shadow-md"
+              }`}
+            >
+              {/* Left: text + arrow */}
+              <div className="flex flex-col justify-center">
+                <p className={`font-display text-[15px] font-bold leading-tight ${city.active ? "text-wavy-blue" : "text-[#1B1A24]"}`}>
+                  {city.label1}
+                </p>
+                {city.label2 && (
+                  <p className={`font-display text-[15px] font-bold leading-tight ${city.active ? "text-wavy-blue" : "text-[#1B1A24]"}`}>
+                    {city.label2}
+                  </p>
+                )}
+                <ArrowUpRight
+                  className={`mt-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
+                    city.active ? "text-wavy-blue" : "text-wavy-blue"
+                  }`}
                 />
-              </Link>
-            );
-          })}
+              </div>
+
+              {/* Right: 3D illustration */}
+              <CityIllustration city={city} />
+
+              {/* Bottom colored bar like Loket */}
+              <div
+                className="absolute -bottom-[1px] left-3 right-3 h-[3px] rounded-full"
+                style={{ background: city.accent }}
+              />
+            </Link>
+          ))}
         </div>
       </div>
     </section>
