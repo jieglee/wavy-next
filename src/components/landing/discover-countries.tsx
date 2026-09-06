@@ -59,7 +59,7 @@ const cities: City[] = [
   },
 ];
 
-function CityIllustration({ city }: { city: City }) {
+function CityIllustration({ city, idx }: { city: City; idx: number }) {
   // Fallback emoji map if image not available
   const emojiMap: Record<string, string> = {
     indonesia: "🇮🇩",
@@ -68,13 +68,19 @@ function CityIllustration({ city }: { city: City }) {
     thailand: "🇹🇭",
     "south-korea": "🇰🇷",
   };
+  // Alternating pink / blue Wavy shadow
+  const isPink = idx % 2 === 0;
+  const shadowPink = "drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]";
+  const shadowBlue = "drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
+  const shadowClass = isPink ? shadowPink : shadowBlue;
+
   return (
-    <div className="relative h-20 w-20 shrink-0 sm:h-22 sm:w-22">
-      {/* Try real image, hidden fallback emoji stays if image fails */}
+    <div className="group/illus relative z-10 h-20 w-20 shrink-0 overflow-visible sm:h-[88px] sm:w-[88px]">
+      {/* Try real image - zoom keluar garis card saat hover di area gambar */}
       <img
         src={city.illustration}
         alt={city.label2 || city.label1}
-        className="h-full w-full object-contain object-bottom drop-shadow-sm"
+        className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover/illus:scale-[1.35] group-hover/illus:${shadowClass} hover:scale-[1.35] hover:${shadowClass}`}
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).style.display = "none";
           const fallback = (e.currentTarget.nextElementSibling as HTMLElement | null);
@@ -83,7 +89,7 @@ function CityIllustration({ city }: { city: City }) {
       />
       <div
         style={{ display: "none" }}
-        className="absolute inset-0 items-center justify-center text-4xl leading-none"
+        className={`absolute inset-0 items-center justify-center text-4xl leading-none transition-all duration-300 will-change-transform group-hover/illus:scale-[1.35] group-hover/illus:${shadowClass}`}
       >
         {emojiMap[city.id] ?? "🏙️"}
       </div>
@@ -103,8 +109,8 @@ export default function DiscoverCountries() {
           <p className="mt-1 text-sm text-[#6E6B80]">Discover concerts from around the world</p>
         </div>
 
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-3 pt-1 snap-x snap-mandatory">
-          {cities.map((city) => (
+        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-6 pt-4 snap-x snap-mandatory">
+          {cities.map((city, idx) => (
             <Link
               key={city.id}
               href={city.href}
@@ -126,8 +132,8 @@ export default function DiscoverCountries() {
                 )}
               </div>
 
-              {/* Right: 3D illustration */}
-              <CityIllustration city={city} />
+              {/* Right: 3D illustration - zoom keluar card saat hover di area gambar */}
+              <CityIllustration city={city} idx={idx} />
 
               {/* Bottom colored bar like Loket */}
               <div
