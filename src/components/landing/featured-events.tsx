@@ -23,6 +23,20 @@ const fallbackEvents: DisplayEvent[] = [
   { id: 4, title: "Whisnu Santika by Bengkel", organizer: "Bengkel Space", location: "Jakarta Selatan", price: "150.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
   { id: 5, title: "NIKI: Nicole Live", organizer: "Ismaya Live", location: "Tangerang", price: "850.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
   { id: 6, title: "Jazz Under The Stars", organizer: "Java Festival Production", location: "Bandung", price: "425.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
+  { id: 7, title: "Sunset Symphony Orchestra", organizer: "Aditya Music Collective", location: "Jakarta Barat", price: "600.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
+  { id: 8, title: "Indie Pop Extravaganza", organizer: "LocalFest Indonesia", location: "Yogyakarta", price: "250.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
+  { id: 9, title: "Metal Mayhem 2026", organizer: "HellStage Production", location: "Bandung", price: "500.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
+  { id: 10, title: "K-Pop Dreamscape Live", organizer: "StarWave Entertainment", location: "Jakarta Pusat", price: "1.200.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
+  { id: 11, title: "Acoustic Night Serenade", organizer: "SoulSpace Collective", location: "Bali", price: "300.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
+  { id: 12, title: "Electronic Pulse Festival", organizer: "Neon Collective", location: "Surabaya", price: "750.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
+  { id: 13, title: "Classical Harmony Gala", organizer: "Jakarta Philharmonic", location: "Jakarta Selatan", price: "400.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
+  { id: 14, title: "Rock Revival Hits", organizer: "Nostalgia Records", location: "Semarang", price: "350.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
+  { id: 15, title: "Dangdut Karnaval Akbar", organizer: "Pantura Production", location: "Bekasi", price: "100.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
+  { id: 16, title: "Hip Hop Block Party", organizer: "Urban Beats ID", location: "Jakarta Utara", price: "275.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
+  { id: 17, title: "Folk & Roots Gathering", organizer: "Nusantara Folk", location: "Ubud", price: "200.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
+  { id: 18, title: "Starlight Orchestra Gala", organizer: "Grand Symphony", location: "Jakarta Pusat", price: "900.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
+  { id: 19, title: "Summer Groove Fest", organizer: "Beachside EO", location: "Bali", price: "550.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
+  { id: 20, title: "Midnight Jazz Sessions", organizer: "Blue Note Jakarta", location: "Jakarta Selatan", price: "475.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
 ];
 
 function ArrowLeftIcon({ className }: { className?: string }) {
@@ -61,7 +75,7 @@ export default function FeaturedEvents() {
       try {
         const data = await apiGet<{ featured_events?: Concert[] }>("/homepage");
         if (data?.featured_events && data.featured_events.length > 0) {
-          const mapped: DisplayEvent[] = data.featured_events.map((e, idx) => ({
+          let mapped: DisplayEvent[] = data.featured_events.map((e, idx) => ({
             id: e.id,
             title: e.title,
             organizer: e.organizer_name || "Event Organizer",
@@ -70,7 +84,25 @@ export default function FeaturedEvents() {
             gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
             poster_url: e.poster_url,
           }));
-          setEvents(mapped);
+          // Pad to always show 20 cards
+          if (mapped.length < 20) {
+            const existingIds = new Set(mapped.map((m) => m.id));
+            const extras = fallbackEvents
+              .filter((f) => !existingIds.has(f.id))
+              .slice(0, 20 - mapped.length);
+            // If still not enough (IDs overlapped), fill remaining with fallback copies with offset IDs
+            let padded = [...mapped, ...extras];
+            if (padded.length < 20) {
+              const remaining = 20 - padded.length;
+              const more = fallbackEvents.slice(0, remaining).map((f, i) => ({
+                ...f,
+                id: 10000 + i,
+              }));
+              padded = [...padded, ...more];
+            }
+            mapped = padded;
+          }
+          setEvents(mapped.slice(0, 20));
         }
       } catch {
         // use fallbackEvents
