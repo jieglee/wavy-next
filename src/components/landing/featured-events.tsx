@@ -61,8 +61,6 @@ function ArrowRightIcon({ className }: { className?: string }) {
   );
 }
 
-const SCROLL_AMOUNT = 580;
-
 export default function FeaturedEvents() {
   const t = useTranslations("FeaturedEvents");
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -131,7 +129,13 @@ export default function FeaturedEvents() {
   }, [updateArrows]);
 
   const scrollByCard = (dir: number) => {
-    scrollerRef.current?.scrollBy({ left: dir * SCROLL_AMOUNT, behavior: "smooth" });
+    const el = scrollerRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    const gap = 16; // gap-4
+    const cardWidth = card?.offsetWidth ?? (window.innerWidth < 640 ? 290 : 320);
+    const amount = cardWidth + gap;
+    el.scrollBy({ left: dir * amount, behavior: "smooth" });
   };
 
   return (
@@ -171,7 +175,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label={t("prev")}
-              className="absolute -left-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+              className="absolute -left-4 top-[63px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[70px]"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -181,17 +185,17 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label={t("next")}
-              className="absolute -right-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+              className="absolute -right-4 top-[63px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[70px]"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           )}
 
-          <div ref={scrollerRef} className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
+          <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
             {events.map((event) => (
-              <Link key={event.id} href={`/concerts/${event.id}`} className="group w-[260px] shrink-0 sm:w-[280px]">
+              <Link key={event.id} href={`/concerts/${event.id}`} className="group w-[290px] shrink-0 snap-start sm:w-[320px]">
                 <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                  <div className="relative aspect-video overflow-hidden rounded-xl border border-[#EDEBF2] shadow-sm transition-all duration-300 group-hover:shadow-[0_16px_28px_-8px_rgba(27,26,58,0.25)]">
+                  <div className="relative aspect-[16/7] overflow-hidden rounded-xl border border-[#EDEBF2] shadow-sm transition-all duration-300 group-hover:shadow-[0_16px_28px_-8px_rgba(27,26,58,0.25)]">
                     {event.poster_url ? (
                       <img
                         src={event.poster_url}
