@@ -73,7 +73,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     const shadowClass = isPink
         ? "group-hover:drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]"
         : "group-hover:drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
-    const tiltClass = "group-hover:rotate-[12deg]";
+    const tiltClass = "group-hover:-rotate-[6deg]";
 
   return (
     <div className="relative z-10 h-[88px] w-[88px] shrink-0 overflow-visible sm:h-[96px] sm:w-[96px]">
