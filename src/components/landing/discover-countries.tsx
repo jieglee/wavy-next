@@ -77,12 +77,12 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
   const tiltHoverClass = "group-hover/illus:rotate-[4deg]";
 
   return (
-    <div className="group/illus relative z-10 h-24 w-24 shrink-0 overflow-visible sm:h-[104px] sm:w-[104px]">
-      {/* Try real image - agak digedein + zoom miring keluar garis card saat hover di area gambar */}
+    <div className="group/illus relative z-10 h-[76px] w-[76px] shrink-0 overflow-visible sm:h-[84px] sm:w-[84px]">
+      {/* Gambar dirapikan - tidak kegedean, zoom miring keluar garis card saat hover di area gambar */}
       <img
         src={city.illustration}
         alt={city.label2 || city.label1}
-        className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover/illus:scale-[1.38] group-hover/illus:${tiltHoverClass} group-hover/illus:${shadowClass} hover:scale-[1.38] hover:${tiltClass} hover:${shadowClass}`}
+        className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover/illus:scale-[1.28] group-hover/illus:${tiltHoverClass} group-hover/illus:${shadowClass} hover:scale-[1.28] hover:${tiltClass} hover:${shadowClass}`}
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).style.display = "none";
           const fallback = (e.currentTarget.nextElementSibling as HTMLElement | null);
@@ -91,7 +91,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
       />
       <div
         style={{ display: "none" }}
-        className={`absolute inset-0 items-center justify-center text-5xl leading-none transition-all duration-300 will-change-transform group-hover/illus:scale-[1.38] group-hover/illus:${tiltHoverClass} group-hover/illus:${shadowClass}`}
+        className={`absolute inset-0 items-center justify-center text-4xl leading-none transition-all duration-300 will-change-transform group-hover/illus:scale-[1.28] group-hover/illus:${tiltHoverClass} group-hover/illus:${shadowClass}`}
       >
         {emojiMap[city.id] ?? "🏙️"}
       </div>
@@ -111,12 +111,12 @@ export default function DiscoverCountries() {
           <p className="mt-1 text-sm text-[#6E6B80]">Discover concerts from around the world</p>
         </div>
 
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-6 pt-4 snap-x snap-mandatory">
+        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-5 pt-3 snap-x snap-mandatory">
           {cities.map((city, idx) => (
             <Link
               key={city.id}
               href={city.href}
-              className={`group relative flex h-[118px] w-[212px] shrink-0 snap-start items-center justify-between overflow-visible rounded-2xl border bg-white px-4 py-3 transition-all duration-200 sm:h-[122px] sm:w-[220px] ${
+              className={`group relative flex h-[112px] w-[232px] shrink-0 snap-start items-center justify-between overflow-visible rounded-2xl border bg-white px-5 py-3 transition-all duration-200 sm:h-[118px] sm:w-[250px] ${
                 city.active
                   ? "border-wavy-blue shadow-[0_6px_20px_rgba(30,64,175,0.12)]"
                   : "border-[#E6E4F0] shadow-sm hover:border-[#D8D5E8] hover:shadow-md"
