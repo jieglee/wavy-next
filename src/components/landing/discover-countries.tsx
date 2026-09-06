@@ -73,7 +73,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     const shadowPink = "drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]";
     const shadowBlue = "drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
     const shadowClass = isPink ? shadowPink : shadowBlue;
-    const tiltClass = "rotate-[5deg]";
+    const tiltClass = "rotate-[12deg]";
 
   return (
     <div className="relative z-10 h-[88px] w-[88px] shrink-0 overflow-visible sm:h-[96px] sm:w-[96px]">
