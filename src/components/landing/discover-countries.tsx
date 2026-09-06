@@ -70,10 +70,10 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     };
     // Shadow pink/biru selang-seling, miring lucu ke kanan
     const isPink = idx % 2 === 0;
-    const shadowPink = "drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]";
-    const shadowBlue = "drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
-    const shadowClass = isPink ? shadowPink : shadowBlue;
-    const tiltClass = "rotate-[12deg]";
+    const shadowClass = isPink
+        ? "group-hover:drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]"
+        : "group-hover:drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
+    const tiltClass = "group-hover:rotate-[12deg]";
 
   return (
     <div className="relative z-10 h-[88px] w-[88px] shrink-0 overflow-visible sm:h-[96px] sm:w-[96px]">
@@ -86,7 +86,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
             <img
                 src={city.illustration}
                 alt={city.label2 || city.label1}
-                className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover:scale-[1.32] group-hover:${tiltClass} group-hover:${shadowClass}`}
+                className={`relative z-10 h-full w-full origin-bottom object-contain object-bottom drop-shadow-sm transition-all duration-300 ease-out will-change-transform group-hover:scale-[1.32] ${tiltClass} ${shadowClass}`}
                 style={{ filter: undefined }}
                 onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display = "none";
@@ -96,7 +96,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
             />
       <div
         style={{ display: "none" }}
-        className={`absolute inset-0 z-10 items-center justify-center text-4xl leading-none transition-all duration-300 will-change-transform group-hover:scale-[1.32] group-hover:${tiltClass} group-hover:${shadowClass}`}
+        className={`absolute inset-0 z-10 items-center justify-center text-4xl leading-none transition-all duration-300 will-change-transform group-hover:scale-[1.32] ${tiltClass} ${shadowClass}`}
       >
         {emojiMap[city.id] ?? "🏙️"}
       </div>
