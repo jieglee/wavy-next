@@ -111,9 +111,8 @@ export default function DiscoverCountries() {
                 {/* Header like Loket: Jelajahi Event di Kotamu */}
                 <div className="mb-6">
                     <h2 className="font-display text-xl font-bold text-[#1B1A24] sm:text-2xl">
-                        Jelajahi Event di Kotamu
+                        Explore Events Around the World
                     </h2>
-                    <p className="mt-1 text-sm text-[#6E6B80]">Discover concerts from around the world</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
