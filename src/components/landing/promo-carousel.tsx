@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PromoSlide {
   id: string;
@@ -13,61 +14,13 @@ interface PromoSlide {
   gradient: string;
 }
 
-const slides: PromoSlide[] = [
-  {
-    id: "promo-1",
-    eyebrow: "Promo Peluncuran",
-    title: "Gratis Biaya Layanan",
-    subtitle: "Untuk 1.000 tiket pertama di setiap event",
-    ctaLabel: "Klik di sini untuk info lanjut",
-    ctaHref: "#",
-    gradient: "linear-gradient(135deg, #FF5470 0%, #211F2B 100%)",
-  },
-  {
-    id: "promo-2",
-    eyebrow: "Buat Event Organizer",
-    title: "Cuma 1,5% dari Setiap Tiket Terjual",
-    subtitle: "Sudah termasuk PPN, tanpa biaya tersembunyi",
-    ctaLabel: "Ajukan kerjasama",
-    ctaHref: "#",
-    gradient: "linear-gradient(135deg, #211F2B 0%, #14131C 100%)",
-  },
-  {
-    id: "promo-3",
-    eyebrow: "Fitur Baru",
-    title: "Smart Queue: War Tiket Jadi Adil",
-    subtitle: "Antrean acak, bukan siapa cepat dia dapat",
-    ctaLabel: "Pelajari cara kerjanya",
-    ctaHref: "#",
-    gradient: "linear-gradient(135deg, #FF5470 0%, #14131C 100%)",
-  },
-  {
-    id: "promo-4",
-    eyebrow: "Concert Drop",
-    title: "Coldplay: Music of the Spheres",
-    subtitle: "Penjualan dibuka 20:00 WIB, siapkan akun kamu",
-    ctaLabel: "Set pengingat",
-    ctaHref: "#",
-    gradient: "linear-gradient(135deg, #14131C 0%, #C6395A 100%)",
-  },
-  {
-    id: "promo-5",
-    eyebrow: "Keamanan Tiket",
-    title: "Transfer Tiket Resmi, Anti Penipuan",
-    subtitle: "QR berubah kepemilikan cuma lewat aplikasi",
-    ctaLabel: "Pelajari lebih lanjut",
-    ctaHref: "#",
-    gradient: "linear-gradient(135deg, #211F2B 0%, #FF5470 100%)",
-  },
-  {
-    id: "promo-6",
-    eyebrow: "Wavy Wallet",
-    title: "Semua Tiket dalam Satu Genggaman",
-    subtitle: "Walau beli dari EO berbeda-beda",
-    ctaLabel: "Lihat fitur QR Wallet",
-    ctaHref: "#",
-    gradient: "linear-gradient(135deg, #FF5470 0%, #211F2B 60%, #14131C 100%)",
-  },
+const slideGradients = [
+  "linear-gradient(135deg, #FF5470 0%, #211F2B 100%)",
+  "linear-gradient(135deg, #211F2B 0%, #14131C 100%)",
+  "linear-gradient(135deg, #FF5470 0%, #14131C 100%)",
+  "linear-gradient(135deg, #14131C 0%, #C6395A 100%)",
+  "linear-gradient(135deg, #211F2B 0%, #FF5470 100%)",
+  "linear-gradient(135deg, #FF5470 0%, #211F2B 60%, #14131C 100%)",
 ];
 
 const AUTO_PLAY_MS = 5000;
@@ -102,11 +55,72 @@ function ArrowRightIcon({ className }: { className?: string }) {
 }
 
 export default function PromoCarousel() {
+  const t = useTranslations("PromoCarousel");
+  const slides: PromoSlide[] = useMemo(
+    () => [
+      {
+        id: "promo-1",
+        eyebrow: t("slide1.eyebrow"),
+        title: t("slide1.title"),
+        subtitle: t("slide1.subtitle"),
+        ctaLabel: t("slide1.ctaLabel"),
+        ctaHref: "#",
+        gradient: slideGradients[0],
+      },
+      {
+        id: "promo-2",
+        eyebrow: t("slide2.eyebrow"),
+        title: t("slide2.title"),
+        subtitle: t("slide2.subtitle"),
+        ctaLabel: t("slide2.ctaLabel"),
+        ctaHref: "#",
+        gradient: slideGradients[1],
+      },
+      {
+        id: "promo-3",
+        eyebrow: t("slide3.eyebrow"),
+        title: t("slide3.title"),
+        subtitle: t("slide3.subtitle"),
+        ctaLabel: t("slide3.ctaLabel"),
+        ctaHref: "#",
+        gradient: slideGradients[2],
+      },
+      {
+        id: "promo-4",
+        eyebrow: t("slide4.eyebrow"),
+        title: t("slide4.title"),
+        subtitle: t("slide4.subtitle"),
+        ctaLabel: t("slide4.ctaLabel"),
+        ctaHref: "#",
+        gradient: slideGradients[3],
+      },
+      {
+        id: "promo-5",
+        eyebrow: t("slide5.eyebrow"),
+        title: t("slide5.title"),
+        subtitle: t("slide5.subtitle"),
+        ctaLabel: t("slide5.ctaLabel"),
+        ctaHref: "#",
+        gradient: slideGradients[4],
+      },
+      {
+        id: "promo-6",
+        eyebrow: t("slide6.eyebrow"),
+        title: t("slide6.title"),
+        subtitle: t("slide6.subtitle"),
+        ctaLabel: t("slide6.ctaLabel"),
+        ctaHref: "#",
+        gradient: slideGradients[5],
+      },
+    ],
+    [t]
+  );
+
   const [index, setIndex] = useState(0);
 
   const goTo = useCallback((i: number) => {
     setIndex((i + slides.length) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   const next = useCallback(() => goTo(index + 1), [index, goTo]);
   const prev = useCallback(() => goTo(index - 1), [index, goTo]);
@@ -157,14 +171,14 @@ export default function PromoCarousel() {
       {/* Panah kiri-kanan */}
       <button
         onClick={prev}
-        aria-label="Sebelumnya"
+        aria-label={t("prev")}
         className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-md transition-colors hover:brightness-95 sm:left-5"
       >
         <ArrowLeftIcon className="h-4 w-4" />
       </button>
       <button
         onClick={next}
-        aria-label="Berikutnya"
+        aria-label={t("next")}
         className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-md transition-colors hover:brightness-95 sm:right-5"
       >
         <ArrowRightIcon className="h-4 w-4" />
@@ -176,7 +190,7 @@ export default function PromoCarousel() {
           <button
             key={slide.id}
             onClick={() => goTo(i)}
-            aria-label={`Ke slide ${i + 1}`}
+            aria-label={t("goToSlide", { num: i + 1 })}
             className={`h-1.5 rounded-full transition-all duration-300 ${
               i === index ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"
             }`}

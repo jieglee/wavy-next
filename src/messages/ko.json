@@ -61,5 +61,66 @@
         "greeting": "안녕하세요, {name}님!",
         "greetingFallback": "안녕하세요!",
         "subtitle": "오늘 어떤 콘서트를 관람하시겠어요?"
+    },
+    "PromoCarousel": {
+        "prev": "이전",
+        "next": "다음",
+        "goToSlide": "{num}번 슬라이드로 이동",
+        "slide1": {
+            "eyebrow": "론칭 프로모션",
+            "title": "서비스 수수료 무료",
+            "subtitle": "모든 이벤트의 첫 1,000매 티켓에 적용",
+            "ctaLabel": "자세히 보기"
+        },
+        "slide2": {
+            "eyebrow": "이벤트 주최자를 위해",
+            "title": "티켓 판매당 단 1.5%",
+            "subtitle": "부가세 포함, 숨겨진 비용 없음",
+            "ctaLabel": "파트너십 신청"
+        },
+        "slide3": {
+            "eyebrow": "새로운 기능",
+            "title": "스마트 대기열: 공정한 티켓 전쟁",
+            "subtitle": "선착순이 아닌 무작위 대기열",
+            "ctaLabel": "작동 방식 알아보기"
+        },
+        "slide4": {
+            "eyebrow": "콘서트 드롭",
+            "title": "Coldplay: Music of the Spheres",
+            "subtitle": "판매 시작 오후 8시 WIB, 계정을 준비하세요",
+            "ctaLabel": "알림 설정"
+        },
+        "slide5": {
+            "eyebrow": "티켓 보안",
+            "title": "공식 티켓 양도, 사기 방지",
+            "subtitle": "앱을 통해서만 QR 소유권 변경",
+            "ctaLabel": "더 알아보기"
+        },
+        "slide6": {
+            "eyebrow": "Wavy Wallet",
+            "title": "모든 티켓을 한 손에",
+            "subtitle": "다른 주최자 티켓도 한곳에",
+            "ctaLabel": "QR Wallet 기능 보기"
+        }
+    },
+    "DiscoverCountries": {
+        "title": "전 세계 이벤트 둘러보기"
+    },
+    "Footer": {
+        "everyConcert": "#EveryConcert",
+        "followUs": "팔로우하기",
+        "menu": "메뉴",
+        "guide": "가이드",
+        "paymentOptions": "결제 수단",
+        "aboutUs": "회사 소개",
+        "verifyOrganizer": "주최자 인증",
+        "costSimulation": "비용 시뮬레이션",
+        "help": "도움말",
+        "howToBuy": "티켓 구매 방법",
+        "ticketProtection": "티켓 보호",
+        "organizerGuide": "주최자 가이드",
+        "privacy": "개인정보 처리방침",
+        "terms": "이용약관",
+        "rights": "모든 권리 보유."
     }
 }

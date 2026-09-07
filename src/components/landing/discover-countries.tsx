@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface City {
     id: string;
@@ -105,13 +106,14 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
 }
 
 export default function DiscoverCountries() {
+    const t = useTranslations("DiscoverCountries");
     return (
         <section className="px-4 py-10 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
                 {/* Header like Loket: Jelajahi Event di Kotamu */}
                 <div className="mb-6">
                     <h2 className="font-display text-xl font-bold text-[#1B1A24] sm:text-2xl">
-                        Explore Events Around the World
+                        {t("title")}
                     </h2>
                 </div>
 

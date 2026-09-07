@@ -61,5 +61,66 @@
         "greeting": "Hi, {name}!",
         "greetingFallback": "Hi there!",
         "subtitle": "What concert are you watching today?"
+    },
+    "PromoCarousel": {
+        "prev": "Previous",
+        "next": "Next",
+        "goToSlide": "Go to slide {num}",
+        "slide1": {
+            "eyebrow": "Launch Promo",
+            "title": "Free Service Fee",
+            "subtitle": "For the first 1,000 tickets at every event",
+            "ctaLabel": "Click here for more info"
+        },
+        "slide2": {
+            "eyebrow": "For Event Organizers",
+            "title": "Only 1.5% per Ticket Sold",
+            "subtitle": "Including VAT, no hidden fees",
+            "ctaLabel": "Apply for partnership"
+        },
+        "slide3": {
+            "eyebrow": "New Feature",
+            "title": "Smart Queue: Fair Ticket War",
+            "subtitle": "Randomized queue, not first-come-first-served",
+            "ctaLabel": "Learn how it works"
+        },
+        "slide4": {
+            "eyebrow": "Concert Drop",
+            "title": "Coldplay: Music of the Spheres",
+            "subtitle": "Sale opens 8:00 PM WIB, get your account ready",
+            "ctaLabel": "Set reminder"
+        },
+        "slide5": {
+            "eyebrow": "Ticket Security",
+            "title": "Official Ticket Transfer, Anti-Fraud",
+            "subtitle": "QR ownership changes only via app",
+            "ctaLabel": "Learn more"
+        },
+        "slide6": {
+            "eyebrow": "Wavy Wallet",
+            "title": "All Tickets in One Hand",
+            "subtitle": "Even from different organizers",
+            "ctaLabel": "View QR Wallet feature"
+        }
+    },
+    "DiscoverCountries": {
+        "title": "Explore Events Around the World"
+    },
+    "Footer": {
+        "everyConcert": "#EveryConcert",
+        "followUs": "Follow Us",
+        "menu": "Menu",
+        "guide": "Guide",
+        "paymentOptions": "Payment Options",
+        "aboutUs": "About Us",
+        "verifyOrganizer": "Organizer Verification",
+        "costSimulation": "Cost Simulation",
+        "help": "Help",
+        "howToBuy": "How to Buy Tickets",
+        "ticketProtection": "Ticket Protection",
+        "organizerGuide": "Organizer Guide",
+        "privacy": "Privacy Policy",
+        "terms": "Terms & Conditions",
+        "rights": "All rights reserved."
     }
 }
