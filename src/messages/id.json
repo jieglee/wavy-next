@@ -6,7 +6,7 @@
     "Navbar": {
         "kategori": "Kategori",
         "searchPlaceholder": "Cari konser, artist, atau venue",
-        "kerjasama": "Kerjasama EO",
+        "kerjasama": "Kerjasama dengan kami",
         "akun": "Akun",
         "tickets": "Tiket Saya",
         "organizer": "Portal EO",
@@ -61,5 +61,66 @@
         "greeting": "Halo, {name}!",
         "greetingFallback": "Halo!",
         "subtitle": "Mau menonton konser apa hari ini?"
+    },
+    "PromoCarousel": {
+        "prev": "Sebelumnya",
+        "next": "Berikutnya",
+        "goToSlide": "Ke slide {num}",
+        "slide1": {
+            "eyebrow": "Promo Peluncuran",
+            "title": "Gratis Biaya Layanan",
+            "subtitle": "Untuk 1.000 tiket pertama di setiap event",
+            "ctaLabel": "Klik di sini untuk info lanjut"
+        },
+        "slide2": {
+            "eyebrow": "Buat Event Organizer",
+            "title": "Cuma 1,5% dari Setiap Tiket Terjual",
+            "subtitle": "Sudah termasuk PPN, tanpa biaya tersembunyi",
+            "ctaLabel": "Ajukan kerjasama"
+        },
+        "slide3": {
+            "eyebrow": "Fitur Baru",
+            "title": "Smart Queue: War Tiket Jadi Adil",
+            "subtitle": "Antrean acak, bukan siapa cepat dia dapat",
+            "ctaLabel": "Pelajari cara kerjanya"
+        },
+        "slide4": {
+            "eyebrow": "Concert Drop",
+            "title": "Coldplay: Music of the Spheres",
+            "subtitle": "Penjualan dibuka 20:00 WIB, siapkan akun kamu",
+            "ctaLabel": "Set pengingat"
+        },
+        "slide5": {
+            "eyebrow": "Keamanan Tiket",
+            "title": "Transfer Tiket Resmi, Anti Penipuan",
+            "subtitle": "QR berubah kepemilikan cuma lewat aplikasi",
+            "ctaLabel": "Pelajari lebih lanjut"
+        },
+        "slide6": {
+            "eyebrow": "Wavy Wallet",
+            "title": "Semua Tiket dalam Satu Genggaman",
+            "subtitle": "Walau beli dari EO berbeda-beda",
+            "ctaLabel": "Lihat fitur QR Wallet"
+        }
+    },
+    "DiscoverCountries": {
+        "title": "Jelajahi Event di Kotamu"
+    },
+    "Footer": {
+        "everyConcert": "#EveryConcert",
+        "followUs": "Ikuti Kami",
+        "menu": "Menu",
+        "guide": "Panduan",
+        "paymentOptions": "Pilihan Pembayaran",
+        "aboutUs": "Tentang Kami",
+        "verifyOrganizer": "Verifikasi Organizer",
+        "costSimulation": "Simulasi Biaya",
+        "help": "Bantuan",
+        "howToBuy": "Cara Beli Tiket",
+        "ticketProtection": "Ticket Protection",
+        "organizerGuide": "Panduan Organizer",
+        "privacy": "Kebijakan Privasi",
+        "terms": "Syarat & Ketentuan",
+        "rights": "All rights reserved."
     }
 }

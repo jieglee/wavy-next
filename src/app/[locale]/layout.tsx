@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as "id" | "en")) {
+  if (!(routing.locales as readonly string[]).includes(locale)) {
     return { title: "Wavy" };
   }
 
@@ -41,7 +41,7 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as "id" | "en")) {
+  if (!(routing.locales as readonly string[]).includes(locale)) {
     notFound();
   }
 

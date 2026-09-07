@@ -65,7 +65,7 @@ export default function Navbar() {
         {/* Logo + nama */}
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
-          <span className="font-brand text-xl tracking-tight" style={{ color: NAVY }}>
+          <span className="font-display text-xl font-bold tracking-tight" style={{ color: NAVY }}>
             Wavy
           </span>
         </Link>
@@ -115,22 +115,28 @@ export default function Navbar() {
             className="flex items-center gap-1 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A]"
           >
             <Globe className="h-4 w-4" />
-            {locale === "id" ? "ID" : "EN"}
+            {locale === "id" ? "ID" : locale === "ko" ? "KO" : "EN"}
             <ChevronDown className="h-3.5 w-3.5" />
           </button>
           {langOpen && (
-            <div className="absolute right-0 mt-2 w-28 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
+            <div className="absolute right-0 mt-2 w-32 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
               <button
                 onClick={() => switchLocale("id")}
-                className="block w-full px-3 py-2 text-left text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
+                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
               >
                 Indonesia
               </button>
               <button
                 onClick={() => switchLocale("en")}
-                className="block w-full px-3 py-2 text-left text-sm text-[#6B6875] hover:bg-[#FAFAF8]"
+                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
               >
                 English
+              </button>
+              <button
+                onClick={() => switchLocale("ko")}
+                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "ko" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
+              >
+                한국어
               </button>
             </div>
           )}

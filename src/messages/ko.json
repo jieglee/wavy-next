@@ -1,0 +1,126 @@
+{
+    "Metadata": {
+        "title": "Wavy — 하나의 플랫폼. 모든 콘서트. 모든 순간.",
+        "description": "이벤트 주최자와 고객을 하나의 생태계로 연결하는 콘서트 티켓 마켓플레이스."
+    },
+    "Navbar": {
+        "kategori": "카테고리",
+        "searchPlaceholder": "콘서트, 아티스트 또는 공연장 검색",
+        "kerjasama": "함께하기",
+        "akun": "계정",
+        "tickets": "내 티켓",
+        "organizer": "주최자 포털",
+        "admin": "관리자",
+        "logout": "로그아웃"
+    },
+    "Auth": {
+        "welcomeBack": "다시 오신 것을 환영합니다!",
+        "emailPrompt": "계속하려면 이메일을 입력하세요.",
+        "emailLabel": "이메일",
+        "emailPlaceholder": "이메일",
+        "invalidEmail": "유효한 이메일 주소를 입력하세요.",
+        "sending": "전송 중...",
+        "continue": "계속하기",
+        "otpSentToast": "이메일에서 OTP 코드를 확인하세요",
+        "otpSendFailed": "OTP 전송에 실패했습니다. 다시 시도해 주세요.",
+        "changeEmail": "이메일 변경",
+        "enterOtpTitle": "OTP 코드 입력",
+        "otpPrompt": "이메일을 확인하세요. OTP 코드가 다음 주소로 전송되었습니다",
+        "invalidOtp": "6자리 OTP 코드를 입력하세요.",
+        "otpWrong": "OTP 코드가 올바르지 않거나 만료되었습니다.",
+        "otpVerifyFailed": "문제가 발생했습니다. 다시 시도해 주세요.",
+        "noOtpReceived": "OTP 코드를 받지 못하셨나요?",
+        "resendIn": "{count}초 후 다시 전송 가능",
+        "resendButton": "코드 다시 보내기",
+        "verifying": "확인 중...",
+        "signIn": "로그인",
+        "loginSuccess": "로그인 성공! 다시 오신 것을 환영합니다."
+    },
+    "FeaturedEvents": {
+        "title": "당신을 위한 신나는 이벤트",
+        "prev": "이전",
+        "next": "다음",
+        "byOrganizer": "{organizer} 주최",
+        "startingFrom": "시작가"
+    },
+    "AppNav": {
+        "browse": "콘서트 둘러보기",
+        "searchPlaceholder": "좋아하는 콘서트를 검색하세요...",
+        "myTickets": "내 티켓",
+        "profileLevel": "프로필 & 레벨",
+        "organizerPortal": "주최자 포털",
+        "logout": "로그아웃"
+    },
+    "AppFooter": {
+        "browse": "콘서트 둘러보기",
+        "myTickets": "내 티켓",
+        "profile": "프로필 & 레벨",
+        "rights": "모든 권리 보유."
+    },
+    "Home": {
+        "greeting": "안녕하세요, {name}님!",
+        "greetingFallback": "안녕하세요!",
+        "subtitle": "오늘 어떤 콘서트를 관람하시겠어요?"
+    },
+    "PromoCarousel": {
+        "prev": "이전",
+        "next": "다음",
+        "goToSlide": "{num}번 슬라이드로 이동",
+        "slide1": {
+            "eyebrow": "론칭 프로모션",
+            "title": "서비스 수수료 무료",
+            "subtitle": "모든 이벤트의 첫 1,000매 티켓에 적용",
+            "ctaLabel": "자세히 보기"
+        },
+        "slide2": {
+            "eyebrow": "이벤트 주최자를 위해",
+            "title": "티켓 판매당 단 1.5%",
+            "subtitle": "부가세 포함, 숨겨진 비용 없음",
+            "ctaLabel": "파트너십 신청"
+        },
+        "slide3": {
+            "eyebrow": "새로운 기능",
+            "title": "스마트 대기열: 공정한 티켓 전쟁",
+            "subtitle": "선착순이 아닌 무작위 대기열",
+            "ctaLabel": "작동 방식 알아보기"
+        },
+        "slide4": {
+            "eyebrow": "콘서트 드롭",
+            "title": "Coldplay: Music of the Spheres",
+            "subtitle": "판매 시작 오후 8시 WIB, 계정을 준비하세요",
+            "ctaLabel": "알림 설정"
+        },
+        "slide5": {
+            "eyebrow": "티켓 보안",
+            "title": "공식 티켓 양도, 사기 방지",
+            "subtitle": "앱을 통해서만 QR 소유권 변경",
+            "ctaLabel": "더 알아보기"
+        },
+        "slide6": {
+            "eyebrow": "Wavy Wallet",
+            "title": "모든 티켓을 한 손에",
+            "subtitle": "다른 주최자 티켓도 한곳에",
+            "ctaLabel": "QR Wallet 기능 보기"
+        }
+    },
+    "DiscoverCountries": {
+        "title": "전 세계 이벤트 둘러보기"
+    },
+    "Footer": {
+        "everyConcert": "#EveryConcert",
+        "followUs": "팔로우하기",
+        "menu": "메뉴",
+        "guide": "가이드",
+        "paymentOptions": "결제 수단",
+        "aboutUs": "회사 소개",
+        "verifyOrganizer": "주최자 인증",
+        "costSimulation": "비용 시뮬레이션",
+        "help": "도움말",
+        "howToBuy": "티켓 구매 방법",
+        "ticketProtection": "티켓 보호",
+        "organizerGuide": "주최자 가이드",
+        "privacy": "개인정보 처리방침",
+        "terms": "이용약관",
+        "rights": "모든 권리 보유."
+    }
+}

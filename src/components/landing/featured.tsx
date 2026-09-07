@@ -61,7 +61,7 @@ export default function Featured() {
               data-aos-delay={i * 100}
               className="group relative flex flex-col overflow-hidden rounded-xl border border-border-dark bg-graphite-plum transition-colors hover:border-coral-spotlight/40"
             >
-              <div className="aspect-[4/3] w-full bg-gradient-to-br from-coral-spotlight/25 via-azure/20 to-coral-spotlight/25" />
+              <div className="aspect-4/3 w-full bg-linear-to-br from-coral-spotlight/25 via-azure/20 to-coral-spotlight/25" />
               <div className="flex flex-col gap-1.5 p-4">
                 <h3 className="font-display text-base font-medium text-off-white group-hover:text-coral-spotlight">
                   {concert.title}

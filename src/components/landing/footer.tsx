@@ -1,19 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 import { WavyIcon } from "@/components/landing/wavy-icon"
-
-const menuLinks = [
-  { label: "Tentang Kami", href: "#" },
-  { label: "Verifikasi Organizer", href: "#" },
-  { label: "Simulasi Biaya", href: "#" },
-  { label: "Bantuan", href: "#" },
-]
-
-const panduanLinks = [
-  { label: "Cara Beli Tiket", href: "#" },
-  { label: "Ticket Protection", href: "#" },
-  { label: "Panduan Organizer", href: "#" },
-]
 
 const paymentMethods = [
   "QRIS", "BCA", "BRI", "BNI", "Mandiri", "BSI",
@@ -80,6 +68,20 @@ const socials = [
 ]
 
 export default function Footer() {
+  const t = useTranslations("Footer");
+  const menuLinks = [
+    { label: t("aboutUs"), href: "#" },
+    { label: t("verifyOrganizer"), href: "#" },
+    { label: t("costSimulation"), href: "#" },
+    { label: t("help"), href: "#" },
+  ];
+
+  const panduanLinks = [
+    { label: t("howToBuy"), href: "#" },
+    { label: t("ticketProtection"), href: "#" },
+    { label: t("organizerGuide"), href: "#" },
+  ];
+
   return (
     <footer className="border-t border-wavy-border px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -87,14 +89,14 @@ export default function Footer() {
           {/* Brand + Social */}
           <div className="col-span-2 sm:col-span-1">
             <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-wavy-accent to-wavy-blue bg-clip-text text-transparent">
-              #EveryConcert
+              {t("everyConcert")}
             </p>
-            <Link href="/" className="mt-1 flex items-center gap-2 font-brand text-2xl tracking-tight text-wavy-text-primary">
+            <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-wavy-text-primary">
               <WavyIcon size={26} />
               Wavy
             </Link>
 
-            <p className="mt-6 text-sm font-semibold text-wavy-text-primary">Ikuti Kami</p>
+            <p className="mt-6 text-sm font-semibold text-wavy-text-primary">{t("followUs")}</p>
             <div className="mt-3 flex items-center gap-3">
               {socials.map(({ icon: Icon, href, label }) => (
                 <Link
@@ -125,7 +127,7 @@ export default function Footer() {
 
           {/* Menu */}
           <div>
-            <p className="font-display text-sm font-semibold text-wavy-text-primary">Menu</p>
+            <p className="font-display text-sm font-semibold text-wavy-text-primary">{t("menu")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               {menuLinks.map((l) => (
                 <Link
@@ -141,7 +143,7 @@ export default function Footer() {
 
           {/* Panduan */}
           <div>
-            <p className="font-display text-sm font-semibold text-wavy-text-primary">Panduan</p>
+            <p className="font-display text-sm font-semibold text-wavy-text-primary">{t("guide")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               {panduanLinks.map((l) => (
                 <Link
@@ -158,7 +160,7 @@ export default function Footer() {
           {/* Pilihan Pembayaran */}
           <div className="col-span-2 sm:col-span-1">
             <p className="font-display text-sm font-semibold text-wavy-text-primary">
-              Pilihan Pembayaran
+              {t("paymentOptions")}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {paymentMethods.map((method, i) => (
@@ -190,14 +192,14 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-wavy-border pt-6 sm:flex-row">
           <p className="text-xs text-wavy-text-secondary">
-            &copy; {new Date().getFullYear()} Wavy. All rights reserved.
+            &copy; {new Date().getFullYear()} Wavy. {t("rights")}
           </p>
           <div className="flex items-center gap-6">
             <Link href="#" className="text-xs text-wavy-text-secondary transition-colors hover:text-wavy-text-primary">
-              Kebijakan Privasi
+              {t("privacy")}
             </Link>
             <Link href="#" className="text-xs text-wavy-text-secondary transition-colors hover:text-wavy-text-primary">
-              Syarat & Ketentuan
+              {t("terms")}
             </Link>
           </div>
         </div>

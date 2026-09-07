@@ -23,6 +23,20 @@ const fallbackEvents: DisplayEvent[] = [
   { id: 4, title: "Whisnu Santika by Bengkel", organizer: "Bengkel Space", location: "Jakarta Selatan", price: "150.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
   { id: 5, title: "NIKI: Nicole Live", organizer: "Ismaya Live", location: "Tangerang", price: "850.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
   { id: 6, title: "Jazz Under The Stars", organizer: "Java Festival Production", location: "Bandung", price: "425.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
+  { id: 7, title: "Sunset Symphony Orchestra", organizer: "Aditya Music Collective", location: "Jakarta Barat", price: "600.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
+  { id: 8, title: "Indie Pop Extravaganza", organizer: "LocalFest Indonesia", location: "Yogyakarta", price: "250.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
+  { id: 9, title: "Metal Mayhem 2026", organizer: "HellStage Production", location: "Bandung", price: "500.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
+  { id: 10, title: "K-Pop Dreamscape Live", organizer: "StarWave Entertainment", location: "Jakarta Pusat", price: "1.200.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
+  { id: 11, title: "Acoustic Night Serenade", organizer: "SoulSpace Collective", location: "Bali", price: "300.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
+  { id: 12, title: "Electronic Pulse Festival", organizer: "Neon Collective", location: "Surabaya", price: "750.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
+  { id: 13, title: "Classical Harmony Gala", organizer: "Jakarta Philharmonic", location: "Jakarta Selatan", price: "400.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
+  { id: 14, title: "Rock Revival Hits", organizer: "Nostalgia Records", location: "Semarang", price: "350.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
+  { id: 15, title: "Dangdut Karnaval Akbar", organizer: "Pantura Production", location: "Bekasi", price: "100.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
+  { id: 16, title: "Hip Hop Block Party", organizer: "Urban Beats ID", location: "Jakarta Utara", price: "275.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
+  { id: 17, title: "Folk & Roots Gathering", organizer: "Nusantara Folk", location: "Ubud", price: "200.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
+  { id: 18, title: "Starlight Orchestra Gala", organizer: "Grand Symphony", location: "Jakarta Pusat", price: "900.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
+  { id: 19, title: "Summer Groove Fest", organizer: "Beachside EO", location: "Bali", price: "550.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
+  { id: 20, title: "Midnight Jazz Sessions", organizer: "Blue Note Jakarta", location: "Jakarta Selatan", price: "475.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
 ];
 
 function ArrowLeftIcon({ className }: { className?: string }) {
@@ -47,8 +61,6 @@ function ArrowRightIcon({ className }: { className?: string }) {
   );
 }
 
-const SCROLL_AMOUNT = 580;
-
 export default function FeaturedEvents() {
   const t = useTranslations("FeaturedEvents");
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -58,22 +70,78 @@ export default function FeaturedEvents() {
 
   useEffect(() => {
     async function fetchFeatured() {
-      try {
-        const data = await apiGet<{ featured_events?: Concert[] }>("/homepage");
-        if (data?.featured_events && data.featured_events.length > 0) {
-          const mapped: DisplayEvent[] = data.featured_events.map((e, idx) => ({
-            id: e.id,
-            title: e.title,
-            organizer: e.organizer_name || "Event Organizer",
-            location: e.venue || "Indonesia",
-            price: e.min_price ? Number(e.min_price).toLocaleString("id-ID") : "150.000",
-            gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
-            poster_url: e.poster_url,
+      const toDisplay = (c: Concert, idx: number): DisplayEvent => ({
+        id: c.id,
+        title: c.title,
+        organizer: c.organizer_name || "Event Organizer",
+        location: c.venue || "Indonesia",
+        price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : "150.000",
+        gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
+        poster_url: c.poster_url,
+      });
+
+      const padTo20 = (mapped: DisplayEvent[]) => {
+        if (mapped.length >= 20) return mapped.slice(0, 20);
+        const existingIds = new Set(mapped.map((m) => m.id));
+        const extras = fallbackEvents
+          .filter((f) => !existingIds.has(f.id))
+          .slice(0, 20 - mapped.length);
+        let padded = [...mapped, ...extras];
+        if (padded.length < 20) {
+          const remaining = 20 - padded.length;
+          const more = fallbackEvents.slice(0, remaining).map((f, i) => ({
+            ...f,
+            id: 10000 + i,
           }));
-          setEvents(mapped);
+          padded = [...padded, ...more];
+        }
+        return padded.slice(0, 20);
+      };
+
+      const extractConcerts = (data: unknown): Concert[] => {
+        if (Array.isArray(data)) return data as Concert[];
+        if (data && typeof data === "object") {
+          const d = data as Record<string, unknown>;
+          if (Array.isArray(d.concerts)) return d.concerts as Concert[];
+          if (Array.isArray(d.data)) return d.data as Concert[];
+          if (Array.isArray(d.featured_events)) return d.featured_events as Concert[];
+          if (Array.isArray(d.events)) return d.events as Concert[];
+          // some APIs wrap in { concerts: { data: [] } }
+          if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) {
+            return (d.concerts as Record<string, unknown>).data as Concert[];
+          }
+        }
+        return [];
+      };
+
+      try {
+        // Primary: same fetch as Jelajahi Semua Konser (/concerts)
+        const data = await apiGet<unknown>("/concerts");
+        const concerts = extractConcerts(data);
+        if (concerts.length > 0) {
+          const mapped = concerts.map(toDisplay);
+          setEvents(padTo20(mapped));
+          return;
+        }
+        // Fallback: homepage featured_events if /concerts empty
+        const home = await apiGet<unknown>("/homepage");
+        const homeConcerts = extractConcerts(home);
+        if (homeConcerts.length > 0) {
+          const mapped = homeConcerts.map(toDisplay);
+          setEvents(padTo20(mapped));
         }
       } catch {
-        // use fallbackEvents
+        // Last fallback: try homepage if /concerts failed
+        try {
+          const home = await apiGet<unknown>("/homepage");
+          const homeConcerts = extractConcerts(home);
+          if (homeConcerts.length > 0) {
+            const mapped = homeConcerts.map(toDisplay);
+            setEvents(padTo20(mapped));
+          }
+        } catch {
+          // keep 20 fallbackEvents
+        }
       }
     }
     fetchFeatured();
@@ -99,39 +167,36 @@ export default function FeaturedEvents() {
   }, [updateArrows]);
 
   const scrollByCard = (dir: number) => {
-    scrollerRef.current?.scrollBy({ left: dir * SCROLL_AMOUNT, behavior: "smooth" });
+    const el = scrollerRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    const gap = 16; // gap-4
+    const cardWidth = card?.offsetWidth ?? (window.innerWidth < 640 ? 290 : 320);
+    const amount = cardWidth + gap;
+    el.scrollBy({ left: dir * amount, behavior: "smooth" });
   };
 
   return (
     <section className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
-              viewBox="0 0 24 24"
-              className="animate-megaphone text-[#FF5470]"
-            >
-              <path d="M0 0h24v24H0z" fill="none" />
-              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
-                <path d="m5.549 10.819l-1.826 1.615a1.414 1.414 0 0 0-.288 1.77l1.653 2.9a1.404 1.404 0 0 0 1.662.629l2.297-.783z" />
-                <path d="M9.258 4.59a26.7 26.7 0 0 1-1.71 4.072a7.2 7.2 0 0 1-2 2.157l3.499 6.112a7.3 7.3 0 0 1 2.882-.668c1.464.066 2.92.25 4.353.552" />
-                <path d="m9.253 4.591l1.215-.706a1.395 1.395 0 0 1 1.917.517l5.607 9.774a1.42 1.42 0 0 1-.519 1.92l-1.215.707zM3.56 14.416l-.606.358a1.4 1.4 0 0 0-.658.86a1.4 1.4 0 0 0 .149 1.074a1.4 1.4 0 0 0 .854.662a1.38 1.38 0 0 0 1.068-.149l.567-.358m4.804-.203l1.701 2.97a1.44 1.44 0 0 1-.509 1.933a1.404 1.404 0 0 1-1.922-.522l-1.922-3.414m12.55-10.735l-2.498 1.45m4.612 3.531h-2.883M16.225 2.25l-1.442 2.515" />
-              </g>
-            </svg>
-            <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
-              {t("title")}
-            </h2>
-          </div>
-
-          <Link
-            href="/concerts"
-            className="text-sm font-semibold text-[#FF5470] hover:underline"
+        <div className="mb-6 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            className="animate-megaphone text-[#FF5470]"
           >
-            Lihat Semua &rarr;
-          </Link>
+            <path d="M0 0h24v24H0z" fill="none" />
+            <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+              <path d="m5.549 10.819l-1.826 1.615a1.414 1.414 0 0 0-.288 1.77l1.653 2.9a1.404 1.404 0 0 0 1.662.629l2.297-.783z" />
+              <path d="M9.258 4.59a26.7 26.7 0 0 1-1.71 4.072a7.2 7.2 0 0 1-2 2.157l3.499 6.112a7.3 7.3 0 0 1 2.882-.668c1.464.066 2.92.25 4.353.552" />
+              <path d="m9.253 4.591l1.215-.706a1.395 1.395 0 0 1 1.917.517l5.607 9.774a1.42 1.42 0 0 1-.519 1.92l-1.215.707zM3.56 14.416l-.606.358a1.4 1.4 0 0 0-.658.86a1.4 1.4 0 0 0 .149 1.074a1.4 1.4 0 0 0 .854.662a1.38 1.38 0 0 0 1.068-.149l.567-.358m4.804-.203l1.701 2.97a1.44 1.44 0 0 1-.509 1.933a1.404 1.404 0 0 1-1.922-.522l-1.922-3.414m12.55-10.735l-2.498 1.45m4.612 3.531h-2.883M16.225 2.25l-1.442 2.515" />
+            </g>
+          </svg>
+          <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
+            {t("title")}
+          </h2>
         </div>
 
         <div className="relative">
@@ -139,7 +204,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label={t("prev")}
-              className="absolute -left-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -149,17 +214,17 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label={t("next")}
-              className="absolute -right-4 top-[73px] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-[79px]"
+              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           )}
 
-          <div ref={scrollerRef} className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
+          <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
             {events.map((event) => (
-              <Link key={event.id} href={`/concerts/${event.id}`} className="group w-[260px] shrink-0 sm:w-[280px]">
+              <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
                 <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                  <div className="relative aspect-video overflow-hidden rounded-xl border border-[#EDEBF2] shadow-sm transition-all duration-300 group-hover:shadow-[0_16px_28px_-8px_rgba(27,26,58,0.25)]">
+                  <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)] group-hover:border-wavy-blue/30">
                     {event.poster_url ? (
                       <img
                         src={event.poster_url}
@@ -173,7 +238,7 @@ export default function FeaturedEvents() {
                         style={{ background: event.gradient }}
                       />
                     )}
-                    <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                    <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                   </div>
                 </div>
 
@@ -181,7 +246,7 @@ export default function FeaturedEvents() {
                 <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">
                   {event.title}
                 </h3>
-                <p className="mt-0.5 truncate text-xs text-[#6B6875]">
+                <p className="mt-0.5 truncate text-xs text-abu-ungu">
                   {t("byOrganizer", { organizer: event.organizer })}
                 </p>
 
