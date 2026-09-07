@@ -321,6 +321,44 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
               </div>
             </section>
 
+            {/* Gallery */}
+            {(concert.gallery?.length ?? 0) > 0 && (
+              <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
+                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Galeri</h2>
+                <div className="mt-4 flex gap-3 overflow-x-auto scroll-smooth">
+                  {concert.gallery!.map((url, i) => (
+                    <div
+                      key={i}
+                      className="relative aspect-video w-[280px] shrink-0 overflow-hidden rounded-2xl border border-[#EDEBF2]"
+                    >
+                      <img
+                        src={url}
+                        alt={`${concert.title} ${i + 1}`}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Seat Plan */}
+            {concert.seatmap && (
+              <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
+                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Denah & Graph Layout</h2>
+                <p className="mt-1 text-xs text-[#8B889C]">{concert.seatmap.name}</p>
+                <div className="mt-4 overflow-hidden rounded-2xl border border-[#EDEBF2]">
+                  <img
+                    src={concert.seatmap.image}
+                    alt={concert.seatmap.name}
+                    className="h-auto w-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </section>
+            )}
+
             {/* Artist Profile */}
             <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
               <div className="flex items-center justify-between">
@@ -351,6 +389,14 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 </div>
               </div>
             </section>
+
+            {/* Terms & Conditions */}
+            {concert.terms_conditions && (
+              <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
+                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Syarat & Ketentuan</h2>
+                <p className="mt-3 whitespace-pre-line leading-relaxed text-[#6B6875]">{concert.terms_conditions}</p>
+              </section>
+            )}
 
             {/* Reviews Section */}
             <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
@@ -439,6 +485,11 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                           </span>
                         )}
                       </div>
+                      {cat.benefits && (
+                        <p className="mt-2 border-t border-[#EDEBF2] pt-2 text-[11px] leading-relaxed text-[#6B6875]">
+                          {cat.benefits}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

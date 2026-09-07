@@ -20,6 +20,7 @@ export interface TicketCategory {
   quota: number;
   sold: number;
   remaining?: number;
+  benefits?: string;
 }
 
 export interface Review {
@@ -40,6 +41,9 @@ export interface ConcertDetail extends Concert {
   photo_url: string;
   bio: string;
   countdown_seconds: number;
+  gallery?: string[];
+  seatmap?: { name: string; image: string } | null;
+  terms_conditions?: string | null;
   ticket_categories: TicketCategory[];
   reviews: Review[];
   avg_rating: number;
