@@ -1,0 +1,65 @@
+{
+    "Metadata": {
+        "title": "Wavy — 하나의 플랫폼. 모든 콘서트. 모든 순간.",
+        "description": "이벤트 주최자와 고객을 하나의 생태계로 연결하는 콘서트 티켓 마켓플레이스."
+    },
+    "Navbar": {
+        "kategori": "카테고리",
+        "searchPlaceholder": "콘서트, 아티스트 또는 공연장 검색",
+        "kerjasama": "함께하기",
+        "akun": "계정",
+        "tickets": "내 티켓",
+        "organizer": "주최자 포털",
+        "admin": "관리자",
+        "logout": "로그아웃"
+    },
+    "Auth": {
+        "welcomeBack": "다시 오신 것을 환영합니다!",
+        "emailPrompt": "계속하려면 이메일을 입력하세요.",
+        "emailLabel": "이메일",
+        "emailPlaceholder": "이메일",
+        "invalidEmail": "유효한 이메일 주소를 입력하세요.",
+        "sending": "전송 중...",
+        "continue": "계속하기",
+        "otpSentToast": "이메일에서 OTP 코드를 확인하세요",
+        "otpSendFailed": "OTP 전송에 실패했습니다. 다시 시도해 주세요.",
+        "changeEmail": "이메일 변경",
+        "enterOtpTitle": "OTP 코드 입력",
+        "otpPrompt": "이메일을 확인하세요. OTP 코드가 다음 주소로 전송되었습니다",
+        "invalidOtp": "6자리 OTP 코드를 입력하세요.",
+        "otpWrong": "OTP 코드가 올바르지 않거나 만료되었습니다.",
+        "otpVerifyFailed": "문제가 발생했습니다. 다시 시도해 주세요.",
+        "noOtpReceived": "OTP 코드를 받지 못하셨나요?",
+        "resendIn": "{count}초 후 다시 전송 가능",
+        "resendButton": "코드 다시 보내기",
+        "verifying": "확인 중...",
+        "signIn": "로그인",
+        "loginSuccess": "로그인 성공! 다시 오신 것을 환영합니다."
+    },
+    "FeaturedEvents": {
+        "title": "당신을 위한 신나는 이벤트",
+        "prev": "이전",
+        "next": "다음",
+        "byOrganizer": "{organizer} 주최",
+        "startingFrom": "시작가"
+    },
+    "AppNav": {
+        "browse": "콘서트 둘러보기",
+        "searchPlaceholder": "좋아하는 콘서트를 검색하세요...",
+        "myTickets": "내 티켓",
+        "profileLevel": "프로필 & 레벨",
+        "organizerPortal": "주최자 포털",
+        "logout": "로그아웃"
+    },
+    "AppFooter": {
+        "browse": "콘서트 둘러보기",
+        "myTickets": "내 티켓",
+        "profile": "프로필 & 레벨",
+        "rights": "모든 권리 보유."
+    },
+    "Home": {
+        "greeting": "안녕하세요, {name}님!",
+        "greetingFallback": "안녕하세요!",
+        "subtitle": "오늘 어떤 콘서트를 관람하시겠어요?"
+    }
+}
