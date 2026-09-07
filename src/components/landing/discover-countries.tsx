@@ -55,7 +55,7 @@ const cities: City[] = [
         label2: "Korea",
         href: "/concerts?country=kr",
         accent: "#7FC4A0",
-        illustration: "/images/negara/south-korea.png",
+        illustration: "/images/negara/korea.png",
     },
 ];
 
