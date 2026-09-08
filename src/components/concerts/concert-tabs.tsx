@@ -9,7 +9,7 @@ export default function ConcertTabs({ tabs, activeTab }: { tabs: Tab[]; activeTa
           <button
             key={tab.id}
             onClick={tab.onClick}
-            className={`relative whitespace-nowrap px-5 py-4 text-[14px] font-semibold transition-colors ${
+            className={`relative whitespace-nowrap px-5 py-3 text-[14px] font-semibold transition-colors ${
               active ? "text-[#0F56FF]" : "text-[#9AA0A6] hover:text-[#4B5563]"
             }`}
           >
