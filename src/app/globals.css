@@ -77,3 +77,69 @@ body {
   transform-origin: 50% 85%;
   animation: megaphone-wiggle 1.4s ease-in-out infinite;
 }
+
+.tnc-html p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.tnc-html ul,
+.tnc-html ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+.tnc-html ol {
+  list-style: decimal;
+}
+.tnc-html li {
+  margin-top: 0.25rem;
+}
+.tnc-html table {
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.tnc-html th,
+.tnc-html td {
+  border: 1px solid #edebf2;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+.tnc-html th {
+  background: #fafaf8;
+  font-weight: 700;
+}
+.tnc-html h1,
+.tnc-html h2,
+.tnc-html h3,
+.tnc-html h4 {
+  font-weight: 700;
+  color: #1b1a3a;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+.tnc-html a {
+  color: #ff5470;
+  text-decoration: underline;
+}
+.tnc-html strong,
+.tnc-html b {
+  font-weight: 700;
+  color: #1b1a3a;
+}
+.tnc-html img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+}
+.tnc-html hr {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 0;
+  border-top: 1px solid #edebf2;
+}
