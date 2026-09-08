@@ -15,9 +15,9 @@ export default function ConcertStickyHeader({
   onBuy: () => void;
 }) {
   return (
-    <div className="sticky top-0 z-30 w-full border-b border-[#E5E7EB] bg-white">
+    <div className="sticky top-0 z-10 w-full border-b border-[#E5E7EB] bg-white">
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-center lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
+        <div className="grid grid-cols-1 items-center lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
           <div className="min-w-0">
             <ConcertTabs tabs={tabs} activeTab={activeTab} />
           </div>
