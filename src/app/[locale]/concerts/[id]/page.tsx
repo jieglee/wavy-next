@@ -138,9 +138,18 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       <Navbar sticky={false} />
       <ConcertHero concert={concert} />
 
-      <div className="sticky top-0 z-20 border-y border-[#E5E7EB] bg-white">
-        <div className="mx-auto flex max-w-[1180px] items-center gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="sticky top-0 z-30 border-y border-[#E5E7EB] bg-white">
+        <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <ConcertTabs tabs={tabs} activeTab={activeTab} />
+          <div className="hidden shrink-0 items-center gap-3 lg:flex">
+            <div className="text-right leading-none">
+              <p className="text-[11px] text-[#6B7280]">Harga mulai dari</p>
+              <p className="mt-0.5 text-[15px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
+            </div>
+            <button onClick={handleBuyTicket} className="rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[13px] font-bold text-white hover:bg-[#0B46D9]">
+              Beli Tiket
+            </button>
+          </div>
         </div>
       </div>
 
@@ -185,22 +194,17 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
           </div>
 
           <aside className="hidden lg:block">
-            <div className="-mt-[188px] relative">
-              <div className="overflow-hidden rounded-t-xl rounded-b-none border border-[#E5E7EB] border-b-0 bg-black">
-                <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
-              </div>
-              <div className="sticky top-0 z-30 -mt-px overflow-hidden rounded-b-xl rounded-t-none border border-[#E5E7EB] border-t-0 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
-                <div className="flex items-center justify-between gap-4 px-5 py-3.5">
+            <div className="relative -mt-[188px]">
+              <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+                <img src={banner} alt={concert.title} className="block h-auto w-full" />
+                <div className="flex items-center justify-between gap-4 px-5 py-4">
                   <div className="min-w-0">
-                    <p className="text-[11px] leading-none text-[#6B7280]">Harga mulai dari</p>
-                    <p className="mt-1 text-[17px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
+                    <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
+                    <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
                   </div>
                   <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
                 </div>
-              </div>
-
-              <div className="mt-3 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-                <div className="px-5 py-5">
+                <div className="px-5 pb-5 pt-1">
                   <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
                   <div className="mt-4 space-y-3">
                     <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
