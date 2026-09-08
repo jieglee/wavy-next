@@ -22,6 +22,41 @@ import Footer from "@/components/landing/footer";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
 import type { ConcertDetail, TicketCategory } from "@/types/type";
 
+function sanitizeHtml(dirty: string): string {
+  const doc = new DOMParser().parseFromString(dirty, "text/html");
+  const allowed: Record<string, string[]> = {
+    table: [], thead: [], tbody: [], tr: [], th: [], td: [], tfoot: [],
+    ul: [], ol: [], li: [], p: [], div: [], span: [], b: [], strong: [],
+    i: [], em: [], u: [], s: [], a: [], br: [], hr: [], h1: [], h2: [],
+    h3: [], h4: [], h5: [], h6: [], img: [], svg: [], small: [], blockquote: [],
+  };
+  const walk = (node: Element) => {
+    for (const child of Array.from(node.children)) {
+      const tag = child.tagName.toLowerCase();
+      if (!(tag in allowed)) {
+        if (tag === "script" || tag === "iframe" || tag === "object" || tag === "embed" || tag === "form") {
+          child.remove();
+          continue;
+        }
+        child.replaceWith(...Array.from(child.childNodes));
+        continue;
+      }
+      for (const attr of Array.from(child.attributes)) {
+        const name = attr.name.toLowerCase();
+        if (name.startsWith("on") || (attr.value && /^\s*javascript:/i.test(attr.value))) {
+          child.removeAttribute(attr.name);
+        } else if (name === "href" && tag === "a") {
+          const href = attr.value.trim();
+          if (!/^(https?:|\/|#)/i.test(href)) child.removeAttribute(attr.name);
+        }
+      }
+      walk(child);
+    }
+  };
+  walk(doc.body);
+  return doc.body.innerHTML;
+}
+
 export default function ConcertDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
@@ -394,7 +429,10 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             {concert.terms_conditions && (
               <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
                 <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Syarat & Ketentuan</h2>
-                <p className="mt-3 whitespace-pre-line leading-relaxed text-[#6B6875]">{concert.terms_conditions}</p>
+                <div
+                  className="tnc-html mt-3 leading-relaxed text-[#6B6875]"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(concert.terms_conditions) }}
+                />
               </section>
             )}
 
