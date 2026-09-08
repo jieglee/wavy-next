@@ -150,7 +150,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
               <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
             </div>
-
             <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
               <div className="flex items-center justify-between gap-4 px-5 py-4">
                 <div className="min-w-0">
@@ -186,18 +185,23 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
           </div>
 
           <aside className="hidden lg:block">
-            <div className="sticky top-[16px] -mt-[200px] space-y-4">
-              <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+            <div className="-mt-[188px] relative">
+              <div className="overflow-hidden rounded-t-xl rounded-b-none border border-[#E5E7EB] border-b-0 bg-black">
                 <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
-                <div className="flex items-center justify-between gap-4 border-t border-[#E5E7EB] px-5 py-4">
+              </div>
+              <div className="sticky top-0 z-30 -mt-px overflow-hidden rounded-b-xl rounded-t-none border border-[#E5E7EB] border-t-0 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+                <div className="flex items-center justify-between gap-4 px-5 py-3.5">
                   <div className="min-w-0">
-                    <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
-                    <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
+                    <p className="text-[11px] leading-none text-[#6B7280]">Harga mulai dari</p>
+                    <p className="mt-1 text-[17px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
                   </div>
                   <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
                 </div>
-                <div className="px-6 py-5">
-                  <h2 className="text-[18px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
+              </div>
+
+              <div className="mt-3 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+                <div className="px-5 py-5">
+                  <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
                   <div className="mt-4 space-y-3">
                     <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
@@ -221,7 +225,10 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                   </div>
                 </div>
               </div>
-              <ConcertOrganizerShare eventTitle={concert.title} />
+
+              <div className="mt-4">
+                <ConcertOrganizerShare eventTitle={concert.title} />
+              </div>
             </div>
           </aside>
         </div>
