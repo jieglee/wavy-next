@@ -15,23 +15,20 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
     month: "short",
     year: "numeric",
   });
-  const timeStr = dateObj.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
+  // Format: "19:00 - 21:00 WIB"
+  const startHour = dateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000); // +2h
+  const endHour = endDate.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Blurred poster background */}
+      {/* Poster as blurred background — Loket uses the same approach */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${banner})` }}
+        className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${banner})`, filter: "blur(40px) brightness(0.4)" }}
       />
-      <div
-        className="absolute inset-0 bg-black/30"
-        style={{ backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)" }}
-      />
+      {/* Extra dark gradient overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-black/30" />
 
       {/* Content */}
       <div className="relative mx-auto flex max-w-[1180px] flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:px-8 lg:py-10">
@@ -48,7 +45,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
             <div className="flex items-center gap-3 text-[14px]">
               <Calendar className="h-5 w-5 shrink-0 text-white/80" strokeWidth={1.8} />
               <span className="font-medium">
-                {dateStr}, {timeStr}
+                {dateStr}, {startHour} - {endHour} WIB
               </span>
             </div>
             <div className="flex items-center gap-3 text-[14px]">
@@ -60,7 +57,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
           </div>
         </div>
 
-        {/* Right: Poster card (desktop only) */}
+        {/* Right: Poster card (desktop only) — matches Loket's poster placement */}
         <div className="hidden lg:block lg:w-[340px] lg:shrink-0">
           <div className="overflow-hidden rounded-xl shadow-lg">
             <img

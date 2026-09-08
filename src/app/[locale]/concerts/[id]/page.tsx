@@ -129,7 +129,9 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   const dateObj = new Date(concert.date);
   const dateStr = dateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
-  const timeStr = dateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+  const startHour = dateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000);
+  const endHour = endDate.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
 
   const tabs = [
     { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
@@ -217,7 +219,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                     <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
                       <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                      <span className="font-medium">{dateStr}, {timeStr}</span>
+                      <span className="font-medium">{dateStr}, {startHour} - {endHour} WIB</span>
                     </div>
                     <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
                       <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
