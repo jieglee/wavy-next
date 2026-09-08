@@ -1,657 +1,237 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
-import {
-  MapPin,
-  Calendar,
-  Clock,
-  Heart,
-  Bell,
-  Star,
-  CheckCircle2,
-  ArrowLeft,
-  Share2,
-  ShieldCheck,
-  Music,
-} from "lucide-react";
+import { MapPin, Calendar, Layers } from "lucide-react";
 import toast from "react-hot-toast";
-import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+import ConcertHero from "@/components/concerts/concert-hero";
+import ConcertTabs from "@/components/concerts/concert-tabs";
+import ConcertDescription from "@/components/concerts/concert-description";
+import ConcertGallery from "@/components/concerts/concert-gallery";
+import ConcertSeatmap from "@/components/concerts/concert-seatmap";
+import ConcertArtist from "@/components/concerts/concert-artist";
+import ConcertTerms from "@/components/concerts/concert-terms";
+import ConcertReviews from "@/components/concerts/concert-reviews";
+import ConcertOrganizerShare from "@/components/concerts/concert-organizer-share";
+import ConcertStickyBar from "@/components/concerts/concert-sticky-bar";
+import ConcertReviewModal from "@/components/concerts/concert-review-modal";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
-import type { ConcertDetail, TicketCategory } from "@/types/type";
+import { getMinPrice, formatIDR } from "@/lib/price";
+import type { ConcertDetail } from "@/types/type";
 
-function sanitizeHtml(dirty: string): string {
-  const doc = new DOMParser().parseFromString(dirty, "text/html");
-  const allowed: Record<string, string[]> = {
-    table: [], thead: [], tbody: [], tr: [], th: [], td: [], tfoot: [],
-    ul: [], ol: [], li: [], p: [], div: [], span: [], b: [], strong: [],
-    i: [], em: [], u: [], s: [], a: [], br: [], hr: [], h1: [], h2: [],
-    h3: [], h4: [], h5: [], h6: [], img: [], svg: [], small: [], blockquote: [],
-  };
-  const walk = (node: Element) => {
-    for (const child of Array.from(node.children)) {
-      const tag = child.tagName.toLowerCase();
-      if (!(tag in allowed)) {
-        if (tag === "script" || tag === "iframe" || tag === "object" || tag === "embed" || tag === "form") {
-          child.remove();
-          continue;
-        }
-        child.replaceWith(...Array.from(child.childNodes));
-        continue;
-      }
-      for (const attr of Array.from(child.attributes)) {
-        const name = attr.name.toLowerCase();
-        if (name.startsWith("on") || (attr.value && /^\s*javascript:/i.test(attr.value))) {
-          child.removeAttribute(attr.name);
-        } else if (name === "href" && tag === "a") {
-          const href = attr.value.trim();
-          if (!/^(https?:|\/|#)/i.test(href)) child.removeAttribute(attr.name);
-        }
-      }
-      walk(child);
-    }
-  };
-  walk(doc.body);
-  return doc.body.innerHTML;
+async function loadConcert(id: string): Promise<ConcertDetail> {
+  try {
+    const data = await apiGet<ConcertDetail>(`/concerts/${id}`);
+    return data;
+  } catch {
+    return {
+      id: Number(id), organizer_id: 1, artist_id: 1, title: "Tiffany Young: Edge of Calm Tour in Jakarta", category: "Konser",
+      venue: "JIEXPO Theatre, Jakarta Pusat", date: "2026-09-19T19:00:00+07:00",
+      poster_url: "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg", status: "published", artist_name: "Tiffany Young", organizer_name: "Flabbergast Productions", min_price: 950000, remaining: 250,
+      description: "Tiffany Young: Edge of Calm Tour in Jakarta\nCelebrating the 10th anniversary of her solo debut, Tiffany Young is finally set to reunite with fans through the Tiffany Young: Edge of Calm Tour in Jakarta.\n\nA decade of music, unforgettable performances, and Tiffany Young's most heartfelt stories come together in a special concert created just for this milestone.\n\nJakarta will be one of the special stops on this Asia tour, bringing fans closer to Tiffany Young for a long-awaited reunion filled with unforgettable moments, heartfelt performances, and new memories to cherish together",
+      genre: "K-Pop", photo_url: "", bio: "Tiffany Young — penyanyi, aktris, dan anggota Girls' Generation. Merayakan 10 tahun debut solonya lewat Edge of Calm Tour.",
+      countdown_seconds: 15 * 86400,
+      ticket_categories: [
+        { id: 1, event_id: Number(id), name: "VIP (Seated)", price: 3250000, quota: 100, sold: 20, remaining: 80 },
+        { id: 2, event_id: Number(id), name: "CAT R (Seated)", price: 2550000, quota: 200, sold: 60, remaining: 140 },
+        { id: 3, event_id: Number(id), name: "CAT S (Seated)", price: 2000000, quota: 200, sold: 90, remaining: 110 },
+        { id: 4, event_id: Number(id), name: "CAT A (Seated)", price: 1500000, quota: 300, sold: 120, remaining: 180 },
+        { id: 5, event_id: Number(id), name: "CAT B (Seated)", price: 950000, quota: 400, sold: 200, remaining: 200 },
+      ],
+      reviews: [
+        { id: 1, rating: 5, comment: "Gak sabar nonton Tiffany live!", created_at: "2026-07-10T12:00:00Z", customer_name: "Ahmad Rifai" },
+        { id: 2, rating: 5, comment: "10th anniversary pasti spesial banget.", created_at: "2026-07-14T08:00:00Z", customer_name: "Siti Rahma" },
+      ],
+      avg_rating: 5.0, review_count: 2,
+    };
+  }
 }
 
 export default function ConcertDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-
   const [concert, setConcert] = useState<ConcertDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<TicketCategory | null>(null);
-  const [quantity, setQuantity] = useState(1);
   const [isFollowingArtist, setIsFollowingArtist] = useState(false);
-  const [isNotified, setIsNotified] = useState(false);
-  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [reviewModal, setReviewModal] = useState(false);
   const [ratingInput, setRatingInput] = useState(5);
   const [commentInput, setCommentInput] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [activeTab, setActiveTab] = useState("desc");
+  const descRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const termsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadDetail() {
       setLoading(true);
-      try {
-        const data = await apiGet<ConcertDetail>(`/concerts/${id}`);
-        setConcert(data);
-        if (data.ticket_categories?.length > 0) {
-          setSelectedCategory(data.ticket_categories[0]);
-        }
-      } catch {
-        // Mock fallback if offline
-        const mock: ConcertDetail = {
-          id: Number(id),
-          organizer_id: 1,
-          artist_id: 1,
-          title: "The Legends Infinity World Tour",
-          category: "Festival",
-          venue: "Indonesia Convention Exhibition (ICE) BSD, Tangerang",
-          date: new Date(Date.now() + 15 * 86400000).toISOString(),
-          poster_url: "",
-          status: "published",
-          artist_name: "TRUST Orchestra",
-          organizer_name: "TRUST Productions",
-          min_price: 300000,
-          remaining: 120,
-          description:
-            "Saksikan kolaborasi megah orkestra symphonic terbesar di Asia Tenggara mempersembahkan lagu-lagu legendaris dari anime, game, dan soundtrack film terbaik.",
-          genre: "Symphonic Orchestra",
-          photo_url: "",
-          bio: "TRUST Orchestra adalah ansambel orkestra independen ternama di Indonesia yang memenangkan berbagai penghargaan internasional.",
-          countdown_seconds: 15 * 86400,
-          ticket_categories: [
-            { id: 1, event_id: Number(id), name: "VIP Center (Numbered Seating)", price: 850000, quota: 100, sold: 60, remaining: 40 },
-            { id: 2, event_id: Number(id), name: "CAT 1 (Front Row)", price: 550000, quota: 200, sold: 150, remaining: 50 },
-            { id: 3, event_id: Number(id), name: "Festival Standing", price: 300000, quota: 300, sold: 270, remaining: 30 },
-          ],
-          reviews: [
-            { id: 1, rating: 5, comment: "Konser tahun lalu pecah banget! Tata panggung dan audionya kelas dunia.", created_at: "2026-07-10T12:00:00Z", customer_name: "Ahmad Rifai" },
-            { id: 2, rating: 5, comment: "Wajib nonton buat pecinta musik orkestra modern.", created_at: "2026-07-14T08:00:00Z", customer_name: "Siti Rahma" },
-          ],
-          avg_rating: 5.0,
-          review_count: 2,
-        };
-        setConcert(mock);
-        setSelectedCategory(mock.ticket_categories[0]);
-      } finally {
-        setLoading(false);
-      }
+      const data = await loadConcert(id);
+      setConcert(data);
+      setLoading(false);
     }
     loadDetail();
   }, [id]);
 
-  // Countdown timer calculation
-  useEffect(() => {
-    if (!concert?.date) return;
-    const target = new Date(concert.date).getTime();
-
-    function updateTimer() {
-      const now = Date.now();
-      const diff = Math.max(0, target - now);
-      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-      setCountdown({ days: d, hours: h, minutes: m, seconds: s });
-    }
-
-    updateTimer();
-    const timer = setInterval(updateTimer, 1000);
-    return () => clearInterval(timer);
-  }, [concert?.date]);
+  function scrollToSection(tab: string, ref: React.RefObject<HTMLDivElement | null>) {
+    setActiveTab(tab);
+    if (!ref.current) return;
+    const y = ref.current.getBoundingClientRect().top + window.scrollY - 60;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  }
 
   async function handleFollowArtist() {
-    if (!getAuthToken()) {
-      toast.error("Silakan masuk terlebih dahulu");
-      router.push("/auth/login");
-      return;
-    }
+    if (!getAuthToken()) { toast.error("Silakan masuk terlebih dahulu"); router.push("/auth/login"); return; }
     try {
-      if (isFollowingArtist) {
-        await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken()!);
-      } else {
-        await apiPost(`/favorites/artists/${concert?.artist_id}`);
-        toast.success(`Berhasil mengikuti ${concert?.artist_name}`);
-      }
+      if (isFollowingArtist) await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken()!);
+      else { await apiPost(`/favorites/artists/${concert?.artist_id}`); toast.success(`Berhasil mengikuti ${concert?.artist_name}`); }
       setIsFollowingArtist(!isFollowingArtist);
-    } catch {
-      setIsFollowingArtist(!isFollowingArtist);
-      toast.success(`Mengikuti ${concert?.artist_name}`);
-    }
+    } catch { setIsFollowingArtist(!isFollowingArtist); toast.success(`Mengikuti ${concert?.artist_name}`); }
   }
-
-  async function handleNotifyMe() {
-    if (!getAuthToken()) {
-      toast.error("Silakan masuk terlebih dahulu");
-      router.push("/auth/login");
-      return;
-    }
-    try {
-      await apiPost(`/concerts/${id}/notify-me`);
-      setIsNotified(true);
-      toast.success("Pengingat konser berhasil diaktifkan!");
-    } catch {
-      setIsNotified(true);
-      toast.success("Pengingat konser aktif!");
-    }
+  function handleBuyTicket() {
+    if (!concert) return;
+    if (!getAuthToken()) { toast.error("Silakan masuk untuk melanjutkan pembelian"); router.push("/auth/login"); return; }
+    const def = concert.ticket_categories?.[0];
+    if (!def) { toast.error("Tiket belum tersedia"); return; }
+    router.push(`/concerts/${id}/queue?catId=${def.id}&qty=1`);
   }
-
-  async function handleProceedCheckout() {
-    if (!selectedCategory) {
-      toast.error("Pilih kategori tiket terlebih dahulu");
-      return;
-    }
-
-    if (!getAuthToken()) {
-      toast.error("Silakan masuk untuk melanjutkan pembelian");
-      router.push("/auth/login");
-      return;
-    }
-
-    router.push(`/concerts/${id}/queue?catId=${selectedCategory.id}&qty=${quantity}`);
-  }
-
   async function handleSubmitReview(e: React.FormEvent) {
     e.preventDefault();
-    if (!getAuthToken()) {
-      toast.error("Silakan masuk terlebih dahulu");
-      return;
-    }
+    if (!getAuthToken()) { toast.error("Silakan masuk terlebih dahulu"); return; }
     setSubmittingReview(true);
-    try {
-      await apiPost(`/events/${id}/reviews`, { rating: ratingInput, comment: commentInput });
-      toast.success("Ulasan berhasil dikirim!");
-      setReviewModal(false);
-      setCommentInput("");
-    } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal mengirim ulasan.");
-    } finally {
-      setSubmittingReview(false);
-    }
+    try { await apiPost(`/events/${id}/reviews`, { rating: ratingInput, comment: commentInput }); toast.success("Ulasan berhasil dikirim!"); setReviewModal(false); setCommentInput(""); }
+    catch (err: unknown) { toast.error((err as Error).message || "Gagal mengirim ulasan."); }
+    finally { setSubmittingReview(false); }
   }
 
   if (loading || !concert) {
     return (
-      <div className="min-h-screen bg-[#FDFCFB]">
-        <Navbar />
-        <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent mx-auto" />
-          <p className="mt-4 text-sm text-[#8B889C]">Memuat informasi konser...</p>
+      <div className="min-h-screen bg-white">
+        <Navbar sticky={false} />
+        <div className="mx-auto max-w-[1180px] px-4 py-16 text-center sm:px-6 lg:px-8">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0F56FF] border-t-transparent mx-auto" />
+          <p className="mt-4 text-sm text-[#6B7280]">Memuat informasi konser...</p>
         </div>
       </div>
     );
   }
 
-  const dateFormatted = new Date(concert.date).toLocaleDateString("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const remaining =
+    concert.remaining ??
+    (concert.ticket_categories?.length
+      ? concert.ticket_categories.reduce((sum, c) => sum + (c.remaining ?? c.quota - c.sold), 0)
+      : undefined);
+  const soldOut = remaining !== undefined && remaining <= 0;
+  const minPrice = getMinPrice(concert);
+  const banner = concert.poster_url || concert.photo_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
+
+  const tabs = [
+    { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
+    { id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) },
+    { id: "ticket", label: "Tiket", onClick: () => scrollToSection("gallery", galleryRef) },
+    { id: "terms", label: "Syarat dan Ketentuan", onClick: () => scrollToSection("terms", termsRef) },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
-      <Navbar />
+    <div className="min-h-screen bg-white pb-20 lg:pb-0">
+      <Navbar sticky={false} />
+      <ConcertHero concert={concert} />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Back Link */}
-        <Link
-          href="/concerts"
-          className="mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#8B889C] transition-colors hover:text-[#1B1A3A]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Semua Konser
-        </Link>
-
-        {/* Hero Banner with Glassmorphism */}
-        <div className="relative mb-10 overflow-hidden rounded-3xl bg-[#1B1A3A] p-6 text-white shadow-2xl md:p-10">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1B1A3A] via-[#1B1A3A]/90 to-transparent z-10" />
-          <div
-            className="absolute inset-0 opacity-30 bg-cover bg-center"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at top right, #FF5470 0%, transparent 60%), radial-gradient(circle at bottom left, #7DD3E8 0%, transparent 50%)",
-            }}
-          />
-
-          <div className="relative z-20 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-2xl space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#FF5470] px-3 py-1 text-xs font-bold text-white shadow-sm">
-                  {concert.category}
-                </span>
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur-md">
-                  Oleh {concert.organizer_name}
-                </span>
-              </div>
-
-              <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-5xl">
-                {concert.title}
-              </h1>
-
-              <div className="flex flex-wrap gap-4 text-sm text-white/80 pt-2">
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4 text-[#FF5470]" />
-                  <span>{dateFormatted}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-[#7DD3E8]" />
-                  <span>{concert.venue}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Countdown Box */}
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-xl md:w-80">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FF5470]">
-                <Clock className="h-4 w-4" />
-                <span>Hitung Mundur Konser</span>
-              </div>
-              <div className="mt-3 grid grid-cols-4 gap-2 text-center">
-                <div className="rounded-xl bg-white/10 p-2">
-                  <p className="font-mono text-xl font-bold">{countdown.days}</p>
-                  <p className="text-[10px] text-white/70">Hari</p>
-                </div>
-                <div className="rounded-xl bg-white/10 p-2">
-                  <p className="font-mono text-xl font-bold">{countdown.hours}</p>
-                  <p className="text-[10px] text-white/70">Jam</p>
-                </div>
-                <div className="rounded-xl bg-white/10 p-2">
-                  <p className="font-mono text-xl font-bold">{countdown.minutes}</p>
-                  <p className="text-[10px] text-white/70">Mnt</p>
-                </div>
-                <div className="rounded-xl bg-white/10 p-2">
-                  <p className="font-mono text-xl font-bold">{countdown.seconds}</p>
-                  <p className="text-[10px] text-white/70">Dtk</p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex gap-2">
-                <button
-                  onClick={handleNotifyMe}
-                  className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition-all ${
-                    isNotified ? "bg-emerald-600 text-white" : "bg-white/20 text-white hover:bg-white/30"
-                  }`}
-                >
-                  <Bell className="h-3.5 w-3.5" />
-                  {isNotified ? "Pengingat Aktif" : "Ingatkan Saya"}
-                </button>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    toast.success("Link konser disalin!");
-                  }}
-                  className="rounded-xl bg-white/10 p-2 text-white hover:bg-white/20"
-                >
-                  <Share2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
+      <div className="sticky top-0 z-20 border-y border-[#E5E7EB] bg-white">
+        <div className="mx-auto flex max-w-[1180px] items-center gap-4 px-4 sm:px-6 lg:px-8">
+          <ConcertTabs tabs={tabs} activeTab={activeTab} />
         </div>
+      </div>
 
-        {/* Content Layout */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-          {/* Left Column: Details, Artist, Reviews */}
-          <div className="space-y-10 lg:col-span-2">
-            {/* Description */}
-            <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
-              <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Tentang Konser</h2>
-              <p className="mt-3 leading-relaxed text-[#6B6875]">{concert.description}</p>
+      <div className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="space-y-6 min-w-0">
+            <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+              <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
+            </div>
 
-              <div className="mt-6 flex flex-wrap gap-4 border-t border-[#EDEBF2] pt-6">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#1B1A3A]">
-                  <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                  Tiket Resmi Terverifikasi
+            <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+              <div className="flex items-center justify-between gap-4 px-5 py-4">
+                <div className="min-w-0">
+                  <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
+                  <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#1B1A3A]">
-                  <CheckCircle2 className="h-4 w-4 text-[#FF5470]" />
-                  Garansi Anti-Scalper & QR Otentik
+                <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
+              </div>
+              <div className="flex items-center gap-3 border-t border-[#F3F4F6] bg-[#FAFBFC] px-5 py-3.5">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black tracking-wide text-white">FBG</div>
+                <div className="min-w-0">
+                  <p className="text-[11px] leading-none text-[#9AA0A6]">Diselenggarakan oleh</p>
+                  <p className="mt-1 truncate text-[13px] font-bold leading-none text-[#111827]">{concert.organizer_name}</p>
                 </div>
               </div>
-            </section>
+            </div>
 
-            {/* Gallery */}
-            {(concert.gallery?.length ?? 0) > 0 && (
-              <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
-                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Galeri</h2>
-                <div className="mt-4 flex gap-3 overflow-x-auto scroll-smooth">
-                  {concert.gallery!.map((url, i) => (
-                    <div
-                      key={i}
-                      className="relative aspect-video w-[280px] shrink-0 overflow-hidden rounded-2xl border border-[#EDEBF2]"
-                    >
-                      <img
-                        src={url}
-                        alt={`${concert.title} ${i + 1}`}
-                        className="absolute inset-0 h-full w-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Seat Plan */}
-            {concert.seatmap && (
-              <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
-                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Denah & Graph Layout</h2>
-                <p className="mt-1 text-xs text-[#8B889C]">{concert.seatmap.name}</p>
-                <div className="mt-4 overflow-hidden rounded-2xl border border-[#EDEBF2]">
-                  <img
-                    src={concert.seatmap.image}
-                    alt={concert.seatmap.name}
-                    className="h-auto w-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-              </section>
-            )}
-
-            {/* Artist Profile */}
-            <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Musisi / Penampil</h2>
-                  <p className="text-xs text-[#8B889C]">Genre: {concert.genre}</p>
-                </div>
-                <button
-                  onClick={handleFollowArtist}
-                  className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-all ${
-                    isFollowingArtist
-                      ? "bg-[#FF5470] text-white"
-                      : "border border-[#EDEBF2] bg-[#FAFAF8] text-[#1B1A3A] hover:border-[#FF5470]"
-                  }`}
-                >
-                  <Heart className={`h-3.5 w-3.5 ${isFollowingArtist ? "fill-white" : ""}`} />
-                  {isFollowingArtist ? "Mengikuti" : "Ikuti Musisi"}
-                </button>
-              </div>
-
-              <div className="mt-4 flex items-start gap-4">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF5470] to-[#1B1A3A] text-white font-bold text-xl">
-                  <Music className="h-8 w-8" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-[#1B1A3A]">{concert.artist_name}</h3>
-                  <p className="mt-1 text-sm text-[#6B6875] leading-relaxed">{concert.bio}</p>
-                </div>
-              </div>
-            </section>
-
-            {/* Terms & Conditions */}
-            {concert.terms_conditions && (
-              <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
-                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Syarat & Ketentuan</h2>
-                <div
-                  className="tnc-html mt-3 leading-relaxed text-[#6B6875]"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(concert.terms_conditions) }}
-                />
-              </section>
-            )}
-
-            {/* Reviews Section */}
-            <section className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm">
-              <div className="flex items-center justify-between border-b border-[#EDEBF2] pb-4">
-                <div>
-                  <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Ulasan Penggemar</h2>
-                  <div className="mt-1 flex items-center gap-2">
-                    <div className="flex text-amber-400">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star key={s} className="h-4 w-4 fill-amber-400" />
-                      ))}
-                    </div>
-                    <span className="text-sm font-bold text-[#1B1A3A]">{concert.avg_rating.toFixed(1)}</span>
-                    <span className="text-xs text-[#8B889C]">({concert.review_count} ulasan)</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setReviewModal(true)}
-                  className="rounded-full bg-[#1B1A3A] px-4 py-2 text-xs font-bold text-white hover:bg-black"
-                >
-                  Tulis Ulasan
-                </button>
-              </div>
-
-              <div className="mt-6 space-y-4">
-                {concert.reviews?.length > 0 ? (
-                  concert.reviews.map((rev) => (
-                    <div key={rev.id} className="rounded-2xl bg-[#FAFAF8] p-4 border border-[#EDEBF2]">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-sm text-[#1B1A3A]">{rev.customer_name}</span>
-                        <div className="flex text-amber-400">
-                          {Array.from({ length: rev.rating }).map((_, i) => (
-                            <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
-                          ))}
-                        </div>
-                      </div>
-                      {rev.comment && <p className="mt-2 text-xs text-[#6B6875]">{rev.comment}</p>}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center py-6 text-sm text-[#8B889C]">Belum ada ulasan untuk konser ini.</p>
-                )}
-              </div>
-            </section>
-          </div>
-
-          {/* Right Column: Ticket Category Selection & Booking Card */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-3xl border border-[#EDEBF2] bg-white p-6 shadow-xl space-y-6">
-              <h2 className="font-display text-lg font-bold text-[#1B1A3A]">Pilih Kategori Tiket</h2>
-
-              {/* Categories list */}
-              <div className="space-y-3">
-                {concert.ticket_categories?.map((cat) => {
-                  const isSelected = selectedCategory?.id === cat.id;
-                  const isSoldOut = cat.remaining !== undefined && cat.remaining <= 0;
-                  const priceNum = Number(cat.price);
-
-                  return (
-                    <div
-                      key={cat.id}
-                      onClick={() => !isSoldOut && setSelectedCategory(cat)}
-                      className={`cursor-pointer rounded-2xl border p-4 transition-all ${
-                        isSelected
-                          ? "border-[#FF5470] bg-[#FF5470]/5 shadow-sm"
-                          : isSoldOut
-                          ? "border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed"
-                          : "border-[#EDEBF2] hover:border-[#1B1A3A]/40"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-bold text-sm text-[#1B1A3A]">{cat.name}</p>
-                          <p className="font-mono text-base font-extrabold text-[#FF5470]">
-                            Rp{priceNum.toLocaleString("id-ID")}
-                          </p>
-                        </div>
-                        {isSoldOut ? (
-                          <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600">
-                            Habis
-                          </span>
-                        ) : (
-                          <span className="text-[11px] font-semibold text-[#8B889C]">
-                            Sisa {cat.remaining ?? cat.quota - cat.sold}
-                          </span>
-                        )}
-                      </div>
-                      {cat.benefits && (
-                        <p className="mt-2 border-t border-[#EDEBF2] pt-2 text-[11px] leading-relaxed text-[#6B6875]">
-                          {cat.benefits}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Quantity Selector */}
-              {selectedCategory && (
-                <div className="flex items-center justify-between border-t border-[#EDEBF2] pt-4">
-                  <span className="text-xs font-bold text-[#1B1A3A]">Jumlah Tiket (Maks 4)</span>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#EDEBF2] text-base font-bold text-[#1B1A3A] hover:bg-gray-100"
-                    >
-                      -
-                    </button>
-                    <span className="font-mono font-bold text-sm">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(Math.min(4, quantity + 1))}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#EDEBF2] text-base font-bold text-[#1B1A3A] hover:bg-gray-100"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Price Calculation */}
-              {selectedCategory && (
-                <div className="rounded-2xl bg-[#FAFAF8] p-4 border border-[#EDEBF2] space-y-1">
-                  <div className="flex justify-between text-xs text-[#6B6875]">
-                    <span>Harga Satuan</span>
-                    <span>Rp{Number(selectedCategory.price).toLocaleString("id-ID")}</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-[#6B6875]">
-                    <span>Jumlah</span>
-                    <span>x {quantity}</span>
-                  </div>
-                  <div className="border-t border-[#EDEBF2] pt-2 flex justify-between font-bold text-sm text-[#1B1A3A]">
-                    <span>Total Pembayaran</span>
-                    <span className="font-mono text-base text-[#FF5470]">
-                      Rp{(Number(selectedCategory.price) * quantity).toLocaleString("id-ID")}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Checkout Button */}
-              <button
-                onClick={handleProceedCheckout}
-                disabled={!selectedCategory}
-                className="w-full rounded-2xl bg-[#FF5470] py-4 text-center text-sm font-extrabold text-white shadow-lg transition-all hover:brightness-110 active:scale-98 disabled:opacity-50"
-              >
-                Masuk Antrean & Beli Tiket
-              </button>
-
-              <p className="text-center text-[11px] text-[#8B889C]">
-                Sistem Smart Queue Wavy menjamin antrean tiket yang adil & transparan.
-              </p>
+            <div ref={descRef} id="sec-desc" className="scroll-mt-[70px]">
+              <ConcertDescription description={concert.description} />
+            </div>
+            <div ref={galleryRef} id="sec-gallery" className="scroll-mt-[70px]">
+              <ConcertGallery gallery={concert.gallery ?? []} title={concert.title} />
+            </div>
+            <ConcertSeatmap seatmap={concert.seatmap} />
+            <div ref={termsRef} id="sec-terms" className="scroll-mt-[70px]">
+              <ConcertTerms terms={concert.terms_conditions ?? "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."} />
+            </div>
+            <ConcertArtist artistName={concert.artist_name} bio={concert.bio} genre={concert.genre} isFollowing={isFollowingArtist} onFollow={handleFollowArtist} />
+            <ConcertReviews reviews={concert.reviews} avgRating={concert.avg_rating} reviewCount={concert.review_count} onWriteReview={() => setReviewModal(true)} />
+            <div className="lg:hidden">
+              <ConcertOrganizerShare eventTitle={concert.title} />
             </div>
           </div>
-        </div>
-      </main>
 
-      {/* Review Modal */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-[16px] -mt-[200px] space-y-4">
+              <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+                <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
+                <div className="flex items-center justify-between gap-4 border-t border-[#E5E7EB] px-5 py-4">
+                  <div className="min-w-0">
+                    <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
+                    <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
+                  </div>
+                  <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
+                </div>
+                <div className="px-6 py-5">
+                  <h2 className="text-[18px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
+                      <span className="font-medium">{concert.venue}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                      <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
+                      <span className="font-medium">19 Sep 2026, 19:00 - 21:00 WIB</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                      <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
+                      <span className="font-medium">Konser &nbsp;•&nbsp; Musik &nbsp;•&nbsp; K-Pop</span>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex items-center gap-3 border-t border-[#F3F4F6] pt-4">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black tracking-wide text-white">FBG</div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] leading-none text-[#9AA0A6]">Diselenggarakan oleh</p>
+                      <p className="mt-1 truncate text-[13px] font-bold leading-none text-[#111827]">{concert.organizer_name}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ConcertOrganizerShare eventTitle={concert.title} />
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <ConcertStickyBar minPrice={minPrice} soldOut={soldOut} onBuy={handleBuyTicket} />
+
       {reviewModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <h3 className="font-display text-xl font-bold text-[#1B1A3A]">Tulis Ulasan Konser</h3>
-            <p className="text-xs text-[#6B6875] mt-1">Bagikan pengalaman menonton konser ini kepada pengguna lain.</p>
-
-            <form onSubmit={handleSubmitReview} className="mt-4 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-[#1B1A3A]">Rating (1 - 5 Bintang)</label>
-                <div className="mt-2 flex gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      type="button"
-                      key={star}
-                      onClick={() => setRatingInput(star)}
-                      className="p-1"
-                    >
-                      <Star
-                        className={`h-7 w-7 transition-colors ${
-                          star <= ratingInput ? "fill-amber-400 text-amber-400" : "text-gray-300"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-[#1B1A3A]">Komentar</label>
-                <textarea
-                  value={commentInput}
-                  onChange={(e) => setCommentInput(e.target.value)}
-                  rows={3}
-                  placeholder="Ceritakan keseruan konser..."
-                  className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 text-xs outline-none focus:border-[#FF5470]"
-                />
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setReviewModal(false)}
-                  className="flex-1 rounded-xl border border-[#EDEBF2] py-2.5 text-xs font-bold text-[#6B6875] hover:bg-gray-50"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={submittingReview}
-                  className="flex-1 rounded-xl bg-[#1B1A3A] py-2.5 text-xs font-bold text-white hover:bg-black"
-                >
-                  {submittingReview ? "Mengirim..." : "Kirim Ulasan"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <ConcertReviewModal rating={ratingInput} setRating={setRatingInput} comment={commentInput} setComment={setCommentInput} submitting={submittingReview} onClose={() => setReviewModal(false)} onSubmit={handleSubmitReview} />
       )}
-
       <Footer />
     </div>
   );

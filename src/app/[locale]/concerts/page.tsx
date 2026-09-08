@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, MapPin, Calendar, Ticket, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -29,7 +29,7 @@ const fallbackConcerts: Concert[] = [
   { id: 6, title: "Jazz Under The Stars", category: "Jazz", venue: "Dago Tea House, Bandung", date: "2026-09-28T18:30:00Z", poster_url: "", status: "published", artist_name: "Tompi & Friends", organizer_name: "Java Festival", min_price: 425000, remaining: 200 },
 ];
 
-export default function ConcertsPage() {
+function ConcertsPageInner() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const initialCat = searchParams.get("category") || "Semua";
@@ -260,5 +260,13 @@ export default function ConcertsPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ConcertsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <ConcertsPageInner />
+    </Suspense>
   );
 }

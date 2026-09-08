@@ -10,7 +10,7 @@ import { getAuthToken, getAuthRole, getAuthUser, clearAuthSession } from "@/lib/
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
 
-export default function Navbar() {
+export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const pathname = usePathname();
@@ -60,7 +60,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md">
+    <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
       <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6">
         {/* Logo + nama */}
         <Link href="/" className="flex shrink-0 items-center gap-2">
