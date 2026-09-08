@@ -16,7 +16,7 @@ export default function ConcertArtist({
   onFollow: () => void;
 }) {
   return (
-    <section className="rounded-2xl border border-[#E5E7EB] bg-white p-5 sm:p-6">
+    <section className="scroll-mt-[72px]">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-[15px] font-bold text-[#111827]">Tentang Penampil</h2>
         <button

@@ -30,7 +30,7 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
       id: Number(id), organizer_id: 1, artist_id: 1, title: "Tiffany Young: Edge of Calm Tour in Jakarta", category: "Konser",
       venue: "JIEXPO Theatre, Jakarta Pusat", date: "2026-09-19T19:00:00+07:00",
       poster_url: "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg", status: "published", artist_name: "Tiffany Young", organizer_name: "Flabbergast Productions", min_price: 950000, remaining: 250,
-      description: "Tiffany Young: Edge of Calm Tour in Jakarta\nCelebrating the 10th anniversary of her solo debut, Tiffany Young is finally set to reunite with fans through the Tiffany Young: Edge of Calm Tour in Jakarta.\n\nA decade of music, unforgettable performances, and Tiffany Young's most heartfelt stories come together in a special concert created just for this milestone.\n\nJakarta will be one of the special stops on this Asia tour, bringing fans closer to Tiffany Young for a long-awaited reunion filled with unforgettable moments, heartfelt performances, and new memories to cherish together",
+      description: "Tiffany Young: Edge of Calm Tour in Jakarta\nCelebrating the 10th anniversary of her solo debut, Tiffany Young is finally set to reunite with fans through the Tiffany Young: Edge of Calm Tour in Jakarta.\n\nA decade of music, unforgettable performances, and Tiffany Young's most heartfelt stories come together in a special concert created just for this milestone.\n\nJakarta will be one of the special stops on this Asia tour, bringing fans closer to Tiffany Young for a long-awaited reunion filled with unforgettable moments, heartfelt performances, and new memories to cherish together\n\nOn September 19, 2026, join Tiffany Young in Jakarta to create unforgettable memories on the Tiffany Young: Edge of Calm Tour💗.\n\nTiffany Young: Edge of Calm Tour in Jakarta\n📅 Show Date : 19 September 2026 (Sat)\n🕕 Show Time : 7PM\n🎭 Venue: JIEXPO Theatre\n🎫 Ticket Price : 2,000,000 / 2,550,000 / 3,250,000\n🪧 Organizer: EarendelWorks & Flabbergast Productions\n🏷 Artist Management: Pacific Music Group\n📢 Ticket Sales: 29 July 2026\n🕚 Sales Open : 2:00 PM WIB\n🎟 Ticketing Platform: LOKET\n\n📌 Please refer to the organizer's official announcements for further details\n📌 The organizer reserves the right to make changes to the event without prior notice\n\nTICKET INFORMATION\nVIP (Seated): IDR 3,250,000\nCAT R (Seated): IDR 2,550,000\nCAT S (Seated): IDR 2,000,000\nCAT A (Seated): IDR 1,500,000\nCAT B (Seated): IDR 950,000",
       genre: "K-Pop", photo_url: "", bio: "Tiffany Young — penyanyi, aktris, dan anggota Girls' Generation. Merayakan 10 tahun debut solonya lewat Edge of Calm Tour.",
       countdown_seconds: 15 * 86400,
       ticket_categories: [
@@ -62,6 +62,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const [activeTab, setActiveTab] = useState("desc");
   const descRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
   const termsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -126,23 +127,35 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const minPrice = getMinPrice(concert);
   const banner = concert.poster_url || concert.photo_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
 
+  const dateObj = new Date(concert.date);
+  const dateStr = dateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  const timeStr = dateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+
   const tabs = [
     { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
     { id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) },
-    { id: "ticket", label: "Tiket", onClick: () => scrollToSection("gallery", galleryRef) },
+    { id: "ticket", label: "Tiket", onClick: () => scrollToSection("ticket", ticketRef) },
     { id: "terms", label: "Syarat dan Ketentuan", onClick: () => scrollToSection("terms", termsRef) },
   ];
 
   return (
     <div className="min-h-screen bg-white pb-20 lg:pb-0">
       <Navbar sticky={false} />
+
+      {/* ── Hero (blurred poster bg + poster card) ── */}
       <ConcertHero concert={concert} />
 
+      {/* ── Sticky tab bar ── */}
       <ConcertStickyHeader tabs={tabs} activeTab={activeTab} minPrice={minPrice} onBuy={handleBuyTicket} />
 
-      <div className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-          <div className="space-y-6 min-w-0">
+      {/* ── Two-column content ── */}
+      <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-start">
+
+          {/* ── Left column: content (no card wrappers, Loket style) ── */}
+          <div className="space-y-8 min-w-0">
+
+            {/* Mobile-only: poster + price card */}
             <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
               <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
               <div className="flex items-center justify-between gap-4 px-5 py-4">
@@ -161,14 +174,16 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <div ref={descRef} id="sec-desc" className="scroll-mt-[72px]">
+            <div ref={descRef}>
               <ConcertDescription description={concert.description} />
             </div>
-            <div ref={galleryRef} id="sec-gallery" className="scroll-mt-[72px]">
+            <div ref={galleryRef}>
               <ConcertGallery gallery={concert.gallery ?? []} title={concert.title} />
             </div>
-            <ConcertSeatmap seatmap={concert.seatmap} />
-            <div ref={termsRef} id="sec-terms" className="scroll-mt-[72px]">
+            <div ref={ticketRef}>
+              <ConcertSeatmap seatmap={concert.seatmap} />
+            </div>
+            <div ref={termsRef}>
               <ConcertTerms terms={concert.terms_conditions ?? "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."} />
             </div>
             <ConcertArtist artistName={concert.artist_name} bio={concert.bio} genre={concert.genre} isFollowing={isFollowingArtist} onFollow={handleFollowArtist} />
@@ -178,47 +193,57 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
+          {/* ── Right column: sticky sidebar (Loket style) ── */}
           <aside className="hidden lg:flex lg:flex-col">
-            <div className="-mt-1 sticky top-[64px] z-10 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
-              <div className="flex items-center justify-between gap-4 px-5 py-4">
-                <div className="min-w-0">
-                  <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
-                  <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
-                </div>
-                <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
-              </div>
-              <div className="px-5 pb-5 pt-1">
-                <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
-                <div className="mt-4 space-y-3">
-                  <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                    <span className="font-medium">{concert.venue}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                    <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                    <span className="font-medium">19 Sep 2026, 19:00 - 21:00 WIB</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                    <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                    <span className="font-medium">Konser &nbsp;•&nbsp; Musik &nbsp;•&nbsp; K-Pop</span>
-                  </div>
-                </div>
-                <div className="mt-5 flex items-center gap-3 border-t border-[#F3F4F6] pt-4">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black tracking-wide text-white">FBG</div>
+            <div className="sticky top-[64px] z-10 space-y-4">
+              {/* Main sidebar card */}
+              <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+                {/* Price bar */}
+                <div className="flex items-center justify-between gap-4 px-5 py-4">
                   <div className="min-w-0">
-                    <p className="text-[11px] leading-none text-[#9AA0A6]">Diselenggarakan oleh</p>
-                    <p className="mt-1 truncate text-[13px] font-bold leading-none text-[#111827]">{concert.organizer_name}</p>
+                    <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
+                    <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
                   </div>
+                  <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
+                </div>
+
+                {/* Event info */}
+                <div className="px-5 pb-5 pt-1">
+                  <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
+                      <span className="font-medium">{concert.venue}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                      <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
+                      <span className="font-medium">{dateStr}, {timeStr}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                      <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
+                      <span className="font-medium">{concert.category} &nbsp;•&nbsp; Musik &nbsp;•&nbsp; {concert.genre || "K-Pop"}</span>
+                    </div>
+                  </div>
+
+                  {/* Organizer */}
+                  <div className="mt-5 flex items-center gap-3 border-t border-[#F3F4F6] pt-4">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black tracking-wide text-white">FBG</div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] leading-none text-[#9AA0A6]">Diselenggarakan oleh</p>
+                      <p className="mt-1 truncate text-[13px] font-bold leading-none text-[#111827]">{concert.organizer_name}</p>
+                    </div>
+                  </div>
+
+                  {/* Share */}
+                  <ConcertOrganizerShare eventTitle={concert.title} inline />
                 </div>
               </div>
-            </div>
-            <div className="mt-4">
-              <ConcertOrganizerShare eventTitle={concert.title} />
             </div>
           </aside>
         </div>
       </div>
 
+      {/* ── Mobile sticky bottom bar ── */}
       <ConcertStickyBar minPrice={minPrice} soldOut={soldOut} onBuy={handleBuyTicket} />
 
       {reviewModal && (
