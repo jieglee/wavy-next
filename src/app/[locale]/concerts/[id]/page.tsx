@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use, useRef } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { MapPin, Calendar, Layers } from "lucide-react";
 import toast from "react-hot-toast";
 import Navbar from "@/components/landing/navbar";
@@ -15,6 +15,7 @@ import ConcertArtist from "@/components/concerts/concert-artist";
 import ConcertTerms from "@/components/concerts/concert-terms";
 import ConcertReviews from "@/components/concerts/concert-reviews";
 import ConcertOrganizerShare from "@/components/concerts/concert-organizer-share";
+import ConcertForYou from "@/components/concerts/concert-for-you";
 import ConcertStickyBar from "@/components/concerts/concert-sticky-bar";
 import ConcertReviewModal from "@/components/concerts/concert-review-modal";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
@@ -171,6 +172,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             <div ref={termsRef} id="sec-terms" className="scroll-mt-[72px]">
               <ConcertTerms concertId={id} terms={concert.terms_conditions ?? "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."} />
             </div>
+            <ConcertForYou excludeId={id} />
             <div className="lg:hidden">
               <ConcertOrganizerShare eventTitle={concert.title} />
             </div>
