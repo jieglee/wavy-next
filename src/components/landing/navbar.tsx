@@ -102,7 +102,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           >
             <LayoutGrid className="h-4 w-4" style={{ color: PINK }} />
             {t("kategori")}
-            <ChevronDown className={`h-3.5 w-3.5 text-[#8B889C] transition-transform ${catOpen ? "rotate-180" : ""}`} />
           </button>
           {catOpen && (
             <div className="absolute left-0 top-full z-50 mt-3">
