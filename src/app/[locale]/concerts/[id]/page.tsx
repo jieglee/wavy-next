@@ -140,7 +140,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
       <ConcertStickyHeader tabs={tabs} activeTab={activeTab} minPrice={minPrice} onBuy={handleBuyTicket} />
 
-      <div className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1180px] px-0 py-3 sm:px-0 lg:px-2">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           <div className="space-y-6 min-w-0">
             <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">

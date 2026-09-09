@@ -5,12 +5,12 @@ import { sanitizeHtml } from "@/lib/sanitize";
 const ConcertTerms = forwardRef<HTMLDivElement, { terms: string }>(({ terms }, ref) => {
   if (!terms) return null;
   return (
-    <section ref={ref} id="sec-terms" className="scroll-mt-[140px] rounded-2xl bg-white p-5 sm:p-6">
+    <section ref={ref} id="sec-terms" className="scroll-mt-[140px]">
       <div className="flex items-center gap-2">
         <ShieldCheck className="h-4 w-4 text-[#1E40AF]" />
-        <h2 className="text-[15px] font-bold text-[#111827]">Syarat & Ketentuan</h2>
+        <h2 className="text-[16px] font-bold text-[#111827]">Syarat & Ketentuan</h2>
       </div>
-      <div className="tnc-html mt-3 text-[13px] leading-6 text-[#4B5563]" dangerouslySetInnerHTML={{ __html: sanitizeHtml(terms) }} />
+      <div className="tnc-html mt-3 font-sans text-[14px] leading-6 text-[#4B5563]" dangerouslySetInnerHTML={{ __html: sanitizeHtml(terms) }} />
     </section>
   );
 });
