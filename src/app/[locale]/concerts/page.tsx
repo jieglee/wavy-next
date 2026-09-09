@@ -2,14 +2,15 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, MapPin, Calendar, Ticket, ArrowLeft } from "lucide-react";
+import { Search, Ticket, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+import ConcertCard from "@/components/concerts/concert-card";
 import { apiGet } from "@/lib/api";
 import type { Concert } from "@/types/type";
 
-const CATEGORIES = ["Semua", "Rock", "Pop", "Jazz", "EDM", "Indie", "K-Pop", "Festival", "Akustik"];
+const FALLBACK_CATEGORIES = Array.from(new Set(["Festival", "K-Pop", "Pop", "EDM", "Indie", "Jazz"]));
 
 const GRADIENTS = [
   "linear-gradient(135deg,#7DD3E8,#4A90D9)",
@@ -29,6 +30,34 @@ const fallbackConcerts: Concert[] = [
   { id: 6, title: "Jazz Under The Stars", category: "Jazz", venue: "Dago Tea House, Bandung", date: "2026-09-28T18:30:00Z", poster_url: "", status: "published", artist_name: "Tompi & Friends", organizer_name: "Java Festival", min_price: 425000, remaining: 200 },
 ];
 
+function extractConcerts(data: unknown): Concert[] {
+  if (Array.isArray(data)) return data as Concert[];
+  if (data && typeof data === "object") {
+    const d = data as Record<string, unknown>;
+    if (Array.isArray(d.concerts)) return d.concerts as Concert[];
+    if (Array.isArray(d.data)) return d.data as Concert[];
+    if (Array.isArray(d.events)) return d.events as Concert[];
+    if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) {
+      return (d.concerts as Record<string, unknown>).data as Concert[];
+    }
+  }
+  return [];
+}
+
+function uniqueCategories(concerts: Concert[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const c of concerts) {
+    const cat = (c.category || "").trim();
+    if (!cat) continue;
+    const key = cat.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(cat);
+  }
+  return out;
+}
+
 function ConcertsPageInner() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
@@ -37,7 +66,31 @@ function ConcertsPageInner() {
   const [query, setQuery] = useState(initialQuery);
   const [selectedCat, setSelectedCat] = useState(initialCat);
   const [concerts, setConcerts] = useState<Concert[]>([]);
+  const [categories, setCategories] = useState<string[]>(["Semua", ...FALLBACK_CATEGORIES]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const data = await apiGet<unknown>("/concerts");
+        const all = extractConcerts(data);
+        const source = all.length > 0 ? all : fallbackConcerts;
+        const uniq = uniqueCategories(source);
+        setCategories((prev) => {
+          const base = uniq.length > 0 ? uniq : uniqueCategories(fallbackConcerts);
+          const next = ["Semua", ...base];
+          if (initialCat !== "Semua" && !next.some((c) => c.toLowerCase() === initialCat.toLowerCase())) {
+            next.splice(1, 0, initialCat);
+          }
+          if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
+          return next;
+        });
+      } catch {
+        // keep fallback categories
+      }
+    }
+    fetchCategories();
+  }, [initialCat]);
 
   useEffect(() => {
     async function fetchConcerts() {
@@ -48,9 +101,10 @@ function ConcertsPageInner() {
         const qs = [catParam, qParam].filter(Boolean).join("&");
         const path = `/concerts${qs ? `?${qs}` : ""}`;
 
-        const data = await apiGet<Concert[]>(path);
-        if (Array.isArray(data) && data.length > 0) {
-          setConcerts(data);
+        const data = await apiGet<unknown>(path);
+        const list = extractConcerts(data);
+        if (list.length > 0) {
+          setConcerts(list);
         } else if (!query && selectedCat === "Semua") {
           setConcerts(fallbackConcerts);
         } else {
@@ -119,9 +173,9 @@ function ConcertsPageInner() {
           </div>
         </div>
 
-        {/* Category Filters */}
+        {/* Category Filters — derived from real data */}
         <div className="scrollbar-hide mb-8 flex gap-2 overflow-x-auto pb-2">
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const active = selectedCat === cat;
             return (
               <button
@@ -139,15 +193,19 @@ function ConcertsPageInner() {
           })}
         </div>
 
-        {/* Concerts Grid */}
+        {/* Concerts Grid — same card as landing (FeaturedEvents) */}
         {loading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="animate-pulse rounded-2xl border border-[#EDEBF2] bg-white p-4 shadow-sm">
-                <div className="aspect-video w-full rounded-xl bg-gray-200" />
-                <div className="mt-4 h-4 w-3/4 rounded bg-gray-200" />
-                <div className="mt-2 h-3 w-1/2 rounded bg-gray-200" />
-                <div className="mt-4 h-5 w-1/3 rounded bg-gray-200" />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-16/7 w-full rounded-xl bg-gray-200" />
+                <div className="mt-3 h-3 w-1/2 rounded bg-gray-200" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-gray-200" />
+                <div className="mt-1 h-3 w-2/3 rounded bg-gray-200" />
+                <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
+                  <div className="h-3 w-16 rounded bg-gray-200" />
+                  <div className="mt-1 h-4 w-24 rounded bg-gray-200" />
+                </div>
               </div>
             ))}
           </div>
@@ -167,91 +225,23 @@ function ConcertsPageInner() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {concerts.map((concert, idx) => {
               const gradient = GRADIENTS[idx % GRADIENTS.length];
-              const dateStr = new Date(concert.date).toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              });
               const priceStr = concert.min_price
                 ? Number(concert.min_price).toLocaleString("id-ID")
                 : "150.000";
-
               return (
-                <Link
+                <ConcertCard
                   key={concert.id}
-                  href={`/concerts/${concert.id}`}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-[#EDEBF2] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#FF5470]/40 hover:shadow-xl"
-                >
-                  {/* Poster / Gradient Header */}
-                  <div className="relative aspect-video w-full overflow-hidden">
-                    {concert.poster_url ? (
-                      <>
-                        <img
-                          src={concert.poster_url}
-                          alt={concert.title}
-                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      </>
-                    ) : (
-                      <>
-                        <div
-                          className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                          style={{ background: gradient }}
-                        />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      </>
-                    )}
-
-                    <span className="absolute left-3 top-3 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
-                      {concert.category}
-                    </span>
-
-                    {concert.remaining !== undefined && (
-                      <span className="absolute right-3 top-3 rounded-full bg-[#FF5470] px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
-                        Sisa {concert.remaining} Tiket
-                      </span>
-                    )}
-
-                    <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <p className="text-xs font-medium text-white/80">{concert.artist_name}</p>
-                      <h2 className="truncate font-display text-lg font-bold text-white">
-                        {concert.title}
-                      </h2>
-                    </div>
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="flex flex-1 flex-col justify-between p-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1.5 text-xs text-[#6B6875]">
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-[#FF5470]" />
-                        <span className="truncate">{concert.venue}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-[#6B6875]">
-                        <Calendar className="h-3.5 w-3.5 shrink-0 text-[#1B1A3A]" />
-                        <span>{dateStr}</span>
-                      </div>
-                    </div>
-
-                    {/* Price & Action */}
-                    <div className="mt-4 flex items-center justify-between border-t border-[#EDEBF2] pt-3">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-wider text-[#8B889C]">Mulai dari</p>
-                        <p className="font-mono text-base font-extrabold text-[#1B1A3A]">
-                          Rp{priceStr}
-                        </p>
-                      </div>
-                      <span className="rounded-full bg-[#1B1A3A] px-3.5 py-1.5 text-xs font-bold text-white transition-colors group-hover:bg-[#FF5470]">
-                        Beli Tiket
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+                  id={concert.id}
+                  title={concert.title}
+                  location={concert.venue || "Indonesia"}
+                  organizer={concert.organizer_name || concert.artist_name || "Event Organizer"}
+                  price={priceStr}
+                  gradient={gradient}
+                  poster_url={concert.poster_url || undefined}
+                />
               );
             })}
           </div>
