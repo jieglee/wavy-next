@@ -7,6 +7,7 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { getAuthToken, getAuthRole, getAuthUser, clearAuthSession } from "@/lib/api";
 import CategoryDropdown from "@/components/nav/category-dropdown";
+import SearchDropdown from "@/components/nav/search-dropdown";
 
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
@@ -21,9 +22,13 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const [userOpen, setUserOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string } | null>(null);
   const [currentRole, setCurrentRole] = useState<string | null>(null);
   const catRef = useRef<HTMLDivElement>(null);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -41,10 +46,19 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
-      if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
+      const target = e.target as Node;
+      if (catRef.current && !catRef.current.contains(target)) setCatOpen(false);
+      if (searchWrapRef.current && !searchWrapRef.current.contains(target)) setSearchOpen(false);
+      if (langRef.current && !langRef.current.contains(target)) setLangOpen(false);
+      if (userRef.current && !userRef.current.contains(target)) setUserOpen(false);
     }
     function onEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") setCatOpen(false);
+      if (e.key === "Escape") {
+        setCatOpen(false);
+        setSearchOpen(false);
+        setLangOpen(false);
+        setUserOpen(false);
+      }
     }
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onEsc);
@@ -61,6 +75,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
+    setSearchOpen(false);
     if (searchQuery.trim()) {
       router.push(`/concerts?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
@@ -80,7 +95,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   return (
     <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
       <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6">
-        {/* Logo + nama */}
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
           <span className="font-display text-xl font-bold tracking-tight" style={{ color: NAVY }}>
@@ -95,6 +109,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               setCatOpen((v) => !v);
               setLangOpen(false);
               setUserOpen(false);
+              setSearchOpen(false);
             }}
             aria-expanded={catOpen}
             className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-70"
@@ -110,23 +125,32 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           )}
         </div>
 
-        {/* Search */}
-        <form
-          onSubmit={handleSearch}
-          className="mx-auto flex w-full max-w-xl items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-4 py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
-        >
-          <Search className="h-4 w-4 shrink-0 text-[#8B889C]" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("searchPlaceholder")}
-            className="w-full bg-transparent text-sm outline-none placeholder:text-[#8B889C]"
-            style={{ color: NAVY }}
-          />
-        </form>
+        <div ref={searchWrapRef} className="relative mx-auto flex w-full max-w-xl">
+          <form
+            onSubmit={handleSearch}
+            className="flex w-full items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-4 py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
+          >
+            <Search className="h-4 w-4 shrink-0 text-[#8B889C]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              placeholder={t("searchPlaceholder")}
+              className="w-full bg-transparent text-sm outline-none placeholder:text-[#8B889C]"
+              style={{ color: NAVY }}
+            />
+          </form>
+          {searchOpen && (
+            <div className="absolute inset-x-0 top-full z-50 mt-3">
+              <SearchDropdown query={searchQuery} onSelect={() => setSearchOpen(false)} />
+            </div>
+          )}
+        </div>
 
-        {/* Kerjasama EO */}
         <Link
           href="/organizer/login"
           className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A] lg:flex"
@@ -135,8 +159,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           {t("kerjasama")}
         </Link>
 
-        {/* Bahasa */}
-        <div className="relative shrink-0">
+        <div ref={langRef} className="relative shrink-0">
           <button
             onClick={() => {
               setLangOpen(!langOpen);
@@ -172,8 +195,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           )}
         </div>
 
-        {/* Akun / User Dropdown */}
-        <div className="relative shrink-0">
+        <div ref={userRef} className="relative shrink-0">
           {currentUser ? (
             <button
               onClick={() => {

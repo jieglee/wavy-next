@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { getAuthToken, getAuthUser, clearAuthSession } from "@/lib/api";
+import SearchDropdown from "@/components/nav/search-dropdown";
 
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
@@ -14,9 +15,11 @@ export default function AppNavbar() {
   const t = useTranslations("AppNav");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = getAuthToken();
@@ -24,15 +27,28 @@ export default function AppNavbar() {
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setUserOpen(false);
+    function onDown(e: MouseEvent) {
+      const target = e.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target)) setUserOpen(false);
+      if (searchWrapRef.current && !searchWrapRef.current.contains(target)) setSearchOpen(false);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    function onEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setUserOpen(false);
+        setSearchOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onEsc);
+    };
   }, []);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
+    setSearchOpen(false);
     if (searchQuery.trim()) {
       router.push(`/concerts?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
@@ -65,20 +81,31 @@ export default function AppNavbar() {
           {t("browse")}
         </Link>
 
-        <form
-          onSubmit={handleSearch}
-          className="mx-auto hidden w-full max-w-xl items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-4 py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white md:flex"
-        >
-          <Search className="h-4 w-4 shrink-0 text-[#8B889C]" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("searchPlaceholder")}
-            className="w-full bg-transparent text-sm outline-none placeholder:text-[#8B889C]"
-            style={{ color: NAVY }}
-          />
-        </form>
+        <div ref={searchWrapRef} className="relative mx-auto hidden w-full max-w-xl md:block">
+          <form
+            onSubmit={handleSearch}
+            className={`flex w-full items-center gap-2 border px-4 py-2 transition-colors ${searchOpen ? "rounded-t-2xl rounded-b-none border-[#FF5470]/40 border-b-transparent bg-white" : "rounded-full border-[#EDEBF2] bg-[#FAFAF8] focus-within:border-[#FF5470]/40 focus-within:bg-white"}`}
+          >
+            <Search className="h-4 w-4 shrink-0 text-[#8B889C]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              placeholder={t("searchPlaceholder")}
+              className="w-full bg-transparent text-sm outline-none placeholder:text-[#8B889C]"
+              style={{ color: NAVY }}
+            />
+          </form>
+          {searchOpen && (
+            <div className="absolute inset-x-0 top-full z-50 -mt-px">
+              <SearchDropdown query={searchQuery} onSelect={() => setSearchOpen(false)} attached />
+            </div>
+          )}
+        </div>
 
         <Link
           href="/tickets"
