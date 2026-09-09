@@ -5,10 +5,10 @@ const ConcertGallery = forwardRef<HTMLDivElement, { gallery: string[]; title: st
     if (!gallery?.length) return null;
     return (
   <section ref={ref} id="sec-gallery" className="scroll-mt-[140px]">
-        <h2 className="text-[16px] font-bold text-[#111827]">Galeri</h2>
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <h2 className="font-sans text-[24px] font-bold text-[#111827]">Galeri</h2>
+        <div className="mt-4 flex flex-col gap-4">
           {gallery.map((url, i) => (
-            <div key={i} className="overflow-hidden rounded-xl">
+            <div key={i} className="overflow-hidden rounded-2xl">
               <img src={url} alt={`${title} ${i + 1}`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
             </div>
           ))}
