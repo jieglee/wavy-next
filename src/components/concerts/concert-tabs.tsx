@@ -10,11 +10,11 @@ export default function ConcertTabs({ tabs, activeTab }: { tabs: Tab[]; activeTa
             key={tab.id}
             onClick={tab.onClick}
             className={`relative whitespace-nowrap px-5 py-3 text-[14px] font-semibold transition-colors ${
-              active ? "text-[#0F56FF]" : "text-[#9AA0A6] hover:text-[#4B5563]"
+              active ? "text-[#1E40AF]" : "text-[#9AA0A6] hover:text-[#4B5563]"
             }`}
           >
             {tab.label}
-            <span className={`absolute bottom-0 left-3 right-3 h-[3px] rounded-full ${active ? "bg-[#0F56FF]" : "bg-transparent"}`} />
+            <span className={`absolute bottom-0 left-3 right-3 h-[3px] rounded-full ${active ? "bg-[#1E40AF]" : "bg-transparent"}`} />
           </button>
         );
       })}
