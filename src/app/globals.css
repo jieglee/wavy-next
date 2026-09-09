@@ -96,6 +96,27 @@ body {
 .tnc-terms ul li strong {
   color: #111827;
 }
+.tnc-terms ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+.tnc-terms ol li {
+  margin-top: 1rem;
+  list-style: decimal;
+}
+.tnc-terms ol li::marker {
+  color: #111827;
+  font-weight: 700;
+}
+.tnc-terms ol li strong {
+  color: #111827;
+}
+.tnc-terms ol li em {
+  color: #fb7185;
+  font-style: italic;
+  display: block;
+  margin-top: 0.25rem;
+}
 .tnc-html ul,
 .tnc-html ol {
   margin-top: 0.5rem;
