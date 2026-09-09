@@ -10,7 +10,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string }>(({ terms }, r
         <ShieldCheck className="h-4 w-4 text-[#1E40AF]" />
         <h2 className="text-[16px] font-bold text-[#111827]">Syarat & Ketentuan</h2>
       </div>
-      <div className="tnc-html mt-3 font-sans text-[14px] leading-6 text-[#4B5563]" dangerouslySetInnerHTML={{ __html: sanitizeHtml(terms) }} />
+      <div className="tnc-html mt-3 font-sans text-[14px] leading-5 text-[#4B5563]" dangerouslySetInnerHTML={{ __html: sanitizeHtml(terms) }} />
     </section>
   );
 });
