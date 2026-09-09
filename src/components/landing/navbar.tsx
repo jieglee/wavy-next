@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, LayoutGrid, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Shield, Calendar } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { getAuthToken, getAuthRole, getAuthUser, clearAuthSession } from "@/lib/api";
+import CategoryDropdown from "@/components/nav/category-dropdown";
 
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
@@ -18,9 +19,11 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
   const [langOpen, setLangOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string } | null>(null);
   const [currentRole, setCurrentRole] = useState<string | null>(null);
+  const catRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,6 +38,21 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
     }, 0);
     return () => clearTimeout(timer);
   }, [pathname]);
+
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
+    }
+    function onEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") setCatOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, []);
 
   function switchLocale(nextLocale: string) {
     router.replace(pathname, { locale: nextLocale });
@@ -70,15 +88,28 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           </span>
         </Link>
 
-        {/* Kategori / Jelajah */}
-        <Link
-          href="/concerts"
-          className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-70 sm:flex"
-          style={{ color: NAVY }}
-        >
-          <LayoutGrid className="h-4 w-4" style={{ color: PINK }} />
-          {t("kategori")}
-        </Link>
+        <div ref={catRef} className="relative hidden shrink-0 sm:block">
+          <button
+            type="button"
+            onClick={() => {
+              setCatOpen((v) => !v);
+              setLangOpen(false);
+              setUserOpen(false);
+            }}
+            aria-expanded={catOpen}
+            className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-70"
+            style={{ color: NAVY }}
+          >
+            <LayoutGrid className="h-4 w-4" style={{ color: PINK }} />
+            {t("kategori")}
+            <ChevronDown className={`h-3.5 w-3.5 text-[#8B889C] transition-transform ${catOpen ? "rotate-180" : ""}`} />
+          </button>
+          {catOpen && (
+            <div className="absolute left-0 top-full z-50 mt-3">
+              <CategoryDropdown onSelect={() => setCatOpen(false)} />
+            </div>
+          )}
+        </div>
 
         {/* Search */}
         <form
