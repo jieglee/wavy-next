@@ -8,6 +8,7 @@ import { WavyIcon } from "@/components/landing/wavy-icon";
 import { getAuthToken, getAuthRole, getAuthUser, clearAuthSession } from "@/lib/api";
 import CategoryDropdown from "@/components/nav/category-dropdown";
 import SearchDropdown from "@/components/nav/search-dropdown";
+import AnimatedSearchPlaceholder from "@/components/nav/animated-search-placeholder";
 
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
@@ -128,9 +129,9 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         <div ref={searchWrapRef} className="relative mx-auto flex w-full max-w-xl">
           <form
             onSubmit={handleSearch}
-            className="flex w-full items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-4 py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
+            className="relative flex w-full items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-4 py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
           >
-            <Search className="h-4 w-4 shrink-0 text-[#8B889C]" />
+            <Search className="relative z-10 h-4 w-4 shrink-0 text-[#8B889C]" />
             <input
               type="text"
               value={searchQuery}
@@ -139,10 +140,14 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
                 setSearchOpen(true);
               }}
               onFocus={() => setSearchOpen(true)}
-              placeholder={t("searchPlaceholder")}
-              className="w-full bg-transparent text-sm outline-none placeholder:text-[#8B889C]"
+              placeholder=""
+              aria-label={t("searchPlaceholder")}
+              className="relative z-10 w-full bg-transparent text-sm outline-none"
               style={{ color: NAVY }}
             />
+            <div className="pointer-events-none absolute inset-0 left-11 flex items-center overflow-hidden pr-4">
+              {!searchQuery && <AnimatedSearchPlaceholder active={!searchQuery} />}
+            </div>
           </form>
           {searchOpen && (
             <div className="absolute inset-x-0 top-full z-50 mt-3">
