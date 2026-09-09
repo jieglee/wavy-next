@@ -15,7 +15,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
   return (
     <section ref={ref} id="sec-terms" className="scroll-mt-[140px]">
       <div className="flex items-center gap-2">
-        <ShieldCheck className="h-4 w-4 text-[#1E40AF]" />
+        <ShieldCheck className="h-5 w-5 text-[#111827] stroke-[2.5]" />
         <h2 className="font-sans text-[16px] font-bold text-[#111827]">Syarat & Ketentuan</h2>
       </div>
       <div className="tnc-terms mt-3 font-sans text-base leading-6 text-gray-800 [&_a]:text-rose-500 [&_a]:underline [&_em]:!text-rose-500 [&_h3_em]:!text-rose-500 [&_h4_em]:!text-rose-500 [&_strong_em]:!text-rose-500" dangerouslySetInnerHTML={{ __html: html }} />
