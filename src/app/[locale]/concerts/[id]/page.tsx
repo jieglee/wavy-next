@@ -126,7 +126,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const minPrice = getMinPrice(concert);
   const banner = concert.poster_url || concert.photo_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
 
-  const tabs = [
+    const tabs = [
     { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
     { id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) },
     { id: "ticket", label: "Tiket", onClick: () => scrollToSection("gallery", galleryRef) },
