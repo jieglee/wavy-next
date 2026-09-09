@@ -171,7 +171,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             <div ref={termsRef} id="sec-terms" className="scroll-mt-[72px]">
               <ConcertTerms concertId={id} terms={concert.terms_conditions ?? "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."} />
             </div>
-            <ConcertArtist artistName={concert.artist_name} bio={concert.bio} genre={concert.genre} isFollowing={isFollowingArtist} onFollow={handleFollowArtist} />
             <ConcertReviews reviews={concert.reviews} avgRating={concert.avg_rating} reviewCount={concert.review_count} onWriteReview={() => setReviewModal(true)} />
             <div className="lg:hidden">
               <ConcertOrganizerShare eventTitle={concert.title} />

@@ -106,7 +106,7 @@ body {
 }
 .tnc-terms ol li::marker {
   color: #111827;
-  font-weight: 700;
+  font-weight: 400;
 }
 .tnc-terms ol li strong {
   color: #111827;

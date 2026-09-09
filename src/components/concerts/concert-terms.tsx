@@ -10,6 +10,8 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
   html = html.replace(/Email:\s*[^<]*support@loket\.com[^<]*/gi, "");
   html = html.replace(/Customer Service Info[\s\S]*?FLABBERGAST PRODUCTIONS/gi, "FLABBERGAST PRODUCTIONS");
   html = html.replace(/For more information about ticket purchase[\s\S]*?FLABBERGAST/gi, "FLABBERGAST");
+  html = html.replace(/Hari\s*\/\s*Tanggal\s*<br[^>]*>\s*<em[^>]*>\s*Day\s*\/\s*Date\s*<\/em>\s*<br[^>]*>\s*:\s*([^<]+)\s*<br[^>]*>\s*<em[^>]*>\s*:\s*([^<]+)\s*<\/em>/gi, "Hari / Tanggal : $1<br><em>Day / Date : $2</em>");
+  html = html.replace(/Waktu\s*<br[^>]*>\s*<em[^>]*>\s*Time\s*<\/em>\s*<br[^>]*>\s*:\s*([^<]+)\s*<br[^>]*>\s*<em[^>]*>\s*:\s*([^<]+)\s*<\/em>/gi, "Waktu : $1<br><em>Time : $2</em>");
   return (
     <section ref={ref} id="sec-terms" className="scroll-mt-[140px]">
       <div className="flex items-center gap-2">
