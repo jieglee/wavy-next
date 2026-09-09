@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import ConcertHero from "@/components/concerts/concert-hero";
-import ConcertStickyHeader from "@/components/concerts/concert-sticky-header";
 import ConcertDescription from "@/components/concerts/concert-description";
 import ConcertGallery from "@/components/concerts/concert-gallery";
 import ConcertSeatmap from "@/components/concerts/concert-seatmap";
@@ -20,6 +19,7 @@ import ConcertReviewModal from "@/components/concerts/concert-review-modal";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
 import { getMinPrice, formatIDR } from "@/lib/price";
 import type { ConcertDetail } from "@/types/type";
+import ConcertTabs from "@/components/concerts/concert-tabs";
 
 async function loadConcert(id: string): Promise<ConcertDetail> {
   try {
@@ -125,7 +125,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       : undefined);
   const soldOut = remaining !== undefined && remaining <= 0;
   const minPrice = getMinPrice(concert);
-  const banner = concert.poster_url || concert.photo_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
 
   const dateObj = new Date(concert.date);
   const dateStr = dateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
@@ -144,117 +143,143 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     <div className="min-h-screen bg-white pb-20 lg:pb-0">
       <Navbar sticky={false} />
 
-      {/* ── Hero (blurred poster bg + poster card) ── */}
+      {/* ── Hero: event information and poster share the same visual plane ── */}
       <ConcertHero concert={concert} />
 
-      {/* ── Sticky tab bar ── */}
-      <ConcertStickyHeader tabs={tabs} activeTab={activeTab} minPrice={minPrice} onBuy={handleBuyTicket} />
+      {/* Tabs and purchase action share one row directly below the hero. */}
+      <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
+        <div className="relative z-40 grid items-center border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+          <div className="min-w-0">
+            <ConcertTabs tabs={tabs} activeTab={activeTab} />
+          </div>
+          <div className="flex items-center justify-between gap-4 px-5 py-3 lg:px-5">
+            <div className="leading-none">
+              <p className="text-[12px] text-[#6B7280]">Harga mulai dari</p>
+              <p className="mt-1 text-[18px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
+            </div>
+            <button
+              onClick={handleBuyTicket}
+              className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white transition hover:bg-[#0B46D9]"
+            >
+              Beli Tiket
+            </button>
+          </div>
+        </div>
 
-      {/* ── Two-column content ── */}
-      <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:px-8">
+        {/* ── Main event layout ── */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
 
-          {/* ── Left column: content (no card wrappers, Loket style) ── */}
-          <div className="space-y-8 min-w-0">
+          {/* =========================================================
+        LEFT COLUMN
+        ========================================================= */}
+          <div className="min-w-0">
+            <div className="space-y-8 pt-8">
 
-            {/* Mobile-only: poster + price card */}
-            <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-              <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
-              <div className="flex items-center justify-between gap-4 px-5 py-4">
-                <div className="min-w-0">
-                  <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
-                  <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
-                </div>
-                <button onClick={handleBuyTicket} className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]">Beli Tiket</button>
+              <div ref={descRef}>
+                <ConcertDescription
+                  description={concert.description}
+                />
               </div>
-              <div className="flex items-center gap-3 border-t border-[#F3F4F6] bg-[#FAFBFC] px-5 py-3.5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black tracking-wide text-white">FBG</div>
-                <div className="min-w-0">
-                  <p className="text-[11px] leading-none text-[#9AA0A6]">Diselenggarakan oleh</p>
-                  <p className="mt-1 truncate text-[13px] font-bold leading-none text-[#111827]">{concert.organizer_name}</p>
-                </div>
-              </div>
-            </div>
 
-            <div ref={descRef}>
-              <ConcertDescription description={concert.description} />
-            </div>
-            <div ref={galleryRef}>
-              <ConcertGallery gallery={concert.gallery ?? []} title={concert.title} />
-            </div>
-            <div ref={ticketRef}>
-              <ConcertSeatmap seatmap={concert.seatmap} />
-            </div>
-            <div ref={termsRef}>
-              <ConcertTerms terms={concert.terms_conditions ?? "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."} />
-            </div>
-            <ConcertArtist artistName={concert.artist_name} bio={concert.bio} genre={concert.genre} isFollowing={isFollowingArtist} onFollow={handleFollowArtist} />
-            <ConcertReviews reviews={concert.reviews} avgRating={concert.avg_rating} reviewCount={concert.review_count} onWriteReview={() => setReviewModal(true)} />
-            <div className="lg:hidden">
-              <ConcertOrganizerShare eventTitle={concert.title} />
+              <div ref={galleryRef}>
+                <ConcertGallery
+                  gallery={concert.gallery ?? []}
+                  title={concert.title}
+                />
+              </div>
+
+              <div ref={ticketRef}>
+                <ConcertSeatmap
+                  seatmap={concert.seatmap}
+                />
+              </div>
+
+              <div ref={termsRef}>
+                <ConcertTerms
+                  terms={
+                    concert.terms_conditions ??
+                    "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."
+                  }
+                />
+              </div>
+
+              <ConcertArtist
+                artistName={concert.artist_name}
+                bio={concert.bio}
+                genre={concert.genre}
+                isFollowing={isFollowingArtist}
+                onFollow={handleFollowArtist}
+              />
+
+              <ConcertReviews
+                reviews={concert.reviews}
+                avgRating={concert.avg_rating}
+                reviewCount={concert.review_count}
+                onWriteReview={() => setReviewModal(true)}
+              />
+
+              <div className="lg:hidden">
+                <ConcertOrganizerShare
+                  eventTitle={concert.title}
+                />
+              </div>
+
             </div>
           </div>
 
-          {/* ── Right column: unified sticky sidebar card (Loket style) ── */}
-          <aside className="hidden lg:block relative z-20 -mt-[260px]">
-            <div className="sticky top-[60px] space-y-4">
-              {/* Main unified card: Poster + Price + Info + Organizer + Share */}
-              <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
-                {/* 1. Poster Image (seamless top of card, sits in hero area at scroll 0) */}
-                <div className="w-full overflow-hidden bg-black/5">
-                  <img
-                    src={banner}
-                    alt={concert.title}
-                    className="block h-auto w-full object-cover"
+
+          {/* =========================================================
+        RIGHT COLUMN
+        ========================================================= */}
+          <aside className="hidden pt-[520px] lg:block">
+            <div className="sticky top-[80px]">
+              <div
+                data-aos="fade-down"
+                data-aos-offset="240"
+                className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
+              >
+
+                <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">
+                  {concert.title}
+                </h2>
+
+                <div className="mt-4 space-y-3">
+
+                  <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                    <span>{concert.venue}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                    <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                    <span>
+                      {dateStr}, {startHour} - {endHour} WIB
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                    <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                    <span>
+                      {concert.category}
+                      &nbsp;•&nbsp;
+                      Musik
+                      &nbsp;•&nbsp;
+                      {concert.genre || "K-Pop"}
+                    </span>
+                  </div>
+
+                </div>
+
+                <div className="mt-5 border-t border-[#F3F4F6] pt-4">
+                  <ConcertOrganizerShare
+                    eventTitle={concert.title}
+                    inline
                   />
                 </div>
 
-                {/* 2. Price bar directly attached under poster - NO GAP */}
-                <div className="flex items-center justify-between gap-4 border-b border-[#F3F4F6] px-5 py-4">
-                  <div className="min-w-0">
-                    <p className="text-[12px] leading-none text-[#6B7280]">Harga mulai dari</p>
-                    <p className="mt-1 text-[18px] font-bold leading-none text-[#111827]">{formatIDR(minPrice)}</p>
-                  </div>
-                  <button
-                    onClick={handleBuyTicket}
-                    className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#0B46D9]"
-                  >
-                    Beli Tiket
-                  </button>
-                </div>
-
-                {/* 3. Event info */}
-                <div className="px-5 pb-5 pt-4">
-                  <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">{concert.title}</h2>
-                  <div className="mt-4 space-y-3">
-                    <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                      <span className="font-medium">{concert.venue}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                      <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                      <span className="font-medium">{dateStr}, {startHour} - {endHour} WIB</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                      <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" strokeWidth={2} />
-                      <span className="font-medium">{concert.category} &nbsp;•&nbsp; Musik &nbsp;•&nbsp; {concert.genre || "K-Pop"}</span>
-                    </div>
-                  </div>
-
-                  {/* 4. Organizer */}
-                  <div className="mt-5 flex items-center gap-3 border-t border-[#F3F4F6] pt-4">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black tracking-wide text-white">FBG</div>
-                    <div className="min-w-0">
-                      <p className="text-[11px] leading-none text-[#9AA0A6]">Diselenggarakan oleh</p>
-                      <p className="mt-1 truncate text-[13px] font-bold leading-none text-[#111827]">{concert.organizer_name}</p>
-                    </div>
-                  </div>
-
-                  {/* 5. Share */}
-                  <ConcertOrganizerShare eventTitle={concert.title} inline />
-                </div>
               </div>
             </div>
+
           </aside>
         </div>
       </div>
