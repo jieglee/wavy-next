@@ -1,30 +1,105 @@
+"use client";
+
 import { MapPin, Calendar, Layers } from "lucide-react";
 import type { ConcertDetail } from "@/types/type";
 
 export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
+  const banner =
+    concert.poster_url ||
+    concert.photo_url ||
+    "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
+
+  const dateObj = new Date(concert.date);
+
+  const dateStr = dateObj.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  const startHour = dateObj.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000);
+
+  const endHour = endDate.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
   return (
-    <section className="relative w-full bg-[#0B0B0B]">
-      <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, #050507 0%, #1A0D0F 28%, #4A1418 62%, #2A1014 85%, #0B0B0B 100%)" }} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-      <div className="relative mx-auto flex max-w-[1180px] flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:px-8 lg:pt-8 lg:pb-12">
-        <div className="min-w-0 flex-1 text-white lg:pt-1">
-          <h1 className="text-[20px] font-bold leading-tight tracking-[-0.02em] sm:text-[24px] lg:text-[26px]">{concert.title || "Tiffany Young: Edge of Calm Tour in Jakarta"}</h1>
-          <div className="mt-5 space-y-3.5">
+    <section
+      id="concert-hero"
+      className="relative w-full overflow-visible bg-[#10191d] lg:h-[300px]"
+    >
+      {/* Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${banner})`,
+            filter: "blur(40px) brightness(0.4)",
+          }}
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/25 to-black/40" />
+      </div>
+
+            <div className="relative mx-auto flex h-full max-w-[1440px] items-center px-2 py-8 sm:px-4 lg:items-stretch lg:px-6 lg:py-0">
+        <div className="grid w-full grid-cols-1 items-center gap-4 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-start lg:gap-4">
+          <div className="min-w-0 text-white lg:pt-10">
+          <h1 className="text-[22px] font-bold leading-tight tracking-tight sm:text-[26px] lg:text-[30px]">
+            {concert.title}
+          </h1>
+
+          <div className="mt-6 space-y-4">
             <div className="flex items-center gap-3 text-[14px]">
-              <MapPin className="h-[20px] w-[20px] shrink-0 text-white" strokeWidth={1.8} />
-              <span className="font-medium text-white">{concert.venue || "JIEXPO Theatre, Jakarta Pusat"}</span>
+              <MapPin
+                className="h-5 w-5 shrink-0 text-white/80"
+                strokeWidth={1.8}
+              />
+              <span className="font-medium">{concert.venue}</span>
             </div>
+
             <div className="flex items-center gap-3 text-[14px]">
-              <Calendar className="h-[20px] w-[20px] shrink-0 text-white" strokeWidth={1.8} />
-              <span className="font-medium text-white">19 Sep 2026, 19:00 - 21:00 WIB</span>
+              <Calendar
+                className="h-5 w-5 shrink-0 text-white/80"
+                strokeWidth={1.8}
+              />
+              <span className="font-medium">
+                {dateStr}, {startHour} - {endHour} WIB
+              </span>
             </div>
+
             <div className="flex items-center gap-3 text-[14px]">
-              <Layers className="h-[20px] w-[20px] shrink-0 text-white" strokeWidth={1.8} />
-              <span className="font-medium tracking-wide text-white">Konser &nbsp;•&nbsp; Musik &nbsp;•&nbsp; K-Pop</span>
+              <Layers
+                className="h-5 w-5 shrink-0 text-white/80"
+                strokeWidth={1.8}
+              />
+
+              <span className="font-medium tracking-wide">
+                {concert.category}
+                &nbsp; • &nbsp;
+                Musik
+                &nbsp; • &nbsp;
+                {concert.genre || "K-Pop"}
+              </span>
             </div>
           </div>
+          </div>
+
+          <div className="relative z-10 hidden h-[460px] w-[520px] translate-y-[-160px] items-end justify-end justify-self-end self-end pr-2 lg:flex">
+            <img
+              src={banner}
+              alt={concert.title}
+              className="block h-full w-full object-contain object-right-bottom"
+            />
+          </div>
         </div>
-        <div className="hidden lg:block lg:w-[360px] lg:shrink-0" />
       </div>
     </section>
   );

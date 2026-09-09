@@ -30,5 +30,8 @@ export function sanitizeHtml(dirty: string): string {
     }
   };
   walk(doc.body);
-  return doc.body.innerHTML;
+  let html = doc.body.innerHTML;
+  html = html.replace(/(?<!["'>])(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+  html = html.replace(/(@[a-zA-Z0-9_.]+)/g, (m) => `<a href="https://instagram.com/${m.slice(1)}" target="_blank" rel="noopener noreferrer">${m}</a>`);
+  return html;
 }

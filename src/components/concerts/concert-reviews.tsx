@@ -13,7 +13,7 @@ export default function ConcertReviews({
   onWriteReview: () => void;
 }) {
   return (
-    <section className="rounded-2xl border border-[#E5E7EB] bg-white p-5 sm:p-6">
+    <section className="scroll-mt-[72px]">
       <div className="flex items-center justify-between gap-4 border-b border-[#F3F4F6] pb-4">
         <div>
           <h2 className="text-[15px] font-bold text-[#111827]">Ulasan</h2>
