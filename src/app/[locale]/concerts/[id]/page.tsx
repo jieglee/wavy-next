@@ -78,11 +78,25 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   useEffect(() => {
     function onScroll() {
-      if (showInfoCard) return;
-      const el = galleryRef.current;
-      if (!el) return;
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.55) {
-        setShowInfoCard(true);
+      const sections = [
+        { id: "desc", ref: descRef },
+        { id: "gallery", ref: galleryRef },
+        { id: "ticket", ref: ticketRef },
+        { id: "terms", ref: termsRef },
+      ];
+      const offset = 160;
+      let current = "desc";
+      for (const s of sections) {
+        const node = s.ref.current;
+        if (node && node.getBoundingClientRect().top <= offset) current = s.id;
+      }
+      setActiveTab(current);
+
+      if (!showInfoCard) {
+        const el = galleryRef.current;
+        if (el && el.getBoundingClientRect().top < window.innerHeight * 0.55) {
+          setShowInfoCard(true);
+        }
       }
     }
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -125,7 +139,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     return (
       <div className="min-h-screen bg-white">
         <Navbar sticky={false} />
-        <div className="mx-auto max-w-[1180px] px-4 py-16 text-center sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1440px] px-2 py-16 text-center sm:px-4 lg:px-6">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0F56FF] border-t-transparent mx-auto" />
           <p className="mt-4 text-sm text-[#6B7280]">Memuat informasi konser...</p>
         </div>
@@ -162,19 +176,19 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       <ConcertHero concert={concert} />
 
       {/* Tabs and purchase action share one row directly below the hero. */}
-      <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
-        <div className="relative z-40 grid items-center border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-8">
+      <div className="mx-auto max-w-[1440px] px-2 sm:px-4 lg:px-6">
+        <div className="relative z-40 grid items-center border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0 lg:grid-cols-[minmax(0,1fr)_520px] lg:gap-4">
           <div className="min-w-0">
             <ConcertTabs tabs={tabs} activeTab={activeTab} />
           </div>
-          <div className="flex items-center justify-between gap-4 px-5 py-3 lg:px-5">
+          <div className="flex items-center justify-between gap-3 px-2 py-3 lg:px-3">
             <div className="leading-none">
               <p className="text-[12px] text-[#6B7280]">Harga mulai dari</p>
-              <p className="mt-1 text-[18px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
+              <p className="mt-1 text-[20px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
             </div>
             <button
               onClick={handleBuyTicket}
-              className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white transition hover:bg-[#0B46D9]"
+              className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-3 text-[15px] font-bold text-white transition hover:bg-[#0B46D9]"
             >
               Beli Tiket
             </button>
@@ -182,13 +196,13 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* ── Main event layout ── */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_520px]">
 
           {/* =========================================================
         LEFT COLUMN
         ========================================================= */}
           <div className="min-w-0">
-            <div className="space-y-8 pt-8">
+            <div className="space-y-6 pt-6">
 
               <div ref={descRef}>
                 <ConcertDescription
@@ -248,7 +262,48 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
         ========================================================= */}
           <aside className="hidden lg:block">
             <div className="sticky top-[80px]">
-              <div className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+              <div className=" bg-white p-6">
+
+                <div
+                  className={`overflow-hidden transition-all duration-500 ${
+                    showInfoCard ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <div>
+                    <h2 className="text-[17px] font-bold leading-tight text-[#1A2B4C]">
+                      {concert.title}
+                    </h2>
+
+                    <div className="mt-4 space-y-3">
+
+                      <div className="flex items-start gap-3 text-[14px] leading-snug text-[#1A2B4C]">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                        <span>{concert.venue}</span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-[14px] text-[#1A2B4C]">
+                        <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                        <span>
+                          {dateStr}, {startHour} - {endHour} WIB
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-[14px] text-[#1A2B4C]">
+                        <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                        <span>
+                          {concert.category}
+                          &nbsp;•&nbsp;
+                          Musik
+                          &nbsp;•&nbsp;
+                          {concert.genre || "K-Pop"}
+                        </span>
+                      </div>
+
+                    </div>
+
+                    <div className="my-5 border-t border-[#EEEEF2]" />
+                  </div>
+                </div>
 
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F56FF]/10 text-[16px] font-bold text-[#0F56FF]">
@@ -265,62 +320,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                     eventTitle={concert.title}
                     inline
                   />
-                </div>
-
-                <div className="mt-5">
-                  <div
-                    className={`overflow-hidden transition-all duration-500 ${
-                      showInfoCard ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <div className="border-t border-[#E5E7EB] pt-5">
-
-                      <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">
-                        {concert.title}
-                      </h2>
-
-                      <div className="mt-4 space-y-3">
-
-                        <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
-                          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
-                          <span>{concert.venue}</span>
-                        </div>
-
-                        <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                          <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
-                          <span>
-                            {dateStr}, {startHour} - {endHour} WIB
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                          <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
-                          <span>
-                            {concert.category}
-                            &nbsp;•&nbsp;
-                            Musik
-                            &nbsp;•&nbsp;
-                            {concert.genre || "K-Pop"}
-                          </span>
-                        </div>
-
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-2 flex items-center justify-between gap-4">
-                  <div className="leading-none">
-                    <p className="text-[12px] text-[#6B7280]">Harga mulai dari</p>
-                    <p className="mt-1 text-[18px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
-                  </div>
-                  <button
-                    onClick={handleBuyTicket}
-                    className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white transition hover:bg-[#0B46D9]"
-                  >
-                    Beli Tiket
-                  </button>
                 </div>
 
               </div>

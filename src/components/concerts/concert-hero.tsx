@@ -49,10 +49,10 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/25 to-black/40" />
       </div>
 
-      <div className="relative mx-auto flex h-full max-w-[1180px] items-center px-4 py-8 sm:px-6 lg:items-stretch lg:px-8 lg:py-0">
-        <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-8">
+            <div className="relative mx-auto flex h-full max-w-[1440px] items-center px-2 py-8 sm:px-4 lg:items-stretch lg:px-6 lg:py-0">
+        <div className="grid w-full grid-cols-1 items-center gap-4 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-start lg:gap-4">
           <div className="min-w-0 text-white lg:pt-10">
-          <h1 className="text-[26px] font-bold leading-tight tracking-tight sm:text-[32px] lg:text-[36px]">
+          <h1 className="text-[22px] font-bold leading-tight tracking-tight sm:text-[26px] lg:text-[30px]">
             {concert.title}
           </h1>
 
@@ -92,11 +92,11 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
           </div>
           </div>
 
-          <div className="relative z-10 hidden h-[260px] translate-y-[32px] items-end justify-end self-end lg:flex">
+          <div className="relative z-10 hidden h-[460px] w-[520px] translate-y-[-160px] items-end justify-end justify-self-end self-end pr-2 lg:flex">
             <img
               src={banner}
               alt={concert.title}
-              className="block h-full w-full rounded-lg object-cover object-right"
+              className="block h-full w-full object-contain object-right-bottom"
             />
           </div>
         </div>
