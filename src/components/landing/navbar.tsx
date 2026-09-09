@@ -113,10 +113,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               setSearchOpen(false);
             }}
             aria-expanded={catOpen}
-            className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-70"
-            style={{ color: NAVY }}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-semibold transition-colors ${catOpen ? "bg-[#EFF6FF] text-[#1E40AF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
+            style={{ color: catOpen ? "#1E40AF" : NAVY }}
           >
-            <LayoutGrid className="h-4 w-4" style={{ color: PINK }} />
+            <LayoutGrid className="h-4 w-4" style={{ color: catOpen ? "#1E40AF" : PINK }} />
             {t("kategori")}
           </button>
           {catOpen && (
