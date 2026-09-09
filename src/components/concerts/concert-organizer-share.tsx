@@ -31,7 +31,7 @@ export default function ConcertOrganizerShare({ eventTitle, inline }: { eventTit
 
   // When used inside sidebar card, render without wrapper
   if (inline) {
-    return <div className="border-t border-[#F3F4F6] pt-4">{content}</div>;
+    return <div>{content}</div>;
   }
 
   // Standalone (mobile) — with card wrapper

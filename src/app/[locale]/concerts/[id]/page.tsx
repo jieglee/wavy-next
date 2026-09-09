@@ -60,6 +60,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const [commentInput, setCommentInput] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
   const [activeTab, setActiveTab] = useState("desc");
+  const [showInfoCard, setShowInfoCard] = useState(false);
   const descRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const ticketRef = useRef<HTMLDivElement>(null);
@@ -74,6 +75,20 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     }
     loadDetail();
   }, [id]);
+
+  useEffect(() => {
+    function onScroll() {
+      if (showInfoCard) return;
+      const el = galleryRef.current;
+      if (!el) return;
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.55) {
+        setShowInfoCard(true);
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [showInfoCard]);
 
   function scrollToSection(tab: string, ref: React.RefObject<HTMLDivElement | null>) {
     setActiveTab(tab);
@@ -148,7 +163,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
       {/* Tabs and purchase action share one row directly below the hero. */}
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
-        <div className="relative z-40 grid items-center border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+        <div className="relative z-40 grid items-center border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-8">
           <div className="min-w-0">
             <ConcertTabs tabs={tabs} activeTab={activeTab} />
           </div>
@@ -167,7 +182,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* ── Main event layout ── */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
 
           {/* =========================================================
         LEFT COLUMN
@@ -231,55 +246,85 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
           {/* =========================================================
         RIGHT COLUMN
         ========================================================= */}
-          <aside className="hidden pt-[520px] lg:block">
+          <aside className="hidden lg:block">
             <div className="sticky top-[80px]">
-              <div
-                data-aos="fade-down"
-                data-aos-offset="240"
-                className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
-              >
+              <div className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
 
-                <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">
-                  {concert.title}
-                </h2>
-
-                <div className="mt-4 space-y-3">
-
-                  <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
-                    <span>{concert.venue}</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F56FF]/10 text-[16px] font-bold text-[#0F56FF]">
+                    {concert.organizer_name?.[0]?.toUpperCase()}
                   </div>
-
-                  <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                    <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
-                    <span>
-                      {dateStr}, {startHour} - {endHour} WIB
-                    </span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-[#6B7280]">Diselenggarakan oleh</p>
+                    <p className="truncate text-[14px] font-semibold text-[#111827]">{concert.organizer_name}</p>
                   </div>
-
-                  <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
-                    <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
-                    <span>
-                      {concert.category}
-                      &nbsp;•&nbsp;
-                      Musik
-                      &nbsp;•&nbsp;
-                      {concert.genre || "K-Pop"}
-                    </span>
-                  </div>
-
                 </div>
 
-                <div className="mt-5 border-t border-[#F3F4F6] pt-4">
+                <div className="mt-5">
                   <ConcertOrganizerShare
                     eventTitle={concert.title}
                     inline
                   />
                 </div>
 
+                <div className="mt-5">
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ${
+                      showInfoCard ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <div className="border-t border-[#E5E7EB] pt-5">
+
+                      <h2 className="text-[16px] font-bold leading-tight text-[#1A2B4C]">
+                        {concert.title}
+                      </h2>
+
+                      <div className="mt-4 space-y-3">
+
+                        <div className="flex items-start gap-3 text-[13px] leading-snug text-[#1A2B4C]">
+                          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                          <span>{concert.venue}</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                          <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                          <span>
+                            {dateStr}, {startHour} - {endHour} WIB
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 text-[13px] text-[#1A2B4C]">
+                          <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                          <span>
+                            {concert.category}
+                            &nbsp;•&nbsp;
+                            Musik
+                            &nbsp;•&nbsp;
+                            {concert.genre || "K-Pop"}
+                          </span>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2 flex items-center justify-between gap-4">
+                  <div className="leading-none">
+                    <p className="text-[12px] text-[#6B7280]">Harga mulai dari</p>
+                    <p className="mt-1 text-[18px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
+                  </div>
+                  <button
+                    onClick={handleBuyTicket}
+                    className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[14px] font-bold text-white transition hover:bg-[#0B46D9]"
+                  >
+                    Beli Tiket
+                  </button>
+                </div>
+
               </div>
             </div>
-
           </aside>
         </div>
       </div>
