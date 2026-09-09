@@ -128,7 +128,11 @@ body {
   margin-bottom: 0.25rem;
 }
 .tnc-html a {
-  color: #ff5470;
+  color: #1a73e8;
+  text-decoration: none;
+  word-break: break-all;
+}
+.tnc-html a:hover {
   text-decoration: underline;
 }
 .tnc-html strong,

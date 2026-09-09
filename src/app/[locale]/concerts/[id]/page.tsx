@@ -142,7 +142,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
       <div className="mx-auto max-w-[1180px] px-0 py-3 sm:px-0 lg:px-2">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-          <div className="space-y-6 min-w-0 pr-9 lg:pr-13">
+          <div className="space-y-6 min-w-0 pr-[60px] lg:pr-[76px]">
             <div className="lg:hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
               <img src={banner} alt={concert.title} className="block h-auto w-full object-contain" />
               <div className="flex items-center justify-between gap-4 px-5 py-4">
