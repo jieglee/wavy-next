@@ -1,15 +1,19 @@
 import { forwardRef } from "react";
+import { Image as ImageIcon } from "lucide-react";
 
 const ConcertGallery = forwardRef<HTMLDivElement, { gallery: string[]; title: string }>(
   ({ gallery, title }, ref) => {
     if (!gallery?.length) return null;
     return (
-      <section ref={ref} id="sec-gallery" className="scroll-mt-[72px]">
-        <h2 className="text-[15px] font-bold text-[#111827]">Galeri</h2>
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+<section ref={ref} id="sec-gallery" className="scroll-mt-[72px]">
+          <div className="flex items-center gap-2">
+            <ImageIcon className="h-5 w-5 text-[#111827] stroke-[2.5]" />
+          <h2 className="font-sans text-[24px] font-bold text-[#111827]">Galeri</h2>
+        </div>
+        <div className="mt-4 flex flex-col gap-4">
           {gallery.map((url, i) => (
-            <div key={i} className="overflow-hidden rounded-xl border border-[#E5E7EB]">
-              <img src={url} alt={`${title} ${i + 1}`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+            <div key={i} className="group overflow-hidden rounded-xl">
+              <img src={url} alt={`${title} ${i + 1}`} className="aspect-video w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy" />
             </div>
           ))}
         </div>

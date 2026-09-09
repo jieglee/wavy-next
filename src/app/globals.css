@@ -78,9 +78,54 @@ body {
   animation: megaphone-wiggle 1.4s ease-in-out infinite;
 }
 
-.tnc-html p {
+.tnc-html {
+  font-family: var(--font-sans);
+  text-align: justify;
+}
+.tnc-terms ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
+}
+.tnc-terms ul li {
+  margin-top: 0.15rem;
+  list-style: disc;
+  line-height: 1.4;
+}
+.tnc-terms ul + p,
+.tnc-terms ul + h4 {
   margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+}
+.tnc-terms h4 + ul {
+  margin-top: 0.25rem;
+}
+.tnc-terms ul li::marker {
+  color: #6b7280;
+}
+.tnc-terms ul li strong {
+  color: #111827;
+}
+.tnc-terms ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+.tnc-terms ol li {
+  margin-top: 1rem;
+  list-style: decimal;
+}
+.tnc-terms ol li::marker {
+  color: #111827;
+  font-weight: 400;
+}
+.tnc-terms ol li strong {
+  color: #111827;
+}
+.tnc-terms ol li em {
+  color: #1E40AF;
+  font-style: italic;
+  display: block;
+  margin-top: 0.25rem;
 }
 .tnc-html ul,
 .tnc-html ol {
@@ -123,7 +168,11 @@ body {
   margin-bottom: 0.25rem;
 }
 .tnc-html a {
-  color: #ff5470;
+  color: #1E40AF;
+  text-decoration: none;
+  word-break: break-all;
+}
+.tnc-html a:hover {
   text-decoration: underline;
 }
 .tnc-html strong,
