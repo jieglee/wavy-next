@@ -215,8 +215,8 @@ export default function FeaturedPicks({
                                             <div
                                                 className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
                                                 style={{
-                                                    top: showDate ? 62 : 0,
-                                                    bottom: -18,
+                                                    top: showDate ? 62 : -18,
+                                                    bottom: -34,
                                                     backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)",
                                                     opacity: 0.7,
                                                 }}
