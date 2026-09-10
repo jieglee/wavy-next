@@ -12,6 +12,7 @@ import AnimatedSearchPlaceholder from "@/components/nav/animated-search-placehol
 
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
+const WAVY_BLUE = "#FF5470";
 
 export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const t = useTranslations("Navbar");
@@ -123,10 +124,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               setSearchOpen(false);
             }}
             aria-expanded={catOpen}
-            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-semibold transition-colors ${catOpen ? "bg-[#EFF6FF] text-[#1E40AF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
-            style={{ color: catOpen ? "#1E40AF" : NAVY }}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-[#EFF6FF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
+            style={{ color: "#1B1A3A" }}
           >
-            <LayoutGrid className="h-4 w-4" style={{ color: catOpen ? "#1E40AF" : PINK }} />
+            <LayoutGrid className="h-4 w-4" style={{ color: "#1B1A3A" }} />
             {t("kategori")}
           </button>
           {catOpen && (
@@ -168,9 +169,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
         <Link
           href="/organizer/login"
-          className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A] lg:flex"
+          className="hidden shrink-0 items-center gap-1.5 text-base font-bold transition-colors hover:opacity-70 lg:flex"
+          style={{ color: "#1B1A3A" }}
         >
-          <Handshake className="h-4 w-4" />
+          <Handshake className="h-4 w-4" style={{ color: "#1B1A3A" }} />
           {t("kerjasama")}
         </Link>
 
@@ -182,9 +184,9 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             }}
             className="flex items-center gap-1 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A]"
           >
-            <Globe className="h-4 w-4" />
+            <Globe className="h-4 w-4" style={{ color: WAVY_BLUE }} />
             {locale === "id" ? "ID" : locale === "ko" ? "KO" : "EN"}
-            <ChevronDown className="h-3.5 w-3.5" />
+            <ChevronDown className="h-3.5 w-3.5" style={{ color: WAVY_BLUE }} />
           </button>
           {langOpen && (
             <div className="absolute right-0 mt-2 w-32 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
@@ -228,8 +230,8 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           ) : (
             <Link
               href="/auth/login"
-              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110 active:scale-95"
-              style={{ backgroundColor: NAVY }}
+              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-base font-bold text-white shadow-sm transition-all hover:brightness-110 active:scale-95"
+              style={{ backgroundColor: WAVY_BLUE }}
             >
               <User className="h-3.5 w-3.5" />
               {t("akun")}
