@@ -220,7 +220,7 @@ export default function FeaturedEvents() {
             </button>
           )}
 
-          <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
+          <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-2 pt-2 sm:gap-4">
             {events.map((event) => (
               <ConcertCard
                 key={event.id}
@@ -231,7 +231,7 @@ export default function FeaturedEvents() {
                 price={event.price}
                 gradient={event.gradient}
                 poster_url={event.poster_url}
-                className="w-72.5 shrink-0 snap-start sm:w-80"
+                className="w-[260px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]"
               />
             ))}
           </div>
