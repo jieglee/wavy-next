@@ -52,6 +52,9 @@ function fallbackPicks(): { pop: PickEvent[]; week: PickEvent[] } {
         week: [
             { id: "6", day: "13", month: "SEP", title: "NIKI: Nicole Live in Jakarta", meta: "13 Sep 2026 • ICE BSD, Tangerang", image: "https://picsum.photos/seed/niki/400/200", href: "/concerts/6" },
             { id: "7", day: "14", month: "SEP", title: "Tulus: Tur Manusia 2026", meta: "14 Sep 2026 • Tennis Indoor Senayan, Jakarta", image: "https://picsum.photos/seed/tulus/400/200", href: "/concerts/7" },
+            { id: "8", day: "14", month: "SEP", title: "Coldplay: Music of the Spheres", meta: "14 Sep 2026 • GBK Main Stadium, Jakarta", image: "https://picsum.photos/seed/coldplay/400/200", href: "/concerts/8" },
+            { id: "9", day: "15", month: "SEP", title: "Sheila On 7: Tunggu Aku Di Jakarta", meta: "15 Sep 2026 • JIExpo Kemayoran, Jakarta", image: "https://picsum.photos/seed/sheila/400/200", href: "/concerts/9" },
+            { id: "10", day: "15", month: "SEP", title: "Festival Musik Indie Bandung", meta: "15 Sep 2026 • Lapangan Gasibu, Bandung", image: "https://picsum.photos/seed/indiefest/400/200", href: "/concerts/10" },
         ],
     };
 }
@@ -87,7 +90,38 @@ export default function FeaturedPicks({
     }, [popularProp, thisWeekProp]);
 
     const [tab, setTab] = useState<"popular" | "thisWeek">("popular");
+    const [showAll, setShowAll] = useState(false);
     const items = tab === "popular" ? popular : thisWeek;
+    const [allConcerts, setAllConcerts] = useState<PickEvent[] | null>(null);
+
+    useEffect(() => {
+        if (!showAll || allConcerts) return;
+        (async () => {
+            try {
+                const data = await apiGet<unknown>("/concerts");
+                const list: Concert[] = Array.isArray(data)
+                    ? (data as Concert[])
+                    : (data as Record<string, unknown>)?.concerts as Concert[] ??
+                      (data as Record<string, unknown>)?.data as Concert[] ??
+                      [];
+                if (list.length) setAllConcerts(list.map(toPick));
+            } catch { /* fallback to 10 */ }
+        })();
+    }, [showAll, allConcerts]);
+
+    const combined = useMemo(() => [...popular, ...thisWeek], [popular, thisWeek]);
+    const allItems = allConcerts ?? combined;
+
+    useEffect(() => {
+        if (!showAll) return;
+        document.body.style.overflow = "hidden";
+        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setShowAll(false); };
+        window.addEventListener("keydown", onKey);
+        return () => {
+            document.body.style.overflow = "";
+            window.removeEventListener("keydown", onKey);
+        };
+    }, [showAll]);
 
     const banner = useMemo(() => [...popular, ...thisWeek].slice(0, 5), [popular, thisWeek]);
     const [active, setActive] = useState(0);
@@ -158,9 +192,9 @@ export default function FeaturedPicks({
                         <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-[#EDEEF6] text-[10px]">🗓️</span>
                         Event2Go
                     </h3>
-                    <a href={viewAllHref} className="text-sm font-medium text-[#1A4BDE] hover:underline">
+                    <button onClick={() => setShowAll(true)} className="text-sm font-medium text-[#1A4BDE] hover:underline">
                         Lebih Banyak Event ›
-                    </a>
+                    </button>
                 </div>
 
                 <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -265,6 +299,61 @@ export default function FeaturedPicks({
           }
         }
       `}</style>
+
+            {showAll && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <button aria-label="Close" onClick={() => setShowAll(false)} className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+                    <div className="relative flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-4">
+                            <h4 className="text-base font-bold text-[#111827]">Semua Event</h4>
+                            <button onClick={() => setShowAll(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]">✕</button>
+                        </div>
+                        <div className="overflow-y-auto px-6 py-2">
+                            {(() => {
+                                const weekday = (m: string, d: string) => {
+                                    try {
+                                        const map: Record<string, number> = { JAN:0,FEB:1,MAR:2,APR:3,MEI:4,MAY:4,JUN:5,JUL:6,AGU:7,AUG:7,SEP:8,OKT:9,OCT:9,NOV:10,DES:11,DEC:11 };
+                                        return new Date(2026, map[m] ?? 0, parseInt(d,10)).toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
+                                    } catch { return ""; }
+                                };
+                                let last = "";
+                                return allItems.map((ev, idx) => {
+                                    const key = `${ev.month}-${ev.day}`;
+                                    const showDate = key !== last;
+                                    const isLast = idx === allItems.length - 1;
+                                    last = key;
+                                    return (
+                                        <a key={`all-${ev.id}`} href={ev.href} className="group relative grid grid-cols-[52px_1fr_96px] items-start gap-4 py-4 hover:bg-[#FAFAFF]">
+                                            <div className="relative flex flex-col items-center self-stretch">
+                                                {showDate ? (
+                                                    <div className="relative z-[1] flex w-[48px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-1 py-2 text-center shadow-sm">
+                                                        <span className="text-[9px] font-semibold uppercase tracking-wide text-[#9CA3AF]">{ev.month}</span>
+                                                        <span className="text-base font-extrabold leading-none text-[#111827]">{ev.day}</span>
+                                                        <span className="mt-0.5 text-[9px] font-medium uppercase text-[#9CA3AF]">{weekday(ev.month, ev.day)}</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-[48px]" aria-hidden />
+                                                )}
+                                                <div
+                                                    className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
+                                                    style={{ top: showDate ? 56 : -16, bottom: isLast ? -6 : -28, backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)", opacity: 0.6 }}
+                                                    aria-hidden
+                                                />
+                                            </div>
+                                            <div className="min-w-0 py-1">
+                                                <p className="line-clamp-2 text-sm font-bold leading-tight text-[#111827] group-hover:text-[#1A4BDE]">{ev.title}</p>
+                                                <p className="mt-1 truncate text-xs text-[#9CA3AF]">{ev.meta}</p>
+                                            </div>
+                                            <img src={ev.image} alt="" className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />
+                                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{ marginLeft: 52, backgroundImage: "repeating-linear-gradient(to right, #E5E7EB 0 4px, transparent 4px 8px)" }} aria-hidden />
+                                        </a>
+                                    );
+                                });
+                            })()}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
