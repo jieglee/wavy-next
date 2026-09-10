@@ -189,7 +189,7 @@ export default function FeaturedPicks({
 
             <div className="ml-24 sm:ml-48">
                 <div className="flex items-center justify-between">
-                    <h3 className="flex items-center gap-2 text-base font-semibold text-[#14121A]">
+                    <h3 className="flex items-center gap-2 text-2xl font-semibold text-[#14121A]">
                         <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-[#EDEEF6] text-[10px]">🗓️</span>
                         Event2Go
                     </h3>
@@ -286,6 +286,15 @@ export default function FeaturedPicks({
             </div>
 
             <style jsx>{`
+        @keyframes goyang {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(15deg); }
+          50% { transform: rotate(0deg); }
+          75% { transform: rotate(-15deg); }
+        }
+        .animasi-goyang:hover {
+          animation: goyang 0.4s ease-in-out infinite;
+        }
         .pick-fade {
           animation: pickFade 0.5s ease-out;
         }
