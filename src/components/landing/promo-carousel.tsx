@@ -80,6 +80,16 @@ export default function PromoCarousel() {
         image: "/images/banner/your-favorite-bts.png",
       },
       {
+        id: "tampilkan-eventmu",
+        eyebrow: "Tampilkan Eventmu",
+        title: "",
+        subtitle: "",
+        ctaLabel: "Lihat konser",
+        ctaHref: "/concerts",
+        gradient: slideGradients[0],
+        image: "/images/banner/tampilkan-eventmu.png",
+      },
+      {
         id: "promo-1",
         eyebrow: t("slide1.eyebrow"),
         title: t("slide1.title"),
