@@ -22,6 +22,9 @@ export default function CtaBanner() {
               Baik kamu pencinta musik yang mau nonton konser favorit, atau Event
               Organizer yang mau jangkau lebih banyak penonton.
             </p>
+            <p className="mt-2 text-center text-xs font-medium text-coral-spotlight">
+              Your favorite event is here BTS
+            </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="#featured"

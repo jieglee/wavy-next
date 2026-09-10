@@ -70,6 +70,16 @@ export default function PromoCarousel() {
         image: "/images/banner/ticket-on-sale-now.png",
       },
       {
+        id: "bts-banner",
+        eyebrow: "Your favorite event is here BTS",
+        title: "",
+        subtitle: "",
+        ctaLabel: "Lihat konser",
+        ctaHref: "/concerts",
+        gradient: slideGradients[0],
+        image: "/images/banner/your-favorite-event-is-here-bts.png",
+      },
+      {
         id: "promo-1",
         eyebrow: t("slide1.eyebrow"),
         title: t("slide1.title"),
