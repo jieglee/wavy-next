@@ -190,7 +190,10 @@ export default function FeaturedPicks({
             <div className="ml-24 sm:ml-48">
                 <div className="flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-2xl font-semibold text-[#14121A]">
-                        <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-[#EDEEF6] text-[10px]">🗓️</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 1024 1024" className="shrink-0 text-[#FF5470]" style={{ filter: "drop-shadow(0 0 0.6px currentColor)" }}>
+                                <path d="M0 0h1024v1024H0z" fill="none" />
+                                <path fill="currentColor" d="M128 384v512h768V192H768v32a32 32 0 1 1-64 0v-32H320v32a32 32 0 0 1-64 0v-32H128v128h768v64zm192-256h384V96a32 32 0 1 1 64 0v32h160a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h160V96a32 32 0 0 1 64 0zm-32 384h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 1 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64" />
+                            </svg>
                         Event2Go
                     </h3>
                     <button onClick={() => setShowAll(true)} className="text-sm font-medium text-[#1A4BDE] hover:underline">
@@ -203,9 +206,9 @@ export default function FeaturedPicks({
                         <button
                             key={key}
                             onClick={() => setTab(key)}
-                            className={`whitespace-nowrap rounded-full border px-4 py-1.5 text-sm transition-colors ${tab === key
-                                    ? "border-[#1A4BDE] bg-white text-[#1A4BDE] shadow-sm ring-1 ring-[#1A4BDE]"
-                                    : "border-[#E7E2EF] text-[#6B6673] hover:border-[#C7BEDA]"
+                            className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 px-5 py-2 text-xs font-bold leading-none transition-all ${tab === key
+                                    ? "border-[#1A4BDE] bg-white text-[#1A4BDE] shadow-[0_2px_8px_rgba(26,75,222,0.14)]"
+                                    : "border-[#E8E3F2] bg-white text-[#6B6673] hover:border-[#D4CFE6]"
                                 }`}
                         >
                             {key === "popular" ? "🔥 Populer" : "🏆 Minggu ini"}
