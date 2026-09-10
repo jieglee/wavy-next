@@ -12,6 +12,7 @@ interface PromoSlide {
   ctaLabel: string;
   ctaHref: string;
   gradient: string;
+  image?: string;
 }
 
 const slideGradients = [
@@ -58,6 +59,16 @@ export default function PromoCarousel() {
   const t = useTranslations("PromoCarousel");
   const slides: PromoSlide[] = useMemo(
     () => [
+      {
+        id: "ticket-onsale",
+        eyebrow: "Ticket On Sale Now",
+        title: "Jelajahi konser terkurasi",
+        subtitle: "Amankan kursimu sebelum kehabisan",
+        ctaLabel: "Lihat konser",
+        ctaHref: "/concerts",
+        gradient: slideGradients[0],
+        image: "/images/banner/ticket-on-sale-now.png",
+      },
       {
         id: "promo-1",
         eyebrow: t("slide1.eyebrow"),
@@ -146,15 +157,24 @@ export default function PromoCarousel() {
             <Sparkles className="absolute bottom-10 right-40 h-4 w-4 text-white/15" />
             <Sparkles className="absolute left-1/3 top-12 h-5 w-5 text-white/10" />
 
-            <div className="relative z-10 max-w-lg">
-              <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
+            {slide.image && (
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            )}
+            {slide.image && <div className="absolute inset-0 bg-black/25" />}
+
+            <div className={`relative z-10 max-w-lg ${slide.image ? "text-white" : ""}`}>
+              <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${slide.image ? "bg-white/15 text-white" : "bg-white/10 text-white/80"}`}>
                 {slide.eyebrow}
               </span>
               <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
                 {slide.title}
               </h2>
               {slide.subtitle && (
-                <p className="mt-2 text-sm text-white/70 sm:text-base">{slide.subtitle}</p>
+                <p className={`mt-2 text-sm sm:text-base ${slide.image ? "text-white/80" : "text-white/70"}`}>{slide.subtitle}</p>
               )}
 
               <a
