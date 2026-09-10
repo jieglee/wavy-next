@@ -228,7 +228,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           ) : (
             <Link
               href="/auth/login"
-              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-base font-bold text-white shadow-sm transition-all hover:brightness-110 active:scale-95"
+              className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-bold text-white shadow-sm transition-all hover:brightness-110 active:scale-95"
               style={{ backgroundColor: WAVY_BLUE }}
             >
               <User className="h-3.5 w-3.5" />
