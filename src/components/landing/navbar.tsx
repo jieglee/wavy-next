@@ -93,8 +93,18 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
     router.push("/");
   }
 
+  const showBackdrop = catOpen || searchOpen;
+
   return (
-    <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
+    <>
+      {showBackdrop && (
+        <button
+          aria-label="Close dropdown"
+          onClick={() => { setCatOpen(false); setSearchOpen(false); }}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity"
+        />
+      )}
+      <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
       <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
@@ -286,5 +296,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         </div>
       </div>
     </header>
+    </>
   );
 }
