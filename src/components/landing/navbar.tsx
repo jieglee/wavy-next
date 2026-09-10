@@ -184,9 +184,9 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             }}
             className="flex items-center gap-1 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A]"
           >
-            <Globe className="h-4 w-4" style={{ color: WAVY_BLUE }} />
-            {locale === "id" ? "ID" : locale === "ko" ? "KO" : "EN"}
-            <ChevronDown className="h-3.5 w-3.5" style={{ color: WAVY_BLUE }} />
+            <Globe className="h-4 w-4" />
+            {locale === "id" ? "ID" : "EN"}
+            <ChevronDown className="h-3.5 w-3.5" />
           </button>
           {langOpen && (
             <div className="absolute right-0 mt-2 w-32 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
@@ -202,12 +202,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               >
                 English
               </button>
-              <button
-                onClick={() => switchLocale("ko")}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "ko" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
-              >
-                한국어
-              </button>
+
             </div>
           )}
         </div>
