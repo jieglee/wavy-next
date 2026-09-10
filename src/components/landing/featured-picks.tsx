@@ -152,7 +152,7 @@ export default function FeaturedPicks({
                 <p className="relative mt-1 text-sm text-white/75">{featured?.meta}</p>
             </div>
 
-            <div className="pl-8 sm:pl-20">
+            <div className="ml-24 sm:ml-48">
                 <div className="flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-base font-semibold text-[#14121A]">
                         <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-[#EDEEF6] text-[10px]">🗓️</span>
@@ -199,7 +199,7 @@ export default function FeaturedPicks({
                                 <a
                                     key={ev.id}
                                     href={ev.href}
-                                    className="group relative grid grid-cols-[56px_1fr_116px] items-start gap-5 py-[18px] pl-8 sm:grid-cols-[60px_1fr_132px] sm:gap-8 sm:pl-20"
+                                    className="group relative grid grid-cols-[56px_1fr_116px] items-start gap-5 py-[18px] sm:grid-cols-[60px_1fr_132px] sm:gap-8"
                                 >
                                     <div className="relative flex flex-col items-center self-stretch">
                                         {showDate ? (
