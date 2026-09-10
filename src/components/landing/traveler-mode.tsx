@@ -98,7 +98,7 @@ export default function TravelerMode() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <TravelerModeIcon className="animate-travel text-[#FF5470]" />
+            <TravelerModeIcon className="text-[#FF5470]" />
             <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
               Make It a Trip
             </h2>

@@ -1,5 +1,6 @@
 import Navbar from "@/components/landing/navbar";
 import PromoCarousel from "@/components/landing/promo-carousel";
+import CategoryBar from "@/components/landing/category-bar";
 import FeaturedEvents from "@/components/landing/featured-events";
 import TravelerMode from "@/components/landing/traveler-mode";
 import Footer from "@/components/landing/footer";
@@ -14,6 +15,7 @@ export default function Home() {
         <Navbar />
         <main className="flex-1">
           <PromoCarousel />
+          <CategoryBar />
           <FeaturedEvents />
           <TravelerMode />
           <DiscoverCountries />
