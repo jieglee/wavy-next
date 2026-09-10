@@ -152,7 +152,7 @@ export default function FeaturedPicks({
                 <p className="relative mt-1 text-sm text-white/75">{featured?.meta}</p>
             </div>
 
-            <div>
+            <div className="pl-8 sm:pl-20">
                 <div className="flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-base font-semibold text-[#14121A]">
                         <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-[#EDEEF6] text-[10px]">🗓️</span>
@@ -199,7 +199,7 @@ export default function FeaturedPicks({
                                 <a
                                     key={ev.id}
                                     href={ev.href}
-                                    className="group relative grid grid-cols-[56px_1fr_116px] items-start gap-4 py-[18px] sm:grid-cols-[60px_1fr_132px] sm:gap-5"
+                                    className="group relative grid grid-cols-[56px_1fr_116px] items-start gap-5 py-[18px] pl-8 sm:grid-cols-[60px_1fr_132px] sm:gap-8 sm:pl-20"
                                 >
                                     <div className="relative flex flex-col items-center self-stretch">
                                         {showDate ? (
@@ -211,20 +211,18 @@ export default function FeaturedPicks({
                                         ) : (
                                             <div className="w-[52px] sm:w-[56px]" aria-hidden />
                                         )}
-                                        {!isLast && (
-                                            <div
-                                                className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
-                                                style={{
-                                                    top: showDate ? 62 : -18,
-                                                    bottom: -34,
-                                                    backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)",
-                                                    opacity: 0.7,
-                                                }}
-                                                aria-hidden
-                                            />
-                                        )}
+                                        <div
+                                            className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
+                                            style={{
+                                                top: showDate ? 62 : -18,
+                                                bottom: isLast ? -6 : -34,
+                                                backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)",
+                                                opacity: 0.7,
+                                            }}
+                                            aria-hidden
+                                        />
                                     </div>
-                                    <div className="min-w-0 pb-1 pt-1">
+                                    <div className="min-w-0 pb-1 pl-3 pt-1">
                                         <p className={`line-clamp-2 text-[15px] font-bold leading-[1.35] ${isBlue ? "text-[#1A4BDE] group-hover:text-[#1A3AB8]" : "text-[#111827] group-hover:text-[#1A4BDE]"}`}>
                                             {ev.title}
                                         </p>
