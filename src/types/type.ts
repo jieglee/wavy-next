@@ -42,7 +42,7 @@ export interface ConcertDetail extends Concert {
   bio: string;
   countdown_seconds: number;
   gallery?: string[];
-  seatmap?: { name: string; image: string } | null;
+  seatmap?: { name: string; images: string[] } | null;
   terms_conditions?: string | null;
   ticket_categories: TicketCategory[];
   reviews: Review[];
