@@ -82,8 +82,9 @@ export default function FeaturedPicks({
                       [];
                 if (!list?.length || cancelled) return;
                 const picks = list.slice(0, 10).map(toPick);
+                if (picks.length < 10) return;
                 setPopular(picks.slice(0, 5));
-                setThisWeek(picks.slice(5, 8).length ? picks.slice(5, 8) : picks.slice(0, 3));
+                setThisWeek(picks.slice(5, 10));
             } catch { /* keep fallback */ }
         })();
         return () => { cancelled = true; };

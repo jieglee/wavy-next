@@ -129,9 +129,9 @@ export default function TravelerMode() {
             </button>
           )}
 
-          <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 pt-2">
+          <div ref={scrollerRef} className="scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-2 pt-2 sm:gap-4">
             {mockHotels.map((hotel) => (
-              <div key={hotel.id} className="w-72 shrink-0 snap-start sm:w-80">
+              <div key={hotel.id} className="w-[260px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]">
                 <Link href={`/hotels/${hotel.id}`} className="group block">
                   <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
                     <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-wavy-blue/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
