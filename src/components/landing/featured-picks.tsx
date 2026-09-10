@@ -136,64 +136,18 @@ export default function FeaturedPicks({
     const featured = banner[active];
 
     return (
-        <div className={`grid grid-cols-1 gap-5 md:grid-cols-[280px_1fr] ${className}`}>
-            <div className="relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-3xl p-6 sm:min-h-[320px]">
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background:
-                            "radial-gradient(120% 100% at 20% 10%, #FF2E88 0%, #C22E8C 45%, #3C1F70 100%)",
-                    }}
-                />
-                <div
-                    className="absolute inset-0 opacity-25"
-                    style={{
-                        backgroundImage: "radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1.5px)",
-                        backgroundSize: "14px 14px",
-                    }}
-                />
-                <div className="relative mx-auto mb-6 h-32 w-full max-w-[180px] sm:h-40">
-                    {banner.map((ev, i) => {
-                        const offset = i - active;
-                        const wrapped =
-                            offset > banner.length / 2
-                                ? offset - banner.length
-                                : offset < -banner.length / 2
-                                    ? offset + banner.length
-                                    : offset;
-                        const visible = Math.abs(wrapped) <= 1;
-                        return (
-                            <img
-                                key={ev.id}
-                                src={ev.image}
-                                alt={ev.title}
-                                className="absolute inset-0 h-full w-full rounded-2xl object-cover shadow-[0_14px_28px_rgba(60,31,112,0.45)] transition-all duration-700 ease-out"
-                                style={{
-                                    transform: `translateX(${wrapped * 16}px) rotate(${wrapped * 6}deg) scale(${wrapped === 0 ? 1 : 0.9
-                                        })`,
-                                    zIndex: 10 - Math.abs(wrapped),
-                                    opacity: visible ? (wrapped === 0 ? 1 : 0.6) : 0,
-                                }}
-                            />
-                        );
-                    })}
-                </div>
-                <p className="relative text-[11px] font-medium uppercase tracking-wide text-white/70">
-                    Lagi ramai
-                </p>
-                <p key={featured?.id} className="pick-fade relative mt-1 text-lg font-semibold leading-snug text-white">
-                    {featured?.title}
-                </p>
-                <p className="relative mt-1 text-sm text-white/75">{featured?.meta}</p>
+        <div className={`grid grid-cols-1 gap-5 md:grid-cols-[320px_1fr] ${className}`}>
+            <div className="flex justify-end self-start">
+                <img src="/event4u.gif" alt="Event4u" className="w-full max-w-[320px] rounded-3xl object-contain sm:max-w-[340px]" />
             </div>
 
             <div className="ml-24 sm:ml-48">
                 <div className="flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-2xl font-semibold text-[#14121A]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 1024 1024" className="shrink-0 text-[#FF5470]" style={{ filter: "drop-shadow(0 0 0.6px currentColor)" }}>
-                                <path d="M0 0h1024v1024H0z" fill="none" />
-                                <path fill="currentColor" d="M128 384v512h768V192H768v32a32 32 0 1 1-64 0v-32H320v32a32 32 0 0 1-64 0v-32H128v128h768v64zm192-256h384V96a32 32 0 1 1 64 0v32h160a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h160V96a32 32 0 0 1 64 0zm-32 384h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 1 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64" />
-                            </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024" className="shrink-0 text-[#FF5470]">
+                            <path d="M0 0h1024v1024H0z" fill="none" />
+                            <path fill="currentColor" d="M128 384v512h768V192H768v32a32 32 0 1 1-64 0v-32H320v32a32 32 0 0 1-64 0v-32H128v128h768v64zm192-256h384V96a32 32 0 1 1 64 0v32h160a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h160V96a32 32 0 0 1 64 0zm-32 384h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 1 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64" />
+                        </svg>
                         Event4u
                     </h3>
                     <button onClick={() => setShowAll(true)} className="text-sm font-medium text-[#1A4BDE] hover:underline">
