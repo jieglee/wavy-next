@@ -77,7 +77,7 @@ export default function PromoCarousel() {
         ctaLabel: "Lihat konser",
         ctaHref: "/concerts",
         gradient: slideGradients[0],
-        image: "/images/banner/your-favorite-event-is-here-bts.png",
+        image: "/images/banner/your-favorite-bts.png",
       },
       {
         id: "promo-1",
