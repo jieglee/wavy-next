@@ -63,7 +63,9 @@ function ConcertsPageInner() {
   const initialQuery = searchParams.get("q") || "";
   const initialCat = searchParams.get("category") || "Semua";
 
-  const [query, setQuery] = useState(initialQuery);
+  const filteredInitialQuery = initialCat !== "Semua" && initialQuery.toLowerCase() === initialCat.toLowerCase() ? "" : initialQuery;
+
+  const [query, setQuery] = useState(filteredInitialQuery);
   const [selectedCat, setSelectedCat] = useState(initialCat);
   const [concerts, setConcerts] = useState<Concert[]>([]);
   const [categories, setCategories] = useState<string[]>(["Semua", ...FALLBACK_CATEGORIES]);
@@ -138,7 +140,7 @@ function ConcertsPageInner() {
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header Title */}
-        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div className="mb-8">
           <div>
             <Link
               href="/"
@@ -153,23 +155,6 @@ function ConcertsPageInner() {
             <p className="mt-1 text-sm text-[#6B6875]">
               Temukan konser musik terfavorit dari musisi top dunia & Indonesia
             </p>
-          </div>
-
-          {/* Search Bar Input */}
-          <div className="flex w-full max-w-md items-center gap-2 rounded-full border border-[#EDEBF2] bg-white px-4 py-2.5 shadow-sm transition-all focus-within:border-[#FF5470]/50 focus-within:shadow-md">
-            <Search className="h-4 w-4 text-[#8B889C]" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Cari judul konser, musisi, atau venue..."
-              className="w-full bg-transparent text-sm text-[#1B1A3A] outline-none placeholder:text-[#8B889C]"
-            />
-            {query && (
-              <button onClick={() => setQuery("")} className="text-xs text-[#8B889C] hover:text-[#1B1A3A]">
-                Reset
-              </button>
-            )}
           </div>
         </div>
 

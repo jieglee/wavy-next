@@ -33,7 +33,7 @@ export default function ConcertCard({
             <img
               src={poster_url}
               alt={title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
               loading="lazy"
             />
           ) : (

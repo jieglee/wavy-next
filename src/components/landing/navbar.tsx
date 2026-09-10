@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search, LayoutGrid, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Shield, Calendar } from "lucide-react";
+import { Search, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Shield, Calendar } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
@@ -12,6 +12,7 @@ import AnimatedSearchPlaceholder from "@/components/nav/animated-search-placehol
 
 const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
+const WAVY_BLUE = "#FF5470";
 
 export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const t = useTranslations("Navbar");
@@ -93,8 +94,18 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
     router.push("/");
   }
 
+  const showBackdrop = catOpen || searchOpen;
+
   return (
-    <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
+    <>
+      {showBackdrop && (
+        <button
+          aria-label="Close dropdown"
+          onClick={() => { setCatOpen(false); setSearchOpen(false); }}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity"
+        />
+      )}
+      <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
       <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
@@ -113,10 +124,13 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               setSearchOpen(false);
             }}
             aria-expanded={catOpen}
-            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-semibold transition-colors ${catOpen ? "bg-[#EFF6FF] text-[#1E40AF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
-            style={{ color: catOpen ? "#1E40AF" : NAVY }}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-[#EFF6FF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
+            style={{ color: "#1B1A3A" }}
           >
-            <LayoutGrid className="h-4 w-4" style={{ color: catOpen ? "#1E40AF" : PINK }} />
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style={{ color: "#1B1A3A" }}>
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor" d="m12 2l-5.5 9h11zm0 3.84L13.93 9h-3.87zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5s4.5-2.01 4.5-4.5s-2.01-4.5-4.5-4.5m0 7a2.5 2.5 0 0 1 0-5a2.5 2.5 0 0 1 0 5M3 21.5h8v-8H3zm2-6h4v4H5z" />
+            </svg>
             {t("kategori")}
           </button>
           {catOpen && (
@@ -158,9 +172,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
         <Link
           href="/organizer/login"
-          className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A] lg:flex"
+          className="hidden shrink-0 items-center gap-1.5 text-base font-bold transition-colors hover:opacity-70 lg:flex"
+          style={{ color: "#1B1A3A" }}
         >
-          <Handshake className="h-4 w-4" />
+          <Handshake className="h-4 w-4" style={{ color: "#1B1A3A" }} />
           {t("kerjasama")}
         </Link>
 
@@ -173,7 +188,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             className="flex items-center gap-1 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A]"
           >
             <Globe className="h-4 w-4" />
-            {locale === "id" ? "ID" : locale === "ko" ? "KO" : "EN"}
+            {locale === "id" ? "ID" : "EN"}
             <ChevronDown className="h-3.5 w-3.5" />
           </button>
           {langOpen && (
@@ -190,12 +205,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               >
                 English
               </button>
-              <button
-                onClick={() => switchLocale("ko")}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "ko" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
-              >
-                한국어
-              </button>
+
             </div>
           )}
         </div>
@@ -218,8 +228,8 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           ) : (
             <Link
               href="/auth/login"
-              className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110 active:scale-95"
-              style={{ backgroundColor: NAVY }}
+              className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-bold text-white shadow-sm transition-all hover:brightness-110 active:scale-95"
+              style={{ backgroundColor: WAVY_BLUE }}
             >
               <User className="h-3.5 w-3.5" />
               {t("akun")}
@@ -286,5 +296,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         </div>
       </div>
     </header>
+    </>
   );
 }
