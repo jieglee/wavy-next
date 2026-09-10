@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search, LayoutGrid, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Shield, Calendar } from "lucide-react";
+import { Search, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Shield, Calendar } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
@@ -127,7 +127,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-[#EFF6FF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
             style={{ color: "#1B1A3A" }}
           >
-            <LayoutGrid className="h-4 w-4" style={{ color: "#1B1A3A" }} />
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style={{ color: "#1B1A3A" }}>
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor" d="m12 2l-5.5 9h11zm0 3.84L13.93 9h-3.87zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5s4.5-2.01 4.5-4.5s-2.01-4.5-4.5-4.5m0 7a2.5 2.5 0 0 1 0-5a2.5 2.5 0 0 1 0 5M3 21.5h8v-8H3zm2-6h4v4H5z" />
+            </svg>
             {t("kategori")}
           </button>
           {catOpen && (
