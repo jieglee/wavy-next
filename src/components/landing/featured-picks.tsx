@@ -178,46 +178,72 @@ export default function FeaturedPicks({
                     ))}
                 </div>
 
-                <div className="mt-2">
+                <div className="mt-1">
                     {(() => {
                         const weekday = (m: string, d: string) => {
                             try {
                                 const monthMap: Record<string, number> = { JAN:0,FEB:1,MAR:2,APR:3,MEI:4,MAY:4,JUN:5,JUL:6,AGU:7,AUG:7,SEP:8,OKT:9,OCT:9,NOV:10,DES:11,DEC:11 };
                                 const date = new Date(2026, monthMap[m] ?? 0, parseInt(d,10));
-                                return date.toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase();
+                                return date.toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
                             } catch { return ""; }
                         };
                         let lastKey = "";
-                        return items.slice(0, 5).map((ev) => {
+                        const sliced = items.slice(0, 5);
+                        return sliced.map((ev, idx) => {
                             const key = `${ev.month}-${ev.day}`;
                             const showDate = key !== lastKey;
+                            const isLast = idx === sliced.length - 1;
                             lastKey = key;
+                            const isBlue = idx === 1;
                             return (
                                 <a
                                     key={ev.id}
                                     href={ev.href}
-                                    className="grid grid-cols-[52px_1fr_auto] items-start gap-3 border-b border-[#F0ECF7] py-3 last:border-none hover:bg-[#FAF7FC] sm:grid-cols-[56px_1fr_76px] sm:gap-4"
+                                    className="group relative grid grid-cols-[56px_1fr_116px] items-start gap-4 py-[18px] sm:grid-cols-[60px_1fr_132px] sm:gap-5"
                                 >
                                     <div className="relative flex flex-col items-center self-stretch">
                                         {showDate ? (
-                                            <div className="flex flex-col items-center justify-center rounded-lg border border-[#E7E2EF] bg-white px-2 py-2 text-center">
-                                                <span className="text-[9px] font-medium uppercase tracking-wide text-[#8B86A0]">{ev.month}</span>
-                                                <span className="text-base font-bold leading-none text-[#14121A]">{ev.day}</span>
-                                                <span className="mt-0.5 text-[9px] font-medium text-[#8B86A0]">{weekday(ev.month, ev.day)}</span>
+                                            <div className="relative z-[1] flex w-[52px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-1 py-[10px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:w-[56px]">
+                                                <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9CA3AF]">{ev.month}</span>
+                                                <span className="mt-[2px] text-[20px] font-extrabold leading-none text-[#111827]">{ev.day}</span>
+                                                <span className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[#9CA3AF]">{weekday(ev.month, ev.day)}</span>
                                             </div>
                                         ) : (
                                             <div className="w-[52px] sm:w-[56px]" aria-hidden />
                                         )}
-                                        <div className="absolute bottom-0 left-1/2 top-[52px] w-px -translate-x-1/2 border-l border-dotted border-[#E0D9EE]" aria-hidden />
+                                        {!isLast && (
+                                            <div
+                                                className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
+                                                style={{
+                                                    top: showDate ? 62 : 0,
+                                                    bottom: -18,
+                                                    backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)",
+                                                    opacity: 0.7,
+                                                }}
+                                                aria-hidden
+                                            />
+                                        )}
                                     </div>
-                                    <div className="min-w-0 py-1">
-                                        <p className="text-sm font-semibold leading-tight text-[#14121A]">{ev.title}</p>
-                                        <p className="mt-1 truncate text-xs text-[#8B86A0]">{ev.meta}</p>
+                                    <div className="min-w-0 pb-1 pt-1">
+                                        <p className={`line-clamp-2 text-[15px] font-bold leading-[1.35] ${isBlue ? "text-[#1A4BDE] group-hover:text-[#1A3AB8]" : "text-[#111827] group-hover:text-[#1A4BDE]"}`}>
+                                            {ev.title}
+                                        </p>
+                                        <p className="mt-[6px] truncate text-[12.5px] leading-none text-[#9CA3AF]">{ev.meta}</p>
                                     </div>
-                                    <img
-                                        src={ev.image}
-                                        alt=""
-                                        className="hidden h-12 w-[76px] rounded-lg object-cover sm:block"
+                                    <div className="flex justify-end pt-1">
+                                        <img
+                                            src={ev.image}
+                                            alt=""
+                                            className="h-[56px] w-[116px] rounded-[10px] object-cover shadow-sm ring-1 ring-black/5 sm:h-[60px] sm:w-[132px]"
+                                        />
+                                    </div>
+                                    <div
+                                        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
+                                        style={{
+                                            marginLeft: 60,
+                                            backgroundImage: "repeating-linear-gradient(to right, #E5E7EB 0 4px, transparent 4px 8px)",
+                                        }}
+                                        aria-hidden
                                     />
                                 </a>
                             );
