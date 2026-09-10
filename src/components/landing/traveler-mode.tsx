@@ -50,6 +50,16 @@ function StarIcon({ className }: { className?: string }) {
   );
 }
 
+function TravelerModeIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" className={className}>
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path fill="currentColor" d="M5 10s3-1.81 3-5c0-1.65-1.35-3-3-3S2 3.35 2 5c0 3.19 3 5 3 5m0-6.5c.83 0 1.5.67 1.5 1.5S5.83 6.5 5 6.5S3.5 5.83 3.5 5S4.17 3.5 5 3.5M19 14c-1.65 0-3 1.35-3 3c0 3.19 3 5 3 5s3-1.81 3-5c0-1.65-1.35-3-3-3m0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5s1.5.67 1.5 1.5s-.67 1.5-1.5 1.5" />
+      <path fill="currentColor" d="M4 17.5A2.5 2.5 0 0 1 6.5 15h7c1.93 0 3.5-1.57 3.5-3.5S15.43 8 13.5 8H8v2h5.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-7C4.02 13 2 15.02 2 17.5S4.02 22 6.5 22H16v-2H6.5A2.5 2.5 0 0 1 4 17.5" />
+    </svg>
+  );
+}
+
 export default function TravelerMode() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -87,9 +97,12 @@ export default function TravelerMode() {
     <section className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
-            Make It a Trip
-          </h2>
+          <div className="flex items-center gap-2">
+            <TravelerModeIcon className="animate-travel text-[#FF5470]" />
+            <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
+              Make It a Trip
+            </h2>
+          </div>
           <Link href="#" className="text-sm font-medium text-[#1B1A3A] underline underline-offset-4 transition-colors hover:text-[#FF5470]">
             Lihat semua &rarr;
           </Link>
