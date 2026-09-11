@@ -136,7 +136,7 @@ export default function FeaturedPicks({
     const featured = banner[active];
 
     return (
-        <div className={`grid grid-cols-1 gap-5 md:grid-cols-[320px_1fr] ${className}`}>
+        <div className={`grid grid-cols-1 gap-5 md:grid-cols-[360px_1fr] ${className}`}>
             <div className="flex justify-end self-start">
                 <video
                     src="/event4u.mp4"
@@ -146,11 +146,11 @@ export default function FeaturedPicks({
                     muted
                     playsInline
                     preload="metadata"
-                    className="w-full max-w-[320px] rounded-3xl object-contain sm:max-w-[340px]"
+                    className="w-full max-w-[360px] translate-x-3 rounded-3xl object-contain sm:max-w-[380px] md:translate-x-4"
                 />
             </div>
 
-            <div className="ml-24 sm:ml-48">
+            <div className="ml-6 sm:ml-12">
                 <div className="flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-2xl font-semibold text-[#14121A]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024" className="shrink-0 text-[#FF5470]">
