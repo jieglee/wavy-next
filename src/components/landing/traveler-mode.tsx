@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface Hotel {
   id: number;

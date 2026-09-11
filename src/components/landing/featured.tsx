@@ -1,35 +1,11 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation";
 
 const concerts = [
-  {
-    title: "Java Jazz Festival 2026",
-    venue: "JIExpo Kemayoran, Jakarta",
-    date: "12–14 Jun 2026",
-    price: "Rp250K",
-    image: null,
-  },
-  {
-    title: "K-Pop All Night",
-    venue: "GBK Main Stadium, Jakarta",
-    date: "28 Agu 2026",
-    price: "Rp450K",
-    image: null,
-  },
-  {
-    title: "Rock Legends World Tour",
-    venue: "Istora Senayan, Jakarta",
-    date: "5 Sep 2026",
-    price: "Rp350K",
-    image: null,
-  },
-  {
-    title: "Festival Musik Indie",
-    venue: "Lapangan Gasibu, Bandung",
-    date: "19–20 Sep 2026",
-    price: "Rp150K",
-    image: null,
-  },
-]
+  { id: "1", title: "Java Jazz Festival 2026", venue: "JIExpo Kemayoran, Jakarta", date: "12–14 Jun 2026", price: "Rp250K", image: null },
+  { id: "2", title: "K-Pop All Night", venue: "GBK Main Stadium, Jakarta", date: "28 Agu 2026", price: "Rp450K", image: null },
+  { id: "3", title: "Rock Legends World Tour", venue: "Istora Senayan, Jakarta", date: "5 Sep 2026", price: "Rp350K", image: null },
+  { id: "4", title: "Festival Musik Indie", venue: "Lapangan Gasibu, Bandung", date: "19–20 Sep 2026", price: "Rp150K", image: null },
+];
 
 export default function Featured() {
   return (
@@ -44,10 +20,10 @@ export default function Featured() {
               Konser yang lagi naik daun bulan ini
             </p>
           </div>
-          <Link
-            href="#"
-            className="hidden text-sm font-medium text-azure transition-colors hover:brightness-110 sm:inline-flex"
-          >
+<Link
+             href="/concerts"
+             className="hidden text-sm font-medium text-azure transition-colors hover:brightness-110 sm:inline-flex"
+           >
             Lihat semua &rarr;
           </Link>
         </div>
@@ -56,7 +32,7 @@ export default function Featured() {
           {concerts.map((concert, i) => (
             <Link
               key={concert.title}
-              href="#"
+              href={`/concerts/${concert.id}`}
               data-aos="fade-up"
               data-aos-delay={i * 100}
               className="group relative flex flex-col overflow-hidden rounded-xl border border-border-dark bg-graphite-plum transition-colors hover:border-coral-spotlight/40"
