@@ -9,7 +9,6 @@ import Footer from "@/components/landing/footer";
 import ConcertHero from "@/components/concerts/concert-hero";
 import ConcertDescription from "@/components/concerts/concert-description";
 import ConcertGallery from "@/components/concerts/concert-gallery";
-import ConcertSeatmap from "@/components/concerts/concert-seatmap";
 import ConcertArtist from "@/components/concerts/concert-artist";
 import ConcertTerms from "@/components/concerts/concert-terms";
 import ConcertReviews from "@/components/concerts/concert-reviews";
@@ -64,14 +63,13 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const [showInfoCard, setShowInfoCard] = useState(false);
   const descRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
-  const ticketRef = useRef<HTMLDivElement>(null);
   const termsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadDetail() {
       setLoading(true);
       const data = await loadConcert(id);
-      setConcert(data);
+      setConcert(data as any);
       setLoading(false);
     }
     loadDetail();
@@ -82,7 +80,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       const sections = [
         { id: "desc", ref: descRef },
         { id: "gallery", ref: galleryRef },
-        { id: "ticket", ref: ticketRef },
         { id: "terms", ref: termsRef },
       ];
       const offset = 160;
@@ -123,9 +120,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   function handleBuyTicket() {
     if (!concert) return;
     if (!getAuthToken()) { toast.error("Silakan masuk untuk melanjutkan pembelian"); router.push("/auth/login"); return; }
-    const def = concert.ticket_categories?.[0];
-    if (!def) { toast.error("Tiket belum tersedia"); return; }
-    router.push(`/concerts/${id}/queue?catId=${def.id}&qty=1`);
+    router.push(`/concerts/${id}/queue`);
   }
   async function handleSubmitReview(e: React.FormEvent) {
     e.preventDefault();
@@ -165,7 +160,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const tabs = [
     { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
     { id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) },
-    { id: "ticket", label: "Tiket", onClick: () => scrollToSection("ticket", ticketRef) },
     { id: "terms", label: "Syarat dan Ketentuan", onClick: () => scrollToSection("terms", termsRef) },
   ];
 
@@ -213,14 +207,9 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
               <div ref={galleryRef}>
                 <ConcertGallery
-                  gallery={concert.gallery ?? []}
+                  gallery={concert.gallery}
+                  seatmap={concert.seatmap ?? null}
                   title={concert.title}
-                />
-              </div>
-
-              <div ref={ticketRef}>
-                <ConcertSeatmap
-                  seatmap={concert.seatmap}
                 />
               </div>
 
@@ -258,7 +247,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
           </div>
-
 
           {/* =========================================================
         RIGHT COLUMN

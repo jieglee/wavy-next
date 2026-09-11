@@ -5,6 +5,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: number | string }>(({ terms }, ref) => {
   if (!terms) return null;
   let html = sanitizeHtml(terms);
+  if (!/<[a-z][\s\S]*>/i.test(html)) html = html.replace(/\n/g, "<br>");
   html = html.replace(/Loket\.com[\s\S]*?FLABBERGAST PRODUCTIONS/gi, "FLABBERGAST PRODUCTIONS");
   html = html.replace(/Phone:\s*021-30003160[^<]*/gi, "");
   html = html.replace(/Email:\s*[^<]*support@loket\.com[^<]*/gi, "");
@@ -18,7 +19,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
         <ShieldCheck className="h-5 w-5 text-[#111827] stroke-[2.5]" />
         <h2 className="font-sans text-[16px] font-bold text-[#111827]">Syarat & Ketentuan</h2>
       </div>
-      <div className="tnc-terms mt-3 font-sans text-base leading-6 text-gray-800 [&_a]:text-rose-500 [&_a]:underline [&_em]:!text-rose-500 [&_h3_em]:!text-rose-500 [&_h4_em]:!text-rose-500 [&_strong_em]:!text-rose-500" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="tnc-terms mt-3 font-sans text-base leading-6 text-gray-800 text-justify [&_a]:text-rose-500 [&_a]:underline [&_em]:!text-rose-500 [&_h3_em]:!text-rose-500 [&_h4_em]:!text-rose-500 [&_strong_em]:!text-rose-500" dangerouslySetInnerHTML={{ __html: html }} />
     </section>
   );
 });
