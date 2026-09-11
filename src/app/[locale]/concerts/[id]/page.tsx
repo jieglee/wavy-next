@@ -9,7 +9,6 @@ import Footer from "@/components/landing/footer";
 import ConcertHero from "@/components/concerts/concert-hero";
 import ConcertDescription from "@/components/concerts/concert-description";
 import ConcertGallery from "@/components/concerts/concert-gallery";
-import ConcertSeatmap from "@/components/concerts/concert-seatmap";
 import ConcertArtist from "@/components/concerts/concert-artist";
 import ConcertTerms from "@/components/concerts/concert-terms";
 import ConcertReviews from "@/components/concerts/concert-reviews";
@@ -71,7 +70,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     async function loadDetail() {
       setLoading(true);
       const data = await loadConcert(id);
-      setConcert(data);
+      setConcert(data as any);
       setLoading(false);
     }
     loadDetail();
@@ -213,14 +212,10 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
               <div ref={galleryRef}>
                 <ConcertGallery
-                  gallery={concert.gallery ?? []}
+                  gallery={concert.gallery}
+                  seatmap={concert.seatmap ?? null}
+                  poster_url={concert.poster_url}
                   title={concert.title}
-                />
-              </div>
-
-              <div ref={ticketRef}>
-                <ConcertSeatmap
-                  seatmap={concert.seatmap}
                 />
               </div>
 
@@ -258,7 +253,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
           </div>
-
 
           {/* =========================================================
         RIGHT COLUMN
