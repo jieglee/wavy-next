@@ -16,9 +16,10 @@ import ConcertOrganizerShare from "@/components/concerts/concert-organizer-share
 import ConcertForYou from "@/components/concerts/concert-for-you";
 import ConcertStickyBar from "@/components/concerts/concert-sticky-bar";
 import ConcertReviewModal from "@/components/concerts/concert-review-modal";
+import ConcertTicketSidebar from "@/components/concerts/concert-ticket-sidebar";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
 import { getMinPrice, formatIDR } from "@/lib/price";
-import type { ConcertDetail } from "@/types/type";
+import type { ConcertDetail, TicketCategory } from "@/types/type";
 import ConcertTabs from "@/components/concerts/concert-tabs";
 
 async function loadConcert(id: string): Promise<ConcertDetail> {
@@ -61,8 +62,11 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const [submittingReview, setSubmittingReview] = useState(false);
   const [activeTab, setActiveTab] = useState("desc");
   const [showInfoCard, setShowInfoCard] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<TicketCategory | null>(null);
+  const [quantity, setQuantity] = useState(1);
   const descRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
   const termsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,6 +74,8 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       setLoading(true);
       const data = await loadConcert(id);
       setConcert(data as any);
+      setSelectedCategory(null);
+      setQuantity(1);
       setLoading(false);
     }
     loadDetail();
@@ -77,9 +83,12 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   useEffect(() => {
     function onScroll() {
+      const hasSeatmapNow = !!(concert?.seatmap?.images?.length);
+      const hasTicketCats = !!(concert?.ticket_categories?.length);
       const sections = [
         { id: "desc", ref: descRef },
-        { id: "gallery", ref: galleryRef },
+        ...(hasSeatmapNow ? [{ id: "gallery", ref: galleryRef }] : []),
+        ...(!hasSeatmapNow && hasTicketCats ? [{ id: "ticket", ref: ticketRef }] : []),
         { id: "terms", ref: termsRef },
       ];
       const offset = 160;
@@ -91,7 +100,8 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       setActiveTab(current);
 
       if (!showInfoCard) {
-        const el = galleryRef.current;
+        const triggerRef = hasSeatmapNow ? galleryRef : ticketRef;
+        const el = triggerRef.current;
         if (el && el.getBoundingClientRect().top < window.innerHeight * 0.55) {
           setShowInfoCard(true);
         }
@@ -100,7 +110,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, [showInfoCard]);
+  }, [showInfoCard, concert]);
 
   function scrollToSection(tab: string, ref: React.RefObject<HTMLDivElement | null>) {
     setActiveTab(tab);
@@ -120,7 +130,11 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   function handleBuyTicket() {
     if (!concert) return;
     if (!getAuthToken()) { toast.error("Silakan masuk untuk melanjutkan pembelian"); router.push("/auth/login"); return; }
-    router.push(`/concerts/${id}/queue`);
+    if (!hasSeatmap && selectedCategory) {
+      router.push(`/concerts/${id}/queue?catId=${selectedCategory.id}&qty=${quantity}`);
+    } else {
+      router.push(`/concerts/${id}/queue`);
+    }
   }
   async function handleSubmitReview(e: React.FormEvent) {
     e.preventDefault();
@@ -150,6 +164,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       : undefined);
   const soldOut = remaining !== undefined && remaining <= 0;
   const minPrice = getMinPrice(concert);
+  const hasSeatmap = !!(concert.seatmap?.images?.length);
 
   const dateObj = new Date(concert.date);
   const dateStr = dateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
@@ -159,7 +174,8 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   const tabs = [
     { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
-    { id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) },
+    ...(hasSeatmap ? [{ id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) }] : []),
+    ...(!hasSeatmap && concert.ticket_categories?.length ? [{ id: "ticket", label: "Tiket", onClick: () => scrollToSection("ticket", ticketRef) }] : []),
     { id: "terms", label: "Syarat dan Ketentuan", onClick: () => scrollToSection("terms", termsRef) },
   ];
 
@@ -205,13 +221,29 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 />
               </div>
 
-              <div ref={galleryRef}>
-                <ConcertGallery
-                  gallery={concert.gallery}
-                  seatmap={concert.seatmap ?? null}
-                  title={concert.title}
-                />
-              </div>
+              {hasSeatmap && (
+                <div ref={galleryRef}>
+                  <ConcertGallery
+                    gallery={concert.gallery}
+                    seatmap={concert.seatmap ?? null}
+                    posterUrl={concert.poster_url}
+                    title={concert.title}
+                  />
+                </div>
+              )}
+
+              {!hasSeatmap && concert.ticket_categories?.length > 0 && (
+                <div ref={ticketRef}>
+                  <ConcertTicketSidebar
+                    categories={concert.ticket_categories}
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={setSelectedCategory}
+                    quantity={quantity}
+                    onQuantityChange={setQuantity}
+                    onCheckout={handleBuyTicket}
+                  />
+                </div>
+              )}
 
               <div ref={termsRef}>
                 <ConcertTerms
@@ -237,8 +269,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 reviewCount={concert.review_count}
                 onWriteReview={() => setReviewModal(true)}
               />
-
-              <ConcertForYou excludeId={id} />
 
               <div className="lg:hidden">
                 <ConcertOrganizerShare
@@ -316,6 +346,11 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
           </aside>
+        </div>
+
+        {/* ── Full-width: Event untuk kamu (outside the aside column so it never gets covered) ── */}
+        <div className="mt-12">
+          <ConcertForYou excludeId={id} />
         </div>
       </div>
 

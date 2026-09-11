@@ -138,7 +138,16 @@ export default function FeaturedPicks({
     return (
         <div className={`grid grid-cols-1 gap-5 md:grid-cols-[320px_1fr] ${className}`}>
             <div className="flex justify-end self-start">
-                <img src="/event4u.gif" alt="Event4u" className="w-full max-w-[320px] rounded-3xl object-contain sm:max-w-[340px]" />
+                <video
+                    src="/event4u.mp4"
+                    // Cloudinary URL after manual upload: https://res.cloudinary.com/pbzbhdg3/video/upload/v1/wavy/event4u.mp4
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="w-full max-w-[320px] rounded-3xl object-contain sm:max-w-[340px]"
+                />
             </div>
 
             <div className="ml-24 sm:ml-48">
