@@ -4,24 +4,27 @@ import { Image as ImageIcon } from "lucide-react";
 const ConcertGallery = forwardRef<HTMLDivElement, { 
   gallery?: string[]; 
   seatmap?: { images: string[]; name: string } | null; 
-  poster_url?: string | null;
   title: string 
-}>(({ gallery, seatmap, poster_url, title }, ref) => {
-    const normalize = (u: string) => u.trim().toLowerCase();
-    const posterNorm = poster_url ? normalize(poster_url) : "";
+}>(({ gallery, seatmap, title }, ref) => {
+    const clean = (u: string) => {
+      try {
+        const url = new URL(u.trim());
+        return (url.origin + url.pathname).toLowerCase().replace(/\/+$/, "");
+      } catch {
+        return u.trim().toLowerCase().split("?")[0].split("#")[0].replace(/\/+$/, "");
+      }
+    };
     const isBanner = (u: string) => {
-      const n = normalize(u);
-      if (posterNorm && n === posterNorm) return true;
-      if (n.includes("/banner/") || n.includes("banner_") || n.includes("banner-")) return true;
-      return false;
+      const n = u.trim().toLowerCase();
+      return n.includes("/banner/") || n.includes("banner_") || n.includes("banner-");
     };
     const seen = new Set<string>();
     const unique = (list: string[]) => {
       const out: string[] = [];
       for (const raw of list) {
         const u = raw.trim();
-        if (!u || isBanner(u) || seen.has(normalize(u))) continue;
-        seen.add(normalize(u));
+        if (!u || isBanner(u) || seen.has(clean(u))) continue;
+        seen.add(clean(u));
         out.push(u);
       }
       return out;

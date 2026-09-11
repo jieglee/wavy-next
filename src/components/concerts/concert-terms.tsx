@@ -5,6 +5,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: number | string }>(({ terms }, ref) => {
   if (!terms) return null;
   let html = sanitizeHtml(terms);
+  if (!/<[a-z][\s\S]*>/i.test(html)) html = html.replace(/\n/g, "<br>");
   html = html.replace(/Loket\.com[\s\S]*?FLABBERGAST PRODUCTIONS/gi, "FLABBERGAST PRODUCTIONS");
   html = html.replace(/Phone:\s*021-30003160[^<]*/gi, "");
   html = html.replace(/Email:\s*[^<]*support@loket\.com[^<]*/gi, "");
