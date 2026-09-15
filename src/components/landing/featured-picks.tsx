@@ -78,8 +78,8 @@ export default function FeaturedPicks({
                 const list: Concert[] = Array.isArray(data)
                     ? (data as Concert[])
                     : (data as Record<string, unknown>)?.concerts as Concert[] ??
-                      (data as Record<string, unknown>)?.data as Concert[] ??
-                      [];
+                    (data as Record<string, unknown>)?.data as Concert[] ??
+                    [];
                 if (!list?.length || cancelled) return;
                 const picks = list.slice(0, 10).map(toPick);
                 if (picks.length < 10) return;
@@ -103,8 +103,8 @@ export default function FeaturedPicks({
                 const list: Concert[] = Array.isArray(data)
                     ? (data as Concert[])
                     : (data as Record<string, unknown>)?.concerts as Concert[] ??
-                      (data as Record<string, unknown>)?.data as Concert[] ??
-                      [];
+                    (data as Record<string, unknown>)?.data as Concert[] ??
+                    [];
                 if (list.length) setAllConcerts(list.map(toPick));
             } catch { /* fallback to 10 */ }
         })();
@@ -138,16 +138,18 @@ export default function FeaturedPicks({
     return (
         <div className={`grid grid-cols-1 gap-5 md:grid-cols-[360px_1fr] ${className}`}>
             <div className="flex justify-end self-start">
-                <video
-                    src="/event4u.mp4"
-                    // Cloudinary URL after manual upload: https://res.cloudinary.com/pbzbhdg3/video/upload/v1/wavy/event4u.mp4
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="w-full max-w-[360px] translate-x-3 rounded-3xl object-contain sm:max-w-[380px] md:translate-x-4"
-                />
+                <div className="group w-full max-w-[360px] translate-x-3 overflow-hidden rounded-3xl sm:max-w-[380px] md:translate-x-4">
+                    <video
+                        src="/event4u.mp4"
+                        // Cloudinary URL after manual upload: https://res.cloudinary.com/pbzbhdg3/video/upload/v1/wavy/event4u.mp4
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="metadata"
+                        className="w-full origin-center object-contain transition-transform duration-500 ease-out group-hover:scale-110"
+                    />
+                </div>
             </div>
 
             <div className="ml-6 sm:ml-12">
@@ -170,8 +172,8 @@ export default function FeaturedPicks({
                             key={key}
                             onClick={() => setTab(key)}
                             className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 px-5 py-2 text-xs font-bold leading-none transition-all ${tab === key
-                                    ? "border-[#1A4BDE] bg-white text-[#1A4BDE] shadow-[0_2px_8px_rgba(26,75,222,0.14)]"
-                                    : "border-[#E8E3F2] bg-white text-[#6B6673] hover:border-[#D4CFE6]"
+                                ? "border-[#1A4BDE] bg-white text-[#1A4BDE] shadow-[0_2px_8px_rgba(26,75,222,0.14)]"
+                                : "border-[#E8E3F2] bg-white text-[#6B6673] hover:border-[#D4CFE6]"
                                 }`}
                         >
                             {key === "popular" ? "🔥 Populer" : "🏆 Minggu ini"}
@@ -183,8 +185,8 @@ export default function FeaturedPicks({
                     {(() => {
                         const weekday = (m: string, d: string) => {
                             try {
-                                const monthMap: Record<string, number> = { JAN:0,FEB:1,MAR:2,APR:3,MEI:4,MAY:4,JUN:5,JUL:6,AGU:7,AUG:7,SEP:8,OKT:9,OCT:9,NOV:10,DES:11,DEC:11 };
-                                const date = new Date(2026, monthMap[m] ?? 0, parseInt(d,10));
+                                const monthMap: Record<string, number> = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MEI: 4, MAY: 4, JUN: 5, JUL: 6, AGU: 7, AUG: 7, SEP: 8, OKT: 9, OCT: 9, NOV: 10, DES: 11, DEC: 11 };
+                                const date = new Date(2026, monthMap[m] ?? 0, parseInt(d, 10));
                                 return date.toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
                             } catch { return ""; }
                         };
@@ -273,7 +275,7 @@ export default function FeaturedPicks({
             opacity: 1;
             transform: translateY(0);
           }
-        }
+        }F
       `}</style>
 
             {showAll && (
@@ -288,8 +290,8 @@ export default function FeaturedPicks({
                             {(() => {
                                 const weekday = (m: string, d: string) => {
                                     try {
-                                        const map: Record<string, number> = { JAN:0,FEB:1,MAR:2,APR:3,MEI:4,MAY:4,JUN:5,JUL:6,AGU:7,AUG:7,SEP:8,OKT:9,OCT:9,NOV:10,DES:11,DEC:11 };
-                                        return new Date(2026, map[m] ?? 0, parseInt(d,10)).toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
+                                        const map: Record<string, number> = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MEI: 4, MAY: 4, JUN: 5, JUL: 6, AGU: 7, AUG: 7, SEP: 8, OKT: 9, OCT: 9, NOV: 10, DES: 11, DEC: 11 };
+                                        return new Date(2026, map[m] ?? 0, parseInt(d, 10)).toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
                                     } catch { return ""; }
                                 };
                                 let last = "";
