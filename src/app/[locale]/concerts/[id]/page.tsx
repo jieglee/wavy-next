@@ -232,18 +232,11 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 </div>
               )}
 
-              {!hasSeatmap && concert.ticket_categories?.length > 0 && (
-                <div ref={ticketRef}>
-                  <ConcertTicketSidebar
-                    categories={concert.ticket_categories}
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={setSelectedCategory}
-                    quantity={quantity}
-                    onQuantityChange={setQuantity}
-                    onCheckout={handleBuyTicket}
-                  />
-                </div>
-              )}
+                  {!hasSeatmap && concert.ticket_categories?.length > 0 && (
+                    <div ref={ticketRef}>
+                      <ConcertTicketSidebar categories={concert.ticket_categories} />
+                    </div>
+                  )}
 
               <div ref={termsRef}>
                 <ConcertTerms

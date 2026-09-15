@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 type Seatmap = { images: string[]; name: string } | null;
@@ -62,6 +62,9 @@ export default function ConcertGallery({
 }) {
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const images = useMemo(() => {
     const posterKey = posterUrl ? clean(posterUrl) : null;
@@ -92,6 +95,29 @@ export default function ConcertGallery({
   const total = images.length;
 
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    observerRef.current = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+          observerRef.current?.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current.observe(section);
+    return () => observerRef.current?.disconnect();
+  }, []);
+
+  // Reset when modal opens
+  useEffect(() => {
+    if (open) setRevealed(false);
+  }, [open]);
+
+  useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -115,28 +141,36 @@ export default function ConcertGallery({
   }
 
   return (
-    <section id="sec-gallery" className="scroll-mt-[72px]">
+    <section id="sec-gallery" className="scroll-mt-[72px]" ref={sectionRef}>
       <div className="flex items-center gap-2">
         <ImageIcon className="h-5 w-5 text-[#111827] stroke-[2.5]" />
         <h2 className="font-sans text-[24px] font-bold text-[#111827]">Galeri</h2>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {images.map((url, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => openAt(i)}
-            className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F56FF]"
-          >
-            <img
-              src={url}
-              alt={`${title} - ${i + 1}`}
-              className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-              loading="lazy"
-            />
-          </button>
-        ))}
+      <div className="mt-6 flex flex-col gap-6">
+        {images.map((url, i) => {
+          const delay = revealed ? i * 0.12 : 0;
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => openAt(i)}
+              className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F56FF]"
+            >
+              <img
+                src={url}
+                alt={`${title} - ${i + 1}`}
+                className="w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                style={{
+                  opacity: revealed ? 1 : 0,
+                  transform: revealed ? "translateY(0)" : "translateY(24px)",
+                  transition: `opacity 0.5s ease ${delay}s, transform 0.5s ease ${delay}s`,
+                }}
+                loading="lazy"
+              />
+            </button>
+          );
+        })}
       </div>
 
       {open && (
