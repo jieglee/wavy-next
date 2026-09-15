@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Ticket, ShoppingCart } from "lucide-react";
+import { ChevronDown, Ticket } from "lucide-react";
 import type { TicketCategory } from "@/types/type";
 import { formatIDR } from "@/lib/price";
 
@@ -60,20 +60,10 @@ export default function ConcertTicketSidebar({ categories }: TicketSidebarProps)
                   </div>
                 );
               })}
-              </div>
-            </div>
-
-            <div className="px-5 py-4">
-              <button
-                disabled
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0F56FF] py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0B46D9] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Beli Tiket
-              </button>
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 }

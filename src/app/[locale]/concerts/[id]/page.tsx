@@ -199,7 +199,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             </div>
             <button
               onClick={handleBuyTicket}
-              className="shrink-0 rounded-lg bg-[#0F56FF] px-6 py-3 text-[15px] font-bold text-white transition hover:bg-[#0B46D9]"
+              className="shrink-0 rounded-lg bg-[#2B5CFF] px-6 py-3 text-[15px] font-bold text-white transition hover:brightness-110"
             >
               Beli Tiket
             </button>
