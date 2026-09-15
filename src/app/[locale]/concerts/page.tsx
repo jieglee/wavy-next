@@ -58,6 +58,29 @@ function uniqueCategories(concerts: Concert[]): string[] {
   return out;
 }
 
+const COUNTRY_LABELS: Record<string, string> = {
+  id: "Indonesia",
+  sg: "Singapore",
+  my: "Malaysia",
+  th: "Thailand",
+  kr: "South Korea",
+};
+
+const COUNTRY_KEYWORDS: Record<string, string[]> = {
+  id: ["jakarta", "bandung", "tangerang", "bogor", "surabaya", "yogyakarta", "bali", "medan", "semarang", "indonesia", "ice bsd", "jiexpo", "kemayoran", "senayan", "gbk", "bengkel"],
+  sg: ["singapore"],
+  my: ["kuala lumpur", "bukit jalil", "malaysia", "selangor"],
+  th: ["bangkok", "rajamangala", "thailand"],
+  kr: ["seoul", "gocheok", "korea", "incheon", "busan"],
+};
+
+function byCountry(c: Concert, country: string): boolean {
+  const kws = COUNTRY_KEYWORDS[country];
+  if (!kws) return true;
+  const venue = (c.venue || "").toLowerCase();
+  return kws.some((k) => venue.includes(k));
+}
+
 function ConcertsPageInner() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
@@ -67,6 +90,7 @@ function ConcertsPageInner() {
 
   const [query, setQuery] = useState(filteredInitialQuery);
   const [selectedCat, setSelectedCat] = useState(initialCat);
+  const [country, setCountry] = useState(searchParams.get("country") || "");
   const [concerts, setConcerts] = useState<Concert[]>([]);
   const [categories, setCategories] = useState<string[]>(["Semua", ...FALLBACK_CATEGORIES]);
   const [loading, setLoading] = useState(true);
@@ -105,10 +129,11 @@ function ConcertsPageInner() {
 
         const data = await apiGet<unknown>(path);
         const list = extractConcerts(data);
+        const applyCountry = (items: Concert[]) => (country ? items.filter((c) => byCountry(c, country)) : items);
         if (list.length > 0) {
-          setConcerts(list);
+          setConcerts(applyCountry(list));
         } else if (!query && selectedCat === "Semua") {
-          setConcerts(fallbackConcerts);
+          setConcerts(applyCountry(fallbackConcerts));
         } else {
           // Filter fallback locally
           const filtered = fallbackConcerts.filter((c) => {
@@ -116,7 +141,7 @@ function ConcertsPageInner() {
             const matchQ = !query || c.title.toLowerCase().includes(query.toLowerCase()) || c.artist_name.toLowerCase().includes(query.toLowerCase());
             return matchCat && matchQ;
           });
-          setConcerts(filtered);
+          setConcerts(applyCountry(filtered));
         }
       } catch {
         const filtered = fallbackConcerts.filter((c) => {
@@ -124,7 +149,7 @@ function ConcertsPageInner() {
           const matchQ = !query || c.title.toLowerCase().includes(query.toLowerCase()) || c.artist_name.toLowerCase().includes(query.toLowerCase());
           return matchCat && matchQ;
         });
-        setConcerts(filtered);
+        setConcerts(country ? filtered.filter((c) => byCountry(c, country)) : filtered);
       } finally {
         setLoading(false);
       }
@@ -132,7 +157,7 @@ function ConcertsPageInner() {
 
     const t = setTimeout(fetchConcerts, 200);
     return () => clearTimeout(t);
-  }, [query, selectedCat]);
+  }, [query, selectedCat, country]);
 
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
@@ -178,6 +203,21 @@ function ConcertsPageInner() {
           })}
         </div>
 
+        {/* Country filter chip (from DiscoverCountries section) */}
+        {country && (
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center rounded-full bg-[#FF5470]/10 px-4 py-2 text-xs font-bold text-[#FF5470]">
+              Explore: {COUNTRY_LABELS[country] ?? country}
+            </span>
+            <button
+              onClick={() => setCountry("")}
+              className="rounded-full border border-[#EDEBF2] bg-white px-4 py-2 text-xs font-bold text-[#6B6875] hover:border-[#1B1A3A]/20 hover:text-[#1B1A3A]"
+            >
+              Hapus filter negara
+            </button>
+          </div>
+        )}
+
         {/* Concerts Grid — same card as landing (FeaturedEvents) */}
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -198,7 +238,9 @@ function ConcertsPageInner() {
           <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-[#EDEBF2] bg-white py-16 text-center">
             <Ticket className="h-12 w-12 text-[#8B889C]" />
             <h3 className="mt-3 text-lg font-bold text-[#1B1A3A]">Tidak ada konser ditemukan</h3>
-            <p className="mt-1 text-sm text-[#6B6875]">Coba ubah kata kunci pencarian atau kategori filter kamu.</p>
+            <p className="mt-1 text-sm text-[#6B6875]">
+              {country ? `Belum ada konser di ${COUNTRY_LABELS[country] ?? "negara ini"}.` : "Coba ubah kata kunci pencarian atau kategori filter kamu."}
+            </p>
             <button
               onClick={() => {
                 setQuery("");
