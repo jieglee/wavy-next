@@ -14,7 +14,7 @@ const NAVY = "#1B1A3A";
 const PINK = "#FF5470";
 const WAVY_BLUE = "#FF5470";
 
-export default function Navbar({ sticky = true }: { sticky?: boolean }) {
+export default function Navbar({ sticky = true, hideUser = false }: { sticky?: boolean; hideUser?: boolean } = {}) {
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const pathname = usePathname();
@@ -210,6 +210,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           )}
         </div>
 
+        {!hideUser && (
         <div ref={userRef} className="relative shrink-0">
           {currentUser ? (
             <button
@@ -293,7 +294,8 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               </div>
             </div>
           )}
-        </div>
+          </div>
+        )}
       </div>
     </header>
     </>

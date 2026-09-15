@@ -148,7 +148,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   if (loading || !concert) {
     return (
       <div className="min-h-screen bg-white">
-        <Navbar sticky={false} />
+<Navbar sticky={false} hideUser />
         <div className="mx-auto max-w-[1440px] px-2 py-16 text-center sm:px-4 lg:px-6">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0F56FF] border-t-transparent mx-auto" />
           <p className="mt-4 text-sm text-[#6B7280]">Memuat informasi konser...</p>
@@ -181,7 +181,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="min-h-screen bg-white pb-20 lg:pb-0">
-      <Navbar sticky={false} />
+      <Navbar sticky={false} hideUser />
 
       {/* ── Hero: event information and poster share the same visual plane ── */}
       <ConcertHero concert={concert} />
