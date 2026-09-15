@@ -1,0 +1,251 @@
+[
+  {
+    "id": 1,
+    "name": "ARTOTEL Mangkuluhur",
+    "location": "Jakarta Selatan",
+    "price": "1600000",
+    "rating": "4.4",
+    "gradient": "linear-gradient(135deg,#FF5470,#211F2B)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Atelier"
+      },
+      {
+        "category": "CAT 1",
+        "room": "Premium"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462039/wavy/hotels/1.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Ayana",
+    "location": "Jakarta Pusat",
+    "price": "2800000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Deluxe"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462040/wavy/hotels/2.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Hotel Gran Mahakam",
+    "location": "Jakarta Selatan",
+    "price": "2200000",
+    "rating": "4.5",
+    "gradient": "linear-gradient(135deg,#C6395A,#14131C)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Deluxe"
+      },
+      {
+        "category": "CAT 1",
+        "room": "Deluxe Suite"
+      },
+      {
+        "category": "CAT 1",
+        "room": "Junior Suite"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462043/wavy/hotels/3.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Grand Hyatt Jakarta",
+    "location": "Jakarta Pusat",
+    "price": "3900000",
+    "rating": "4.7",
+    "gradient": "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Grand Room City"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462044/wavy/hotels/4.jpg"
+  },
+  {
+    "id": 5,
+    "name": "The Hermitage Jakarta",
+    "location": "Jakarta Pusat",
+    "price": "2400000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Deluxe"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462045/wavy/hotels/5.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Hotel Indonesia Kempinski",
+    "location": "Jakarta Pusat",
+    "price": "3400000",
+    "rating": "4.8",
+    "gradient": "linear-gradient(135deg,#FF5470,#211F2B)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Deluxe"
+      },
+      {
+        "category": "CAT 1",
+        "room": "Executive"
+      },
+      {
+        "category": "CAT 1",
+        "room": "Grand Deluxe"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462046/wavy/hotels/6.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Le Méridien Jakarta",
+    "location": "Jakarta Pusat",
+    "price": "2500000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#C6395A,#14131C)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Premier Room"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462047/wavy/hotels/7.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Mandarin Oriental Jakarta",
+    "location": "Jakarta Pusat",
+    "price": "4200000",
+    "rating": "4.9",
+    "gradient": "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Deluxe"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462048/wavy/hotels/8.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Pullman Jakarta Thamrin",
+    "location": "Jakarta Pusat",
+    "price": "2000000",
+    "rating": "4.5",
+    "gradient": "linear-gradient(135deg,#8B0000,#2B0000)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Premium Superior"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462049/wavy/hotels/9.jpg"
+  },
+  {
+    "id": 10,
+    "name": "The Westin Jakarta",
+    "location": "Jakarta Selatan",
+    "price": "2900000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+    "tier": "CAT 1",
+    "rooms": [
+      {
+        "category": "CAT 1",
+        "room": "Deluxe Skyline"
+      },
+      {
+        "category": "CAT 1",
+        "room": "Westin Room"
+      }
+    ],
+    "ticketCat": "CAT 1",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462051/wavy/hotels/10.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Four Points by Sheraton",
+    "location": "Jakarta Selatan",
+    "price": "1400000",
+    "rating": "4.4",
+    "gradient": "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
+    "tier": "CAT 2",
+    "rooms": [
+      {
+        "category": "CAT 2",
+        "room": "Deluxe"
+      },
+      {
+        "category": "CAT 2",
+        "room": "Premium Deluxe"
+      }
+    ],
+    "ticketCat": "CAT 2",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462099/wavy/hotels/11.jpg"
+  },
+  {
+    "id": 12,
+    "name": "GranDhika Iskandarsyah",
+    "location": "Jakarta Selatan",
+    "price": "1100000",
+    "rating": "4.2",
+    "gradient": "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+    "tier": "CAT 2",
+    "rooms": [
+      {
+        "category": "CAT 2",
+        "room": "Deluxe"
+      }
+    ],
+    "ticketCat": "CAT 2",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462052/wavy/hotels/12.jpg"
+  },
+  {
+    "id": 13,
+    "name": "Mercure Gatot Subroto Jakarta",
+    "location": "Jakarta Selatan",
+    "price": "1200000",
+    "rating": "4.3",
+    "gradient": "linear-gradient(135deg,#C6395A,#14131C)",
+    "tier": "CAT 2",
+    "rooms": [
+      {
+        "category": "CAT 2",
+        "room": "Superior"
+      }
+    ],
+    "ticketCat": "CAT 2",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462053/wavy/hotels/13.jpg"
+  }
+]

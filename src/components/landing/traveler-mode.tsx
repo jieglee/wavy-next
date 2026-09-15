@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
+import scrapedHotels from "@/data/hotels.json";
 
 interface Hotel {
   id: number;
@@ -13,16 +14,7 @@ interface Hotel {
   gradient: string;
 }
 
-const mockHotels: Hotel[] = [
-  { id: 1, name: "Hotel Mulia Senayan", location: "Jakarta Pusat", price: "850.000", rating: "4.5", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
-  { id: 2, name: "Ibis Jakarta Gambir", location: "Jakarta Pusat", price: "420.000", rating: "4.0", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
-  { id: 3, name: "Amaris Hotel Sudirman", location: "Jakarta Selatan", price: "380.000", rating: "3.8", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
-  { id: 4, name: "Favehotel Bandung", location: "Bandung", price: "310.000", rating: "4.1", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
-  { id: 5, name: "POP! Hotel Surabaya", location: "Surabaya", price: "290.000", rating: "3.9", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
-  { id: 6, name: "Hotel Santika Bogor", location: "Bogor", price: "350.000", rating: "4.2", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
-  { id: 7, name: "D'primahotel Yogyakarta", location: "Yogyakarta", price: "275.000", rating: "4.0", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
-  { id: 8, name: "Hilton Bali Resort", location: "Bali", price: "1.200.000", rating: "4.7", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
-];
+const mockHotels: Hotel[] = scrapedHotels;
 
 function ArrowLeftIcon({ className }: { className?: string }) {
   return (
