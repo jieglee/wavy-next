@@ -112,11 +112,6 @@ export default function ConcertGallery({
     return () => observerRef.current?.disconnect();
   }, []);
 
-  // Reset when modal opens
-  useEffect(() => {
-    if (open) setRevealed(false);
-  }, [open]);
-
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -147,25 +142,25 @@ export default function ConcertGallery({
         <h2 className="font-sans text-[24px] font-bold text-[#111827]">Galeri</h2>
       </div>
 
-      <div className="mt-6 flex flex-col gap-6">
+      <div className="mt-6 flex flex-col gap-5">
         {images.map((url, i) => {
-          const delay = revealed ? i * 0.12 : 0;
+          const delay = revealed ? i * 0.1 : 0;
           return (
             <button
               key={i}
               type="button"
               onClick={() => openAt(i)}
               className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F56FF]"
+              style={{
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? "translateY(0)" : "translateY(16px)",
+                transition: `opacity 0.5s ease ${delay}s, transform 0.5s ease ${delay}s`,
+              }}
             >
               <img
                 src={url}
                 alt={`${title} - ${i + 1}`}
-                className="w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                style={{
-                  opacity: revealed ? 1 : 0,
-                  transform: revealed ? "translateY(0)" : "translateY(24px)",
-                  transition: `opacity 0.5s ease ${delay}s, transform 0.5s ease ${delay}s`,
-                }}
+                className="w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
                 loading="lazy"
               />
             </button>

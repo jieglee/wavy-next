@@ -13,6 +13,8 @@ interface PromoSlide {
   ctaHref: string;
   gradient: string;
   image?: string;
+  pill?: string;
+  pillCTA?: string;
 }
 
 const slideGradients = [
@@ -68,26 +70,32 @@ export default function PromoCarousel() {
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/ticket-on-sale-now.png",
+        pill: "Tiket konser idola udah open sale ",
+        pillCTA: "Grab yours now!",
       },
       {
         id: "bts-banner",
         eyebrow: "Your favorite event is here BTS",
-        title: "",
+        title: "BTS",
         subtitle: "",
         ctaLabel: "Lihat konser",
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/your-favorite-bts.png",
+        pill: "ARMY, BTS kembali ",
+        pillCTA: "Secure your seat!",
       },
       {
         id: "tampilkan-eventmu",
         eyebrow: "Tampilkan Eventmu",
-        title: "",
+        title: "Eventmu",
         subtitle: "",
         ctaLabel: "Lihat konser",
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/tampilkan-eventmu.png",
+        pill: "Yuk tampilkan eventmu di Wavy ",
+        pillCTA: "Mulai sekarang!",
       },
       {
         id: "promo-1",
@@ -170,40 +178,43 @@ export default function PromoCarousel() {
         {slides.map((slide) => (
           <div
             key={slide.id}
-            className="relative flex h-55 w-full shrink-0 items-center overflow-hidden px-8 sm:h-70 sm:px-16 md:h-85"
+            className="relative flex h-55 w-full shrink-0 items-center justify-center overflow-hidden sm:h-70 md:h-85"
             style={{ background: slide.gradient }}
           >
             <Sparkles className="absolute right-16 top-8 h-6 w-6 text-white/20" />
             <Sparkles className="absolute bottom-10 right-40 h-4 w-4 text-white/15" />
             <Sparkles className="absolute left-1/3 top-12 h-5 w-5 text-white/10" />
 
-            {slide.image && (
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+            {slide.image ? (
+              <>
+                <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                <a
+                  href={slide.ctaHref}
+                  className="absolute bottom-3 left-1/2 z-10 flex w-[70%] max-w-xl -translate-x-1/2 items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/85 px-4 py-2.5 text-center shadow-lg backdrop-blur-md sm:bottom-6 sm:px-6 sm:py-3"
+                >
+                  <p className="text-xs font-medium leading-snug text-[#374151] sm:text-sm">
+                    {slide.pill ?? `Who misses seeing ${slide.title || slide.eyebrow}? `}
+                    <span className="font-semibold text-[#1E40AF]">{slide.pillCTA ?? "Click to get your tickets"}</span>
+                  </p>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-[#1E40AF]">
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path fill="currentColor" d="M12.449 2.654a2.25 2.25 0 0 1 3.181 0l1.255 1.255c.449.449.336 1.105-.016 1.456A1.25 1.25 0 0 0 17.75 7.5c.344 0 .654-.141.882-.37l.07-.064c.338-.282.886-.364 1.3-.031l.087.078l1.248 1.248l.155.17a2.25 2.25 0 0 1-.155 3.011l-9.793 9.793a2.25 2.25 0 0 1-3.181 0l-1.25-1.249c-.448-.448-.336-1.104.017-1.455l.082-.09a1.23 1.23 0 0 0 .287-.792a1.25 1.25 0 0 0-2.134-.882c-.35.352-1.007.464-1.456.015l-1.254-1.255a2.25 2.25 0 0 1 0-3.181zm2.12 1.06a.75.75 0 0 0-1.06 0L11.142 6.08l.828.829a.75.75 0 0 1-1.06 1.06l-.829-.828l-6.365 6.366a.75.75 0 0 0 0 1.06l.942.943A2.75 2.75 0 0 1 9 17.75c0 .595-.193 1.142-.512 1.59l.936.936a.75.75 0 0 0 1.06 0l6.366-6.366l-.82-.82a.75.75 0 1 1 1.061-1.06l.82.819l2.367-2.366a.75.75 0 0 0 0-1.06l-.937-.937c-.448.32-.995.514-1.59.514A2.75 2.75 0 0 1 15 6.25c0-.594.19-1.144.511-1.593zM13.032 9.03a.75.75 0 0 1 1.06 0l.88.879a.75.75 0 0 1-1.061 1.06l-.88-.879a.75.75 0 0 1 0-1.06" />
+                  </svg>
+                </a>
+              </>
+            ) : (
+              <div className="relative z-10 max-w-lg px-8 sm:px-16">
+                <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">{slide.eyebrow}</span>
+                <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">{slide.title}</h2>
+                {slide.subtitle && <p className="mt-2 text-sm text-white/70 sm:text-base">{slide.subtitle}</p>}
+                <a
+                  href={slide.ctaHref}
+                  className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-wavy-text-primary transition-transform hover:-translate-y-0.5 sm:text-sm"
+                >
+                  {slide.ctaLabel}
+                </a>
+              </div>
             )}
-            {slide.image && <div className="absolute inset-0 bg-black/25" />}
-
-            <div className={`relative z-10 max-w-lg ${slide.image ? "text-white" : ""}`}>
-              <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${slide.image ? "bg-white/15 text-white" : "bg-white/10 text-white/80"}`}>
-                {slide.eyebrow}
-              </span>
-              <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
-                {slide.title}
-              </h2>
-              {slide.subtitle && (
-                <p className={`mt-2 text-sm sm:text-base ${slide.image ? "text-white/80" : "text-white/70"}`}>{slide.subtitle}</p>
-              )}
-
-              <a
-                href={slide.ctaHref}
-                className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-wavy-text-primary transition-transform hover:-translate-y-0.5 sm:text-sm"
-              >
-                {slide.ctaLabel}
-              </a>
-            </div>
           </div>
         ))}
       </div>
