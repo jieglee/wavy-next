@@ -106,7 +106,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         />
       )}
       <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6">
+      <div className="mx-auto grid h-auto max-w-7xl grid-cols-[1fr_auto_auto] items-center gap-x-2 gap-y-2 px-3 py-2.5 sm:flex sm:h-[72px] sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-0 sm:gap-x-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
           <span className="font-display text-xl font-bold tracking-tight" style={{ color: NAVY }}>
@@ -140,10 +140,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           )}
         </div>
 
-        <div ref={searchWrapRef} className="relative mx-auto flex w-full max-w-xl">
+        <div ref={searchWrapRef} className="relative col-span-3 flex w-full max-w-none sm:col-span-1 sm:mx-auto sm:max-w-xl">
           <form
             onSubmit={handleSearch}
-            className="relative flex w-full items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-4 py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
+            className="relative flex w-full items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-3 py-1.5 sm:px-4 sm:py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
           >
             <Search className="relative z-10 h-4 w-4 shrink-0 text-[#8B889C]" />
             <input
@@ -156,7 +156,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               onFocus={() => setSearchOpen(true)}
               placeholder=""
               aria-label={t("searchPlaceholder")}
-              className="relative z-10 w-full bg-transparent text-sm outline-none"
+              className="relative z-10 w-full bg-transparent text-xs sm:text-sm outline-none"
               style={{ color: NAVY }}
             />
             <div className="pointer-events-none absolute inset-0 left-11 flex items-center overflow-hidden pr-4">
@@ -172,7 +172,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
         <Link
           href="/organizer/login"
-          className="hidden shrink-0 items-center gap-1.5 text-base font-bold transition-colors hover:opacity-70 lg:flex"
+          className="hidden shrink-0 items-center gap-1.5 text-sm font-bold transition-colors hover:opacity-70 sm:flex lg:text-base"
           style={{ color: "#1B1A3A" }}
         >
           <Handshake className="h-4 w-4" style={{ color: "#1B1A3A" }} />
