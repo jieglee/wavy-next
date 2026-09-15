@@ -247,5 +247,149 @@
     ],
     "ticketCat": "CAT 2",
     "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789462053/wavy/hotels/13.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Marina Bay Sands",
+    "location": "Singapore",
+    "price": "5500000",
+    "rating": "4.8",
+    "gradient": "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463422/wavy/hotels/14.jpg"
+  },
+  {
+    "id": 15,
+    "name": "The Fullerton Hotel Singapore",
+    "location": "Singapore",
+    "price": "4200000",
+    "rating": "4.7",
+    "gradient": "linear-gradient(135deg,#FF5470,#211F2B)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463424/wavy/hotels/15.jpg"
+  },
+  {
+    "id": 16,
+    "name": "Mandarin Oriental, Kuala Lumpur",
+    "location": "Malaysia",
+    "price": "2600000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#C6395A,#14131C)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463426/wavy/hotels/16.jpg"
+  },
+  {
+    "id": 17,
+    "name": "The Majestic Hotel Kuala Lumpur",
+    "location": "Malaysia",
+    "price": "1800000",
+    "rating": "4.4",
+    "gradient": "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463428/wavy/hotels/17.jpg"
+  },
+  {
+    "id": 18,
+    "name": "Mandarin Oriental Bangkok",
+    "location": "Thailand",
+    "price": "3800000",
+    "rating": "4.8",
+    "gradient": "linear-gradient(135deg,#8B0000,#2B0000)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463429/wavy/hotels/18.jpg"
+  },
+  {
+    "id": 19,
+    "name": "The Peninsula Bangkok",
+    "location": "Thailand",
+    "price": "3200000",
+    "rating": "4.7",
+    "gradient": "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463431/wavy/hotels/19.jpg"
+  },
+  {
+    "id": 20,
+    "name": "The Shilla Seoul",
+    "location": "South Korea",
+    "price": "4900000",
+    "rating": "4.8",
+    "gradient": "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463433/wavy/hotels/20.jpg"
+  },
+  {
+    "id": 21,
+    "name": "Lotte Hotel Seoul",
+    "location": "South Korea",
+    "price": "3600000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#FF5470,#211F2B)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463435/wavy/hotels/21.jpg"
+  },
+  {
+    "id": 22,
+    "name": "Hotel Preanger Bandung",
+    "location": "Bandung",
+    "price": "950000",
+    "rating": "4.3",
+    "gradient": "linear-gradient(135deg,#C6395A,#14131C)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463436/wavy/hotels/22.jpg"
+  },
+  {
+    "id": 23,
+    "name": "Hotel Savoy Homann Bandung",
+    "location": "Bandung",
+    "price": "850000",
+    "rating": "4.2",
+    "gradient": "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463439/wavy/hotels/23.jpg"
+  },
+  {
+    "id": 24,
+    "name": "Ayana Resort Bali",
+    "location": "Bali",
+    "price": "3400000",
+    "rating": "4.7",
+    "gradient": "linear-gradient(135deg,#8B0000,#2B0000)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463441/wavy/hotels/24.jpg"
+  },
+  {
+    "id": 25,
+    "name": "Umana Bali, LXR Hotels & Resorts",
+    "location": "Bali",
+    "price": "2600000",
+    "rating": "4.5",
+    "gradient": "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463443/wavy/hotels/25.jpg"
+  },
+  {
+    "id": 26,
+    "name": "Hotel Phoenix Yogyakarta",
+    "location": "Yogyakarta",
+    "price": "1100000",
+    "rating": "4.4",
+    "gradient": "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463445/wavy/hotels/26.jpg"
+  },
+  {
+    "id": 27,
+    "name": "Royal Ambarrukmo Yogyakarta",
+    "location": "Yogyakarta",
+    "price": "1400000",
+    "rating": "4.5",
+    "gradient": "linear-gradient(135deg,#FF5470,#211F2B)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463447/wavy/hotels/27.jpg"
+  },
+  {
+    "id": 28,
+    "name": "Hotel Majapahit Surabaya",
+    "location": "Surabaya",
+    "price": "1600000",
+    "rating": "4.5",
+    "gradient": "linear-gradient(135deg,#C6395A,#14131C)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463448/wavy/hotels/28.jpg"
+  },
+  {
+    "id": 29,
+    "name": "JW Marriott Surabaya",
+    "location": "Surabaya",
+    "price": "2000000",
+    "rating": "4.6",
+    "gradient": "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
+    "image": "https://res.cloudinary.com/pbzbhdg3/image/upload/v1789463449/wavy/hotels/29.jpg"
   }
 ]
