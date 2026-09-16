@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
@@ -110,6 +110,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   const totalTickets = entries.reduce((s, e) => s + e.qty, 0);
   const totalPrice = entries.reduce((s, e) => s + Number(e.cat.price) * e.qty, 0);
+  const soldOutCount = categories.filter((c) => c.remaining !== undefined && c.remaining <= 0).length;
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -215,22 +216,44 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
 
+            {soldOutCount > 0 && (
+              <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                <p className="text-xs leading-relaxed text-amber-800">
+                  <span className="font-bold">{soldOutCount} kategori sudah habis terjual.</span> Tiket habis ditandai
+                  jelas di bawah — stok tersisa tidak bisa dipesan.
+                </p>
+              </div>
+            )}
+
             <div className="mt-3 space-y-3">
               {categories.map((cat) => {
                 const price = Number(cat.price);
                 const soldOut = cat.remaining !== undefined && cat.remaining <= 0;
                 const qty = qtyMap[cat.id] ?? 0;
                 return (
-                  <div key={cat.id} className="relative overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-                    <span className="pointer-events-none absolute left-0 top-[72%] hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#E5E7EB] bg-[#F8F8FA] sm:block" />
-                    <span className="pointer-events-none absolute right-0 top-[72%] hidden h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full border border-[#E5E7EB] bg-[#F8F8FA] sm:block" />
+                  <div
+                    key={cat.id}
+                    className={`relative overflow-hidden rounded-xl border bg-white ${soldOut ? "border-[#FECACA] opacity-90" : "border-[#E5E7EB]"}`}
+                  >
+                    <span className={`pointer-events-none absolute left-0 top-[72%] hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border bg-[#F8F8FA] sm:block ${soldOut ? "border-[#FECACA]" : "border-[#E5E7EB]"}`} />
+                    <span className={`pointer-events-none absolute right-0 top-[72%] hidden h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full border bg-[#F8F8FA] sm:block ${soldOut ? "border-[#FECACA]" : "border-[#E5E7EB]"}`} />
+                    {soldOut && <div className="absolute inset-x-0 top-0 h-1 bg-[#EF4444]" />}
 
                     <div className="px-4 py-3.5 sm:px-5 sm:py-4">
-                      <p className="text-[13px] font-bold text-[#111827] sm:text-[14px]">{cat.name}</p>
+                      <p className={`flex items-center gap-1.5 text-[13px] font-bold sm:text-[14px] ${soldOut ? "text-[#9CA3AF]" : "text-[#111827]"}`}>
+                        {soldOut && <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-[#EF4444]" />}
+                        {cat.name}
+                      </p>
                       <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[12px] leading-snug text-[#6B7280]">
                         <li>Harga belum termasuk Pajak Hiburan Daerah, Biaya Admin, dan biaya lainnya.</li>
                       </ul>
-                      {!soldOut && (
+                      {soldOut ? (
+                        <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-[#DC2626]">
+                          <AlertTriangle className="h-3 w-3 shrink-0" />
+                          Maaf, kategori ini sudah habis dan tidak bisa dipesan lagi
+                        </p>
+                      ) : (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-[#2B5CFF]">
                           <Clock className="h-3 w-3" />
                           Penjualan berakhir pada {new Date(concert.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })} • 21:00
@@ -238,10 +261,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-dashed border-[#E5E7EB] bg-[#FCFCFD] px-4 py-3 sm:px-5">
-                      <span className="text-[14px] font-extrabold text-[#111827]">{formatIDR(price)}</span>
+                    <div className={`flex items-center justify-between border-t border-dashed px-4 py-3 sm:px-5 ${soldOut ? "border-[#FECACA] bg-[#FEF2F2]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}>
+                      <span className={`text-[14px] font-extrabold ${soldOut ? "text-[#9CA3AF] line-through decoration-[#EF4444]/40" : "text-[#111827]"}`}>{formatIDR(price)}</span>
                       {soldOut ? (
-                        <span className="rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-1 text-[11px] font-semibold text-[#DC2626]">Habis Terjual</span>
+                        <span className="inline-flex items-center gap-1 rounded-md border border-[#FECACA] bg-white px-3 py-1 text-[11px] font-bold text-[#DC2626]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444] animate-pulse" />
+                          Habis Terjual
+                        </span>
                       ) : (
                         <div className="relative">
                           <select
