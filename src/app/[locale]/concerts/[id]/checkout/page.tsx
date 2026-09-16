@@ -121,9 +121,15 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       });
       return;
     }
-    const other = Object.keys(qtyMap).find((k) => Number(k) !== catId && (qtyMap[Number(k)] ?? 0) > 0);
-    if (other) toast("Hanya 1 kategori per pesanan — pilihan sebelumnya diganti");
-    setQtyMap({ [catId]: Math.min(v, 4) });
+    const totalOther = Object.entries(qtyMap)
+      .filter(([k]) => Number(k) !== catId)
+      .reduce((s, [, q]) => s + q, 0);
+    if (v + totalOther > 4) {
+      toast.error("Maksimal 4 tiket per pesanan");
+      v = Math.max(0, 4 - totalOther);
+      if (v <= 0) return;
+    }
+    setQtyMap((prev) => ({ ...prev, [catId]: Math.min(v, 4) }));
   }
 
   async function handlePesan() {
@@ -131,21 +137,44 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       toast.error("Pilih minimal 1 tiket");
       return;
     }
+    if (totalTickets > 4) {
+      toast.error("Maksimal 4 tiket per pesanan");
+      return;
+    }
     setSubmitting(true);
     try {
-      const first = entries[0];
-      const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
-        event_id: Number(id),
-        ticket_category_id: first.cat.id,
-        quantity: first.qty,
-      } as unknown as Record<string, unknown>);
-      const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
-      if (orderId) {
-        toast.success("Pesanan dibuat, lanjut ke pembayaran");
-        router.push(`/orders/${orderId}`);
+      if (entries.length === 1) {
+        const first = entries[0];
+        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
+          event_id: Number(id),
+          ticket_category_id: first.cat.id,
+          quantity: first.qty,
+        } as unknown as Record<string, unknown>);
+        const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
+        if (orderId) {
+          toast.success("Pesanan dibuat, lanjut ke pembayaran");
+          router.push(`/orders/${orderId}`);
+          return;
+        }
+        router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
         return;
       }
-      router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
+      const orderIds: number[] = [];
+      for (const e of entries) {
+        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
+          event_id: Number(id),
+          ticket_category_id: e.cat.id,
+          quantity: e.qty,
+        } as unknown as Record<string, unknown>);
+        const oid = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
+        if (oid) orderIds.push(Number(oid));
+      }
+      if (orderIds.length) {
+        toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
+        router.push(`/orders/${orderIds[0]}`);
+        return;
+      }
+      router.push(`/concerts/${id}/queue?catId=${entries[0].cat.id}&qty=${entries[0].qty}`);
     } catch (err: unknown) {
       const msg = (err as Error).message ?? "";
       if (msg.toLowerCase().includes("stok") || msg.toLowerCase().includes("not enough") || msg.toLowerCase().includes("sold out")) {
@@ -275,7 +304,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                             onChange={(e) => setQty(cat.id, Number(e.target.value))}
                             className="min-w-[72px] appearance-none rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#2B5CFF]"
                           >
-                            {[0, 1, 2, 3, 4].map((n) => (
+                            {Array.from({ length: Math.min(4, 4 - (totalTickets - qty) + 1) }, (_, i) => i).map((n) => (
                               <option key={n} value={n}>
                                 {n}
                               </option>
