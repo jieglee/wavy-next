@@ -96,7 +96,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
             <img
               src={banner}
               alt={concert.title}
-              className="block h-full w-full object-contain object-right-bottom"
+              className="block h-full w-full rounded-lg object-contain object-right-bottom shadow-xl"
             />
           </div>
         </div>
