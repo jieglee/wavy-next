@@ -112,12 +112,17 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const totalPrice = entries.reduce((s, e) => s + Number(e.cat.price) * e.qty, 0);
 
   function setQty(catId: number, v: number) {
-    setQtyMap((prev) => {
-      const next = { ...prev };
-      if (v <= 0) delete next[catId];
-      else next[catId] = Math.min(v, 5);
-      return next;
-    });
+    if (v <= 0) {
+      setQtyMap((prev) => {
+        const next = { ...prev };
+        delete next[catId];
+        return next;
+      });
+      return;
+    }
+    const other = Object.keys(qtyMap).find((k) => Number(k) !== catId && (qtyMap[Number(k)] ?? 0) > 0);
+    if (other) toast("Hanya 1 kategori per pesanan — pilihan sebelumnya diganti");
+    setQtyMap({ [catId]: Math.min(v, 5) });
   }
 
   async function handlePesan() {
