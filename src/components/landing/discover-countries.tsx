@@ -135,7 +135,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
 export default function DiscoverCountries() {
     const t = useTranslations("DiscoverCountries");
     return (
-        <section className="px-4 py-10 sm:px-6 lg:px-8">
+        <section data-aos="fade-up" data-aos-delay="80" className="px-4 py-10 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
                 {/* Header like Loket: Jelajahi Event di Kotamu */}
                 <div className="mb-6 flex items-center gap-2">

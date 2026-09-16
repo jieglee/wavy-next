@@ -187,8 +187,8 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       <ConcertHero concert={concert} />
 
       {/* Tabs and purchase action share one row directly below the hero. */}
-      <div className="mx-auto max-w-[1440px] px-2 sm:px-4 lg:px-6">
-        <div className="relative z-40 grid items-center border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0 lg:grid-cols-[minmax(0,1fr)_520px] lg:gap-4">
+      <div className="relative z-40 border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0">
+        <div className="mx-auto grid max-w-[1440px] items-center px-2 sm:px-4 lg:grid-cols-[minmax(0,1fr)_520px] lg:gap-4 lg:px-6">
           <div className="min-w-0">
             <ConcertTabs tabs={tabs} activeTab={activeTab} />
           </div>
@@ -205,8 +205,10 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             </button>
           </div>
         </div>
+      </div>
 
-        {/* ── Main event layout ── */}
+      {/* ── Main event layout ── */}
+      <div className="mx-auto max-w-[1440px] px-2 sm:px-4 lg:px-6">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_520px]">
 
           {/* =========================================================

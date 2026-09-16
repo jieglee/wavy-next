@@ -34,6 +34,8 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
   return (
     <section
       id="concert-hero"
+      data-aos="fade-in"
+      data-aos-duration="800"
       className="relative w-full overflow-visible bg-[#10191d] lg:h-[300px]"
     >
       {/* Background */}

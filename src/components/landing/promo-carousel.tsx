@@ -170,7 +170,7 @@ export default function PromoCarousel() {
   }, [next]);
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div data-aos="fade-in" data-aos-duration="900" className="relative w-full overflow-hidden">
       <div
         className="flex transition-transform duration-500 ease-[cubic-bezier(.65,0,.35,1)]"
         style={{ transform: `translateX(-${index * 100}%)` }}
