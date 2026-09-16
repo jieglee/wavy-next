@@ -11,7 +11,6 @@ import ConcertDescription from "@/components/concerts/concert-description";
 import ConcertGallery from "@/components/concerts/concert-gallery";
 import ConcertArtist from "@/components/concerts/concert-artist";
 import ConcertTerms from "@/components/concerts/concert-terms";
-import ConcertReviews from "@/components/concerts/concert-reviews";
 import ConcertOrganizerShare from "@/components/concerts/concert-organizer-share";
 import ConcertForYou from "@/components/concerts/concert-for-you";
 import ConcertStickyBar from "@/components/concerts/concert-sticky-bar";
@@ -19,7 +18,7 @@ import ConcertReviewModal from "@/components/concerts/concert-review-modal";
 import ConcertTicketSidebar from "@/components/concerts/concert-ticket-sidebar";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
 import { getMinPrice, formatIDR } from "@/lib/price";
-import type { ConcertDetail, TicketCategory } from "@/types/type";
+import type { ConcertDetail } from "@/types/type";
 import ConcertTabs from "@/components/concerts/concert-tabs";
 
 async function loadConcert(id: string): Promise<ConcertDetail> {
@@ -62,8 +61,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const [submittingReview, setSubmittingReview] = useState(false);
   const [activeTab, setActiveTab] = useState("desc");
   const [showInfoCard, setShowInfoCard] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<TicketCategory | null>(null);
-  const [quantity, setQuantity] = useState(1);
   const descRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const ticketRef = useRef<HTMLDivElement>(null);
@@ -73,9 +70,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     async function loadDetail() {
       setLoading(true);
       const data = await loadConcert(id);
-      setConcert(data as any);
-      setSelectedCategory(null);
-      setQuantity(1);
+      setConcert(data);
       setLoading(false);
     }
     loadDetail();
@@ -130,11 +125,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   function handleBuyTicket() {
     if (!concert) return;
     if (!getAuthToken()) { toast.error("Silakan masuk untuk melanjutkan pembelian"); router.push("/auth/login"); return; }
-    if (!hasSeatmap && selectedCategory) {
-      router.push(`/concerts/${id}/queue?catId=${selectedCategory.id}&qty=${quantity}`);
-    } else {
-      router.push(`/concerts/${id}/queue`);
-    }
+    router.push(`/concerts/${id}/checkout`);
   }
   async function handleSubmitReview(e: React.FormEvent) {
     e.preventDefault();
