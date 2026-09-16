@@ -122,7 +122,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     }
     const other = Object.keys(qtyMap).find((k) => Number(k) !== catId && (qtyMap[Number(k)] ?? 0) > 0);
     if (other) toast("Hanya 1 kategori per pesanan — pilihan sebelumnya diganti");
-    setQtyMap({ [catId]: Math.min(v, 5) });
+    setQtyMap({ [catId]: Math.min(v, 4) });
   }
 
   async function handlePesan() {
@@ -249,7 +249,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                             onChange={(e) => setQty(cat.id, Number(e.target.value))}
                             className="min-w-[72px] appearance-none rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#2B5CFF]"
                           >
-                            {[0, 1, 2, 3, 4, 5].map((n) => (
+                            {[0, 1, 2, 3, 4].map((n) => (
                               <option key={n} value={n}>
                                 {n}
                               </option>
