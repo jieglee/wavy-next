@@ -86,7 +86,7 @@ export default function TravelerMode() {
   };
 
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8">
+    <section data-aos="fade-up" data-aos-delay="80" className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">

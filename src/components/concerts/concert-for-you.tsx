@@ -45,9 +45,9 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
   useEffect(() => { updateArrows(); const el = scrollerRef.current; if (!el) return; el.addEventListener("scroll", updateArrows, { passive: true }); window.addEventListener("resize", updateArrows); return () => { el.removeEventListener("scroll", updateArrows); window.removeEventListener("resize", updateArrows); }; }, [updateArrows]);
   const scrollByCard = (dir: number) => { const el = scrollerRef.current; if (!el) return; const card = el.firstElementChild as HTMLElement | null; const gap = 16; const cardWidth = card?.offsetWidth ?? (window.innerWidth < 640 ? 290 : 320); el.scrollBy({ left: dir * (cardWidth + gap), behavior: "smooth" }); };
   return (
-    <section className="mt-10">
+    <section data-aos="fade-up" data-aos-duration="700" className="mt-10">
       <div className="mb-6 flex items-center gap-2">
-        <Calendar className="h-6 w-6 shrink-0 text-[#FF5470]" strokeWidth={2.75} />
+        <Calendar className="h-6 w-6 shrink-0 text-[#FF5470]" strokeWidth={3} />
         <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">Event Untuk Kamu</h2>
       </div>
       <div className="relative">

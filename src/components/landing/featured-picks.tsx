@@ -136,7 +136,7 @@ export default function FeaturedPicks({
     const featured = banner[active];
 
     return (
-        <div className={`grid grid-cols-1 gap-5 md:grid-cols-[360px_1fr] ${className}`}>
+        <div data-aos="fade-up" data-aos-delay="100" className={`grid grid-cols-1 gap-5 md:grid-cols-[360px_1fr] ${className}`}>
             <div className="flex justify-end self-start">
                 <div className="group w-full max-w-[360px] translate-x-3 overflow-hidden rounded-3xl sm:max-w-[380px] md:translate-x-4">
                     <video
