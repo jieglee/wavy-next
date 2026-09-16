@@ -304,7 +304,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                             onChange={(e) => setQty(cat.id, Number(e.target.value))}
                             className="min-w-[72px] appearance-none rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#2B5CFF]"
                           >
-                            {Array.from({ length: Math.min(4, 4 - (totalTickets - qty) + 1) }, (_, i) => i).map((n) => (
+                            {[0, 1, 2, 3, 4].map((n) => (
                               <option key={n} value={n}>
                                 {n}
                               </option>
@@ -322,33 +322,32 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
           <div className="lg:sticky lg:top-[68px] lg:self-start">
             <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] sm:p-5">
-              <div className="flex gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-[#2B5CFF]">
-                  <Ticket className="h-4 w-4" />
+              {entries.length === 0 ? (
+                <div className="flex items-start gap-2.5 py-1">
+                  <Ticket className="h-5 w-5 shrink-0 text-[#7CC9E8]" />
+                  <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
                 </div>
-                <div className="min-w-0 flex-1">
-                  {entries.length === 0 ? (
-                    <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {entries.map(({ cat, qty }) => (
-                        <div key={cat.id} className="flex items-start justify-between gap-3 text-xs">
-                          <span className="line-clamp-2 font-medium text-[#111827]">
-                            {cat.name} × {qty}
-                          </span>
-                          <span className="shrink-0 font-semibold text-[#111827]">{formatIDR(Number(cat.price) * qty)}</span>
-                        </div>
-                      ))}
+              ) : (
+                <div className="divide-y divide-[#F3F4F6]">
+                  {entries.map(({ cat, qty }) => (
+                    <div key={cat.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-semibold leading-tight text-[#111827]">{cat.name}</p>
+                        <p className="mt-0.5 text-xs text-[#6B7280]">
+                          {qty} tiket x {formatIDR(Number(cat.price))}
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </div>
+              )}
 
-              <div className="my-4 h-px bg-[#F3F4F6]" />
+              <div className="my-3 h-px bg-[#E5E7EB]" />
 
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
-                <span className="font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
               </div>
 
               <button
