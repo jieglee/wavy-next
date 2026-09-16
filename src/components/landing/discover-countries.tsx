@@ -150,18 +150,15 @@ export default function DiscoverCountries() {
                         <Link
                             key={city.id}
                             href={city.href}
-                            className={`group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border bg-white px-5 py-3 transition-all duration-200 sm:h-[118px] ${city.active
-                                    ? "border-wavy-blue shadow-[0_6px_20px_rgba(30,64,175,0.12)]"
-                                    : "border-[#E6E4F0] shadow-sm hover:border-[#D8D5E8] hover:shadow-md"
-                                }`}
+                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-[#E6E4F0] bg-white px-5 py-3 shadow-sm transition-all duration-200 hover:border-[#D8D5E8] hover:shadow-md sm:h-[118px]"
                         >
                             {/* Left: text */}
                             <div className="flex flex-col justify-center">
-                                <p className={`font-display text-[15px] font-bold leading-tight ${city.active ? "text-wavy-blue" : "text-[#1B1A24]"}`}>
+                                <p className="font-display text-[15px] font-bold leading-tight text-[#1B1A24]">
                                     {city.label1}
                                 </p>
                                 {city.label2 && (
-                                    <p className={`font-display text-[15px] font-bold leading-tight ${city.active ? "text-wavy-blue" : "text-[#1B1A24]"}`}>
+                                    <p className="font-display text-[15px] font-bold leading-tight text-[#1B1A24]">
                                         {city.label2}
                                     </p>
                                 )}
