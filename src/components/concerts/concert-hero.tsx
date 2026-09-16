@@ -92,7 +92,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
           </div>
           </div>
 
-          <div className="relative z-10 hidden h-[460px] w-[520px] translate-y-[-160px] items-end justify-end justify-self-end self-end pr-2 lg:flex">
+          <div className="relative z-10 hidden h-[460px] w-[520px] translate-y-[-160px] items-end justify-end justify-self-end self-end overflow-hidden rounded-t-xl pr-2 lg:flex">
             <img
               src={banner}
               alt={concert.title}
