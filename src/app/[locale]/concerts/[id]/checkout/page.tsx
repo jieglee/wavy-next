@@ -195,10 +195,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       <div className="min-h-screen bg-[#F8F8FA]">
         <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white">
           <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-4">
-            <div className="flex items-center gap-2">
-              <WavyIcon size={22} />
-              <span className="text-sm font-bold text-[#111827]">Wavy</span>
-            </div>
+            <Link href="/" className="flex shrink-0 items-center gap-2">
+              <WavyIcon size={26} />
+              <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
+            </Link>
             <CheckoutStepper step={1} />
           </div>
         </header>
@@ -216,9 +216,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     <div className="min-h-screen bg-[#F8F8FA]">
       <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white">
         <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between gap-4 px-3 sm:px-4">
-          <Link href={`/concerts/${id}`} className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded bg-[#1B1A3A] text-[11px] font-black text-white">W</span>
-            <span className="hidden text-[13px] font-extrabold tracking-tight text-[#111827] sm:block">WAVY</span>
+          <Link href="/" className="flex shrink-0 items-center gap-2">
+            <WavyIcon size={26} />
+            <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
           </Link>
           <CheckoutStepper step={1} />
           <div className="flex items-center gap-2">
