@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
@@ -110,6 +110,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   const totalTickets = entries.reduce((s, e) => s + e.qty, 0);
   const totalPrice = entries.reduce((s, e) => s + Number(e.cat.price) * e.qty, 0);
+  const soldOutCount = categories.filter((c) => c.remaining !== undefined && c.remaining <= 0).length;
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -120,9 +121,15 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       });
       return;
     }
-    const other = Object.keys(qtyMap).find((k) => Number(k) !== catId && (qtyMap[Number(k)] ?? 0) > 0);
-    if (other) toast("Hanya 1 kategori per pesanan — pilihan sebelumnya diganti");
-    setQtyMap({ [catId]: Math.min(v, 4) });
+    const totalOther = Object.entries(qtyMap)
+      .filter(([k]) => Number(k) !== catId)
+      .reduce((s, [, q]) => s + q, 0);
+    if (v + totalOther > 4) {
+      toast.error("Maksimal 4 tiket per pesanan");
+      v = Math.max(0, 4 - totalOther);
+      if (v <= 0) return;
+    }
+    setQtyMap((prev) => ({ ...prev, [catId]: Math.min(v, 4) }));
   }
 
   async function handlePesan() {
@@ -130,21 +137,44 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       toast.error("Pilih minimal 1 tiket");
       return;
     }
+    if (totalTickets > 4) {
+      toast.error("Maksimal 4 tiket per pesanan");
+      return;
+    }
     setSubmitting(true);
     try {
-      const first = entries[0];
-      const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
-        event_id: Number(id),
-        ticket_category_id: first.cat.id,
-        quantity: first.qty,
-      } as unknown as Record<string, unknown>);
-      const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
-      if (orderId) {
-        toast.success("Pesanan dibuat, lanjut ke pembayaran");
-        router.push(`/orders/${orderId}`);
+      if (entries.length === 1) {
+        const first = entries[0];
+        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
+          event_id: Number(id),
+          ticket_category_id: first.cat.id,
+          quantity: first.qty,
+        } as unknown as Record<string, unknown>);
+        const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
+        if (orderId) {
+          toast.success("Pesanan dibuat, lanjut ke pembayaran");
+          router.push(`/orders/${orderId}`);
+          return;
+        }
+        router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
         return;
       }
-      router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
+      const orderIds: number[] = [];
+      for (const e of entries) {
+        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
+          event_id: Number(id),
+          ticket_category_id: e.cat.id,
+          quantity: e.qty,
+        } as unknown as Record<string, unknown>);
+        const oid = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
+        if (oid) orderIds.push(Number(oid));
+      }
+      if (orderIds.length) {
+        toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
+        router.push(`/orders/${orderIds[0]}`);
+        return;
+      }
+      router.push(`/concerts/${id}/queue?catId=${entries[0].cat.id}&qty=${entries[0].qty}`);
     } catch (err: unknown) {
       const msg = (err as Error).message ?? "";
       if (msg.toLowerCase().includes("stok") || msg.toLowerCase().includes("not enough") || msg.toLowerCase().includes("sold out")) {
@@ -165,10 +195,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       <div className="min-h-screen bg-[#F8F8FA]">
         <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white">
           <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-4">
-            <div className="flex items-center gap-2">
-              <WavyIcon size={22} />
-              <span className="text-sm font-bold text-[#111827]">Wavy</span>
-            </div>
+            <Link href="/" className="flex shrink-0 items-center gap-2">
+              <WavyIcon size={26} />
+              <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
+            </Link>
             <CheckoutStepper step={1} />
           </div>
         </header>
@@ -186,9 +216,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     <div className="min-h-screen bg-[#F8F8FA]">
       <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white">
         <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between gap-4 px-3 sm:px-4">
-          <Link href={`/concerts/${id}`} className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded bg-[#1B1A3A] text-[11px] font-black text-white">W</span>
-            <span className="hidden text-[13px] font-extrabold tracking-tight text-[#111827] sm:block">WAVY</span>
+          <Link href="/" className="flex shrink-0 items-center gap-2">
+            <WavyIcon size={26} />
+            <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
           </Link>
           <CheckoutStepper step={1} />
           <div className="flex items-center gap-2">
@@ -215,22 +245,44 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
 
+            {soldOutCount > 0 && (
+              <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                <p className="text-xs leading-relaxed text-amber-800">
+                  <span className="font-bold">{soldOutCount} kategori sudah habis terjual.</span> Tiket habis ditandai
+                  jelas di bawah — stok tersisa tidak bisa dipesan.
+                </p>
+              </div>
+            )}
+
             <div className="mt-3 space-y-3">
               {categories.map((cat) => {
                 const price = Number(cat.price);
                 const soldOut = cat.remaining !== undefined && cat.remaining <= 0;
                 const qty = qtyMap[cat.id] ?? 0;
                 return (
-                  <div key={cat.id} className="relative overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-                    <span className="pointer-events-none absolute left-0 top-[72%] hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#E5E7EB] bg-[#F8F8FA] sm:block" />
-                    <span className="pointer-events-none absolute right-0 top-[72%] hidden h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full border border-[#E5E7EB] bg-[#F8F8FA] sm:block" />
+                  <div
+                    key={cat.id}
+                    className={`relative overflow-hidden rounded-xl border bg-white ${soldOut ? "border-[#FECACA] opacity-90" : "border-[#E5E7EB]"}`}
+                  >
+                    <span className={`pointer-events-none absolute left-0 top-[72%] hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border bg-[#F8F8FA] sm:block ${soldOut ? "border-[#FECACA]" : "border-[#E5E7EB]"}`} />
+                    <span className={`pointer-events-none absolute right-0 top-[72%] hidden h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full border bg-[#F8F8FA] sm:block ${soldOut ? "border-[#FECACA]" : "border-[#E5E7EB]"}`} />
+                    {soldOut && <div className="absolute inset-x-0 top-0 h-1 bg-[#EF4444]" />}
 
                     <div className="px-4 py-3.5 sm:px-5 sm:py-4">
-                      <p className="text-[13px] font-bold text-[#111827] sm:text-[14px]">{cat.name}</p>
+                      <p className={`flex items-center gap-1.5 text-[13px] font-bold sm:text-[14px] ${soldOut ? "text-[#9CA3AF]" : "text-[#111827]"}`}>
+                        {soldOut && <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-[#EF4444]" />}
+                        {cat.name}
+                      </p>
                       <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[12px] leading-snug text-[#6B7280]">
                         <li>Harga belum termasuk Pajak Hiburan Daerah, Biaya Admin, dan biaya lainnya.</li>
                       </ul>
-                      {!soldOut && (
+                      {soldOut ? (
+                        <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-[#DC2626]">
+                          <AlertTriangle className="h-3 w-3 shrink-0" />
+                          Maaf, kategori ini sudah habis dan tidak bisa dipesan lagi
+                        </p>
+                      ) : (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-[#2B5CFF]">
                           <Clock className="h-3 w-3" />
                           Penjualan berakhir pada {new Date(concert.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })} • 21:00
@@ -238,10 +290,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-dashed border-[#E5E7EB] bg-[#FCFCFD] px-4 py-3 sm:px-5">
-                      <span className="text-[14px] font-extrabold text-[#111827]">{formatIDR(price)}</span>
+                    <div className={`flex items-center justify-between border-t border-dashed px-4 py-3 sm:px-5 ${soldOut ? "border-[#FECACA] bg-[#FEF2F2]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}>
+                      <span className={`text-[14px] font-extrabold ${soldOut ? "text-[#9CA3AF] line-through decoration-[#EF4444]/40" : "text-[#111827]"}`}>{formatIDR(price)}</span>
                       {soldOut ? (
-                        <span className="rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-1 text-[11px] font-semibold text-[#DC2626]">Habis Terjual</span>
+                        <span className="inline-flex items-center gap-1 rounded-md border border-[#FECACA] bg-white px-3 py-1 text-[11px] font-bold text-[#DC2626]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444] animate-pulse" />
+                          Habis Terjual
+                        </span>
                       ) : (
                         <div className="relative">
                           <select
@@ -267,33 +322,32 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
           <div className="lg:sticky lg:top-[68px] lg:self-start">
             <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] sm:p-5">
-              <div className="flex gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-[#2B5CFF]">
-                  <Ticket className="h-4 w-4" />
+              {entries.length === 0 ? (
+                <div className="flex items-start gap-2.5 py-1">
+                  <Ticket className="h-5 w-5 shrink-0 text-[#7CC9E8]" />
+                  <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
                 </div>
-                <div className="min-w-0 flex-1">
-                  {entries.length === 0 ? (
-                    <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {entries.map(({ cat, qty }) => (
-                        <div key={cat.id} className="flex items-start justify-between gap-3 text-xs">
-                          <span className="line-clamp-2 font-medium text-[#111827]">
-                            {cat.name} × {qty}
-                          </span>
-                          <span className="shrink-0 font-semibold text-[#111827]">{formatIDR(Number(cat.price) * qty)}</span>
-                        </div>
-                      ))}
+              ) : (
+                <div className="divide-y divide-[#F3F4F6]">
+                  {entries.map(({ cat, qty }) => (
+                    <div key={cat.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-semibold leading-tight text-[#111827]">{cat.name}</p>
+                        <p className="mt-0.5 text-xs text-[#6B7280]">
+                          {qty} tiket x {formatIDR(Number(cat.price))}
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </div>
+              )}
 
-              <div className="my-4 h-px bg-[#F3F4F6]" />
+              <div className="my-3 h-px bg-[#E5E7EB]" />
 
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
-                <span className="font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
               </div>
 
               <button
