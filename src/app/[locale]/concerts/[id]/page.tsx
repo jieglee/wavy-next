@@ -211,7 +211,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 <div ref={galleryRef}>
                   <ConcertGallery
                     gallery={concert.gallery}
-                    seatmap={concert.seatmap ?? null}
+                    seatmap={null}
                     posterUrl={concert.poster_url}
                     title={concert.title}
                   />

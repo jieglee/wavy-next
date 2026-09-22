@@ -1,3 +1,10 @@
+const escapeHtml = (s: string) =>
+  s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function sanitizeHtml(dirty: string): string {
   const doc = new DOMParser().parseFromString(dirty, "text/html");
   const allowed: Record<string, string[]> = {
@@ -42,10 +49,12 @@ export function sanitizeHtml(dirty: string): string {
       if (looksLikeList) {
         const isOrdered = /^\d+[.)]/.test(lines[0]);
         const tag = isOrdered ? "ol" : "ul";
-        const items = lines.map((l) => `<li>${l.replace(/^[-•\d.)]+\s*/, "")}</li>`).join("");
+        const items = lines
+          .map((l) => `<li>${escapeHtml(l.replace(/^[-•\d.)]+\s*/, ""))}</li>`)
+          .join("");
         parts.push(`<${tag}>${items}</${tag}>`);
       } else {
-        for (const line of lines) parts.push(`<p>${line}</p>`);
+        for (const line of lines) parts.push(`<p>${escapeHtml(line)}</p>`);
       }
     }
     html = parts.join("");

@@ -25,6 +25,7 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
       venue: "Gambir Expo & Hall D2 JIExpo Jakarta",
       date: "2026-09-25T19:00:00+07:00",
       poster_url: "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg",
+      banner_url: "",
       status: "published",
       artist_name: "Pestapora",
       organizer_name: "Boss Creator",
@@ -376,7 +377,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     );
   }
 
-  const banner = concert.poster_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
+  const banner = concert.banner_url || concert.poster_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
   const eventDateObj = new Date(concert.date);
   const eventDateStr = eventDateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
   const eventTimeStr = eventDateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
