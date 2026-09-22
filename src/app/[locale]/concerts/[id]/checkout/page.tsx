@@ -573,8 +573,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     <button
                       type="button"
                       onClick={handleLanjut}
-                      disabled={submitting}
-                      className="rounded-lg bg-[#2B5CFF] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
+                      disabled={submitting || !agreeTerms || !agreeData}
+                      className="rounded-lg bg-[#2B5CFF] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
                     >
                       {submitting ? "Memproses..." : "Lanjut"}
                     </button>
