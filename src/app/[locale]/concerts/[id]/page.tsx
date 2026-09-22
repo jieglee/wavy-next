@@ -159,7 +159,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const tabs = [
     { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
     ...(hasSeatmap ? [{ id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) }] : []),
-    ...(!hasSeatmap && concert.ticket_categories?.length ? [{ id: "ticket", label: "Tiket", onClick: () => scrollToSection("ticket", ticketRef) }] : []),
+    ...(concert.ticket_categories?.length ? [{ id: "ticket", label: "Tiket", onClick: () => scrollToSection("ticket", ticketRef) }] : []),
     { id: "terms", label: "Syarat dan Ketentuan", onClick: () => scrollToSection("terms", termsRef) },
   ];
 
@@ -218,7 +218,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 </div>
               )}
 
-                  {!hasSeatmap && concert.ticket_categories?.length > 0 && (
+                  {concert.ticket_categories?.length > 0 && (
                     <div ref={ticketRef}>
                       <ConcertTicketSidebar categories={concert.ticket_categories} />
                     </div>
