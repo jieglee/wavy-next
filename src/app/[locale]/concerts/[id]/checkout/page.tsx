@@ -509,9 +509,21 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   <div>
                     <label className={labelCls}>Tanggal Lahir{req}</label>
                     <div className="flex gap-2">
-                      <input inputMode="numeric" maxLength={2} value={dobDay} onChange={(e) => setDobDay(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-16 text-center`} placeholder="dd" />
-                      <input inputMode="numeric" maxLength={2} value={dobMonth} onChange={(e) => setDobMonth(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-16 text-center`} placeholder="mm" />
-                      <input inputMode="numeric" maxLength={4} value={dobYear} onChange={(e) => setDobYear(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-24 text-center`} placeholder="YYYY" />
+                      <input inputMode="numeric" maxLength={2} value={dobDay} onChange={(e) => setDobDay(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-[72px] shrink-0 text-center`} placeholder="dd" />
+                      <div className="relative min-w-0 flex-1">
+                        <select
+                          value={dobMonth}
+                          onChange={(e) => setDobMonth(e.target.value)}
+                          className={`${inputCls(formErrors.dob)} appearance-none pr-8 ${dobMonth ? "text-[#111827]" : "text-[#9CA3AF]"}`}
+                        >
+                          <option value="" disabled>mm</option>
+                          {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m, i) => (
+                            <option key={m} value={i + 1}>{m}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]" />
+                      </div>
+                      <input inputMode="numeric" maxLength={4} value={dobYear} onChange={(e) => setDobYear(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-[100px] shrink-0 text-center`} placeholder="YYYY" />
                     </div>
                     {formErrors.dob && <p className={errCls}>{formErrors.dob}</p>}
                   </div>
