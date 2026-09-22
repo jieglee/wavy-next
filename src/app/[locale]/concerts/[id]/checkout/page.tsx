@@ -109,12 +109,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [proteksiOn, setProteksiOn] = useState(true);
 
   const PAY_GROUPS = [
-    { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card" }] },
-    { id: "va", label: "Virtual Account", icon: Landmark, children: [{ id: "va-bca", label: "BCA Virtual Account" }, { id: "va-bri", label: "BRI Virtual Account" }, { id: "va-mandiri", label: "Mandiri Virtual Account" }, { id: "va-bni", label: "BNI Virtual Account" }] },
-    { id: "wallet", label: "Wallet", icon: Wallet, promo: true, children: [{ id: "w-gopay", label: "GoPay" }, { id: "w-ovo", label: "OVO" }, { id: "w-dana", label: "DANA" }, { id: "w-shopee", label: "ShopeePay" }] },
-    { id: "paylater", label: "PayLater", icon: BadgePercent, promo: true, children: [{ id: "pl-kredivo", label: "Kredivo" }, { id: "pl-indodana", label: "Indodana" }] },
-    { id: "qr", label: "QR", icon: QrCode, children: [{ id: "qr-qris", label: "QRIS" }] },
-    { id: "inst", label: "Installment", icon: Layers, children: [{ id: "in-3", label: "Cicilan 3x" }, { id: "in-6", label: "Cicilan 6x" }, { id: "in-12", label: "Cicilan 12x" }] },
+    { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card", info: "Bayar dengan kartu kredit atau debit berlogo Visa, Mastercard, atau JCB. Transaksi diproses aman dengan otentikasi 3D Secure dari bank penerbit kartumu." }] },
+    { id: "va", label: "Virtual Account", icon: Landmark, children: [{ id: "va-bca", label: "BCA Virtual Account", info: "Transfer ke nomor BCA Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-bri", label: "BRI Virtual Account", info: "Transfer ke nomor BRI Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-mandiri", label: "Mandiri Virtual Account", info: "Transfer ke nomor Mandiri Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-bni", label: "BNI Virtual Account", info: "Transfer ke nomor BNI Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }] },
+    { id: "wallet", label: "Wallet", icon: Wallet, promo: true, children: [{ id: "w-gopay", label: "GoPay", info: "Bayar praktis dengan saldo GoPay. Pastikan saldo GoPay-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-ovo", label: "OVO", info: "Bayar praktis dengan saldo OVO. Pastikan saldo OVO-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-dana", label: "DANA", info: "Bayar praktis dengan saldo DANA. Pastikan saldo DANA-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-shopee", label: "ShopeePay", info: "Bayar praktis dengan saldo ShopeePay. Pastikan saldo ShopeePay-mu cukup sebelum melanjutkan pembayaran." }] },
+    { id: "paylater", label: "PayLater", icon: BadgePercent, promo: true, children: [{ id: "pl-kredivo", label: "Kredivo", info: "Bayar dengan Kredivo dan pilih tenor yang tersedia. Pastikan akun Kredivo-mu aktif dan limit mencukupi." }, { id: "pl-indodana", label: "Indodana", info: "Bayar dengan Indodana dan pilih tenor yang tersedia. Pastikan akun Indodana-mu aktif dan limit mencukupi." }] },
+    { id: "qr", label: "QR", icon: QrCode, children: [{ id: "qr-qris", label: "QRIS", info: "Quick Response Code Indonesian Standard atau biasa disingkat QRIS (dibaca KRIS) adalah penyatuan berbagai macam QR dari berbagai Penyelenggara Jasa Sistem Pembayaran (PJSP) menggunakan QR Code. QRIS dikembangkan oleh industri sistem pembayaran bersama dengan Bank Indonesia agar proses transaksi dengan QR Code dapat lebih mudah, cepat, dan terjaga." }] },
+    { id: "inst", label: "Installment", icon: Layers, children: [{ id: "in-3", label: "Cicilan 3x", info: "Bagi pembayaran menjadi cicilan 3x dengan kartu kredit yang mendukung program cicilan bank." }, { id: "in-6", label: "Cicilan 6x", info: "Bagi pembayaran menjadi cicilan 6x dengan kartu kredit yang mendukung program cicilan bank." }, { id: "in-12", label: "Cicilan 12x", info: "Bagi pembayaran menjadi cicilan 12x dengan kartu kredit yang mendukung program cicilan bank." }] },
   ];
 
   useEffect(() => {
@@ -226,6 +226,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const feeProteksi = proteksiOn ? 10000 * totalTickets : 0;
   const feePlatform = 600;
   const grandTotal = totalPrice + feeTax + feeAdmin + feeProteksi + feePlatform;
+  const selectedPay = PAY_GROUPS.flatMap((g) => g.children).find((c) => c.id === payMethod);
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -679,6 +680,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     );
                   })}
                 </div>
+                {selectedPay && (
+                  <div className="mt-2 overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">Informasi Pembayaran</p>
+                    <p className="px-4 py-3 text-justify text-[13px] leading-relaxed text-[#374151]">{selectedPay.info}</p>
+                  </div>
+                )}
               </div>
               <aside className="h-fit rounded-xl border border-[#F0F0F4] bg-[#FCFCFD] p-4 lg:sticky lg:top-[68px]">
                 <p className="text-[13px] font-bold leading-snug text-[#111827]">{concert.title}</p>
