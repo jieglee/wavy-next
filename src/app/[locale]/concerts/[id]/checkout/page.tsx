@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
@@ -89,7 +89,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [loading, setLoading] = useState(true);
   const [qtyMap, setQtyMap] = useState<Record<number, number>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -104,6 +104,18 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [agreeData, setAgreeData] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState(600);
+  const [payGroup, setPayGroup] = useState("cc");
+  const [payMethod, setPayMethod] = useState("cc-card");
+  const [proteksiOn, setProteksiOn] = useState(true);
+
+  const PAY_GROUPS = [
+    { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card" }] },
+    { id: "va", label: "Virtual Account", icon: Landmark, children: [{ id: "va-bca", label: "BCA Virtual Account" }, { id: "va-bri", label: "BRI Virtual Account" }, { id: "va-mandiri", label: "Mandiri Virtual Account" }, { id: "va-bni", label: "BNI Virtual Account" }] },
+    { id: "wallet", label: "Wallet", icon: Wallet, promo: true, children: [{ id: "w-gopay", label: "GoPay" }, { id: "w-ovo", label: "OVO" }, { id: "w-dana", label: "DANA" }, { id: "w-shopee", label: "ShopeePay" }] },
+    { id: "paylater", label: "PayLater", icon: BadgePercent, promo: true, children: [{ id: "pl-kredivo", label: "Kredivo" }, { id: "pl-indodana", label: "Indodana" }] },
+    { id: "qr", label: "QR", icon: QrCode, children: [{ id: "qr-qris", label: "QRIS" }] },
+    { id: "inst", label: "Installment", icon: Layers, children: [{ id: "in-3", label: "Cicilan 3x" }, { id: "in-6", label: "Cicilan 6x" }, { id: "in-12", label: "Cicilan 12x" }] },
+  ];
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -120,13 +132,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   }, [id, router]);
 
   useEffect(() => {
-    if (step !== 2) return;
+    if (step !== 2 && step !== 3) return;
     const t = setInterval(() => setTimeLeft((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(t);
   }, [step]);
 
   useEffect(() => {
-    if (step !== 2 || timeLeft > 0) return;
+    if ((step !== 2 && step !== 3) || timeLeft > 0) return;
     const t = setTimeout(() => {
       toast.error("Waktu pemesanan habis, silakan pilih kategori lagi");
       setStep(1);
@@ -197,8 +209,23 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       toast.error("Lengkapi data diri dulu");
       return;
     }
+    setStep(3);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleKonfirmasi() {
+    if (!payMethod) {
+      toast.error("Pilih metode pembayaran dulu");
+      return;
+    }
     handlePesan();
   }
+
+  const feeTax = Math.round(totalPrice * 0.1);
+  const feeAdmin = Math.round(totalPrice * 0.05);
+  const feeProteksi = proteksiOn ? 10000 * totalTickets : 0;
+  const feePlatform = 600;
+  const grandTotal = totalPrice + feeTax + feeAdmin + feeProteksi + feePlatform;
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -606,6 +633,149 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
                   <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+        )}
+
+        {step === 3 && (
+        <div className="mx-auto mt-5 max-w-[880px]">
+          <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
+            <div className="bg-[#F5C518] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
+              {timerMm}:{timerSs}
+              <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
+            </div>
+            <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
+              <div>
+                <div className="rounded-lg bg-gradient-to-r from-orange-50 to-rose-50 px-4 py-3 ring-1 ring-orange-100">
+                  <p className="text-[13px] font-bold text-[#111827]">Promo Pembayaran</p>
+                </div>
+                <p className="mt-4 text-[13px] font-bold text-[#111827]">Metode Pembayaran</p>
+                <div className="mt-2 space-y-2">
+                  {PAY_GROUPS.map((g) => {
+                    const open = payGroup === g.id;
+                    const Icon = g.icon;
+                    return (
+                      <div key={g.id} className="overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+                        <button type="button" onClick={() => setPayGroup(open ? "" : g.id)} className="flex w-full items-center gap-2.5 px-4 py-3 text-left">
+                          <Icon className="h-4 w-4 shrink-0 text-[#6B7280]" />
+                          <span className="flex-1 text-[13px] font-bold text-[#111827]">{g.label}</span>
+                          {g.promo && <span className="rounded bg-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold text-white">Promo</span>}
+                          <ChevronDown className={`h-4 w-4 shrink-0 text-[#9CA3AF] transition-transform ${open ? "rotate-180" : ""}`} />
+                        </button>
+                        {open && (
+                          <div className="border-t border-[#F0F0F4] px-4 py-1">
+                            {g.children.map((c) => (
+                              <label key={c.id} className="flex cursor-pointer items-center gap-2.5 py-2 text-[13px] text-[#374151]">
+                                <input type="radio" name="paymethod" checked={payMethod === c.id} onChange={() => { setPayMethod(c.id); setPayGroup(g.id); }} className="h-4 w-4 shrink-0 accent-[#2B5CFF]" />
+                                {c.label}
+                              </label>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <aside className="h-fit rounded-xl border border-[#F0F0F4] bg-[#FCFCFD] p-4 lg:sticky lg:top-[68px]">
+                <p className="text-[13px] font-bold leading-snug text-[#111827]">{concert.title}</p>
+                <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
+                  {eventDateStr} • {eventTimeStr} WIB
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">{concert.venue}</p>
+                <div className="my-3 h-px bg-[#E5E7EB]" />
+                <p className="text-[13px] font-bold text-[#111827]">Ringkasan Pesanan</p>
+                <div className="mt-2 divide-y divide-[#F0F0F4]">
+                  {entries.map(({ cat, qty }) => (
+                    <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold uppercase text-[#111827]">{cat.name}</p>
+                        <p className="mt-0.5 text-xs text-[#6B7280]">
+                          {qty} tiket x {formatIDR(Number(cat.price))}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="my-3 h-px bg-[#E5E7EB]" />
+                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#2B5CFF]">
+                  <BadgePercent className="h-5 w-5 shrink-0 text-[#2B5CFF]" />
+                  <span className="flex-1 text-xs font-bold text-[#111827]">Makin hemat pakai promo</span>
+                  <span className="text-base text-[#9CA3AF]">&gt;</span>
+                </button>
+                <p className="mt-3 text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
+                <div className="mt-2 space-y-1.5">
+                  {entries.map(({ cat, qty }) => (
+                    <div key={cat.id} className="flex items-center justify-between text-xs text-[#374151]">
+                      <span>{cat.name} (x{qty})</span>
+                      <span className="font-semibold">{formatIDR(Number(cat.price) * qty)}</span>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between text-xs text-[#374151]">
+                    <span>Local Tax</span>
+                    <span className="font-semibold">{formatIDR(feeTax)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[#374151]">
+                    <span>Biaya Admin</span>
+                    <span className="font-semibold">{formatIDR(feeAdmin)}</span>
+                  </div>
+                  {proteksiOn && (
+                    <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
+                      <span>Proteksi Pembeli Tiket <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan) (x{totalTickets})</span></span>
+                      <span className="shrink-0 font-semibold">{formatIDR(feeProteksi)}</span>
+                    </div>
+                  )}
+                  <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
+                    <span>Biaya Platform <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan)</span></span>
+                    <span className="shrink-0 font-semibold">{formatIDR(feePlatform)}</span>
+                  </div>
+                </div>
+                <div className="my-3 border-t border-dashed border-[#E5E7EB]" />
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] font-bold text-[#111827]">Total Keseluruhan</span>
+                  <span className="text-sm font-extrabold text-[#111827]">{formatIDR(grandTotal)}</span>
+                </div>
+                {proteksiOn ? (
+                  <div className="mt-3 rounded-lg bg-[#EFF6FF] p-3 ring-1 ring-[#BFDBFE]">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="h-5 w-5 shrink-0 text-[#F97316]" />
+                      <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
+                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#2B5CFF] bg-white px-2 py-0.5 text-[11px] font-bold text-[#2B5CFF]">Ubah</button>
+                    </div>
+                    <p className="mt-1 text-xs text-[#6B7280]">Rp. 10.000/orang</p>
+                    <p className="text-[11px] font-semibold text-[#2B5CFF]">Syarat Ketentuan</p>
+                    <p className="mt-2 flex items-center gap-1.5 rounded bg-[#16A34A] px-2 py-1.5 text-[11px] font-bold text-white">
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> Yeay, tiket kamu terlindungi!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-3 flex items-center gap-2 rounded-lg border border-dashed border-[#E5E7EB] bg-white p-3">
+                    <ShieldCheck className="h-5 w-5 shrink-0 text-[#9CA3AF]" />
+                    <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
+                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#2B5CFF] bg-white px-2 py-0.5 text-[11px] font-bold text-[#2B5CFF]">Tambah</button>
+                  </div>
+                )}
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    aria-label="Kembali"
+                    onClick={() => { setStep(2); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    className="flex items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-[#374151] transition hover:bg-[#F8F8FA]"
+                  >
+                    <ChevronDown className="h-4 w-4 rotate-90" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleKonfirmasi}
+                    disabled={!payMethod || submitting}
+                    className="flex-1 rounded-lg bg-[#1D4ED8] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
+                  >
+                    {submitting ? "Memproses..." : "Lanjut"}
+                  </button>
                 </div>
               </aside>
             </div>
