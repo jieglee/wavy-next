@@ -14,7 +14,7 @@ export default function LoggedInHomePage() {
       <main className="flex-1">
         <PromoCarousel />
         <FeaturedEvents />
-        <section className="px-4 sm:px-6 lg:px-8">
+        <section className="px-4 sm:px-6 lg:px-8" style={{ backgroundImage: "url(/images/banner/event4u2.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
           <div className="mx-auto max-w-7xl py-8">
             <FeaturedPicks viewAllHref="/concerts" />
           </div>

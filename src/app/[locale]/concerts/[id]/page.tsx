@@ -27,24 +27,12 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
     return data;
   } catch {
     return {
-      id: Number(id), organizer_id: 1, artist_id: 1, title: "Tiffany Young: Edge of Calm Tour in Jakarta", category: "Konser",
-      venue: "JIEXPO Theatre, Jakarta Pusat", date: "2026-09-19T19:00:00+07:00",
-      poster_url: "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg", status: "published", artist_name: "Tiffany Young", organizer_name: "Flabbergast Productions", min_price: 950000, remaining: 250,
-      description: "Tiffany Young: Edge of Calm Tour in Jakarta\nCelebrating the 10th anniversary of her solo debut, Tiffany Young is finally set to reunite with fans through the Tiffany Young: Edge of Calm Tour in Jakarta.\n\nA decade of music, unforgettable performances, and Tiffany Young's most heartfelt stories come together in a special concert created just for this milestone.\n\nJakarta will be one of the special stops on this Asia tour, bringing fans closer to Tiffany Young for a long-awaited reunion filled with unforgettable moments, heartfelt performances, and new memories to cherish together\n\nOn September 19, 2026, join Tiffany Young in Jakarta to create unforgettable memories on the Tiffany Young: Edge of Calm Tour💗.\n\nTiffany Young: Edge of Calm Tour in Jakarta\n📅 Show Date : 19 September 2026 (Sat)\n🕕 Show Time : 7PM\n🎭 Venue: JIEXPO Theatre\n🎫 Ticket Price : 2,000,000 / 2,550,000 / 3,250,000\n🪧 Organizer: EarendelWorks & Flabbergast Productions\n🏷 Artist Management: Pacific Music Group\n📢 Ticket Sales: 29 July 2026\n🕚 Sales Open : 2:00 PM WIB\n🎟 Ticketing Platform: LOKET\n\n📌 Please refer to the organizer's official announcements for further details\n📌 The organizer reserves the right to make changes to the event without prior notice\n\nTICKET INFORMATION\nVIP (Seated): IDR 3,250,000\nCAT R (Seated): IDR 2,550,000\nCAT S (Seated): IDR 2,000,000\nCAT A (Seated): IDR 1,500,000\nCAT B (Seated): IDR 950,000",
-      genre: "K-Pop", photo_url: "", bio: "Tiffany Young — penyanyi, aktris, dan anggota Girls' Generation. Merayakan 10 tahun debut solonya lewat Edge of Calm Tour.",
-      countdown_seconds: 15 * 86400,
-      ticket_categories: [
-        { id: 1, event_id: Number(id), name: "VIP (Seated)", price: 3250000, quota: 100, sold: 20, remaining: 80 },
-        { id: 2, event_id: Number(id), name: "CAT R (Seated)", price: 2550000, quota: 200, sold: 60, remaining: 140 },
-        { id: 3, event_id: Number(id), name: "CAT S (Seated)", price: 2000000, quota: 200, sold: 90, remaining: 110 },
-        { id: 4, event_id: Number(id), name: "CAT A (Seated)", price: 1500000, quota: 300, sold: 120, remaining: 180 },
-        { id: 5, event_id: Number(id), name: "CAT B (Seated)", price: 950000, quota: 400, sold: 200, remaining: 200 },
-      ],
-      reviews: [
-        { id: 1, rating: 5, comment: "Gak sabar nonton Tiffany live!", created_at: "2026-07-10T12:00:00Z", customer_name: "Ahmad Rifai" },
-        { id: 2, rating: 5, comment: "10th anniversary pasti spesial banget.", created_at: "2026-07-14T08:00:00Z", customer_name: "Siti Rahma" },
-      ],
-      avg_rating: 5.0, review_count: 2,
+      id: Number(id), organizer_id: 1, artist_id: 1, title: "Konser", category: "Konser",
+      venue: "-", date: new Date().toISOString(), poster_url: "", status: "published",
+      artist_name: "-", organizer_name: "-", min_price: 0, remaining: 0,
+      description: "Informasi konser sedang tidak tersedia.", genre: "-", photo_url: "",
+      bio: "-", countdown_seconds: 0, ticket_categories: [], reviews: [],
+      avg_rating: 0, review_count: 0,
     };
   }
 }
@@ -116,11 +104,16 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   async function handleFollowArtist() {
     if (!getAuthToken()) { toast.error("Silakan masuk terlebih dahulu"); router.push("/auth/login"); return; }
+    const previous = isFollowingArtist;
+    setIsFollowingArtist(!previous);
     try {
-      if (isFollowingArtist) await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken()!);
-      else { await apiPost(`/favorites/artists/${concert?.artist_id}`); toast.success(`Berhasil mengikuti ${concert?.artist_name}`); }
-      setIsFollowingArtist(!isFollowingArtist);
-    } catch { setIsFollowingArtist(!isFollowingArtist); toast.success(`Mengikuti ${concert?.artist_name}`); }
+      if (previous) await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken());
+      else await apiPost(`/favorites/artists/${concert?.artist_id}`);
+      toast.success(previous ? "Berhasil membatalkan follow" : `Berhasil mengikuti ${concert?.artist_name}`);
+    } catch {
+      setIsFollowingArtist(previous);
+      toast.error("Gagal mengikuti artis");
+    }
   }
   function handleBuyTicket() {
     if (!concert) return;
@@ -132,7 +125,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     if (!getAuthToken()) { toast.error("Silakan masuk terlebih dahulu"); return; }
     setSubmittingReview(true);
     try { await apiPost(`/events/${id}/reviews`, { rating: ratingInput, comment: commentInput }); toast.success("Ulasan berhasil dikirim!"); setReviewModal(false); setCommentInput(""); }
-    catch (err: unknown) { toast.error((err as Error).message || "Gagal mengirim ulasan."); }
+    catch { toast.error("Gagal mengirim ulasan."); }
     finally { setSubmittingReview(false); }
   }
 
