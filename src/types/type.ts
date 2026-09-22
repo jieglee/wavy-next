@@ -5,6 +5,7 @@ export interface Concert {
   venue: string;
   date: string;
   poster_url: string;
+  banner_url?: string;
   status: string;
   artist_name: string;
   organizer_name: string;

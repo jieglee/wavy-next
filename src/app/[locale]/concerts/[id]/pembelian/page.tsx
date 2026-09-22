@@ -19,6 +19,7 @@ import {
 import toast from "react-hot-toast";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
+import ConcertSeatmap from "@/components/concerts/concert-seatmap";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
 import { formatIDR } from "@/lib/price";
 import type { ConcertDetail } from "@/types/type";
@@ -37,6 +38,7 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
       date: "2026-09-19T19:00:00+07:00",
       poster_url:
         "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg",
+      banner_url: "",
       status: "published",
       artist_name: "Tiffany Young",
       organizer_name: "Flabbergast Productions",
@@ -212,6 +214,7 @@ export default function PembelianPage({
                 <div className="relative h-[200px] shrink-0 overflow-hidden sm:h-[240px] sm:w-[240px]">
                   <img
                     src={
+                      concert.banner_url ||
                       concert.poster_url ||
                       concert.photo_url ||
                       "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg"
@@ -252,6 +255,13 @@ export default function PembelianPage({
                 </div>
               </div>
             </div>
+
+            {/* Seatmap */}
+            {concert.seatmap?.images?.length ? (
+              <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                <ConcertSeatmap seatmap={concert.seatmap} />
+              </div>
+            ) : null}
 
             {/* Ticket Categories */}
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
