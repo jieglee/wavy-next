@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
@@ -51,28 +51,30 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
 function CheckoutStepper({ step = 1 }: { step?: number }) {
   const steps = ["Pilih Kategori", "Informasi Personal", "Konfirmasi", "Bayar"];
   return (
-    <div className="hidden items-center gap-1.5 sm:flex">
+    <div className="hidden items-center gap-2 sm:flex">
       {steps.map((label, i) => {
         const n = i + 1;
         const active = n === step;
         const done = n < step;
         return (
-          <div key={label} className="flex items-center gap-1.5">
-            <div className="flex items-center gap-1.5">
+          <div key={label} className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold leading-none ring-1 ${
-                  active
-                    ? "bg-[#2B5CFF] text-white ring-[#2B5CFF]"
-                    : done
-                      ? "bg-[#2B5CFF] text-white ring-[#2B5CFF]"
-                      : "bg-white text-[#9CA3AF] ring-[#E5E7EB]"
+                className={`flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-bold leading-none ${
+                  done
+                    ? "bg-[#1D4ED8] text-white"
+                    : active
+                      ? "border-2 border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                      : "border-2 border-[#D1D5DB] bg-white text-[#9CA3AF]"
                 }`}
               >
-                {n}
+                {done ? <Check className="h-4 w-4" strokeWidth={3} /> : n}
               </span>
-              <span className={`text-xs font-semibold ${active ? "text-[#2B5CFF]" : "text-[#9CA3AF]"}`}>{label}</span>
+              <span className={`text-sm font-semibold ${done || active ? "text-[#111827]" : "text-[#9CA3AF]"}`}>
+                {label}
+              </span>
             </div>
-            {i < steps.length - 1 && <span className="mx-1 text-[#D1D5DB]">›</span>}
+            {i < steps.length - 1 && <span className="mx-1 text-base font-medium text-[#D1D5DB]">&gt;</span>}
           </div>
         );
       })}
