@@ -62,9 +62,9 @@ function CheckoutStepper({ step = 1 }: { step?: number }) {
               <span
                 className={`flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-bold leading-none ${
                   done
-                    ? "bg-[#1D4ED8] text-white"
+                    ? "bg-[#FF5470] text-white"
                     : active
-                      ? "border-2 border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                      ? "border-2 border-[#FF5470] bg-white text-[#FF5470]"
                       : "border-2 border-[#D1D5DB] bg-white text-[#9CA3AF]"
                 }`}
               >
@@ -319,7 +319,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           </div>
         </header>
         <div className="mx-auto max-w-[1280px] px-4 py-16 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[#2B5CFF] border-t-transparent" />
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent" />
           <p className="mt-3 text-sm text-[#6B7280]">Memuat tiket...</p>
         </div>
       </div>
@@ -331,7 +331,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const eventDateStr = eventDateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
   const eventTimeStr = eventDateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
   const inputCls = (bad?: string) =>
-    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#111827] outline-none transition focus:border-[#2B5CFF] focus:ring-2 focus:ring-[#2B5CFF]/25 ${bad ? "border-rose-400" : "border-[#E5E7EB]"}`;
+    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#111827] outline-none transition focus:border-[#FF5470] focus:ring-2 focus:ring-[#FF5470]/25 ${bad ? "border-rose-400" : "border-[#E5E7EB]"}`;
   const labelCls = "mb-1.5 block text-xs font-semibold text-[#374151]";
   const errCls = "mt-1 text-xs text-rose-500";
   const req = <span className="text-rose-500"> *</span>;
@@ -414,7 +414,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                           Maaf, kategori ini sudah habis dan tidak bisa dipesan lagi
                         </p>
                       ) : (
-                        <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-[#2B5CFF]">
+                        <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-[#FF5470]">
                           <Clock className="h-3 w-3" />
                           Penjualan berakhir pada {new Date(concert.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })} • 21:00
                         </p>
@@ -433,7 +433,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                           <select
                             value={qty}
                             onChange={(e) => setQty(cat.id, Number(e.target.value))}
-                            className="min-w-[72px] appearance-none rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#2B5CFF]"
+                            className="min-w-[72px] appearance-none rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#FF5470]"
                           >
                             {[0, 1, 2, 3, 4].map((n) => (
                               <option key={n} value={n}>
@@ -455,14 +455,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] sm:p-5">
               {entries.length === 0 ? (
                 <div className="flex items-start gap-2.5 py-1">
-                  <Ticket className="h-5 w-5 shrink-0 text-[#7CC9E8]" />
+                  <Ticket className="h-5 w-5 shrink-0 text-[#FF5470]" />
                   <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
                 </div>
               ) : (
                 <div className="divide-y divide-[#F3F4F6]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#FF5470]" />
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] font-semibold leading-tight text-[#111827]">{cat.name}</p>
                         <p className="mt-0.5 text-xs text-[#6B7280]">
@@ -484,7 +484,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               <button
                 onClick={goToPersonal}
                 disabled={totalTickets === 0 || submitting}
-                className="mt-3 w-full rounded-lg bg-[#2B5CFF] py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
+                className="mt-3 w-full rounded-lg bg-[#FF5470] py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
               >
                 {submitting ? "Memproses..." : "Pesan Sekarang"}
               </button>
@@ -497,7 +497,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         {step === 2 && (
         <div className="mx-auto mt-5 max-w-[880px]">
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
-            <div className="bg-[#F5C518] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
+            <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
               {timerMm}:{timerSs}
               <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
             </div>
@@ -560,7 +560,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     <div className="space-y-2">
                       {(["L", "P"] as const).map((g) => (
                         <label key={g} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
-                          <input type="radio" name="gender" checked={gender === g} onChange={() => setGender(g)} className="h-4 w-4 accent-[#2B5CFF]" />
+                          <input type="radio" name="gender" checked={gender === g} onChange={() => setGender(g)} className="h-4 w-4 accent-[#FF5470]" />
                           {g === "L" ? "Laki-Laki" : "Wanita"}
                         </label>
                       ))}
@@ -574,20 +574,20 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     <div className="mt-2 space-y-2">
                       {(["Ya", "Tidak"] as const).map((v) => (
                         <label key={v} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
-                          <input type="radio" name="wa" checked={waConsent === v} onChange={() => setWaConsent(v)} className="h-4 w-4 accent-[#2B5CFF]" />
+                          <input type="radio" name="wa" checked={waConsent === v} onChange={() => setWaConsent(v)} className="h-4 w-4 accent-[#FF5470]" />
                           {v}
                         </label>
                       ))}
                     </div>
                   </div>
                   <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
-                    <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#2B5CFF]" />
-                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#2B5CFF]">Syarat & Ketentuan</span> dan <span className="font-semibold text-[#2B5CFF]">Kebijakan Privasi</span> Wavy.</span>
+                    <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5470]" />
+                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#FF5470]">Syarat & Ketentuan</span> dan <span className="font-semibold text-[#FF5470]">Kebijakan Privasi</span> Wavy.</span>
                   </label>
                   {formErrors.agreeTerms && <p className={errCls}>{formErrors.agreeTerms}</p>}
                   <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
-                    <input type="checkbox" checked={agreeData} onChange={(e) => setAgreeData(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#2B5CFF]" />
-                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#2B5CFF]">Kebijakan Pemrosesan Data Pribadi</span> Wavy.</span>
+                    <input type="checkbox" checked={agreeData} onChange={(e) => setAgreeData(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5470]" />
+                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#FF5470]">Kebijakan Pemrosesan Data Pribadi</span> Wavy.</span>
                   </label>
                   {formErrors.agreeData && <p className={errCls}>{formErrors.agreeData}</p>}
                   <div className="flex gap-2 pt-1">
@@ -602,7 +602,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       type="button"
                       onClick={handleLanjut}
                       disabled={submitting || !agreeTerms || !agreeData}
-                      className="rounded-lg bg-[#2B5CFF] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
+                      className="rounded-lg bg-[#FF5470] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
                     >
                       {submitting ? "Memproses..." : "Lanjut"}
                     </button>
@@ -620,7 +620,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 <div className="mt-2 divide-y divide-[#F0F0F4]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
-                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#FF5470]" />
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-bold uppercase text-[#111827]">{cat.name}</p>
                         <p className="mt-0.5 text-xs text-[#6B7280]">
@@ -644,7 +644,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         {step === 3 && (
         <div className="mx-auto mt-5 max-w-[880px]">
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
-            <div className="bg-[#F5C518] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
+            <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
               {timerMm}:{timerSs}
               <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
             </div>
@@ -670,7 +670,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                           <div className="border-t border-[#F0F0F4] px-4 py-1">
                             {g.children.map((c) => (
                               <label key={c.id} className="flex cursor-pointer items-center gap-2.5 py-2 text-[13px] text-[#374151]">
-                                <input type="radio" name="paymethod" checked={payMethod === c.id} onChange={() => { setPayMethod(c.id); setPayGroup(g.id); }} className="h-4 w-4 shrink-0 accent-[#2B5CFF]" />
+                                <input type="radio" name="paymethod" checked={payMethod === c.id} onChange={() => { setPayMethod(c.id); setPayGroup(g.id); }} className="h-4 w-4 shrink-0 accent-[#FF5470]" />
                                 {c.label}
                               </label>
                             ))}
@@ -698,7 +698,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 <div className="mt-2 divide-y divide-[#F0F0F4]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
-                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#FF5470]" />
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-bold uppercase text-[#111827]">{cat.name}</p>
                         <p className="mt-0.5 text-xs text-[#6B7280]">
@@ -709,8 +709,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   ))}
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#2B5CFF]">
-                  <BadgePercent className="h-5 w-5 shrink-0 text-[#2B5CFF]" />
+                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
+                  <BadgePercent className="h-5 w-5 shrink-0 text-[#FF5470]" />
                   <span className="flex-1 text-xs font-bold text-[#111827]">Makin hemat pakai promo</span>
                   <span className="text-base text-[#9CA3AF]">&gt;</span>
                 </button>
@@ -747,14 +747,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   <span className="text-sm font-extrabold text-[#111827]">{formatIDR(grandTotal)}</span>
                 </div>
                 {proteksiOn ? (
-                  <div className="mt-3 rounded-lg bg-[#EFF6FF] p-3 ring-1 ring-[#BFDBFE]">
+                  <div className="mt-3 rounded-lg bg-[#FFF1F3] p-3 ring-1 ring-[#FFD9E0]">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="h-5 w-5 shrink-0 text-[#F97316]" />
                       <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#2B5CFF] bg-white px-2 py-0.5 text-[11px] font-bold text-[#2B5CFF]">Ubah</button>
+                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Ubah</button>
                     </div>
                     <p className="mt-1 text-xs text-[#6B7280]">Rp. 10.000/orang</p>
-                    <p className="text-[11px] font-semibold text-[#2B5CFF]">Syarat Ketentuan</p>
+                    <p className="text-[11px] font-semibold text-[#FF5470]">Syarat Ketentuan</p>
                     <p className="mt-2 flex items-center gap-1.5 rounded bg-[#16A34A] px-2 py-1.5 text-[11px] font-bold text-white">
                       <Check className="h-3.5 w-3.5" strokeWidth={3} /> Yeay, tiket kamu terlindungi!
                     </p>
@@ -763,7 +763,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   <div className="mt-3 flex items-center gap-2 rounded-lg border border-dashed border-[#E5E7EB] bg-white p-3">
                     <ShieldCheck className="h-5 w-5 shrink-0 text-[#9CA3AF]" />
                     <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#2B5CFF] bg-white px-2 py-0.5 text-[11px] font-bold text-[#2B5CFF]">Tambah</button>
+                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
                   </div>
                 )}
                 <div className="mt-3 flex gap-2">
@@ -779,7 +779,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     type="button"
                     onClick={handleKonfirmasi}
                     disabled={!payMethod || submitting}
-                    className="flex-1 rounded-lg bg-[#1D4ED8] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
+                    className="flex-1 rounded-lg bg-[#FF5470] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
                   >
                     {submitting ? "Memproses..." : "Lanjut"}
                   </button>
