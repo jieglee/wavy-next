@@ -63,6 +63,13 @@ export interface Order {
   created_at: string;
   event_title?: string;
   category_name?: string;
+  full_name?: string;
+  email?: string;
+  phone?: string;
+  id_number?: string;
+  birth_date?: string | null;
+  gender?: string | null;
+  wa_consent?: string | null;
 }
 
 export interface Ticket {
