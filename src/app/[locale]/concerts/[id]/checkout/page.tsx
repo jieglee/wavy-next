@@ -127,6 +127,37 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       setLoading(true);
       const data = await loadConcert(id);
       setConcert(data);
+      try {
+        const raw = sessionStorage.getItem(`wavy-checkout-${id}`);
+        if (raw) {
+          const s = JSON.parse(raw) as { qtyMap?: Record<string, number>; step?: number; form?: Record<string, string> };
+          const cats = data.ticket_categories ?? [];
+          const validQty: Record<number, number> = {};
+          let total = 0;
+          for (const c of cats) {
+            const q = Number(s.qtyMap?.[c.id] ?? 0);
+            if (q > 0) {
+              const v = Math.min(q, 4, c.remaining ?? 4);
+              if (v > 0) { validQty[c.id] = v; total += v; }
+            }
+          }
+          if (total > 0 && total <= 4) {
+            setQtyMap(validQty);
+            if (s.step === 2 || s.step === 3) setStep(s.step);
+            const f = s.form ?? {};
+            if (f.firstName) setFirstName(f.firstName);
+            if (f.lastName) setLastName(f.lastName);
+            if (f.email) setEmail(f.email);
+            if (f.phone) setPhone(f.phone);
+            if (f.idNumber) setIdNumber(f.idNumber);
+            if (f.dobDay) setDobDay(f.dobDay);
+            if (f.dobMonth) setDobMonth(f.dobMonth);
+            if (f.dobYear) setDobYear(f.dobYear);
+            if (f.gender === "L" || f.gender === "P") setGender(f.gender);
+            if (f.waConsent === "Ya" || f.waConsent === "Tidak") setWaConsent(f.waConsent);
+          }
+        }
+      } catch { /* abaikan storage rusak */ }
       setLoading(false);
     })();
   }, [id, router]);
@@ -146,6 +177,20 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     }, 50);
     return () => clearTimeout(t);
   }, [step, timeLeft]);
+
+  useEffect(() => {
+    if (loading) return;
+    try {
+      sessionStorage.setItem(`wavy-checkout-${id}`, JSON.stringify({
+        qtyMap, step,
+        form: { firstName, lastName, email, phone, idNumber, dobDay, dobMonth, dobYear, gender, waConsent },
+      }));
+    } catch { /* abaikan storage penuh */ }
+  }, [loading, id, qtyMap, step, firstName, lastName, email, phone, idNumber, dobDay, dobMonth, dobYear, gender, waConsent]);
+
+  function dropStored() {
+    try { sessionStorage.removeItem(`wavy-checkout-${id}`); } catch { /* abaikan */ }
+  }
 
   const categories: TicketCategory[] = concert?.ticket_categories ?? [];
   const groupLabel = "NATIONAL - GENERAL SALE";
@@ -269,9 +314,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
         if (orderId) {
           toast.success("Pesanan dibuat, lanjut ke pembayaran");
+          dropStored();
           router.push(`/orders/${orderId}`);
           return;
         }
+        dropStored();
         router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
         return;
       }
@@ -287,9 +334,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       }
       if (orderIds.length) {
         toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
+        dropStored();
         router.push(`/orders/${orderIds[0]}`);
         return;
       }
+      dropStored();
       router.push(`/concerts/${id}/queue?catId=${entries[0].cat.id}&qty=${entries[0].qty}`);
     } catch (err: unknown) {
       const msg = (err as Error).message ?? "";
@@ -299,6 +348,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         // eslint-disable-next-line react-hooks/purity
         const fallbackId = Math.floor(1000 + Math.random() * 9000);
         toast.success("Masuk ke pembayaran");
+        dropStored();
         router.push(`/orders/${fallbackId}`);
       }
     } finally {
