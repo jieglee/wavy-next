@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, ArrowRight, CheckCircle2, Mail, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Mail, MessageCircle, KeyRound, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter, Link } from "@/i18n/navigation";
 import { apiPost, ApiError } from "@/lib/api";
@@ -12,7 +12,7 @@ const EVENT_TYPES = ["Pop", "Rock", "K-Pop", "Indie", "Jazz", "Festival", "EDM",
 const WA_NUMBER = "6287839615005";
 const PARTNERSHIP_EMAIL = "kalsahalkautsar@gmail.com";
 
-type Step = "account" | "profile" | "done";
+type Step = "account" | "profile" | "verify" | "done";
 
 function ContactLine() {
   return (
@@ -39,32 +39,6 @@ function ContactLine() {
   );
 }
 
-function ContactCard() {
-  return (
-    <div className="rounded-xl border border-wavy-border bg-wavy-surface p-4">
-      <p className="text-xs font-semibold text-wavy-text-primary">Ada pertanyaan soal pengajuan Anda?</p>
-      <div className="mt-3 flex gap-2">
-        <a
-          href={`https://wa.me/${WA_NUMBER}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-green-400 py-2 text-xs font-semibold text-white transition-colors hover:brightness-110"
-        >
-          <MessageCircle className="h-3.5 w-3.5" />
-          WhatsApp
-        </a>
-        <a
-          href={`mailto:${PARTNERSHIP_EMAIL}?subject=Pengajuan%20Kerja%20Sama%20Event%20Organizer`}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-wavy-border bg-transparent py-2 text-xs font-semibold text-wavy-text-primary transition-colors hover:bg-white"
-        >
-          <Mail className="h-3.5 w-3.5" />
-          Email
-        </a>
-      </div>
-    </div>
-  );
-}
-
 export default function OrganizerRegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("account");
@@ -80,6 +54,10 @@ export default function OrganizerRegisterPage() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [otpCode, setOtpCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
 
   function toggleEventType(type: string) {
     setEventTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
@@ -110,12 +88,48 @@ export default function OrganizerRegisterPage() {
         event_types: eventTypes.join(", "),
         social_link: socialLink || undefined,
       });
-      toast.success("Pengajuan kerja sama terkirim!");
-      setStep("done");
+      toast.success("Pengajuan terkirim! Cek email Anda untuk kode verifikasi.");
+      setStep("verify");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Terjadi kesalahan. Coba lagi nanti.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    if (otpCode.length !== 6) return setError("Kode OTP harus 6 digit.");
+    setVerifying(true);
+    try {
+      await apiPost("/auth/organizer/verify-email", { email, code: otpCode });
+      toast.success("Verifikasi berhasil! Akun Anda telah aktif.");
+      setStep("done");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Kode OTP tidak valid. Silakan coba lagi.");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  async function handleResendOtp() {
+    setResending(true);
+    setError("");
+    try {
+      await apiPost("/auth/organizer/register", {
+        organizer_name: organizerName.trim(),
+        email,
+        password,
+        whatsapp,
+        event_types: eventTypes.join(", "),
+        social_link: socialLink || undefined,
+      });
+      toast.success("Kode verifikasi baru telah dikirim ke email Anda.");
+    } catch {
+      toast.error("Gagal mengirim ulang. Coba lagi nanti.");
+    } finally {
+      setResending(false);
     }
   }
 
@@ -148,7 +162,16 @@ export default function OrganizerRegisterPage() {
               <ArrowLeft className="h-3.5 w-3.5" />
               Kembali
             </button>
-          ) : (
+          ) : step === "verify" ? (
+            <button
+              type="button"
+              onClick={() => setStep("profile")}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Kembali
+            </button>
+          ) : step !== "done" ? (
             <button
               type="button"
               onClick={() => router.push("/organizer/login")}
@@ -157,10 +180,14 @@ export default function OrganizerRegisterPage() {
               <ArrowLeft className="h-3.5 w-3.5" />
               Kembali ke Login
             </button>
+          ) : (
+            <div />
           )}
           {step !== "done" && (
             <span className="text-[11px] font-semibold uppercase tracking-wider text-wavy-text-secondary">
-              Langkah {step === "account" ? 1 : 2} dari 2
+              {step === "account" && "Langkah 1 dari 3"}
+              {step === "profile" && "Langkah 2 dari 3"}
+              {step === "verify" && "Langkah 3 dari 3"}
             </span>
           )}
         </div>
@@ -176,26 +203,22 @@ export default function OrganizerRegisterPage() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <CheckCircle2 className="h-10 w-10 text-wavy-accent" />
+                  <CheckCircle2 className="h-10 w-10 text-emerald-500" />
                   <h1 className="mt-3 font-display text-xl font-bold text-wavy-text-primary">
-                    Pengajuan Terkirim!
+                    Verifikasi Berhasil!
                   </h1>
                   <p className="mt-2 text-sm leading-relaxed text-wavy-text-secondary">
-                    Terima kasih, <span className="font-semibold text-wavy-text-primary">{organizerName}</span>.
-                    Akun Anda berstatus <span className="font-semibold text-wavy-accent">Menunggu Verifikasi</span>.
-                    Tim kurasi kami akan menghubungi melalui WhatsApp{" "}
-                    <span className="font-semibold text-wavy-text-primary">{whatsapp}</span> atau email{" "}
-                    <span className="font-semibold text-wavy-text-primary">{email}</span>.
+                    Akun Event Organizer <span className="font-semibold text-wavy-text-primary">{organizerName}</span> telah aktif.
+                    Anda sekarang bisa login ke Wavy EO Portal.
                   </p>
-                  <div className="mt-4 space-y-3">
-                    <ContactCard />
+                  <div className="mt-5 space-y-3">
                     <button
                       type="button"
                       onClick={() => router.push("/organizer/login")}
                       className="flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110"
                     >
                       <ArrowRight className="h-4 w-4" />
-                      Ke Halaman Login
+                      Login ke EO Portal
                     </button>
                   </div>
                 </motion.div>
@@ -288,6 +311,66 @@ export default function OrganizerRegisterPage() {
                           Masuk
                         </Link>
                       </p>
+                    </div>
+                  </form>
+                </motion.div>
+              ) : step === "verify" ? (
+                <motion.div
+                  key="verify"
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 12 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-wavy-accent/10">
+                    <KeyRound className="h-6 w-6 text-wavy-accent" />
+                  </div>
+                  <h1 className="mt-4 font-display text-xl font-bold text-wavy-text-primary">
+                    Verifikasi Email
+                  </h1>
+                  <p className="mt-1 text-sm text-wavy-text-secondary">
+                    Kami telah mengirim kode OTP 6 digit ke{" "}
+                    <span className="font-semibold text-wavy-text-primary">{email}</span>.
+                    Masukkan kode di bawah untuk mengaktifkan akun Anda.
+                  </p>
+
+                  <form onSubmit={handleVerifyOtp} className="mt-6 flex flex-col gap-3">
+                    <div>
+                      <label className={labelClass}>Kode OTP</label>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        autoFocus
+                        placeholder="Masukkan 6 digit kode"
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                        className={`${inputClass} text-center text-lg tracking-[0.5em] font-mono`}
+                      />
+                    </div>
+
+                    {error && <p className="text-xs text-red-400">{error}</p>}
+
+                    <button
+                      type="submit"
+                      disabled={verifying || otpCode.length !== 6}
+                      className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
+                    >
+                      {verifying ? "Memverifikasi..." : "Verifikasi Akun"}
+                      {!verifying && <ArrowRight className="h-4 w-4" />}
+                    </button>
+
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        disabled={resending}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-wavy-accent hover:underline disabled:opacity-40"
+                      >
+                        <RefreshCw className={`h-3 w-3 ${resending ? "animate-spin" : ""}`} />
+                        {resending ? "Mengirim..." : "Kirim Ulang Kode"}
+                      </button>
+                      <ContactLine />
                     </div>
                   </form>
                 </motion.div>
