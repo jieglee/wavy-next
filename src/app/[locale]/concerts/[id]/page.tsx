@@ -107,7 +107,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     const previous = isFollowingArtist;
     setIsFollowingArtist(!previous);
     try {
-      if (previous) await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken());
+      if (previous) await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken() ?? undefined);
       else await apiPost(`/favorites/artists/${concert?.artist_id}`);
       toast.success(previous ? "Berhasil membatalkan follow" : `Berhasil mengikuti ${concert?.artist_name}`);
     } catch {

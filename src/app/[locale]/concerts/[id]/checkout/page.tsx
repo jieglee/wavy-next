@@ -5,7 +5,7 @@ import { useRouter, Link } from "@/i18n/navigation";
 import { Ticket, ChevronDown, Clock, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
-import { apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
 import { formatIDR } from "@/lib/price";
 import type { ConcertDetail, TicketCategory } from "@/types/type";
 import Footer from "@/components/landing/footer";
@@ -87,6 +87,21 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [loading, setLoading] = useState(true);
   const [qtyMap, setQtyMap] = useState<Record<number, number>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [dobDay, setDobDay] = useState("");
+  const [dobMonth, setDobMonth] = useState("");
+  const [dobYear, setDobYear] = useState("");
+  const [gender, setGender] = useState<"" | "L" | "P">("");
+  const [waConsent, setWaConsent] = useState<"Ya" | "Tidak">("Ya");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeData, setAgreeData] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [timeLeft, setTimeLeft] = useState(600);
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -102,6 +117,22 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     })();
   }, [id, router]);
 
+  useEffect(() => {
+    if (step !== 2) return;
+    const t = setInterval(() => setTimeLeft((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(t);
+  }, [step]);
+
+  useEffect(() => {
+    if (step !== 2 || timeLeft > 0) return;
+    const t = setTimeout(() => {
+      toast.error("Waktu pemesanan habis, silakan pilih kategori lagi");
+      setStep(1);
+      setTimeLeft(600);
+    }, 50);
+    return () => clearTimeout(t);
+  }, [step, timeLeft]);
+
   const categories: TicketCategory[] = concert?.ticket_categories ?? [];
   const groupLabel = "NATIONAL - GENERAL SALE";
 
@@ -112,6 +143,60 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const totalTickets = entries.reduce((s, e) => s + e.qty, 0);
   const totalPrice = entries.reduce((s, e) => s + Number(e.cat.price) * e.qty, 0);
   const soldOutCount = categories.filter((c) => c.remaining !== undefined && c.remaining <= 0).length;
+  const timerMm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const timerSs = String(timeLeft % 60).padStart(2, "0");
+
+  function goToPersonal() {
+    if (!concert || totalTickets === 0) {
+      toast.error("Pilih minimal 1 tiket");
+      return;
+    }
+    if (totalTickets > 4) {
+      toast.error("Maksimal 4 tiket per pesanan");
+      return;
+    }
+    const u = getAuthUser<{ name?: string; email?: string }>();
+    if (u?.email) setEmail((v) => v || u.email || "");
+    if (u?.name) {
+      const parts = u.name.trim().split(/\s+/);
+      setFirstName((v) => v || parts[0] || "");
+      setLastName((v) => v || parts.slice(1).join(" "));
+    }
+    setTimeLeft(600);
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function validatePersonal() {
+    const errs: Record<string, string> = {};
+    if (!firstName.trim()) errs.firstName = "Nama depan wajib diisi";
+    if (!email.trim()) errs.email = "Email wajib diisi";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errs.email = "Format email tidak valid";
+    const digits = phone.replace(/\D/g, "");
+    if (!phone.trim()) errs.phone = "No. handphone wajib diisi";
+    else if (digits.length < 9) errs.phone = "No. handphone minimal 9 digit";
+    if (!idNumber.trim()) errs.idNumber = "Nomor identitas wajib diisi";
+    const d = Number(dobDay), m = Number(dobMonth), y = Number(dobYear);
+    if (!dobDay || !dobMonth || !dobYear) errs.dob = "Tanggal lahir wajib diisi";
+    else {
+      const dt = new Date(y, m - 1, d);
+      if (!d || !m || !y || dt.getDate() !== d || dt.getMonth() !== m - 1 || dt.getFullYear() !== y) errs.dob = "Tanggal lahir tidak valid";
+      else if (y < 1900 || y > new Date().getFullYear()) errs.dob = "Tahun lahir tidak valid";
+    }
+    if (!gender) errs.gender = "Pilih jenis kelamin";
+    if (!agreeTerms) errs.agreeTerms = "Centang persetujuan Syarat & Ketentuan";
+    if (!agreeData) errs.agreeData = "Centang persetujuan pemrosesan data";
+    setFormErrors(errs);
+    return Object.keys(errs).length === 0;
+  }
+
+  function handleLanjut() {
+    if (!validatePersonal()) {
+      toast.error("Lengkapi data diri dulu");
+      return;
+    }
+    handlePesan();
+  }
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -200,7 +285,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               <WavyIcon size={26} />
               <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
             </Link>
-            <CheckoutStepper step={1} />
+            <CheckoutStepper step={step} />
           </div>
         </header>
         <div className="mx-auto max-w-[1280px] px-4 py-16 text-center">
@@ -212,6 +297,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   }
 
   const banner = concert.poster_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
+  const eventDateObj = new Date(concert.date);
+  const eventDateStr = eventDateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  const eventTimeStr = eventDateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const inputCls = (bad?: string) =>
+    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#111827] outline-none transition focus:border-[#2B5CFF] ${bad ? "border-rose-400" : "border-[#E5E7EB]"}`;
+  const labelCls = "mb-1.5 block text-xs font-semibold text-[#374151]";
+  const errCls = "mt-1 text-xs text-rose-500";
+  const req = <span className="text-rose-500"> *</span>;
 
   return (
     <div className="min-h-screen bg-[#F8F8FA]">
@@ -221,7 +314,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <WavyIcon size={26} />
             <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
           </Link>
-          <CheckoutStepper step={1} />
+          <CheckoutStepper step={step} />
           <div className="flex items-center gap-2">
             <span className="hidden rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#374151] sm:inline-flex">ID</span>
           </div>
@@ -242,12 +335,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="h-px flex-1 bg-[#E5E7EB]" />
         </div>
 
-        {concert.seatmap?.images?.length ? (
+        {step === 1 && concert.seatmap?.images?.length ? (
           <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
             <ConcertSeatmap seatmap={concert.seatmap} />
           </div>
         ) : null}
 
+        {step === 1 && (
         <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
@@ -358,7 +452,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               </div>
 
               <button
-                onClick={handlePesan}
+                onClick={goToPersonal}
                 disabled={totalTickets === 0 || submitting}
                 className="mt-3 w-full rounded-lg bg-[#2B5CFF] py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
               >
@@ -368,6 +462,142 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
         </div>
+        )}
+
+        {step === 2 && (
+        <div className="mx-auto mt-5 max-w-[880px]">
+          <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
+            <div className="bg-[#F5C518] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
+              {timerMm}:{timerSs}
+              <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
+            </div>
+            <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
+              <div>
+                <h2 className="text-[15px] font-bold text-[#111827]">Data Diri</h2>
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <label className={labelCls}>Nama Depan{req}</label>
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputCls(formErrors.firstName)} placeholder="Nama depan" />
+                    {formErrors.firstName && <p className={errCls}>{formErrors.firstName}</p>}
+                  </div>
+                  <div>
+                    <label className={labelCls}>Nama Belakang</label>
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls()} placeholder="Nama belakang" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Email{req}</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls(formErrors.email)} placeholder="email@contoh.com" />
+                    {formErrors.email && <p className={errCls}>{formErrors.email}</p>}
+                  </div>
+                  <div>
+                    <label className={labelCls}>No. Handphone{req}</label>
+                    <div className="flex gap-2">
+                      <span className="flex shrink-0 items-center gap-1 rounded-lg border border-[#E5E7EB] bg-[#F8F8FA] px-3 py-2.5 text-sm font-semibold text-[#374151]">
+                        ID +62
+                      </span>
+                      <input inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls(formErrors.phone)} placeholder="81223333444" />
+                    </div>
+                    {formErrors.phone && <p className={errCls}>{formErrors.phone}</p>}
+                  </div>
+                  <div>
+                    <label className={labelCls}>Nomor Identitas (KTP/Passport,dll){req}</label>
+                    <input value={idNumber} onChange={(e) => setIdNumber(e.target.value)} className={inputCls(formErrors.idNumber)} placeholder="Nomor identitas" />
+                    {formErrors.idNumber && <p className={errCls}>{formErrors.idNumber}</p>}
+                  </div>
+                  <div>
+                    <label className={labelCls}>Tanggal Lahir{req}</label>
+                    <div className="flex gap-2">
+                      <input inputMode="numeric" maxLength={2} value={dobDay} onChange={(e) => setDobDay(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-16 text-center`} placeholder="dd" />
+                      <input inputMode="numeric" maxLength={2} value={dobMonth} onChange={(e) => setDobMonth(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-16 text-center`} placeholder="mm" />
+                      <input inputMode="numeric" maxLength={4} value={dobYear} onChange={(e) => setDobYear(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-24 text-center`} placeholder="YYYY" />
+                    </div>
+                    {formErrors.dob && <p className={errCls}>{formErrors.dob}</p>}
+                  </div>
+                  <div>
+                    <span className={labelCls}>Jenis Kelamin{req}</span>
+                    <div className="space-y-2">
+                      {(["L", "P"] as const).map((g) => (
+                        <label key={g} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
+                          <input type="radio" name="gender" checked={gender === g} onChange={() => setGender(g)} className="h-4 w-4 accent-[#2B5CFF]" />
+                          {g === "L" ? "Laki-Laki" : "Wanita"}
+                        </label>
+                      ))}
+                    </div>
+                    {formErrors.gender && <p className={errCls}>{formErrors.gender}</p>}
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold leading-relaxed text-[#374151]">
+                      Saya setuju untuk menerima notifikasi terkait pemesanan tiket berikut melalui nomor WhatsApp saya.
+                    </p>
+                    <div className="mt-2 space-y-2">
+                      {(["Ya", "Tidak"] as const).map((v) => (
+                        <label key={v} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
+                          <input type="radio" name="wa" checked={waConsent === v} onChange={() => setWaConsent(v)} className="h-4 w-4 accent-[#2B5CFF]" />
+                          {v}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
+                    <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#2B5CFF]" />
+                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#2B5CFF]">Syarat & Ketentuan</span> dan <span className="font-semibold text-[#2B5CFF]">Kebijakan Privasi</span> Wavy.</span>
+                  </label>
+                  {formErrors.agreeTerms && <p className={errCls}>{formErrors.agreeTerms}</p>}
+                  <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
+                    <input type="checkbox" checked={agreeData} onChange={(e) => setAgreeData(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#2B5CFF]" />
+                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#2B5CFF]">Kebijakan Pemrosesan Data Pribadi</span> Wavy.</span>
+                  </label>
+                  {formErrors.agreeData && <p className={errCls}>{formErrors.agreeData}</p>}
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => { setStep(1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      className="rounded-lg border border-[#E5E7EB] bg-white px-6 py-2.5 text-sm font-bold text-[#374151] transition hover:bg-[#F8F8FA]"
+                    >
+                      Kembali
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleLanjut}
+                      disabled={submitting}
+                      className="rounded-lg bg-[#2B5CFF] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
+                    >
+                      {submitting ? "Memproses..." : "Lanjut"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <aside className="h-fit rounded-xl border border-[#F0F0F4] bg-[#FCFCFD] p-4 lg:sticky lg:top-[68px]">
+                <p className="text-[13px] font-bold leading-snug text-[#111827]">{concert.title}</p>
+                <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
+                  {eventDateStr} • {eventTimeStr} WIB
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">{concert.venue}</p>
+                <div className="my-3 h-px bg-[#E5E7EB]" />
+                <p className="text-[13px] font-bold text-[#111827]">Ringkasan Pesanan</p>
+                <div className="mt-2 divide-y divide-[#F0F0F4]">
+                  {entries.map(({ cat, qty }) => (
+                    <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
+                      <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-[#38BDF8]" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold uppercase text-[#111827]">{cat.name}</p>
+                        <p className="mt-0.5 text-xs text-[#6B7280]">
+                          {qty} tiket x {formatIDR(Number(cat.price))}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="my-3 h-px bg-[#E5E7EB]" />
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                  <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+        )}
       </main>
 
       <Footer />
