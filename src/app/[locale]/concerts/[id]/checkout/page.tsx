@@ -303,7 +303,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const eventDateStr = eventDateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
   const eventTimeStr = eventDateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
   const inputCls = (bad?: string) =>
-    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#111827] outline-none transition focus:border-[#2B5CFF] ${bad ? "border-rose-400" : "border-[#E5E7EB]"}`;
+    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#111827] outline-none transition focus:border-[#2B5CFF] focus:ring-2 focus:ring-[#2B5CFF]/25 ${bad ? "border-rose-400" : "border-[#E5E7EB]"}`;
   const labelCls = "mb-1.5 block text-xs font-semibold text-[#374151]";
   const errCls = "mt-1 text-xs text-rose-500";
   const req = <span className="text-rose-500"> *</span>;
