@@ -23,7 +23,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
           }`}
         >
           <div
-            className="tnc-terms space-y-3 font-sans text-[14px] leading-7 text-[#374151] text-justify [&_a]:font-semibold [&_a]:text-[#FF5470] [&_a]:underline [&_em]:!text-[#FF5470] [&_h3]:text-[15px] [&_h3]:font-bold [&_h3]:text-[#111827] [&_h3_em]:!text-[#FF5470] [&_h4]:text-[14px] [&_h4]:font-semibold [&_h4]:text-[#111827] [&_li]:ml-4 [&_li]:list-disc [&_p]:leading-7 [&_strong]:font-bold [&_strong]:text-[#111827] [&_strong_em]:!text-[#FF5470] [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:space-y-2"
+            className="tnc-terms font-sans text-[14px] leading-7 text-[#374151] [&_a]:font-semibold [&_a]:text-[#FF5470] [&_a]:break-all [&_a]:underline [&_em]:!text-[#FF5470] [&_h3]:mt-7 [&_h3]:border-l-[3px] [&_h3]:border-[#FF5470] [&_h3]:pl-3 [&_h3]:text-[14px] [&_h3]:font-extrabold [&_h3]:uppercase [&_h3]:tracking-[0.04em] [&_h3]:text-[#111827] [&_h3]:first:mt-0 [&_h3_em]:!text-[#FF5470] [&_h4]:mt-5 [&_h4]:text-[14px] [&_h4]:font-semibold [&_h4]:text-[#111827] [&_li]:ml-1 [&_li]:list-disc [&_li]:leading-6 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:space-y-2 [&_p]:text-justify [&_p]:leading-7 [&_p+p]:mt-3 [&_strong]:font-bold [&_strong]:text-[#111827] [&_strong_em]:!text-[#FF5470] [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: html }}
           />
           {!open && (

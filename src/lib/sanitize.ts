@@ -39,6 +39,11 @@ export function sanitizeHtml(dirty: string): string {
   walk(doc.body);
   let html = doc.body.innerHTML;
   if (!/<[a-z][\s\S]*>/i.test(html)) {
+    const HEADING_RE = /^(SYARAT|TERMS|GENERAL|INFORMASI|BATASAN|LAYANAN|KEBIJAKAN|PEMERIKSAAN|CUSTOMER|PROMOTERS|TENTANG|ABOUT|NO RE-ENTRY|AGE |SPECIAL NEED|WRISTBAND|GENERAL POLICIES|GENERAL REGULATIONS|COPYRIGHT)/;
+    const looksHeading = (line: string) =>
+      line.length <= 70 &&
+      (HEADING_RE.test(line) ||
+        (/^[A-Z0-9][A-Z0-9\s\-&/()]{4,}$/.test(line) && /[A-Z]/.test(line) && !/[.!?]$/.test(line) && !line.includes("www.") && !line.includes("http")));
     const blocks = dirty.split(/\n\s*\n/);
     const parts: string[] = [];
     for (const block of blocks) {
@@ -53,8 +58,13 @@ export function sanitizeHtml(dirty: string): string {
           .map((l) => `<li>${escapeHtml(l.replace(/^[-•\d.)]+\s*/, ""))}</li>`)
           .join("");
         parts.push(`<${tag}>${items}</${tag}>`);
+      } else if (lines.length === 1 && looksHeading(lines[0])) {
+        parts.push(`<h3>${escapeHtml(lines[0])}</h3>`);
       } else {
-        for (const line of lines) parts.push(`<p>${escapeHtml(line)}</p>`);
+        for (const line of lines) {
+          if (looksHeading(line)) parts.push(`<h3>${escapeHtml(line)}</h3>`);
+          else parts.push(`<p>${escapeHtml(line)}</p>`);
+        }
       }
     }
     html = parts.join("");
