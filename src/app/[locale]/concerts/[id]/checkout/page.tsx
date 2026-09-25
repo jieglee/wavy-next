@@ -578,28 +578,28 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
             <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
               {timerMm}:{timerSs}
-              <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
+              <span className="ml-2 font-medium">| {t("timeLeft")}</span>
             </div>
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
-                <h2 className="text-[15px] font-bold text-[#111827]">Data Diri</h2>
+                <h2 className="text-[15px] font-bold text-[#111827]">{t("personal.title")}</h2>
                 <div className="mt-4 space-y-4">
                   <div>
-                    <label className={labelCls}>Nama Depan{req}</label>
-                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputCls(formErrors.firstName)} placeholder="Nama depan" />
+                    <label className={labelCls}>{t("personal.firstName")}{req}</label>
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputCls(formErrors.firstName)} placeholder={t("personal.firstName")} />
                     {formErrors.firstName && <p className={errCls}>{formErrors.firstName}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>Nama Belakang</label>
-                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls()} placeholder="Nama belakang" />
+                    <label className={labelCls}>{t("personal.lastName")}</label>
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls()} placeholder={t("personal.lastName")} />
                   </div>
                   <div>
-                    <label className={labelCls}>Email{req}</label>
+                    <label className={labelCls}>{t("personal.email")}{req}</label>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls(formErrors.email)} placeholder="email@contoh.com" />
                     {formErrors.email && <p className={errCls}>{formErrors.email}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>No. Handphone{req}</label>
+                    <label className={labelCls}>{t("personal.phone")}{req}</label>
                     <div className="flex gap-2">
                       <span className="flex shrink-0 items-center gap-1 rounded-lg border border-[#E5E7EB] bg-[#F8F8FA] px-3 py-2.5 text-sm font-semibold text-[#374151]">
                         ID +62
@@ -609,12 +609,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     {formErrors.phone && <p className={errCls}>{formErrors.phone}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>Nomor Identitas (KTP/Passport,dll){req}</label>
-                    <input value={idNumber} onChange={(e) => setIdNumber(e.target.value)} className={inputCls(formErrors.idNumber)} placeholder="Nomor identitas" />
+                    <label className={labelCls}>{t("personal.idNumber")}{req}</label>
+                    <input value={idNumber} onChange={(e) => setIdNumber(e.target.value)} className={inputCls(formErrors.idNumber)} placeholder={t("personal.idNumber")} />
                     {formErrors.idNumber && <p className={errCls}>{formErrors.idNumber}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>Tanggal Lahir{req}</label>
+                    <label className={labelCls}>{t("personal.dob")}{req}</label>
                     <div className="flex gap-2">
                       <input inputMode="numeric" maxLength={2} value={dobDay} onChange={(e) => setDobDay(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-[76px] min-w-0 shrink-0 text-center`} placeholder="dd" />
                       <div className="relative min-w-0 flex-1">
@@ -635,12 +635,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     {formErrors.dob && <p className={errCls}>{formErrors.dob}</p>}
                   </div>
                   <div>
-                    <span className={labelCls}>Jenis Kelamin{req}</span>
+                    <span className={labelCls}>{t("personal.gender")}{req}</span>
                     <div className="space-y-2">
                       {(["L", "P"] as const).map((g) => (
                         <label key={g} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
                           <input type="radio" name="gender" checked={gender === g} onChange={() => setGender(g)} className="h-4 w-4 accent-[#FF5470]" />
-                          {g === "L" ? "Laki-Laki" : "Wanita"}
+                          {g === "L" ? t("personal.male") : t("personal.female")}
                         </label>
                       ))}
                     </div>
@@ -648,25 +648,25 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   </div>
                   <div>
                     <p className="text-xs font-semibold leading-relaxed text-[#374151]">
-                      Saya setuju untuk menerima notifikasi terkait pemesanan tiket berikut melalui nomor WhatsApp saya.
+                      {t("personal.waConsent")}
                     </p>
                     <div className="mt-2 space-y-2">
                       {(["Ya", "Tidak"] as const).map((v) => (
                         <label key={v} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
                           <input type="radio" name="wa" checked={waConsent === v} onChange={() => setWaConsent(v)} className="h-4 w-4 accent-[#FF5470]" />
-                          {v}
+                          {v === "Ya" ? t("personal.yes") : t("personal.no")}
                         </label>
                       ))}
                     </div>
                   </div>
                   <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
                     <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5470]" />
-                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#FF5470]">Syarat & Ketentuan</span> dan <span className="font-semibold text-[#FF5470]">Kebijakan Privasi</span> Wavy.</span>
+                    <span>{t("personal.agreeTerms")}</span>
                   </label>
                   {formErrors.agreeTerms && <p className={errCls}>{formErrors.agreeTerms}</p>}
                   <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
                     <input type="checkbox" checked={agreeData} onChange={(e) => setAgreeData(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5470]" />
-                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#FF5470]">Kebijakan Pemrosesan Data Pribadi</span> Wavy.</span>
+                    <span>{t("personal.agreeData")}</span>
                   </label>
                   {formErrors.agreeData && <p className={errCls}>{formErrors.agreeData}</p>}
                   <div className="flex gap-2 pt-1">
@@ -675,7 +675,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       onClick={() => { setStep(1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="rounded-lg border border-[#E5E7EB] bg-white px-6 py-2.5 text-sm font-bold text-[#374151] transition hover:bg-[#F8F8FA]"
                     >
-                      Kembali
+                      {t("personal.back")}
                     </button>
                     <button
                       type="button"
@@ -683,7 +683,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       disabled={submitting || !agreeTerms || !agreeData}
                       className="rounded-lg bg-[#FF5470] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
                     >
-                      {submitting ? "Memproses..." : "Lanjut"}
+                      {submitting ? t("processing") : t("personal.continue")}
                     </button>
                   </div>
                 </div>
@@ -695,7 +695,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">{concert.venue}</p>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <p className="text-[13px] font-bold text-[#111827]">Ringkasan Pesanan</p>
+                <p className="text-[13px] font-bold text-[#111827]">{t("orderSummary")}</p>
                 <div className="mt-2 divide-y divide-[#F0F0F4]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
@@ -711,7 +711,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                  <span className="text-xs text-[#6B7280]">{t("summaryCount", { count: totalTickets })}</span>
                   <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
                 </div>
               </aside>
@@ -725,7 +725,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
             <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
               {timerMm}:{timerSs}
-              <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
+              <span className="ml-2 font-medium">| {t("timeLeft")}</span>
             </div>
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
