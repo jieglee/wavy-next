@@ -166,7 +166,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   ];
 
   return (
-    <div className="min-h-screen bg-white pb-20 lg:pb-0">
+    <div className="min-h-screen bg-white pb-20 font-[var(--font-inter)] text-[14px] font-normal leading-6 lg:pb-0">
       <Navbar sticky={false} />
 
       {/* ── Hero: event information and poster share the same visual plane ── */}
