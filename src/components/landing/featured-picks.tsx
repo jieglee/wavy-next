@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { apiGet } from "@/lib/api";
 import type { Concert } from "@/types/type";
 
@@ -65,6 +66,7 @@ export default function FeaturedPicks({
     viewAllHref = "#",
     className = "",
 }: FeaturedPicksProps) {
+    const t = useTranslations("FeaturedPicks");
     const fb = useMemo(() => fallbackPicks(), []);
     const [popular, setPopular] = useState<PickEvent[]>(popularProp ?? fb.pop);
     const [thisWeek, setThisWeek] = useState<PickEvent[]>(thisWeekProp ?? fb.week);
@@ -162,7 +164,7 @@ export default function FeaturedPicks({
                         Event4u
                     </h3>
                     <button onClick={() => setShowAll(true)} className="text-sm font-medium text-[#1A4BDE] hover:underline">
-                        Lebih Banyak Event ›
+                        {t("viewMore")}
                     </button>
                 </div>
 
@@ -176,7 +178,7 @@ export default function FeaturedPicks({
                                 : "border-[#E8E3F2] bg-white text-[#6B6673] hover:border-[#D4CFE6]"
                                 }`}
                         >
-                            {key === "popular" ? "🔥 Populer" : "🏆 Minggu ini"}
+                            {key === "popular" ? t("tabPopular") : t("tabThisWeek")}
                         </button>
                     ))}
                 </div>
@@ -283,8 +285,8 @@ export default function FeaturedPicks({
                     <button aria-label="Close" onClick={() => setShowAll(false)} className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
                     <div className="relative flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
                         <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-4">
-                            <h4 className="text-base font-bold text-[#111827]">Semua Event</h4>
-                            <button onClick={() => setShowAll(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]">✕</button>
+                            <h4 className="text-base font-bold text-[#111827]">{t("allEvents")}</h4>
+                            <button onClick={() => setShowAll(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]">{t("close")}</button>
                         </div>
                         <div className="overflow-y-auto px-6 py-2">
                             {(() => {

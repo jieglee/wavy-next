@@ -21,7 +21,7 @@ export default function Home() {
               <FeaturedPicks viewAllHref="/concerts" />
             </div>
           </section>
-          <TravelerMode />
+          {/* <TravelerMode /> */}
           <DiscoverCountries />
         </main>
         <Footer />

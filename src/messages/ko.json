@@ -8,10 +8,15 @@
         "searchPlaceholder": "콘서트, 아티스트 또는 공연장 검색",
         "kerjasama": "함께하기",
         "akun": "계정",
+        "signedInAs": "가입된 계정",
         "tickets": "내 티켓",
+        "profileLevel": "프로필 & 레벨",
         "organizer": "주최자 포털",
+        "organizerPortal": "주최자 포털",
         "admin": "관리자",
-        "logout": "로그아웃"
+        "adminPortal": "관리자 포털",
+        "logout": "로그아웃",
+        "closeDropdown": "드롭다운 닫기"
     },
     "Auth": {
         "welcomeBack": "다시 오신 것을 환영합니다!",
@@ -43,6 +48,14 @@
         "byOrganizer": "{organizer} 주최",
         "startingFrom": "시작가"
     },
+    "FeaturedPicks": {
+        "title": "Event4u",
+        "viewMore": "더 많은 행사 ›",
+        "tabPopular": "🔥 인기",
+        "tabThisWeek": "🏆 이번 주",
+        "allEvents": "모든 행사",
+        "close": "닫기"
+    },
     "AppNav": {
         "browse": "콘서트 둘러보기",
         "searchPlaceholder": "좋아하는 콘서트를 검색하세요...",
@@ -66,6 +79,32 @@
         "prev": "이전",
         "next": "다음",
         "goToSlide": "{num}번 슬라이드로 이동",
+        "fallbackPill": "{title}을(를) 놓친 누구?",
+        "fallbackPillCTA": "티켓을 클릭하세요",
+        "banner1": {
+            "eyebrow": "티켓 온 세일 지금",
+            "title": "큐레이티드 콘서트 탐색",
+            "subtitle": "매진되기 전에 자리를 확보하세요",
+            "ctaLabel": "콘서트 둘러보기",
+            "pill": "아이돌 콘서트 티켓이 오픈 세일 ",
+            "pillCTA": "지금 확보하세요!"
+        },
+        "banner2": {
+            "eyebrow": "당신의 좋아하는 이벤트가 온다 BTS",
+            "title": "BTS",
+            "subtitle": "",
+            "ctaLabel": "콘서트 둘러보기",
+            "pill": "ARMY, BTS가 돌아왔다 ",
+            "pillCTA": "자리를 확보하세요!"
+        },
+        "banner3": {
+            "eyebrow": "이벤트를 보여주세요",
+            "title": "당신의 이벤트",
+            "subtitle": "",
+            "ctaLabel": "콘서트 둘러보기",
+            "pill": "Wavy에서 이벤트를 보여주세요 ",
+            "pillCTA": "지금 시작하세요!"
+        },
         "slide1": {
             "eyebrow": "론칭 프로모션",
             "title": "서비스 수수료 무료",

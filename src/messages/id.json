@@ -5,13 +5,45 @@
     },
     "Navbar": {
         "kategori": "Kategori",
-        "searchPlaceholder": "Cari konser, artist, atau venue",
+        "searchPlaceholder": "Cari event",
+        "searchDropdownTrending": "Banyak Dicari",
+        "searchDropdownPopular": "Event Populer",
+        "searchNoResults": "Tidak ada hasil untuk \"{query}\"",
         "kerjasama": "Kerjasama dengan kami",
         "akun": "Akun",
+        "signedInAs": "Masuk sebagai",
         "tickets": "Tiket Saya",
+        "profileLevel": "Profil & Level",
         "organizer": "Portal EO",
+        "organizerPortal": "Portal Organizer",
         "admin": "Admin",
-        "logout": "Keluar"
+        "adminPortal": "Portal Admin",
+        "logout": "Keluar",
+        "closeDropdown": "Tutup dropdown",
+        "searchLabel": "Cari event",
+        "categoryTitle": "Kategori Event",
+        "categories": {
+            "religion": "Agama & Spiritualitas",
+            "school": "Aktivitas Sekolah & Kampus",
+            "business": "Bisnis & Keuangan",
+            "fashion": "Fashion & Kecantikan",
+            "hobby": "Hobi & Gaya Hidup",
+            "family": "Keluarga & Anak",
+            "health": "Kesehatan & Kebugaran",
+            "comedy": "Komedi & Pertunjukan",
+            "environment": "Lingkungan & Keberlanjutan",
+            "food": "Makanan & Minuman",
+            "media": "Media & Hiburan",
+            "music": "Musik",
+            "sports": "Olahraga & Kebugaran",
+            "automotive": "Otomotif",
+            "education": "Pendidikan",
+            "selfDev": "Pengembangan Diri",
+            "travel": "Perjalanan & Alam Terbuka",
+            "science": "Sains & Teknologi",
+            "arts": "Seni & Budaya",
+            "social": "Sosial & Politik"
+        }
     },
     "Auth": {
         "welcomeBack": "Selamat datang kembali!",
@@ -43,6 +75,14 @@
         "byOrganizer": "Oleh {organizer}",
         "startingFrom": "Mulai dari"
     },
+    "FeaturedPicks": {
+        "title": "Event4u",
+        "viewMore": "Lebih Banyak Event ›",
+        "tabPopular": "🔥 Populer",
+        "tabThisWeek": "🏆 Minggu ini",
+        "allEvents": "Semua Event",
+        "close": "Tutup"
+    },
     "AppNav": {
         "browse": "Jelajah Konser",
         "searchPlaceholder": "Cari konser favoritmu...",
@@ -66,6 +106,32 @@
         "prev": "Sebelumnya",
         "next": "Berikutnya",
         "goToSlide": "Ke slide {num}",
+        "fallbackPill": "Siapa yang kehilangan {title}?",
+        "fallbackPillCTA": "Klik untuk dapatkan tiket Anda",
+        "banner1": {
+            "eyebrow": "Tiket On Sale Now",
+            "title": "Jelajahi konser terkurasi",
+            "subtitle": "Amankan kursimu sebelum kehabisan",
+            "ctaLabel": "Cari konser",
+            "pill": "Tiket konser idola udah open sale ",
+            "pillCTA": "Ambil sekarang!"
+        },
+        "banner2": {
+            "eyebrow": "Event Favoritmu Datang BTS",
+            "title": "BTS",
+            "subtitle": "",
+            "ctaLabel": "Cari konser",
+            "pill": "ARMY, BTS kembali ",
+            "pillCTA": "Amankan tempatmu!"
+        },
+        "banner3": {
+            "eyebrow": "Tampilkan Eventmu",
+            "title": "Eventmu",
+            "subtitle": "",
+            "ctaLabel": "Cari konser",
+            "pill": "Pamerkan eventmu di Wavy ",
+            "pillCTA": "Mulai sekarang!"
+        },
         "slide1": {
             "eyebrow": "Promo Peluncuran",
             "title": "Gratis Biaya Layanan",

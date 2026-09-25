@@ -5,13 +5,45 @@
     },
     "Navbar": {
         "kategori": "Category",
-        "searchPlaceholder": "Search concerts, artists, or venues",
-        "kerjasama": "Kerjasama dengan kami",
+        "searchPlaceholder": "Search event",
+        "searchDropdownTrending": "Trending Searches",
+        "searchDropdownPopular": "Popular Events",
+        "searchNoResults": "No results for \"{query}\"",
+        "kerjasama": "Partner with us",
         "akun": "Account",
+        "signedInAs": "Signed in as",
         "tickets": "My Tickets",
+        "profileLevel": "Profile & Level",
         "organizer": "EO Portal",
+        "organizerPortal": "Organizer Portal",
         "admin": "Admin",
-        "logout": "Logout"
+        "adminPortal": "Admin Portal",
+        "logout": "Logout",
+        "closeDropdown": "Close dropdown",
+        "searchLabel": "Search event",
+        "categoryTitle": "Event Categories",
+        "categories": {
+            "religion": "Religion & Spirituality",
+            "school": "School & Campus Activities",
+            "business": "Business & Finance",
+            "fashion": "Fashion & Beauty",
+            "hobby": "Hobbies & Lifestyle",
+            "family": "Family & Kids",
+            "health": "Health & Wellness",
+            "comedy": "Comedy & Shows",
+            "environment": "Environment & Sustainability",
+            "food": "Food & Drink",
+            "media": "Media & Entertainment",
+            "music": "Music",
+            "sports": "Sports & Fitness",
+            "automotive": "Automotive",
+            "education": "Education",
+            "selfDev": "Personal Development",
+            "travel": "Travel & Outdoors",
+            "science": "Science & Technology",
+            "arts": "Arts & Culture",
+            "social": "Social & Politics"
+        }
     },
     "Auth": {
         "welcomeBack": "Welcome back!",
@@ -43,6 +75,14 @@
         "byOrganizer": "By {organizer}",
         "startingFrom": "Starting from"
     },
+    "FeaturedPicks": {
+        "title": "Event4u",
+        "viewMore": "More Events ›",
+        "tabPopular": "🔥 Popular",
+        "tabThisWeek": "🏆 This Week",
+        "allEvents": "All Events",
+        "close": "Close"
+    },
     "AppNav": {
         "browse": "Browse Concerts",
         "searchPlaceholder": "Search your favorite concerts...",
@@ -66,6 +106,32 @@
         "prev": "Previous",
         "next": "Next",
         "goToSlide": "Go to slide {num}",
+        "fallbackPill": "Who misses seeing {title}?",
+        "fallbackPillCTA": "Click to get your tickets",
+        "banner1": {
+            "eyebrow": "Ticket On Sale Now",
+            "title": "Explore Curated Concerts",
+            "subtitle": "Secure your seat before it's gone",
+            "ctaLabel": "Browse concerts",
+            "pill": "Idol concert tickets are on sale ",
+            "pillCTA": "Grab yours now!"
+        },
+        "banner2": {
+            "eyebrow": "Your favorite event is here BTS",
+            "title": "BTS",
+            "subtitle": "",
+            "ctaLabel": "Browse concerts",
+            "pill": "ARMY, BTS is back ",
+            "pillCTA": "Secure your seat!"
+        },
+        "banner3": {
+            "eyebrow": "Show Your Event",
+            "title": "Your Event",
+            "subtitle": "",
+            "ctaLabel": "Browse concerts",
+            "pill": "Showcase your event on Wavy ",
+            "pillCTA": "Start now!"
+        },
         "slide1": {
             "eyebrow": "Launch Promo",
             "title": "Free Service Fee",

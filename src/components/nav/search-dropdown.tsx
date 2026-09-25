@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { apiGet } from "@/lib/api";
 import type { Concert } from "@/types/type";
@@ -56,6 +57,7 @@ export default function SearchDropdown({
   query: string;
   onSelect: () => void;
 }) {
+  const t = useTranslations("Navbar");
   const [popular, setPopular] = useState<Popular[]>(FALLBACK_POPULAR);
 
   useEffect(() => {
@@ -92,10 +94,10 @@ export default function SearchDropdown({
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-[#EDEBF2] bg-white shadow-[0_16px_48px_-8px_rgba(27,26,58,0.22)]">
       <div className="max-h-[min(72vh,520px)] overflow-y-auto p-4">
-        <p className="mb-3 text-[13px] font-bold text-[#1B1A3A]">Banyak Dicari</p>
+        <p className="mb-3 text-[13px] font-bold text-[#1B1A3A]">{t("searchDropdownTrending")}</p>
         <div className="mb-4 flex flex-wrap gap-2">
           {filteredTrending.length === 0 ? (
-            <p className="text-xs text-[#8B889C]">Tidak ada hasil untuk &quot;{query}&quot;</p>
+            <p className="text-xs text-[#8B889C]">{t("searchNoResults", { query })}</p>
           ) : (
             filteredTrending.map((t) => (
               <Link
@@ -112,7 +114,7 @@ export default function SearchDropdown({
         </div>
 
         <div className="rounded-xl border border-[#EDEBF2] bg-white">
-          <p className="px-3 pt-3 text-[13px] font-bold text-[#1B1A3A] sm:px-4">Event Populer</p>
+          <p className="px-3 pt-3 text-[13px] font-bold text-[#1B1A3A] sm:px-4">{t("searchDropdownPopular")}</p>
           <div className="mt-2 divide-y divide-[#F0EFF7]">
             {(filteredPopular.length ? filteredPopular : popular).slice(0, 5).map((ev) => (
               <Link
