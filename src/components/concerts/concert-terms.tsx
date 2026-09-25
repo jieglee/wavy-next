@@ -16,7 +16,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
         <ShieldCheck className="h-5 w-5 text-[#111827] stroke-[2.5]" />
         <h2 className="font-sans text-[24px] font-bold text-[#111827]">{t("title")}</h2>
       </div>
-      <div className="relative mt-4 rounded-2xl border border-[#EDEBF2] bg-[#FAFAFF] p-5 sm:p-6">
+      <div className="relative mt-4 rounded-2xl bg-[#FAFAFF] p-5 sm:p-6">
         <div
           className={`relative overflow-hidden transition-[max-height] duration-500 ease-out ${
             open ? "max-h-[2000px]" : "max-h-[340px]"
