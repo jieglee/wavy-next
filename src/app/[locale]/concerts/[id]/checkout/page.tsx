@@ -441,13 +441,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <h1 className="text-sm font-bold text-[#111827] sm:text-[15px]">{concert.title}</h1>
             <div className="h-px flex-1 bg-[#E5E7EB]" />
           </div>
+          {step === 1 && concert.seatmap?.images?.length ? (
+            <div className="border-t border-[#E5E7EB] p-4 sm:p-5">
+              <ConcertSeatmap seatmap={concert.seatmap} />
+            </div>
+          ) : null}
         </div>
-
-        {step === 1 && concert.seatmap?.images?.length ? (
-          <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
-            <ConcertSeatmap seatmap={concert.seatmap} />
-          </div>
-        ) : null}
 
         {step === 1 && (
         <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
