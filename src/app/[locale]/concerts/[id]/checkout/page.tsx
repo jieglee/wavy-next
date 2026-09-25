@@ -442,14 +442,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <div className="h-px flex-1 bg-[#E5E7EB]" />
           </div>
           {step === 1 && concert.seatmap?.images?.length ? (
-            <div className="border-t border-[#E5E7EB] p-4 sm:p-5">
+            <div className="p-4 sm:p-5">
               <ConcertSeatmap seatmap={concert.seatmap} />
             </div>
           ) : null}
         </div>
 
         {step === 1 && (
-        <div className="mx-auto mt-0 grid max-w-[900px] grid-cols-1 gap-6 rounded-b-2xl border border-t-0 border-[#E5E7EB] bg-white px-4 pb-5 pt-5 shadow-sm sm:px-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-5">
+        <div className="mx-auto mt-0 grid max-w-[900px] grid-cols-1 gap-6 rounded-b-2xl border border-transparent bg-white px-4 pb-5 pt-5 shadow-sm sm:px-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-5">
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
 
