@@ -432,8 +432,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       </header>
 
       <main className="mx-auto max-w-[1040px] px-3 py-3 sm:px-4 sm:py-4">
-        <div className="mx-auto max-w-[900px] overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
-          <div className="relative h-[88px] w-full overflow-hidden bg-[#FFE4EA] sm:h-[122px]">
+        <div className="mx-auto max-w-[900px] rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
+          <div className="relative h-[88px] w-full overflow-hidden rounded-t-2xl bg-[#FFE4EA] sm:h-[122px]">
             <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />
           </div>
           <div className="flex items-center gap-3 px-4 py-3.5">
