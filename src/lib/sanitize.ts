@@ -46,26 +46,45 @@ export function sanitizeHtml(dirty: string): string {
         (/^[A-Z0-9][A-Z0-9\s\-&/()]{4,}$/.test(line) && /[A-Z]/.test(line) && !/[.!?]$/.test(line) && !line.includes("www.") && !line.includes("http")));
     const blocks = dirty.split(/\n\s*\n/);
     const parts: string[] = [];
+    const BULLET_RE = /^[-•]\s+/;
+    const isEnglish = (line: string) => /^[A-Za-z]/.test(line) && /[a-z]/.test(line) && line.split(" ").length >= 6;
     for (const block of blocks) {
       const trimmed = block.trim();
       if (!trimmed) continue;
       const lines = trimmed.split(/\n/).map((l) => l.trim()).filter(Boolean);
       const looksLikeList = lines.length >= 2 && lines.every((l) => /^[-•\d.)]+\s/.test(l));
       if (looksLikeList) {
-        const isOrdered = /^\d+[.)]/.test(lines[0]);
-        const tag = isOrdered ? "ol" : "ul";
         const items = lines
-          .map((l) => `<li>${escapeHtml(l.replace(/^[-•\d.)]+\s*/, ""))}</li>`)
+          .map((l) => {
+            const raw = l.replace(/^[-•\d.)]+\s*/, "");
+            const content = isEnglish(raw) ? `<em>${escapeHtml(raw)}</em>` : escapeHtml(raw);
+            return `<li>${content}</li>`;
+          })
           .join("");
-        parts.push(`<${tag}>${items}</${tag}>`);
-      } else if (lines.length === 1 && looksHeading(lines[0])) {
-        parts.push(`<h3>${escapeHtml(lines[0])}</h3>`);
-      } else {
-        for (const line of lines) {
-          if (looksHeading(line)) parts.push(`<h3>${escapeHtml(line)}</h3>`);
-          else parts.push(`<p>${escapeHtml(line)}</p>`);
+        parts.push(`<ul>${items}</ul>`);
+        continue;
+      }
+      const out: string[] = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const bullet = BULLET_RE.test(line);
+        const raw = bullet ? line.replace(BULLET_RE, "") : line;
+        if (looksHeading(raw)) { out.push(`<h3>${escapeHtml(raw)}</h3>`); continue; }
+        if (bullet) {
+          const isEn = isEnglish(raw);
+          const next = lines[i + 1];
+          const nextIsEn = next && !BULLET_RE.test(next) && !looksHeading(next) && isEnglish(next.trim());
+          if (isEn) out.push(`<ul><li><em>${escapeHtml(raw)}</em></li></ul>`);
+          else if (nextIsEn) {
+            out.push(`<ul><li>${escapeHtml(raw)}<br><em>${escapeHtml(next.trim())}</em></li></ul>`);
+            i++;
+          } else out.push(`<ul><li>${escapeHtml(raw)}</li></ul>`);
+        } else {
+          if (isEnglish(line)) out.push(`<p><em>${escapeHtml(line)}</em></p>`);
+          else out.push(`<p>${escapeHtml(line)}</p>`);
         }
       }
+      parts.push(out.join(""));
     }
     html = parts.join("");
   }

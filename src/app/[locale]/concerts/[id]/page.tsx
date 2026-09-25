@@ -136,7 +136,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       <div className="min-h-screen bg-white">
 <Navbar sticky={false} />
         <div className="mx-auto max-w-[1440px] px-2 py-16 text-center sm:px-4 lg:px-6">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0F56FF] border-t-transparent mx-auto" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent mx-auto" />
           <p className="mt-4 text-sm text-[#6B7280]">{t("loading")}</p>
         </div>
       </div>
@@ -185,7 +185,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             </div>
             <button
               onClick={handleBuyTicket}
-              className="shrink-0 rounded-lg bg-[#2B5CFF] px-6 py-3 text-[15px] font-bold text-white transition hover:brightness-110"
+              className="shrink-0 rounded-lg bg-[#FF5470] px-6 py-3 text-[15px] font-bold text-white transition hover:brightness-110"
             >
               {t("buyTicket")}
             </button>
@@ -308,7 +308,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F56FF]/10 text-[16px] font-bold text-[#0F56FF]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FF5470]/10 text-[16px] font-bold text-[#FF5470]">
                     {concert.organizer_name?.[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">
