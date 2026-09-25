@@ -48,7 +48,7 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
     <section data-aos="fade-up" data-aos-duration="700" className="mt-10">
       <div className="mb-6 flex items-center gap-2">
         <Calendar className="h-6 w-6 shrink-0 text-[#FF5470]" strokeWidth={3} />
-        <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">Event Untuk Kamu</h2>
+        <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">{t("eventForYou")}</h2>
       </div>
       <div className="relative">
         {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowLeftIcon className="h-4 w-4" /></button>}

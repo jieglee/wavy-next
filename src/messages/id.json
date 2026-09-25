@@ -172,6 +172,45 @@
     "DiscoverCountries": {
         "title": "Jelajahi Event di Kotamu"
     },
+    "ConcertDetail": {
+        "loading": "Memuat informasi konser...",
+        "tabs": {
+            "desc": "Deskripsi",
+            "gallery": "Galeri",
+            "ticket": "Tiket",
+            "terms": "Syarat dan Ketentuan"
+        },
+        "startingFrom": "Harga mulai dari",
+        "buyTicket": "Beli Tiket",
+        "soldOut": "Habis",
+        "organizedBy": "Diselenggarakan oleh",
+        "shareEvent": "Bagikan Event",
+        "shareEventDefault": "Event di Wavy",
+        "linkCopied": "Link event disalin",
+        "copyLink": "Salin link",
+        "eventForYou": "Event Untuk Kamu",
+        "follow": "Ikuti",
+        "following": "Mengikuti",
+        "aboutArtist": "Tentang Penampil",
+        "fans": "penggemar",
+        "loginFirst": "Silakan masuk terlebih dahulu",
+        "loginToContinue": "Silakan masuk untuk melanjutkan pembelian",
+        "followSuccess": "Berhasil mengikuti {name}",
+        "unfollowSuccess": "Berhasil membatalkan follow",
+        "followFailed": "Gagal mengikuti artis",
+        "reviewSuccess": "Ulasan berhasil dikirim!",
+        "reviewFailed": "Gagal mengirim ulasan."
+    },
+    "ConcertTerms": {
+        "title": "Syarat & Ketentuan",
+        "expand": "Lihat Selengkapnya",
+        "collapse": "Tutup"
+    },
+    "ConcertStickyBar": {
+        "startingFrom": "Mulai dari",
+        "buyTicket": "Beli Tiket",
+        "soldOut": "Habis"
+    },
     "Footer": {
         "everyConcert": "#EveryConcert",
         "followUs": "Ikuti Kami",

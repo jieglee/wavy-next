@@ -172,6 +172,45 @@
     "DiscoverCountries": {
         "title": "Explore Events Around the World"
     },
+    "ConcertDetail": {
+        "loading": "Loading concert info...",
+        "tabs": {
+            "desc": "Description",
+            "gallery": "Gallery",
+            "ticket": "Tickets",
+            "terms": "Terms & Conditions"
+        },
+        "startingFrom": "Starting from",
+        "buyTicket": "Buy Ticket",
+        "soldOut": "Sold out",
+        "organizedBy": "Organized by",
+        "shareEvent": "Share Event",
+        "shareEventDefault": "Event on Wavy",
+        "linkCopied": "Event link copied",
+        "copyLink": "Copy link",
+        "eventForYou": "Events For You",
+        "follow": "Follow",
+        "following": "Following",
+        "aboutArtist": "About the Artist",
+        "fans": "fans",
+        "loginFirst": "Please sign in first",
+        "loginToContinue": "Please sign in to continue purchase",
+        "followSuccess": "Following {name}",
+        "unfollowSuccess": "Unfollowed successfully",
+        "followFailed": "Failed to follow artist",
+        "reviewSuccess": "Review submitted!",
+        "reviewFailed": "Failed to submit review."
+    },
+    "ConcertTerms": {
+        "title": "Terms & Conditions",
+        "expand": "See More",
+        "collapse": "Collapse"
+    },
+    "ConcertStickyBar": {
+        "startingFrom": "Starting from",
+        "buyTicket": "Buy Ticket",
+        "soldOut": "Sold out"
+    },
     "Footer": {
         "everyConcert": "#EveryConcert",
         "followUs": "Follow Us",
