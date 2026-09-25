@@ -730,9 +730,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
                 <div className="rounded-lg bg-gradient-to-r from-orange-50 to-rose-50 px-4 py-3 ring-1 ring-orange-100">
-                  <p className="text-[13px] font-bold text-[#111827]">Promo Pembayaran</p>
+                  <p className="text-[13px] font-bold text-[#111827]">{t("promo")}</p>
                 </div>
-                <p className="mt-4 text-[13px] font-bold text-[#111827]">Metode Pembayaran</p>
+                <p className="mt-4 text-[13px] font-bold text-[#111827]">{t("payMethod")}</p>
                 <div className="mt-2 space-y-2">
                   {PAY_GROUPS.map((g) => {
                     const open = payGroup === g.id;
@@ -761,7 +761,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </div>
                 {selectedPay && (
                   <div className="mt-2 overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
-                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">Informasi Pembayaran</p>
+                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">{t("payInfo")}</p>
                     <p className="px-4 py-3 text-justify text-[13px] leading-relaxed text-[#374151]">{selectedPay.info}</p>
                   </div>
                 )}
@@ -773,7 +773,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">{concert.venue}</p>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <p className="text-[13px] font-bold text-[#111827]">Ringkasan Pesanan</p>
+                <p className="text-[13px] font-bold text-[#111827]">{t("orderSummary")}</p>
                 <div className="mt-2 divide-y divide-[#F0F0F4]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
@@ -788,12 +788,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   ))}
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
+                <button type="button" onClick={() => toast(t("noPromo"))} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
                   <BadgePercent className="h-5 w-5 shrink-0 text-[#FF5470]" />
-                  <span className="flex-1 text-xs font-bold text-[#111827]">Makin hemat pakai promo</span>
+                  <span className="flex-1 text-xs font-bold text-[#111827]">{t("saveWithPromo")}</span>
                   <span className="text-base text-[#9CA3AF]">&gt;</span>
                 </button>
-                <p className="mt-3 text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
+                <p className="mt-3 text-[13px] font-bold text-[#111827]">{t("payDetails")}</p>
                 <div className="mt-2 space-y-1.5">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-center justify-between text-xs text-[#374151]">
@@ -802,47 +802,47 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     </div>
                   ))}
                   <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Local Tax</span>
+                    <span>{t("localTax")}</span>
                     <span className="font-semibold">{formatIDR(feeTax)}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Biaya Admin</span>
+                    <span>{t("adminFee")}</span>
                     <span className="font-semibold">{formatIDR(feeAdmin)}</span>
                   </div>
                   {proteksiOn && (
                     <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                      <span>Proteksi Pembeli Tiket <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan) (x{totalTickets})</span></span>
+                      <span>{t("buyerProtection")} <span className="block text-[10px] text-[#9CA3AF]">{t("nonRefundable")} (x{totalTickets})</span></span>
                       <span className="shrink-0 font-semibold">{formatIDR(feeProteksi)}</span>
                     </div>
                   )}
                   <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                    <span>Biaya Platform <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan)</span></span>
+                    <span>{t("platformFee")} <span className="block text-[10px] text-[#9CA3AF]">{t("nonRefundable")}</span></span>
                     <span className="shrink-0 font-semibold">{formatIDR(feePlatform)}</span>
                   </div>
                 </div>
                 <div className="my-3 border-t border-dashed border-[#E5E7EB]" />
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold text-[#111827]">Total Keseluruhan</span>
+                  <span className="text-[13px] font-bold text-[#111827]">{t("grandTotal")}</span>
                   <span className="text-sm font-extrabold text-[#111827]">{formatIDR(grandTotal)}</span>
                 </div>
                 {proteksiOn ? (
                   <div className="mt-3 rounded-lg bg-[#FFF1F3] p-3 ring-1 ring-[#FFD9E0]">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="h-5 w-5 shrink-0 text-[#F97316]" />
-                      <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Ubah</button>
+                      <p className="flex-1 text-xs font-bold text-[#111827]">{t("protectionPack")}</p>
+                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">{t("change")}</button>
                     </div>
-                    <p className="mt-1 text-xs text-[#6B7280]">Rp. 10.000/orang</p>
-                    <p className="text-[11px] font-semibold text-[#FF5470]">Syarat Ketentuan</p>
+                    <p className="mt-1 text-xs text-[#6B7280]">{t("perPerson")}</p>
+                    <p className="text-[11px] font-semibold text-[#FF5470]">{t("termsLink")}</p>
                     <p className="mt-2 flex items-center gap-1.5 rounded bg-[#16A34A] px-2 py-1.5 text-[11px] font-bold text-white">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> Yeay, tiket kamu terlindungi!
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> {t("ticketProtected")}
                     </p>
                   </div>
                 ) : (
                   <div className="mt-3 flex items-center gap-2 rounded-lg border border-dashed border-[#E5E7EB] bg-white p-3">
                     <ShieldCheck className="h-5 w-5 shrink-0 text-[#9CA3AF]" />
-                    <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
+                    <p className="flex-1 text-xs font-bold text-[#111827]">{t("protectionPack")}</p>
+                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">{t("add")}</button>
                   </div>
                 )}
                 <div className="mt-3 flex gap-2">
@@ -860,7 +860,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     disabled={!payMethod || submitting}
                     className="flex-1 rounded-lg bg-[#FF5470] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
                   >
-                    {submitting ? "Memproses..." : "Lanjut"}
+                    {submitting ? t("processing") : t("personal.continue")}
                   </button>
                 </div>
               </aside>
