@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
-import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
+import { useEffect, useState, use, useRef } from "react";
+import { useRouter, Link, usePathname } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck, Globe } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
@@ -79,6 +80,35 @@ function CheckoutStepper({ step = 1 }: { step?: number }) {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function CheckoutLangSwitcher() {
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function onDown(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
+    function onEsc(e: KeyboardEvent) { if (e.key === "Escape") setOpen(false); }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onEsc);
+    return () => { document.removeEventListener("mousedown", onDown); document.removeEventListener("keydown", onEsc); };
+  }, []);
+  function switchLocale(next: string) { router.replace(pathname, { locale: next }); setOpen(false); }
+  return (
+    <div ref={ref} className="relative">
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1 rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#374151] transition hover:bg-[#E5E7EB]">
+        <Globe className="h-3.5 w-3.5" />{locale.toUpperCase()}<ChevronDown className="h-3 w-3" />
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-2 w-28 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
+          <button onClick={() => switchLocale("id")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>ID</button>
+          <button onClick={() => switchLocale("en")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>EN</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -361,12 +391,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     return (
       <div className="min-h-screen bg-[#F8F8FA]">
         <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white">
-          <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-4">
+          <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between gap-4 px-4">
             <Link href="/" className="flex shrink-0 items-center gap-2">
               <WavyIcon size={26} />
               <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
             </Link>
             <CheckoutStepper step={step} />
+            <CheckoutLangSwitcher />
           </div>
         </header>
         <div className="mx-auto max-w-[1280px] px-4 py-16 text-center">
@@ -396,9 +427,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
           </Link>
           <CheckoutStepper step={step} />
-          <div className="flex items-center gap-2">
-            <span className="hidden rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#374151] sm:inline-flex">ID</span>
-          </div>
+          <CheckoutLangSwitcher />
         </div>
       </header>
 
