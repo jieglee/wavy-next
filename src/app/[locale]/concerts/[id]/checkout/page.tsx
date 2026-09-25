@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use, useRef } from "react";
 import { useRouter, Link, usePathname } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck, Globe } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
@@ -51,7 +51,8 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
 }
 
 function CheckoutStepper({ step = 1 }: { step?: number }) {
-  const steps = ["Pilih Kategori", "Informasi Personal", "Konfirmasi", "Bayar"];
+  const t = useTranslations("Checkout");
+  const steps = [t("stepper.choose"), t("stepper.personal"), t("stepper.confirm"), t("stepper.pay")];
   return (
     <div className="hidden items-center gap-2 sm:flex">
       {steps.map((label, i) => {
@@ -85,7 +86,7 @@ function CheckoutStepper({ step = 1 }: { step?: number }) {
 }
 
 function CheckoutLangSwitcher() {
-  const locale = useLocale();
+  const switchLocaleVal = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -101,12 +102,12 @@ function CheckoutLangSwitcher() {
   return (
     <div ref={ref} className="relative">
       <button onClick={() => setOpen(!open)} className="flex items-center gap-1 rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#374151] transition hover:bg-[#E5E7EB]">
-        <Globe className="h-3.5 w-3.5" />{locale.toUpperCase()}<ChevronDown className="h-3 w-3" />
+        <Globe className="h-3.5 w-3.5" />{switchLocaleVal.toUpperCase()}<ChevronDown className="h-3 w-3" />
       </button>
       {open && (
         <div className="absolute right-0 mt-2 w-28 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
-          <button onClick={() => switchLocale("id")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>ID</button>
-          <button onClick={() => switchLocale("en")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>EN</button>
+          <button onClick={() => switchLocale("id")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${switchLocaleVal === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>ID</button>
+          <button onClick={() => switchLocale("en")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${switchLocaleVal === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>EN</button>
         </div>
       )}
     </div>
@@ -116,6 +117,8 @@ function CheckoutLangSwitcher() {
 export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const t = useTranslations("Checkout");
+  const locale = useLocale();
   const [concert, setConcert] = useState<ConcertDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [qtyMap, setQtyMap] = useState<Record<number, number>>({});
@@ -150,7 +153,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   useEffect(() => {
     if (!getAuthToken()) {
-      toast.error("Silakan masuk terlebih dahulu");
+      toast.error(t("loginRequired"));
       router.push("/auth/login");
       return;
     }
@@ -201,13 +204,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   useEffect(() => {
     if ((step !== 2 && step !== 3) || timeLeft > 0) return;
-    const t = setTimeout(() => {
-      toast.error("Waktu pemesanan habis, silakan pilih kategori lagi");
+    const timer = setTimeout(() => {
+      toast.error(t("timeExpired"));
       setStep(1);
       setTimeLeft(600);
     }, 50);
-    return () => clearTimeout(t);
-  }, [step, timeLeft]);
+    return () => clearTimeout(timer);
+  }, [step, timeLeft, t]);
 
   useEffect(() => {
     if (loading) return;
@@ -238,11 +241,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   function goToPersonal() {
     if (!concert || totalTickets === 0) {
-      toast.error("Pilih minimal 1 tiket");
+      toast.error(t("pickOne"));
       return;
     }
     if (totalTickets > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
+      toast.error(t("maxFour"));
       return;
     }
     const u = getAuthUser<{ name?: string; email?: string }>();
@@ -259,30 +262,30 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   function validatePersonal() {
     const errs: Record<string, string> = {};
-    if (!firstName.trim()) errs.firstName = "Nama depan wajib diisi";
-    if (!email.trim()) errs.email = "Email wajib diisi";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errs.email = "Format email tidak valid";
+    if (!firstName.trim()) errs.firstName = `${t("personal.firstName")} ${t("personal.required")}`;
+    if (!email.trim()) errs.email = `${t("personal.email")} ${t("personal.required")}`;
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errs.email = t("personal.invalidEmail");
     const digits = phone.replace(/\D/g, "");
-    if (!phone.trim()) errs.phone = "No. handphone wajib diisi";
-    else if (digits.length < 9) errs.phone = "No. handphone minimal 9 digit";
-    if (!idNumber.trim()) errs.idNumber = "Nomor identitas wajib diisi";
+    if (!phone.trim()) errs.phone = `${t("personal.phone")} ${t("personal.required")}`;
+    else if (digits.length < 9) errs.phone = t("personal.phoneMin");
+    if (!idNumber.trim()) errs.idNumber = `${t("personal.idNumber")} ${t("personal.required")}`;
     const d = Number(dobDay), m = Number(dobMonth), y = Number(dobYear);
-    if (!dobDay || !dobMonth || !dobYear) errs.dob = "Tanggal lahir wajib diisi";
+    if (!dobDay || !dobMonth || !dobYear) errs.dob = `${t("personal.dob")} ${t("personal.required")}`;
     else {
       const dt = new Date(y, m - 1, d);
-      if (!d || !m || !y || dt.getDate() !== d || dt.getMonth() !== m - 1 || dt.getFullYear() !== y) errs.dob = "Tanggal lahir tidak valid";
-      else if (y < 1900 || y > new Date().getFullYear()) errs.dob = "Tahun lahir tidak valid";
+      if (!d || !m || !y || dt.getDate() !== d || dt.getMonth() !== m - 1 || dt.getFullYear() !== y) errs.dob = t("personal.dobInvalid");
+      else if (y < 1900 || y > new Date().getFullYear()) errs.dob = t("personal.yearInvalid");
     }
-    if (!gender) errs.gender = "Pilih jenis kelamin";
-    if (!agreeTerms) errs.agreeTerms = "Centang persetujuan Syarat & Ketentuan";
-    if (!agreeData) errs.agreeData = "Centang persetujuan pemrosesan data";
+    if (!gender) errs.gender = t("personal.pickGender");
+    if (!agreeTerms) errs.agreeTerms = t("personal.checkTerms");
+    if (!agreeData) errs.agreeData = t("personal.checkData");
     setFormErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
   function handleLanjut() {
     if (!validatePersonal()) {
-      toast.error("Lengkapi data diri dulu");
+      toast.error(t("completeFirst"));
       return;
     }
     setStep(3);
@@ -291,7 +294,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   function handleKonfirmasi() {
     if (!payMethod) {
-      toast.error("Pilih metode pembayaran dulu");
+      toast.error(t("choosePayFirst"));
       return;
     }
     handlePesan();
@@ -317,7 +320,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       .filter(([k]) => Number(k) !== catId)
       .reduce((s, [, q]) => s + q, 0);
     if (v + totalOther > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
+      toast.error(t("maxFour"));
       v = Math.max(0, 4 - totalOther);
       if (v <= 0) return;
     }
@@ -326,11 +329,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   async function handlePesan() {
     if (!concert || totalTickets === 0) {
-      toast.error("Pilih minimal 1 tiket");
+      toast.error(t("pickOne"));
       return;
     }
     if (totalTickets > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
+      toast.error(t("maxFour"));
       return;
     }
     setSubmitting(true);
@@ -344,7 +347,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         } as unknown as Record<string, unknown>);
         const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
         if (orderId) {
-          toast.success("Pesanan dibuat, lanjut ke pembayaran");
+          toast.success(t("orderCreated"));
           dropStored();
           router.push(`/orders/${orderId}`);
           return;
@@ -364,7 +367,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         if (oid) orderIds.push(Number(oid));
       }
       if (orderIds.length) {
-        toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
+        toast.success(t("multipleCreated", { count: orderIds.length }));
         dropStored();
         router.push(`/orders/${orderIds[0]}`);
         return;
@@ -374,11 +377,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     } catch (err: unknown) {
       const msg = (err as Error).message ?? "";
       if (msg.toLowerCase().includes("stok") || msg.toLowerCase().includes("not enough") || msg.toLowerCase().includes("sold out")) {
-        toast.error("Stok tiket tidak cukup");
+        toast.error(t("stockNotEnough"));
       } else {
         // eslint-disable-next-line react-hooks/purity
         const fallbackId = Math.floor(1000 + Math.random() * 9000);
-        toast.success("Masuk ke pembayaran");
+        toast.success(t("goPayment"));
         dropStored();
         router.push(`/orders/${fallbackId}`);
       }
@@ -402,7 +405,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         </header>
         <div className="mx-auto max-w-[1280px] px-4 py-16 text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent" />
-          <p className="mt-3 text-sm text-[#6B7280]">Memuat tiket...</p>
+          <p className="mt-3 text-sm text-[#6B7280]">{t("loadingTickets")}</p>
         </div>
       </div>
     );
@@ -451,14 +454,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         {step === 1 && (
         <div className="mx-auto -mt-px grid max-w-[900px] grid-cols-1 gap-6 rounded-b-2xl border border-t-0 border-[#E5E7EB] bg-white px-4 pb-5 pt-5 shadow-sm sm:px-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-5">
           <div>
-            <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
+            <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{t("generalSale")}</h2>
 
             {soldOutCount > 0 && (
               <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                 <p className="text-xs leading-relaxed text-amber-800">
-                  <span className="font-bold">{soldOutCount} kategori sudah habis terjual.</span> Tiket habis ditandai
-                  jelas di bawah — stok tersisa tidak bisa dipesan.
+                  {t("soldOutWarning", { count: soldOutCount })}
                 </p>
               </div>
             )}
@@ -483,17 +485,17 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                         {cat.name}
                       </p>
                       <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[12px] leading-snug text-[#6B7280]">
-                        <li>Harga belum termasuk Pajak Hiburan Daerah, Biaya Admin, dan biaya lainnya.</li>
+                        <li>{t("feeNote")}</li>
                       </ul>
                       {soldOut ? (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-[#DC2626]">
                           <AlertTriangle className="h-3 w-3 shrink-0" />
-                          Maaf, kategori ini sudah habis dan tidak bisa dipesan lagi
+                          {t("soldOut")}
                         </p>
                       ) : (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-[#FF5470]">
                           <Clock className="h-3 w-3" />
-                          Penjualan berakhir pada {new Date(concert.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })} • 21:00
+                          {t("saleEnds", { date: new Date(concert.date).toLocaleDateString(locale === "en" ? "en-US" : "id-ID", { day: "2-digit", month: "short", year: "numeric" }) })}
                         </p>
                       )}
                     </div>
@@ -503,7 +505,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       {soldOut ? (
                         <span className="inline-flex items-center gap-1 rounded-md border border-[#FECACA] bg-white px-3 py-1 text-[11px] font-bold text-[#DC2626]">
                           <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444] animate-pulse" />
-                          Habis Terjual
+                          {t("soldOutBadge")}
                         </span>
                       ) : (
                         <div className="relative">
@@ -533,7 +535,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               {entries.length === 0 ? (
                 <div className="flex items-start gap-2.5 py-1">
                   <Ticket className="h-5 w-5 shrink-0 text-[#FF5470]" />
-                  <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
+                  <p className="text-[13px] leading-snug text-[#6B7280]">{t("selectedEmpty")}</p>
                 </div>
               ) : (
                 <div className="divide-y divide-[#F3F4F6]">
@@ -554,7 +556,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               <div className="my-3 h-px bg-[#E5E7EB]" />
 
               <div className="flex items-center justify-between">
-                <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                <span className="text-xs text-[#6B7280]">{t("summaryCount", { count: totalTickets })}</span>
                 <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
               </div>
 
@@ -563,9 +565,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 disabled={totalTickets === 0 || submitting}
                 className="mt-3 w-full rounded-lg bg-[#FF5470] py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
               >
-                {submitting ? "Memproses..." : "Pesan Sekarang"}
+                {submitting ? t("processing") : t("orderNow")}
               </button>
-              <p className="mt-2 text-center text-[10px] leading-snug text-[#9CA3AF]">Dengan melanjutkan, kamu menyetujui Syarat & Ketentuan yang berlaku.</p>
+              <p className="mt-2 text-center text-[10px] leading-snug text-[#9CA3AF]">{t("agreeNote")}</p>
             </div>
           </div>
         </div>
