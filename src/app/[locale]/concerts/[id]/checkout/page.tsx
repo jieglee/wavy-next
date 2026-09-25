@@ -432,7 +432,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       </header>
 
       <main className="mx-auto max-w-[1040px] px-3 py-3 sm:px-4 sm:py-4">
-        <div className="mx-auto max-w-[900px] overflow-hidden rounded-t-2xl border border-[#E5E7EB] bg-white shadow-sm">
+        <div className="mx-auto max-w-[900px] overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
           <div className="relative h-[88px] w-full overflow-hidden bg-[#FFE4EA] sm:h-[122px]">
             <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />
           </div>
@@ -449,7 +449,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         </div>
 
         {step === 1 && (
-        <div className="mx-auto mt-0 grid max-w-[900px] grid-cols-1 gap-6 rounded-b-2xl border border-transparent bg-white px-4 pb-5 pt-5 shadow-sm sm:px-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-5">
+        <div className="mx-auto mt-0 grid max-w-[900px] grid-cols-1 gap-6 rounded-b-2xl border border-t-0 border-[#E5E7EB] bg-white px-4 pb-5 pt-5 shadow-sm sm:px-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-5">
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
 
