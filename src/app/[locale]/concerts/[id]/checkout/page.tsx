@@ -436,12 +436,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="relative h-[88px] w-full overflow-hidden bg-[#FFE4EA] sm:h-[122px]">
             <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />
           </div>
-        </div>
-
-        <div className="mt-4 flex items-center gap-3">
-          <div className="h-px flex-1 bg-[#E5E7EB]" />
-          <h1 className="text-sm font-bold text-[#111827] sm:text-[15px]">{concert.title}</h1>
-          <div className="h-px flex-1 bg-[#E5E7EB]" />
+          <div className="flex items-center gap-3 px-4 py-3.5">
+            <div className="h-px flex-1 bg-[#E5E7EB]" />
+            <h1 className="text-sm font-bold text-[#111827] sm:text-[15px]">{concert.title}</h1>
+            <div className="h-px flex-1 bg-[#E5E7EB]" />
+          </div>
         </div>
 
         {step === 1 && concert.seatmap?.images?.length ? (
