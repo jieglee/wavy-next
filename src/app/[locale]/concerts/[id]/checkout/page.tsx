@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
-import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
+import { useEffect, useState, use, useRef } from "react";
+import { useRouter, Link, usePathname } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck, Globe } from "lucide-react";
 import toast from "react-hot-toast";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
@@ -50,7 +51,8 @@ async function loadConcert(id: string): Promise<ConcertDetail> {
 }
 
 function CheckoutStepper({ step = 1 }: { step?: number }) {
-  const steps = ["Pilih Kategori", "Informasi Personal", "Konfirmasi", "Bayar"];
+  const t = useTranslations("Checkout");
+  const steps = [t("stepper.choose"), t("stepper.personal"), t("stepper.confirm"), t("stepper.pay")];
   return (
     <div className="hidden items-center gap-2 sm:flex">
       {steps.map((label, i) => {
@@ -83,9 +85,40 @@ function CheckoutStepper({ step = 1 }: { step?: number }) {
   );
 }
 
+function CheckoutLangSwitcher() {
+  const switchLocaleVal = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function onDown(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
+    function onEsc(e: KeyboardEvent) { if (e.key === "Escape") setOpen(false); }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onEsc);
+    return () => { document.removeEventListener("mousedown", onDown); document.removeEventListener("keydown", onEsc); };
+  }, []);
+  function switchLocale(next: string) { router.replace(pathname, { locale: next }); setOpen(false); }
+  return (
+    <div ref={ref} className="relative">
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1 rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#374151] transition hover:bg-[#E5E7EB]">
+        <Globe className="h-3.5 w-3.5" />{switchLocaleVal.toUpperCase()}<ChevronDown className="h-3 w-3" />
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-2 w-28 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
+          <button onClick={() => switchLocale("id")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${switchLocaleVal === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>ID</button>
+          <button onClick={() => switchLocale("en")} className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${switchLocaleVal === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}>EN</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const t = useTranslations("Checkout");
+  const locale = useLocale();
   const [concert, setConcert] = useState<ConcertDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [qtyMap, setQtyMap] = useState<Record<number, number>>({});
@@ -120,7 +153,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   useEffect(() => {
     if (!getAuthToken()) {
-      toast.error("Silakan masuk terlebih dahulu");
+      toast.error(t("loginRequired"));
       router.push("/auth/login");
       return;
     }
@@ -171,13 +204,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   useEffect(() => {
     if ((step !== 2 && step !== 3) || timeLeft > 0) return;
-    const t = setTimeout(() => {
-      toast.error("Waktu pemesanan habis, silakan pilih kategori lagi");
+    const timer = setTimeout(() => {
+      toast.error(t("timeExpired"));
       setStep(1);
       setTimeLeft(600);
     }, 50);
-    return () => clearTimeout(t);
-  }, [step, timeLeft]);
+    return () => clearTimeout(timer);
+  }, [step, timeLeft, t]);
 
   useEffect(() => {
     if (loading) return;
@@ -208,11 +241,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   function goToPersonal() {
     if (!concert || totalTickets === 0) {
-      toast.error("Pilih minimal 1 tiket");
+      toast.error(t("pickOne"));
       return;
     }
     if (totalTickets > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
+      toast.error(t("maxFour"));
       return;
     }
     const u = getAuthUser<{ name?: string; email?: string }>();
@@ -229,30 +262,30 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   function validatePersonal() {
     const errs: Record<string, string> = {};
-    if (!firstName.trim()) errs.firstName = "Nama depan wajib diisi";
-    if (!email.trim()) errs.email = "Email wajib diisi";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errs.email = "Format email tidak valid";
+    if (!firstName.trim()) errs.firstName = `${t("personal.firstName")} ${t("personal.required")}`;
+    if (!email.trim()) errs.email = `${t("personal.email")} ${t("personal.required")}`;
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errs.email = t("personal.invalidEmail");
     const digits = phone.replace(/\D/g, "");
-    if (!phone.trim()) errs.phone = "No. handphone wajib diisi";
-    else if (digits.length < 9) errs.phone = "No. handphone minimal 9 digit";
-    if (!idNumber.trim()) errs.idNumber = "Nomor identitas wajib diisi";
+    if (!phone.trim()) errs.phone = `${t("personal.phone")} ${t("personal.required")}`;
+    else if (digits.length < 9) errs.phone = t("personal.phoneMin");
+    if (!idNumber.trim()) errs.idNumber = `${t("personal.idNumber")} ${t("personal.required")}`;
     const d = Number(dobDay), m = Number(dobMonth), y = Number(dobYear);
-    if (!dobDay || !dobMonth || !dobYear) errs.dob = "Tanggal lahir wajib diisi";
+    if (!dobDay || !dobMonth || !dobYear) errs.dob = `${t("personal.dob")} ${t("personal.required")}`;
     else {
       const dt = new Date(y, m - 1, d);
-      if (!d || !m || !y || dt.getDate() !== d || dt.getMonth() !== m - 1 || dt.getFullYear() !== y) errs.dob = "Tanggal lahir tidak valid";
-      else if (y < 1900 || y > new Date().getFullYear()) errs.dob = "Tahun lahir tidak valid";
+      if (!d || !m || !y || dt.getDate() !== d || dt.getMonth() !== m - 1 || dt.getFullYear() !== y) errs.dob = t("personal.dobInvalid");
+      else if (y < 1900 || y > new Date().getFullYear()) errs.dob = t("personal.yearInvalid");
     }
-    if (!gender) errs.gender = "Pilih jenis kelamin";
-    if (!agreeTerms) errs.agreeTerms = "Centang persetujuan Syarat & Ketentuan";
-    if (!agreeData) errs.agreeData = "Centang persetujuan pemrosesan data";
+    if (!gender) errs.gender = t("personal.pickGender");
+    if (!agreeTerms) errs.agreeTerms = t("personal.checkTerms");
+    if (!agreeData) errs.agreeData = t("personal.checkData");
     setFormErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
   function handleLanjut() {
     if (!validatePersonal()) {
-      toast.error("Lengkapi data diri dulu");
+      toast.error(t("completeFirst"));
       return;
     }
     setStep(3);
@@ -261,7 +294,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   function handleKonfirmasi() {
     if (!payMethod) {
-      toast.error("Pilih metode pembayaran dulu");
+      toast.error(t("choosePayFirst"));
       return;
     }
     handlePesan();
@@ -287,7 +320,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       .filter(([k]) => Number(k) !== catId)
       .reduce((s, [, q]) => s + q, 0);
     if (v + totalOther > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
+      toast.error(t("maxFour"));
       v = Math.max(0, 4 - totalOther);
       if (v <= 0) return;
     }
@@ -296,11 +329,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   async function handlePesan() {
     if (!concert || totalTickets === 0) {
-      toast.error("Pilih minimal 1 tiket");
+      toast.error(t("pickOne"));
       return;
     }
     if (totalTickets > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
+      toast.error(t("maxFour"));
       return;
     }
     setSubmitting(true);
@@ -314,7 +347,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         } as unknown as Record<string, unknown>);
         const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
         if (orderId) {
-          toast.success("Pesanan dibuat, lanjut ke pembayaran");
+          toast.success(t("orderCreated"));
           dropStored();
           router.push(`/orders/${orderId}`);
           return;
@@ -334,7 +367,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         if (oid) orderIds.push(Number(oid));
       }
       if (orderIds.length) {
-        toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
+        toast.success(t("multipleCreated", { count: orderIds.length }));
         dropStored();
         router.push(`/orders/${orderIds[0]}`);
         return;
@@ -344,11 +377,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     } catch (err: unknown) {
       const msg = (err as Error).message ?? "";
       if (msg.toLowerCase().includes("stok") || msg.toLowerCase().includes("not enough") || msg.toLowerCase().includes("sold out")) {
-        toast.error("Stok tiket tidak cukup");
+        toast.error(t("stockNotEnough"));
       } else {
         // eslint-disable-next-line react-hooks/purity
         const fallbackId = Math.floor(1000 + Math.random() * 9000);
-        toast.success("Masuk ke pembayaran");
+        toast.success(t("goPayment"));
         dropStored();
         router.push(`/orders/${fallbackId}`);
       }
@@ -361,17 +394,18 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     return (
       <div className="min-h-screen bg-[#F8F8FA]">
         <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white">
-          <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-4">
+          <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between gap-4 px-4">
             <Link href="/" className="flex shrink-0 items-center gap-2">
               <WavyIcon size={26} />
               <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
             </Link>
             <CheckoutStepper step={step} />
+            <CheckoutLangSwitcher />
           </div>
         </header>
         <div className="mx-auto max-w-[1280px] px-4 py-16 text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent" />
-          <p className="mt-3 text-sm text-[#6B7280]">Memuat tiket...</p>
+          <p className="mt-3 text-sm text-[#6B7280]">{t("loadingTickets")}</p>
         </div>
       </div>
     );
@@ -396,42 +430,37 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <span className="font-display text-xl font-bold tracking-tight text-[#1B1A3A]">Wavy</span>
           </Link>
           <CheckoutStepper step={step} />
-          <div className="flex items-center gap-2">
-            <span className="hidden rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#374151] sm:inline-flex">ID</span>
-          </div>
+          <CheckoutLangSwitcher />
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1280px] px-3 py-3 sm:px-4 sm:py-4">
-        <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
-          <div className="relative h-[132px] w-full overflow-hidden bg-[#FFE4EA] sm:h-[190px]">
+      <main className="mx-auto max-w-[1040px] px-3 py-3 sm:px-4 sm:py-4">
+        <div className="mx-auto max-w-[900px] rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
+          <div className="relative h-[88px] w-full overflow-hidden rounded-t-2xl bg-[#FFE4EA] sm:h-[122px]">
             <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />
           </div>
-        </div>
-
-        <div className="mt-4 flex items-center gap-3">
-          <div className="h-px flex-1 bg-[#E5E7EB]" />
-          <h1 className="text-sm font-bold text-[#111827] sm:text-[15px]">{concert.title}</h1>
-          <div className="h-px flex-1 bg-[#E5E7EB]" />
-        </div>
-
-        {step === 1 && concert.seatmap?.images?.length ? (
-          <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
-            <ConcertSeatmap seatmap={concert.seatmap} />
+          <div className="flex items-center gap-3 px-4 py-3.5">
+            <div className="h-px flex-1 bg-[#E5E7EB]" />
+            <h1 className="text-sm font-bold text-[#111827] sm:text-[15px]">{concert.title}</h1>
+            <div className="h-px flex-1 bg-[#E5E7EB]" />
           </div>
-        ) : null}
+          {step === 1 && concert.seatmap?.images?.length ? (
+            <div className="p-4 sm:p-5">
+              <ConcertSeatmap seatmap={concert.seatmap} />
+            </div>
+          ) : null}
+        </div>
 
         {step === 1 && (
-        <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="mx-auto -mt-px grid max-w-[900px] grid-cols-1 gap-6 rounded-b-2xl border border-t-0 border-[#E5E7EB] bg-white px-4 pb-5 pt-5 shadow-sm sm:px-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-5">
           <div>
-            <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
+            <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{t("generalSale")}</h2>
 
             {soldOutCount > 0 && (
               <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                 <p className="text-xs leading-relaxed text-amber-800">
-                  <span className="font-bold">{soldOutCount} kategori sudah habis terjual.</span> Tiket habis ditandai
-                  jelas di bawah — stok tersisa tidak bisa dipesan.
+                  {t("soldOutWarning", { count: soldOutCount })}
                 </p>
               </div>
             )}
@@ -456,17 +485,17 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                         {cat.name}
                       </p>
                       <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[12px] leading-snug text-[#6B7280]">
-                        <li>Harga belum termasuk Pajak Hiburan Daerah, Biaya Admin, dan biaya lainnya.</li>
+                        <li>{t("feeNote")}</li>
                       </ul>
                       {soldOut ? (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-[#DC2626]">
                           <AlertTriangle className="h-3 w-3 shrink-0" />
-                          Maaf, kategori ini sudah habis dan tidak bisa dipesan lagi
+                          {t("soldOut")}
                         </p>
                       ) : (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-[#FF5470]">
                           <Clock className="h-3 w-3" />
-                          Penjualan berakhir pada {new Date(concert.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })} • 21:00
+                          {t("saleEnds", { date: new Date(concert.date).toLocaleDateString(locale === "en" ? "en-US" : "id-ID", { day: "2-digit", month: "short", year: "numeric" }) })}
                         </p>
                       )}
                     </div>
@@ -476,7 +505,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       {soldOut ? (
                         <span className="inline-flex items-center gap-1 rounded-md border border-[#FECACA] bg-white px-3 py-1 text-[11px] font-bold text-[#DC2626]">
                           <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444] animate-pulse" />
-                          Habis Terjual
+                          {t("soldOutBadge")}
                         </span>
                       ) : (
                         <div className="relative">
@@ -506,7 +535,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               {entries.length === 0 ? (
                 <div className="flex items-start gap-2.5 py-1">
                   <Ticket className="h-5 w-5 shrink-0 text-[#FF5470]" />
-                  <p className="text-[13px] leading-snug text-[#6B7280]">Tiket yang dipilih akan dicantumkan di sini</p>
+                  <p className="text-[13px] leading-snug text-[#6B7280]">{t("selectedEmpty")}</p>
                 </div>
               ) : (
                 <div className="divide-y divide-[#F3F4F6]">
@@ -527,7 +556,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               <div className="my-3 h-px bg-[#E5E7EB]" />
 
               <div className="flex items-center justify-between">
-                <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                <span className="text-xs text-[#6B7280]">{t("summaryCount", { count: totalTickets })}</span>
                 <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
               </div>
 
@@ -536,9 +565,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 disabled={totalTickets === 0 || submitting}
                 className="mt-3 w-full rounded-lg bg-[#FF5470] py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
               >
-                {submitting ? "Memproses..." : "Pesan Sekarang"}
+                {submitting ? t("processing") : t("orderNow")}
               </button>
-              <p className="mt-2 text-center text-[10px] leading-snug text-[#9CA3AF]">Dengan melanjutkan, kamu menyetujui Syarat & Ketentuan yang berlaku.</p>
+              <p className="mt-2 text-center text-[10px] leading-snug text-[#9CA3AF]">{t("agreeNote")}</p>
             </div>
           </div>
         </div>
@@ -549,28 +578,28 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
             <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
               {timerMm}:{timerSs}
-              <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
+              <span className="ml-2 font-medium">| {t("timeLeft")}</span>
             </div>
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
-                <h2 className="text-[15px] font-bold text-[#111827]">Data Diri</h2>
+                <h2 className="text-[15px] font-bold text-[#111827]">{t("personal.title")}</h2>
                 <div className="mt-4 space-y-4">
                   <div>
-                    <label className={labelCls}>Nama Depan{req}</label>
-                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputCls(formErrors.firstName)} placeholder="Nama depan" />
+                    <label className={labelCls}>{t("personal.firstName")}{req}</label>
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputCls(formErrors.firstName)} placeholder={t("personal.firstName")} />
                     {formErrors.firstName && <p className={errCls}>{formErrors.firstName}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>Nama Belakang</label>
-                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls()} placeholder="Nama belakang" />
+                    <label className={labelCls}>{t("personal.lastName")}</label>
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls()} placeholder={t("personal.lastName")} />
                   </div>
                   <div>
-                    <label className={labelCls}>Email{req}</label>
+                    <label className={labelCls}>{t("personal.email")}{req}</label>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls(formErrors.email)} placeholder="email@contoh.com" />
                     {formErrors.email && <p className={errCls}>{formErrors.email}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>No. Handphone{req}</label>
+                    <label className={labelCls}>{t("personal.phone")}{req}</label>
                     <div className="flex gap-2">
                       <span className="flex shrink-0 items-center gap-1 rounded-lg border border-[#E5E7EB] bg-[#F8F8FA] px-3 py-2.5 text-sm font-semibold text-[#374151]">
                         ID +62
@@ -580,12 +609,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     {formErrors.phone && <p className={errCls}>{formErrors.phone}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>Nomor Identitas (KTP/Passport,dll){req}</label>
-                    <input value={idNumber} onChange={(e) => setIdNumber(e.target.value)} className={inputCls(formErrors.idNumber)} placeholder="Nomor identitas" />
+                    <label className={labelCls}>{t("personal.idNumber")}{req}</label>
+                    <input value={idNumber} onChange={(e) => setIdNumber(e.target.value)} className={inputCls(formErrors.idNumber)} placeholder={t("personal.idNumber")} />
                     {formErrors.idNumber && <p className={errCls}>{formErrors.idNumber}</p>}
                   </div>
                   <div>
-                    <label className={labelCls}>Tanggal Lahir{req}</label>
+                    <label className={labelCls}>{t("personal.dob")}{req}</label>
                     <div className="flex gap-2">
                       <input inputMode="numeric" maxLength={2} value={dobDay} onChange={(e) => setDobDay(e.target.value.replace(/\D/g, ""))} className={`${inputCls(formErrors.dob)} w-[76px] min-w-0 shrink-0 text-center`} placeholder="dd" />
                       <div className="relative min-w-0 flex-1">
@@ -606,12 +635,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     {formErrors.dob && <p className={errCls}>{formErrors.dob}</p>}
                   </div>
                   <div>
-                    <span className={labelCls}>Jenis Kelamin{req}</span>
+                    <span className={labelCls}>{t("personal.gender")}{req}</span>
                     <div className="space-y-2">
                       {(["L", "P"] as const).map((g) => (
                         <label key={g} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
                           <input type="radio" name="gender" checked={gender === g} onChange={() => setGender(g)} className="h-4 w-4 accent-[#FF5470]" />
-                          {g === "L" ? "Laki-Laki" : "Wanita"}
+                          {g === "L" ? t("personal.male") : t("personal.female")}
                         </label>
                       ))}
                     </div>
@@ -619,25 +648,25 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   </div>
                   <div>
                     <p className="text-xs font-semibold leading-relaxed text-[#374151]">
-                      Saya setuju untuk menerima notifikasi terkait pemesanan tiket berikut melalui nomor WhatsApp saya.
+                      {t("personal.waConsent")}
                     </p>
                     <div className="mt-2 space-y-2">
                       {(["Ya", "Tidak"] as const).map((v) => (
                         <label key={v} className="flex cursor-pointer items-center gap-2 text-sm text-[#374151]">
                           <input type="radio" name="wa" checked={waConsent === v} onChange={() => setWaConsent(v)} className="h-4 w-4 accent-[#FF5470]" />
-                          {v}
+                          {v === "Ya" ? t("personal.yes") : t("personal.no")}
                         </label>
                       ))}
                     </div>
                   </div>
                   <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
                     <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5470]" />
-                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#FF5470]">Syarat & Ketentuan</span> dan <span className="font-semibold text-[#FF5470]">Kebijakan Privasi</span> Wavy.</span>
+                    <span>{t("personal.agreeTerms")}</span>
                   </label>
                   {formErrors.agreeTerms && <p className={errCls}>{formErrors.agreeTerms}</p>}
                   <label className="flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-[#374151]">
                     <input type="checkbox" checked={agreeData} onChange={(e) => setAgreeData(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5470]" />
-                    <span>Dengan mengklik &ldquo;Lanjut&rdquo;, kamu menyetujui <span className="font-semibold text-[#FF5470]">Kebijakan Pemrosesan Data Pribadi</span> Wavy.</span>
+                    <span>{t("personal.agreeData")}</span>
                   </label>
                   {formErrors.agreeData && <p className={errCls}>{formErrors.agreeData}</p>}
                   <div className="flex gap-2 pt-1">
@@ -646,7 +675,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       onClick={() => { setStep(1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="rounded-lg border border-[#E5E7EB] bg-white px-6 py-2.5 text-sm font-bold text-[#374151] transition hover:bg-[#F8F8FA]"
                     >
-                      Kembali
+                      {t("personal.back")}
                     </button>
                     <button
                       type="button"
@@ -654,7 +683,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       disabled={submitting || !agreeTerms || !agreeData}
                       className="rounded-lg bg-[#FF5470] px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF] disabled:hover:brightness-100"
                     >
-                      {submitting ? "Memproses..." : "Lanjut"}
+                      {submitting ? t("processing") : t("personal.continue")}
                     </button>
                   </div>
                 </div>
@@ -666,7 +695,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">{concert.venue}</p>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <p className="text-[13px] font-bold text-[#111827]">Ringkasan Pesanan</p>
+                <p className="text-[13px] font-bold text-[#111827]">{t("orderSummary")}</p>
                 <div className="mt-2 divide-y divide-[#F0F0F4]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
@@ -682,7 +711,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#6B7280]">Jumlah ({totalTickets} tiket)</span>
+                  <span className="text-xs text-[#6B7280]">{t("summaryCount", { count: totalTickets })}</span>
                   <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
                 </div>
               </aside>
@@ -696,14 +725,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#E5E7EB]">
             <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-[#111827]">
               {timerMm}:{timerSs}
-              <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
+              <span className="ml-2 font-medium">| {t("timeLeft")}</span>
             </div>
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
                 <div className="rounded-lg bg-gradient-to-r from-orange-50 to-rose-50 px-4 py-3 ring-1 ring-orange-100">
-                  <p className="text-[13px] font-bold text-[#111827]">Promo Pembayaran</p>
+                  <p className="text-[13px] font-bold text-[#111827]">{t("promo")}</p>
                 </div>
-                <p className="mt-4 text-[13px] font-bold text-[#111827]">Metode Pembayaran</p>
+                <p className="mt-4 text-[13px] font-bold text-[#111827]">{t("payMethod")}</p>
                 <div className="mt-2 space-y-2">
                   {PAY_GROUPS.map((g) => {
                     const open = payGroup === g.id;
@@ -732,7 +761,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </div>
                 {selectedPay && (
                   <div className="mt-2 overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
-                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">Informasi Pembayaran</p>
+                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">{t("payInfo")}</p>
                     <p className="px-4 py-3 text-justify text-[13px] leading-relaxed text-[#374151]">{selectedPay.info}</p>
                   </div>
                 )}
@@ -744,7 +773,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">{concert.venue}</p>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <p className="text-[13px] font-bold text-[#111827]">Ringkasan Pesanan</p>
+                <p className="text-[13px] font-bold text-[#111827]">{t("orderSummary")}</p>
                 <div className="mt-2 divide-y divide-[#F0F0F4]">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
@@ -759,12 +788,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   ))}
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
+                <button type="button" onClick={() => toast(t("noPromo"))} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
                   <BadgePercent className="h-5 w-5 shrink-0 text-[#FF5470]" />
-                  <span className="flex-1 text-xs font-bold text-[#111827]">Makin hemat pakai promo</span>
+                  <span className="flex-1 text-xs font-bold text-[#111827]">{t("saveWithPromo")}</span>
                   <span className="text-base text-[#9CA3AF]">&gt;</span>
                 </button>
-                <p className="mt-3 text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
+                <p className="mt-3 text-[13px] font-bold text-[#111827]">{t("payDetails")}</p>
                 <div className="mt-2 space-y-1.5">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-center justify-between text-xs text-[#374151]">
@@ -773,47 +802,47 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     </div>
                   ))}
                   <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Local Tax</span>
+                    <span>{t("localTax")}</span>
                     <span className="font-semibold">{formatIDR(feeTax)}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Biaya Admin</span>
+                    <span>{t("adminFee")}</span>
                     <span className="font-semibold">{formatIDR(feeAdmin)}</span>
                   </div>
                   {proteksiOn && (
                     <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                      <span>Proteksi Pembeli Tiket <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan) (x{totalTickets})</span></span>
+                      <span>{t("buyerProtection")} <span className="block text-[10px] text-[#9CA3AF]">{t("nonRefundable")} (x{totalTickets})</span></span>
                       <span className="shrink-0 font-semibold">{formatIDR(feeProteksi)}</span>
                     </div>
                   )}
                   <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                    <span>Biaya Platform <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan)</span></span>
+                    <span>{t("platformFee")} <span className="block text-[10px] text-[#9CA3AF]">{t("nonRefundable")}</span></span>
                     <span className="shrink-0 font-semibold">{formatIDR(feePlatform)}</span>
                   </div>
                 </div>
                 <div className="my-3 border-t border-dashed border-[#E5E7EB]" />
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold text-[#111827]">Total Keseluruhan</span>
+                  <span className="text-[13px] font-bold text-[#111827]">{t("grandTotal")}</span>
                   <span className="text-sm font-extrabold text-[#111827]">{formatIDR(grandTotal)}</span>
                 </div>
                 {proteksiOn ? (
                   <div className="mt-3 rounded-lg bg-[#FFF1F3] p-3 ring-1 ring-[#FFD9E0]">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="h-5 w-5 shrink-0 text-[#F97316]" />
-                      <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Ubah</button>
+                      <p className="flex-1 text-xs font-bold text-[#111827]">{t("protectionPack")}</p>
+                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">{t("change")}</button>
                     </div>
-                    <p className="mt-1 text-xs text-[#6B7280]">Rp. 10.000/orang</p>
-                    <p className="text-[11px] font-semibold text-[#FF5470]">Syarat Ketentuan</p>
+                    <p className="mt-1 text-xs text-[#6B7280]">{t("perPerson")}</p>
+                    <p className="text-[11px] font-semibold text-[#FF5470]">{t("termsLink")}</p>
                     <p className="mt-2 flex items-center gap-1.5 rounded bg-[#16A34A] px-2 py-1.5 text-[11px] font-bold text-white">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> Yeay, tiket kamu terlindungi!
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> {t("ticketProtected")}
                     </p>
                   </div>
                 ) : (
                   <div className="mt-3 flex items-center gap-2 rounded-lg border border-dashed border-[#E5E7EB] bg-white p-3">
                     <ShieldCheck className="h-5 w-5 shrink-0 text-[#9CA3AF]" />
-                    <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
+                    <p className="flex-1 text-xs font-bold text-[#111827]">{t("protectionPack")}</p>
+                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">{t("add")}</button>
                   </div>
                 )}
                 <div className="mt-3 flex gap-2">
@@ -831,7 +860,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     disabled={!payMethod || submitting}
                     className="flex-1 rounded-lg bg-[#FF5470] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
                   >
-                    {submitting ? "Memproses..." : "Lanjut"}
+                    {submitting ? t("processing") : t("personal.continue")}
                   </button>
                 </div>
               </aside>

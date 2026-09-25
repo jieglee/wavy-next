@@ -197,15 +197,14 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 onClick={() => switchLocale("id")}
                 className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
               >
-                Indonesia
+                ID
               </button>
               <button
                 onClick={() => switchLocale("en")}
                 className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
               >
-                English
+                EN
               </button>
-
             </div>
           )}
         </div>
@@ -240,7 +239,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           {userOpen && (
             <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-[#EDEBF2] bg-white py-1 shadow-2xl">
               <div className="border-b border-[#EDEBF2] px-4 py-2.5">
-                <p className="text-xs text-[#8B889C]">Masuk sebagai</p>
+                <p className="text-xs text-[#8B889C]">{t("signedInAs")}</p>
                 <p className="truncate text-sm font-bold text-[#1B1A3A]">{currentUser?.email}</p>
                 <span className="mt-1 inline-block rounded-full bg-[#FF5470]/10 px-2 py-0.5 text-[10px] font-semibold text-[#FF5470] uppercase">
                   {currentRole}
@@ -253,7 +252,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <Ticket className="h-4 w-4 text-[#FF5470]" />
-                Tiket Saya
+                {t("tickets")}
               </Link>
 
               <Link
@@ -262,7 +261,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <User className="h-4 w-4 text-[#1B1A3A]" />
-                Profil & Level
+                {t("profileLevel")}
               </Link>
 
               <Link
@@ -271,7 +270,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <Calendar className="h-4 w-4 text-[#1B1A3A]" />
-                Portal Organizer
+                {t("organizerPortal")}
               </Link>
 
               <Link
@@ -280,7 +279,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
               >
                 <Shield className="h-4 w-4 text-[#1B1A3A]" />
-                Portal Admin
+                {t("adminPortal")}
               </Link>
 
               <div className="border-t border-[#EDEBF2] mt-1 pt-1">
@@ -289,7 +288,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                   className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4" />
-                  Keluar
+                  {t("logout")}
                 </button>
               </div>
             </div>

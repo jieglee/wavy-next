@@ -19,7 +19,7 @@ export default function LoggedInHomePage() {
             <FeaturedPicks viewAllHref="/concerts" />
           </div>
         </section>
-        <TravelerMode />
+        {/* <TravelerMode /> */}
         <DiscoverCountries />
       </main>
       <Footer />

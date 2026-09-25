@@ -63,39 +63,39 @@ export default function PromoCarousel() {
     () => [
       {
         id: "ticket-onsale",
-        eyebrow: "Ticket On Sale Now",
-        title: "Jelajahi konser terkurasi",
-        subtitle: "Amankan kursimu sebelum kehabisan",
-        ctaLabel: "Lihat konser",
+        eyebrow: t("banner1.eyebrow"),
+        title: t("banner1.title"),
+        subtitle: t("banner1.subtitle"),
+        ctaLabel: t("banner1.ctaLabel"),
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/ticket-on-sale-now.png",
-        pill: "Tiket konser idola udah open sale ",
-        pillCTA: "Grab yours now!",
+        pill: t("banner1.pill"),
+        pillCTA: t("banner1.pillCTA"),
       },
       {
         id: "bts-banner",
-        eyebrow: "Your favorite event is here BTS",
-        title: "BTS",
-        subtitle: "",
-        ctaLabel: "Lihat konser",
+        eyebrow: t("banner2.eyebrow"),
+        title: t("banner2.title"),
+        subtitle: t("banner2.subtitle"),
+        ctaLabel: t("banner2.ctaLabel"),
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/your-favorite-bts.png",
-        pill: "ARMY, BTS kembali ",
-        pillCTA: "Secure your seat!",
+        pill: t("banner2.pill"),
+        pillCTA: t("banner2.pillCTA"),
       },
       {
         id: "tampilkan-eventmu",
-        eyebrow: "Tampilkan Eventmu",
-        title: "Eventmu",
-        subtitle: "",
-        ctaLabel: "Lihat konser",
+        eyebrow: t("banner3.eyebrow"),
+        title: t("banner3.title"),
+        subtitle: t("banner3.subtitle"),
+        ctaLabel: t("banner3.ctaLabel"),
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/tampilkan-eventmu.png",
-        pill: "Yuk tampilkan eventmu di Wavy ",
-        pillCTA: "Mulai sekarang!",
+        pill: t("banner3.pill"),
+        pillCTA: t("banner3.pillCTA"),
       },
       {
         id: "promo-1",
@@ -193,8 +193,8 @@ export default function PromoCarousel() {
                   className="absolute bottom-3 left-1/2 z-10 flex w-[70%] max-w-xl -translate-x-1/2 items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/85 px-4 py-2.5 text-center shadow-lg backdrop-blur-md sm:bottom-6 sm:px-6 sm:py-3"
                 >
                   <p className="text-xs font-medium leading-snug text-[#374151] sm:text-sm">
-                    {slide.pill ?? `Who misses seeing ${slide.title || slide.eyebrow}? `}
-                    <span className="font-semibold text-[#1E40AF]">{slide.pillCTA ?? "Click to get your tickets"}</span>
+                    {slide.pill ?? t("fallbackPill", { title: slide.title || slide.eyebrow })}
+                    <span className="font-semibold text-[#1E40AF]"> {slide.pillCTA ?? t("fallbackPillCTA")}</span>
                   </p>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-[#1E40AF]">
                     <path d="M0 0h24v24H0z" fill="none" />

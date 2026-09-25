@@ -1,4 +1,6 @@
-import { Copy, MessageCircle, Link2 } from "lucide-react";
+"use client";
+import { Copy, MessageCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 
 function getUrl() {
@@ -6,18 +8,19 @@ function getUrl() {
 }
 
 export default function ConcertOrganizerShare({ eventTitle, inline }: { eventTitle?: string; inline?: boolean }) {
+  const t = useTranslations("ConcertDetail");
   const url = getUrl();
-  const title = eventTitle || "Event di Wavy";
+  const title = eventTitle || t("shareEventDefault");
   const handleCopy = () => {
     navigator.clipboard.writeText(url);
-    toast.success("Link event disalin");
+    toast.success(t("linkCopied"));
   };
 
   const content = (
     <>
-      <h2 className="text-[15px] font-bold text-[#111827]">Bagikan Event</h2>
+      <h2 className="text-[15px] font-bold text-[#111827]">{t("shareEvent")}</h2>
       <div className="mt-3 flex items-center gap-2">
-        <button onClick={handleCopy} className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#111827]" aria-label="Salin link">
+        <button onClick={handleCopy} className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#111827]" aria-label={t("copyLink")}>
           <Copy className="h-4 w-4" />
         </button>
         <a href={`https://wa.me/?text=${encodeURIComponent(`${title} - ${url}`)}`} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white" aria-label="WhatsApp">

@@ -1,4 +1,4 @@
-import { Bagel_Fat_One, Poppins } from 'next/font/google'
+import { Bagel_Fat_One, Poppins, Inter } from 'next/font/google'
 
 export const poppins = Poppins({
   subsets: ['latin'],
@@ -12,4 +12,11 @@ export const bagelFatOne = Bagel_Fat_One({
   weight: '400',
   display: 'swap',
   variable: '--font-bagel-fat-one',
+})
+
+export const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  variable: '--font-inter',
 })

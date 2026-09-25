@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import scrapedHotels from "@/data/hotels.json";
 
 interface Hotel {
@@ -53,6 +54,7 @@ function TravelerModeIcon({ className }: { className?: string }) {
 }
 
 export default function TravelerMode() {
+  const t = useTranslations("TravelerMode");
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -86,15 +88,19 @@ export default function TravelerMode() {
   };
 
   return (
-    <section data-aos="fade-up" data-aos-delay="80" className="px-4 py-12 sm:px-6 lg:px-8">
+    <section data-testid="fade-up" data-testid-delay="80" className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <TravelerModeIcon className="text-[#FF5470]" />
             <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
-              Make It a Trip
+              {t("title")}
             </h2>
           </div>
+          <Link href="#" className="text-sm font-medium text-[#1B1A3A] underline underline-offset-4 transition-colors hover:text-[#FF5470]">
+            {t("viewAll")}
+          </Link>
+        </div>
           <Link href="#" className="text-sm font-medium text-[#1B1A3A] underline underline-offset-4 transition-colors hover:text-[#FF5470]">
             Lihat semua &rarr;
           </Link>
@@ -147,13 +153,12 @@ export default function TravelerMode() {
                     <span className="text-xs font-semibold text-[#1B1A3A]">{hotel.rating}</span>
                   </div>
                   <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
-                    <p className="text-[0.65rem] text-[#8B889C]">Mulai dari</p>
+                    <p className="text-[0.65rem] text-[#8B889C]">{t("startingFrom")}</p>
                     <p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{Number(hotel.price).toLocaleString("id-ID")}/malam</p>
                   </div>
                 </Link>
               </div>
             ))}
-          </div>
         </div>
       </div>
     </section>
