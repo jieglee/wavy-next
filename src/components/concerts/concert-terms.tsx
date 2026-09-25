@@ -23,7 +23,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
           }`}
         >
           <div
-            className="tnc-terms space-y-3 font-sans text-[14px] leading-7 text-[#374151] text-justify [&_a]:font-semibold [&_a]:text-[#1E40AF] [&_a]:underline [&_em]:!text-[#FF5470] [&_h3]:text-[15px] [&_h3]:font-bold [&_h3]:text-[#111827] [&_h3_em]:!text-[#FF5470] [&_h4]:text-[14px] [&_h4]:font-semibold [&_h4]:text-[#111827] [&_li]:ml-4 [&_li]:list-disc [&_p]:leading-7 [&_strong]:font-bold [&_strong]:text-[#111827] [&_strong_em]:!text-[#FF5470] [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:space-y-2"
+            className="tnc-terms space-y-3 font-sans text-[14px] leading-7 text-[#374151] text-justify [&_a]:font-semibold [&_a]:text-[#FF5470] [&_a]:underline [&_em]:!text-[#FF5470] [&_h3]:text-[15px] [&_h3]:font-bold [&_h3]:text-[#111827] [&_h3_em]:!text-[#FF5470] [&_h4]:text-[14px] [&_h4]:font-semibold [&_h4]:text-[#111827] [&_li]:ml-4 [&_li]:list-disc [&_p]:leading-7 [&_strong]:font-bold [&_strong]:text-[#111827] [&_strong_em]:!text-[#FF5470] [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: html }}
           />
           {!open && (
@@ -34,7 +34,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#EDEBF2] bg-white px-5 py-2 text-xs font-bold text-[#6B6875] shadow-sm transition hover:border-[#1E40AF] hover:text-[#1E40AF]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#EDEBF2] bg-white px-5 py-2 text-xs font-bold text-[#6B6875] shadow-sm transition hover:border-[#FF5470] hover:text-[#FF5470]"
           >
             {open ? t("collapse") : t("expand")}
             <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />

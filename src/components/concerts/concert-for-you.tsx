@@ -19,7 +19,8 @@ const fallbackEvents: DisplayEvent[] = [
 function ArrowLeftIcon({ className }: { className?: string }) { return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className={className}><path fill="currentColor" d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0" /></svg>; }
 function ArrowRightIcon({ className }: { className?: string }) { return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className={className} style={{ transform: "scaleX(-1)" }}><path fill="currentColor" d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0" /></svg>; }
 export default function ConcertForYou({ excludeId }: { excludeId: string | number }) {
-  const t = useTranslations("FeaturedEvents");
+  const tFeat = useTranslations("FeaturedEvents");
+  const tDetail = useTranslations("ConcertDetail");
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -48,11 +49,11 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
     <section data-aos="fade-up" data-aos-duration="700" className="mt-10">
       <div className="mb-6 flex items-center gap-2">
         <Calendar className="h-6 w-6 shrink-0 text-[#FF5470]" strokeWidth={3} />
-        <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">{t("eventForYou")}</h2>
+        <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">{tDetail("eventForYou")}</h2>
       </div>
       <div className="relative">
-        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowLeftIcon className="h-4 w-4" /></button>}
-        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowRightIcon className="h-4 w-4" /></button>}
+        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={tFeat("prev")} className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowLeftIcon className="h-4 w-4" /></button>}
+        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={tFeat("next")} className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowRightIcon className="h-4 w-4" /></button>}
         <div ref={scrollerRef} className="scrollbar-hide -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-2 py-4">
           {events.slice(0, 8).map((event) => (
             <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
@@ -64,8 +65,8 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
               </div>
               <p className="mt-3 text-xs text-[#8B889C]">{event.location}</p>
               <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">{event.title}</h3>
-              <p className="mt-0.5 truncate text-xs text-abu-ungu">{t("byOrganizer", { organizer: event.organizer })}</p>
-              <div className="mt-3 border-t border-[#EDEBF2] pt-2.5"><p className="text-[0.65rem] text-[#8B889C]">{t("startingFrom")}</p><p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{event.price}</p></div>
+              <p className="mt-0.5 truncate text-xs text-abu-ungu">{tFeat("byOrganizer", { organizer: event.organizer })}</p>
+              <div className="mt-3 border-t border-[#EDEBF2] pt-2.5"><p className="text-[0.65rem] text-[#8B889C]">{tFeat("startingFrom")}</p><p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{event.price}</p></div>
             </Link>
           ))}
         </div>
