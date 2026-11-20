@@ -209,7 +209,11 @@
         "loading": "Loading tickets..."
     },
     "ConcertDetail": {
-        "loading": "Loading concert info..."
+        "loading": "Loading concert info...",
+        "ticket": {
+            "title": "Tickets",
+            "summary": "{count, plural, =1 {# ticket category} other {# ticket categories}} - Price starting from {price}"
+        }
     },
     "OrderDetail": {
         "loading": "Loading order details...",
@@ -260,5 +264,25 @@
         "quotaCenter": "Tickets sold",
         "sold": "Sold",
         "revenue": "Revenue"
+    },
+    "Sales": {
+        "badge": {
+            "open": "Available",
+            "sold_out": "Sold out",
+            "upcoming": "Not open yet",
+            "closed": "Closed"
+        },
+        "window": {
+            "range": "Sales {start} to {end}",
+            "until": "Sales open until {end}",
+            "from": "Sales open from {start}"
+        },
+        "notOpen": {
+            "sold_out": "Tickets for this concert are sold out.",
+            "upcoming": "Ticket sales have not opened yet.",
+            "upcomingAt": "Ticket sales open {start}.",
+            "closed": "Ticket sales for this concert are closed."
+        },
+        "buy": "Buy Ticket"
     }
 }

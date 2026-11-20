@@ -202,7 +202,12 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
                   {concert.ticket_categories?.length > 0 && (
                     <div ref={ticketRef}>
-                      <ConcertTicketSidebar categories={concert.ticket_categories} />
+                      <ConcertTicketSidebar
+                        categories={concert.ticket_categories}
+                        salesStatus={concert.sales_status}
+                        salesStartAt={concert.sales_start_at}
+                        salesEndAt={concert.sales_end_at}
+                      />
                     </div>
                   )}
 

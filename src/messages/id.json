@@ -209,7 +209,11 @@
         "loading": "Memuat tiket..."
     },
     "ConcertDetail": {
-        "loading": "Memuat informasi konser..."
+        "loading": "Memuat informasi konser...",
+        "ticket": {
+            "title": "Tiket",
+            "summary": "{count} kategori tiket - Harga mulai dari {price}"
+        }
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",
@@ -260,5 +264,25 @@
         "quotaCenter": "Tiket terjual",
         "sold": "Terjual",
         "revenue": "Pendapatan"
+    },
+    "Sales": {
+        "badge": {
+            "open": "Tersedia",
+            "sold_out": "Habis",
+            "upcoming": "Belum dibuka",
+            "closed": "Ditutup"
+        },
+        "window": {
+            "range": "Penjualan {start} s/d {end}",
+            "until": "Penjualan dibuka s/d {end}",
+            "from": "Penjualan dibuka mulai {start}"
+        },
+        "notOpen": {
+            "sold_out": "Tiket untuk konser ini sudah habis terjual.",
+            "upcoming": "Penjualan tiket belum dibuka.",
+            "upcomingAt": "Penjualan tiket dibuka {start}.",
+            "closed": "Penjualan tiket untuk konser ini sudah ditutup."
+        },
+        "buy": "Beli Tiket"
     }
 }
