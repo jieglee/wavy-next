@@ -366,7 +366,18 @@
         "timeLeft": "Payment time left",
         "expiredTitle": "Order expired",
         "expiredBody": "The 15-minute payment window has passed, so the tickets were released back to the quota. Order again if they're still available.",
-        "orderAgain": "Order again"
+        "orderAgain": "Order again",
+        "back": "All orders",
+        "number": "Order number",
+        "summary": "Ticket summary",
+        "quantity": "Tickets",
+        "tickets": "{count, plural, one {# ticket} other {# tickets}}",
+        "serviceFee": "Wavy service fee",
+        "free": "Free",
+        "total": "Total due",
+        "instructions": "Payment instructions",
+        "checkStatus": "Check payment status",
+        "openTickets": "Open my tickets"
     },
     "Tickets": {
         "transferRecipientNotFound": "The recipient's email isn't registered on Wavy.",
@@ -713,5 +724,15 @@
             "emptyTitle": "No artists yet",
             "emptyText": "Add an artist before creating an event."
         }
+    },
+    "Orders": {
+        "eyebrow": "History",
+        "title": "My orders",
+        "code": "#{id}",
+        "event": "Event #{id}",
+        "quantity": "{count, plural, one {# ticket} other {# tickets}}",
+        "emptyTitle": "No orders yet",
+        "emptyDescription": "Your ticket orders will appear here.",
+        "browse": "Browse concerts"
     }
 }

@@ -366,7 +366,18 @@
         "timeLeft": "Sisa waktu pembayaran",
         "expiredTitle": "Pesanan kedaluwarsa",
         "expiredBody": "Batas waktu pembayaran 15 menit sudah lewat, jadi tiket dilepas kembali ke kuota. Silakan pesan ulang jika masih tersedia.",
-        "orderAgain": "Pesan ulang"
+        "orderAgain": "Pesan ulang",
+        "back": "Semua pesanan",
+        "number": "Nomor pesanan",
+        "summary": "Ringkasan tiket",
+        "quantity": "Jumlah tiket",
+        "tickets": "{count} tiket",
+        "serviceFee": "Biaya layanan Wavy",
+        "free": "Gratis",
+        "total": "Total tagihan",
+        "instructions": "Instruksi pembayaran",
+        "checkStatus": "Cek status pembayaran",
+        "openTickets": "Buka tiket saya"
     },
     "Tickets": {
         "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy.",
@@ -713,5 +724,15 @@
             "emptyTitle": "Belum ada artis",
             "emptyText": "Tambahkan artis dulu sebelum membuat event."
         }
+    },
+    "Orders": {
+        "eyebrow": "Riwayat",
+        "title": "Pesanan saya",
+        "code": "#{id}",
+        "event": "Event #{id}",
+        "quantity": "{count} tiket",
+        "emptyTitle": "Belum ada pesanan",
+        "emptyDescription": "Pesanan tiket kamu akan muncul di sini.",
+        "browse": "Jelajahi konser"
     }
 }
