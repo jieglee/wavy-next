@@ -446,7 +446,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                             value={qty}
                             disabled={salesBlocked}
                             onChange={(e) => setQty(cat.id, Number(e.target.value))}
-                            className="min-w-[72px] appearance-none rounded-lg border border-border bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
+                            className="min-w-[72px] appearance-none rounded-lg border border-border bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-foreground outline-none focus:border-primary disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
                           >
                             {[0, 1, 2, 3, 4].map((n) => (
                               <option key={n} value={n}>
