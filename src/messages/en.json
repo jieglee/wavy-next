@@ -145,7 +145,10 @@
             "ORDER_EXPIRED": "This order has expired. Please place a new order.",
             "ORGANIZER_SUSPENDED": "This organizer account is suspended.",
             "INVALID_QUANTITY": "Invalid ticket quantity. Choose 1 to 4 tickets.",
-            "VALIDATION_ERROR": "The data you sent is not valid. Please check your input."
+            "VALIDATION_ERROR": "The data you sent is not valid. Please check your input.",
+            "ORDER_NOT_PENDING": "This order is no longer waiting for payment.",
+            "PAYMENT_NOT_CONFIGURED": "Online payment isn't active yet. Please wait for the organizer to verify.",
+            "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly."
         }
     },
     "OrderStatus": {
@@ -212,7 +215,8 @@
     "Checkout": {
         "oneCategoryHint": "One ticket category per transaction, up to 4 tickets.",
         "oneCategorySwitched": "Ticket category changed. Each transaction covers one category only.",
-        "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
+        "paymentNotice": "After your order is created, you can pay with Midtrans (sandbox) on the order page. Complete it within 15 minutes.",
+        "paymentNoticeManual": "After your order is created, the organizer verifies your payment manually. Complete it within 15 minutes.",
         "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
         "orderError": {
             "title": "Couldn't create your order",
@@ -372,7 +376,6 @@
     },
     "OrderDetail": {
         "loading": "Loading order details...",
-        "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
         "payBefore": "Complete your payment before time runs out",
         "timeLeft": "Payment time left",
         "expiredTitle": "Order expired",
@@ -388,7 +391,16 @@
         "total": "Total due",
         "instructions": "Payment instructions",
         "checkStatus": "Check payment status",
-        "openTickets": "Open my tickets"
+        "openTickets": "Open my tickets",
+        "paymentOnline": "Pay with Midtrans (sandbox mode for this school project): bank transfer/VA, QRIS, or e-wallet. Your order updates once the payment succeeds.",
+        "paymentManual": "Online payment isn't active yet. The organizer verifies your payment manually, then your tickets are issued automatically.",
+        "manualFallback": "Trouble paying? The organizer can still verify your payment manually.",
+        "pay": {
+            "cta": "Pay now",
+            "processing": "Opening payment...",
+            "failed": "Payment failed. Try again or choose another method.",
+            "snapUnavailable": "Couldn't load the Midtrans payment page. Check your connection and try again."
+        }
     },
     "Tickets": {
         "transferRecipientNotFound": "The recipient's email isn't registered on Wavy.",
