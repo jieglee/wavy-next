@@ -152,7 +152,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
             </section>
 
             <aside className="lg:sticky lg:top-6 lg:self-start">
-              <div className="rounded-3xl border border-border bg-white p-5 shadow-[0_10px_40px_rgba(27,26,58,0.06)]">
+              <div className="rounded-3xl border border-border bg-white p-5 shadow-[0_10px_40px_color-mix(in_oklab,var(--foreground)_6%,transparent)]">
                 <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground/80">
                   <CalendarCheck className="h-4 w-4" />
                   Harga per malam

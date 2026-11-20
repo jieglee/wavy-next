@@ -30,7 +30,7 @@ export default function ConcertBookingCard({
         <button
           onClick={onBuyClick}
           disabled={isSoldOut}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#1E40AF] py-3.5 text-sm font-bold text-white shadow-sm hover:bg-[#1E3A8A] disabled:opacity-50"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
         >
           <Ticket className="h-4 w-4" />
           {isSoldOut ? "Tiket Habis" : "Beli Tiket"}

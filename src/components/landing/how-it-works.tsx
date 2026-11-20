@@ -44,7 +44,7 @@ export default function HowItWorks() {
               )}
               <span
                 className={`font-display text-4xl font-semibold ${
-                  i % 2 === 0 ? "text-primary/30" : "text-[#1E40AF]/30"
+                  i % 2 === 0 ? "text-primary/30" : "text-primary-glow/30"
                 }`}
               >
                 {step.number}

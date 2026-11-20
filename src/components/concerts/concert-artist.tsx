@@ -22,7 +22,7 @@ export default function ConcertArtist({
         <button
           onClick={onFollow}
           className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-all ${
-            isFollowing ? "bg-[#1E40AF] text-white" : "border border-border bg-white text-foreground/85 hover:border-[#1E40AF] hover:text-[#1E40AF]"
+            isFollowing ? "bg-primary text-primary-foreground" : "border border-border bg-white text-foreground/85 hover:border-primary hover:text-primary"
           }`}
         >
           <Heart className={`h-3.5 w-3.5 ${isFollowing ? "fill-white" : ""}`} />

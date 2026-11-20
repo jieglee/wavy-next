@@ -190,7 +190,7 @@ body {
   color: var(--foreground);
 }
 .tnc-terms ol li em {
-  color: #1E40AF;
+  color: var(--primary);
   font-style: italic;
   display: block;
   margin-top: 0.25rem;
@@ -236,7 +236,7 @@ body {
   margin-bottom: 0.25rem;
 }
 .tnc-html a {
-  color: #1E40AF;
+  color: var(--primary);
   text-decoration: none;
   word-break: break-all;
 }

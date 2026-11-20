@@ -134,7 +134,7 @@ export default function FeaturedPicks({
                         </svg>
                         Event4u
                     </h3>
-                    <button onClick={() => setShowAll(true)} className="text-sm font-medium text-[#1A4BDE] hover:underline">
+                    <button onClick={() => setShowAll(true)} className="text-sm font-medium text-primary hover:underline">
                         Lebih Banyak Event ›
                     </button>
                 </div>
@@ -145,7 +145,7 @@ export default function FeaturedPicks({
                             key={key}
                             onClick={() => setTab(key)}
                             className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 px-5 py-2 text-xs font-bold leading-none transition-all ${tab === key
-                                ? "border-[#1A4BDE] bg-white text-[#1A4BDE] shadow-[0_2px_8px_rgba(26,75,222,0.14)]"
+                                ? "border-primary bg-white text-primary shadow-[0_2px_8px_color-mix(in_oklab,var(--primary)_14%,transparent)]"
                                 : "border-border bg-white text-muted-foreground hover:border-input"
                                 }`}
                         >
@@ -198,7 +198,7 @@ export default function FeaturedPicks({
                                         />
                                     </div>
                                     <div className="min-w-0 pb-1 pl-3 pt-1">
-                                        <p className={`line-clamp-2 text-[15px] font-bold leading-[1.35] ${isBlue ? "text-[#1A4BDE] group-hover:text-[#1A3AB8]" : "text-foreground group-hover:text-[#1A4BDE]"}`}>
+                                        <p className={`line-clamp-2 text-[15px] font-bold leading-[1.35] ${isBlue ? "text-primary group-hover:text-primary/80" : "text-foreground group-hover:text-primary"}`}>
                                             {ev.title}
                                         </p>
                                         <p className="mt-[6px] truncate text-[12.5px] leading-none text-muted-foreground/70">{ev.meta}</p>
@@ -284,7 +284,7 @@ export default function FeaturedPicks({
                                                 />
                                             </div>
                                             <div className="min-w-0 py-1">
-                                                <p className="line-clamp-2 text-sm font-bold leading-tight text-foreground group-hover:text-[#1A4BDE]">{ev.title}</p>
+                                                <p className="line-clamp-2 text-sm font-bold leading-tight text-foreground group-hover:text-primary">{ev.title}</p>
                                                 <p className="mt-1 truncate text-xs text-muted-foreground/70">{ev.meta}</p>
                                             </div>
                                             <PickThumb src={ev.image} className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />

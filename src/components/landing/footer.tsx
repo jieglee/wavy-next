@@ -88,7 +88,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
           {/* Brand + Social */}
           <div className="col-span-2 sm:col-span-1">
-            <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-primary to-[#1E40AF] bg-clip-text text-transparent">
+            <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
               {t("everyConcert")}
             </p>
             <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-foreground">
@@ -168,8 +168,8 @@ export default function Footer() {
                   key={method}
                   className={`flex items-center justify-center rounded-md bg-muted px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-muted-foreground transition-all duration-200 ring-1 ring-transparent hover:-translate-y-0.5 hover:text-foreground ${
                     i % 2 === 0
-                      ? "hover:ring-primary/60 hover:shadow-[0_4px_16px_rgba(255,84,112,0.25)]"
-                      : "hover:ring-[#1E40AF]/60 hover:shadow-[0_4px_16px_rgba(30,64,175,0.25)]"
+                      ? "hover:ring-primary/60 hover:shadow-[0_4px_16px_color-mix(in_oklab,var(--primary)_25%,transparent)]"
+                      : "hover:ring-primary-glow/60 hover:shadow-[0_4px_16px_color-mix(in_oklab,var(--primary-glow)_25%,transparent)]"
                   }`}
                 >
                   {paymentLogos[method] ? (

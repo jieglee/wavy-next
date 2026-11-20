@@ -99,8 +99,8 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     // Shadow pink/biru selang-seling, miring lucu ke kanan
     const isPink = idx % 2 === 0;
     const shadowClass = isPink
-        ? "group-hover:drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]"
-        : "group-hover:drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
+        ? "group-hover:drop-shadow-[0_12px_22px_color-mix(in_oklab,var(--primary)_42%,transparent)]"
+        : "group-hover:drop-shadow-[0_12px_22px_color-mix(in_oklab,var(--primary-glow)_42%,transparent)]";
     const tiltClass = "group-hover:-rotate-[6deg]";
 
   return (
@@ -108,7 +108,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
       {/* Glow shadow menyeluruh di belakang gambar - pink/biru Wavy, baru keliatan pas hover */}
       <div
         className="pointer-events-none absolute inset-0 rounded-[18px] blur-[18px] opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
-        style={{ background: isPink ? "rgba(255,84,112,0.38)" : "rgba(30,64,175,0.35)" }}
+        style={{ background: isPink ? "color-mix(in oklab,var(--primary) 38%,transparent)" : "color-mix(in oklab,var(--primary-glow) 35%,transparent)" }}
       />
             {/* Zoom miring lucu + shadow - trigger pas card kena kursor (group-hover) */}
             <img

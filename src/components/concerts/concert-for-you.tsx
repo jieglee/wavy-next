@@ -49,7 +49,7 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
           {events.slice(0, 8).map((event) => (
             <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
               <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)] group-hover:border-[#1E40AF]/30">
+                <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)] group-hover:border-primary/30">
                   {event.poster_url ? <img src={event.poster_url} alt={event.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy" /> : <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" style={{ background: event.gradient }} />}
                   <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                 </div>

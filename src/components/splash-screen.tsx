@@ -42,7 +42,7 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                             strokeWidth="3"
                             strokeLinecap="round"
                             fill="none"
-                            style={{ filter: "drop-shadow(0 0 8px rgba(255,84,112,0.45))" }}
+                            style={{ filter: "drop-shadow(0 0 8px color-mix(in oklab,var(--primary) 45%,transparent))" }}
                         />
                     </motion.svg>
 
@@ -54,9 +54,9 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                     >
                         <div
                             aria-hidden
-                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1E40AF]/20 blur-[80px]"
+                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-glow/20 blur-[80px]"
                         />
-                        <WavyIcon size={108} className="relative drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]" />
+                        <WavyIcon size={108} className="relative drop-shadow-[0_4px_16px_color-mix(in_oklab,var(--primary)_25%,transparent)]" />
                     </motion.div>
                 </motion.div>
             )}

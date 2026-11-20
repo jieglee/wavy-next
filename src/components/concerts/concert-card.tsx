@@ -29,7 +29,7 @@ export default function ConcertCard({
   return (
     <Link href={`/concerts/${id}`} className={`group block ${className ?? ""}`}>
       <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-[#1E40AF]/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
+        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)]">
           {poster_url ? (
             <img
               src={poster_url}

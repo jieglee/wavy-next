@@ -150,7 +150,7 @@ export default function ConcertGallery({
               key={i}
               type="button"
               onClick={() => openAt(i)}
-              className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F56FF]"
+              className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               style={{
                 opacity: revealed ? 1 : 0,
                 transform: revealed ? "translateY(0)" : "translateY(16px)",

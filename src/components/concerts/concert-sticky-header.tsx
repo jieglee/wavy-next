@@ -45,7 +45,7 @@ export default function ConcertStickyHeader({
 
             <button
               onClick={onBuy}
-              className="rounded-lg bg-[#0F56FF] px-6 py-2.5 text-[13px] font-bold text-white transition hover:bg-[#0B46D9]"
+              className="rounded-lg bg-primary px-6 py-2.5 text-[13px] font-bold text-primary-foreground transition hover:bg-primary/90"
             >
               Beli Tiket
             </button>

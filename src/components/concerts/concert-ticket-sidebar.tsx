@@ -21,8 +21,8 @@ export default function ConcertTicketSidebar({ categories }: TicketSidebarProps)
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Ticket className="h-5 w-5 text-[#1A2E6B]" />
-        <h2 className="text-[20px] font-bold text-[#1A2E6B]">Ticket</h2>
+        <Ticket className="h-5 w-5 text-foreground" />
+        <h2 className="text-[20px] font-bold text-foreground">Ticket</h2>
       </div>
 
       <div className="mt-3 overflow-hidden rounded-xl border border-border bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
@@ -33,7 +33,7 @@ export default function ConcertTicketSidebar({ categories }: TicketSidebarProps)
               {categories.length} ticket category - Price starting from {formatIDR(minPrice)}
             </p>
           </div>
-          <ChevronDown className={`h-5 w-5 shrink-0 text-[#1E40AF] transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-5 w-5 shrink-0 text-primary transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
         </button>
 
         <div className={`grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>

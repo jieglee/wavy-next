@@ -39,7 +39,7 @@ export default function Benefits() {
               className={`rounded-xl border border-border bg-muted p-5 transition-colors sm:p-6 ${
                 i % 2 === 0
                   ? "hover:border-primary/40"
-                  : "hover:border-[#1E40AF]/40"
+                  : "hover:border-primary/40"
               }`}
             >
               <h3 className="font-display text-base font-medium text-foreground">

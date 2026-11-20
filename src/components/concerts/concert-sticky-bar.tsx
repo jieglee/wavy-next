@@ -17,7 +17,7 @@ export default function ConcertStickyBar({ minPrice, soldOut, onBuy }: Props) {
         <button
           onClick={onBuy}
           disabled={soldOut}
-          className="shrink-0 rounded-full bg-[#1E40AF] px-8 py-3 text-sm font-bold text-white disabled:opacity-50"
+          className="shrink-0 rounded-full bg-primary px-8 py-3 text-sm font-bold text-primary-foreground disabled:opacity-50"
         >
           {soldOut ? "Habis" : "Beli Tiket"}
         </button>

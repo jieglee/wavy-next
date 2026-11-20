@@ -42,7 +42,7 @@ export default function Testimonials() {
             >
               <svg
                 className={`mb-3 h-5 w-5 ${
-                  i % 2 === 0 ? "text-primary/40" : "text-[#1E40AF]/40"
+                  i % 2 === 0 ? "text-primary/40" : "text-primary-glow/40"
                 }`}
                 fill="currentColor"
                 viewBox="0 0 24 24"

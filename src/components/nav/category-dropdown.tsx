@@ -65,7 +65,7 @@ export default function CategoryDropdown({ onSelect }: { onSelect?: () => void }
             onClick={onSelect}
             className="flex items-center gap-3 rounded-xl px-1 py-1.5 transition-colors hover:bg-surface"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#EFF6FF] text-[#1E40AF]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-info-subtle text-info">
               <cat.icon className="h-[18px] w-[18px]" />
             </div>
             <span className="text-[13px] font-medium leading-tight text-foreground">{cat.name}</span>

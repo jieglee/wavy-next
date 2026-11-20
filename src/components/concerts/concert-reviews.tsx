@@ -27,7 +27,7 @@ export default function ConcertReviews({
             <span className="text-xs text-muted-foreground">({reviewCount})</span>
           </div>
         </div>
-        <button onClick={onWriteReview} className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-foreground/85 hover:border-[#1E40AF] hover:text-[#1E40AF]">
+        <button onClick={onWriteReview} className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-foreground/85 hover:border-primary hover:text-primary">
           <PenLine className="h-3.5 w-3.5" />
           Tulis Ulasan
         </button>

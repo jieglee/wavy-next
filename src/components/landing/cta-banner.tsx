@@ -4,14 +4,14 @@ export default function CtaBanner() {
   return (
     <section data-aos="zoom-in" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-muted px-6 py-14 text-center shadow-[0_24px_80px_rgba(27,26,36,0.08)] sm:px-14">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-muted px-6 py-14 text-center shadow-[0_24px_80px_color-mix(in_oklab,var(--foreground)_8%,transparent)] sm:px-14">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary/10 blur-[100px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-[#1E40AF]/10 blur-[100px]"
+            className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-primary-glow/10 blur-[100px]"
           />
 
           <div className="relative">

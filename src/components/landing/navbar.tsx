@@ -124,7 +124,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               setSearchOpen(false);
             }}
             aria-expanded={catOpen}
-            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-[#EFF6FF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-info-subtle ring-1 ring-info/20" : "hover:opacity-70"}`}
             style={{ color: "var(--foreground)" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style={{ color: "var(--foreground)" }}>

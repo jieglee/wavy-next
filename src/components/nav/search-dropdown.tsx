@@ -35,7 +35,7 @@ const GRADIENTS = [
   "linear-gradient(135deg,var(--foreground),#2a2a4a)",
   "linear-gradient(135deg,#111,#444)",
   "linear-gradient(135deg,#222,#666)",
-  "linear-gradient(135deg,#1e3a8a,#3b82f6)",
+  "linear-gradient(135deg,var(--primary-glow),var(--primary))",
   "linear-gradient(135deg,var(--primary-glow),#c084fc)",
 ];
 
@@ -81,7 +81,7 @@ export default function SearchDropdown({
     : popular;
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_48px_-8px_rgba(27,26,58,0.22)]">
+    <div className="w-full overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_48px_-8px_color-mix(in_oklab,var(--foreground)_22%,transparent)]">
       <div className="max-h-[min(72vh,520px)] overflow-y-auto p-4">
         <p className="mb-3 text-[13px] font-bold text-foreground">Banyak Dicari</p>
         <div className="mb-4 flex flex-wrap gap-2">
@@ -93,9 +93,9 @@ export default function SearchDropdown({
                 key={term}
                 href={`/concerts?q=${encodeURIComponent(term)}`}
                 onClick={onSelect}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-[#DBEAFE]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-info-subtle px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-info/15"
               >
-                <TrendingUp className="h-3.5 w-3.5 shrink-0 text-[#1E40AF]" />
+                <TrendingUp className="h-3.5 w-3.5 shrink-0 text-info" />
                 {term}
               </Link>
             ))

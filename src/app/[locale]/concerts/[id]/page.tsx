@@ -165,7 +165,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
             </div>
             <button
               onClick={handleBuyTicket}
-              className="shrink-0 rounded-lg bg-[#2B5CFF] px-6 py-3 text-[15px] font-bold text-white transition hover:brightness-110"
+              className="shrink-0 rounded-lg bg-primary px-6 py-3 text-[15px] font-bold text-primary-foreground transition hover:brightness-110"
             >
               Beli Tiket
             </button>
@@ -259,19 +259,19 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                     <div className="mt-4 space-y-3">
 
                       <div className="flex items-start gap-3 text-[14px] leading-snug text-foreground">
-                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-foreground" />
                         <span>{concert.venue}</span>
                       </div>
 
                       <div className="flex items-center gap-3 text-[14px] text-foreground">
-                        <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                        <Calendar className="h-4 w-4 shrink-0 text-foreground" />
                         <span>
                           {dateStr}, {startHour} - {endHour} WIB
                         </span>
                       </div>
 
                       <div className="flex items-center gap-3 text-[14px] text-foreground">
-                        <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                        <Layers className="h-4 w-4 shrink-0 text-foreground" />
                         <span>
                           {concert.category}
                           &nbsp;•&nbsp;
@@ -288,7 +288,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F56FF]/10 text-[16px] font-bold text-[#0F56FF]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[16px] font-bold text-primary">
                     {concert.organizer_name?.[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">

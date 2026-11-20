@@ -499,7 +499,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         {step === 2 && (
         <div className="mx-auto mt-5 max-w-[880px]">
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-border">
-            <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-foreground">
+            <div className="bg-info-subtle px-4 py-2.5 text-center text-[13px] font-bold text-foreground">
               {timerMm}:{timerSs}
               <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
             </div>
@@ -649,7 +649,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         {step === 3 && (
         <div className="mx-auto mt-5 max-w-[880px]">
           <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-border">
-            <div className="bg-[#C6FF5C] px-4 py-2.5 text-center text-[13px] font-bold text-foreground">
+            <div className="bg-info-subtle px-4 py-2.5 text-center text-[13px] font-bold text-foreground">
               {timerMm}:{timerSs}
               <span className="ml-2 font-medium">| Sisa waktu untuk memesan tiket</span>
             </div>
