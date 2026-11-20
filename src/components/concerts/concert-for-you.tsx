@@ -7,15 +7,15 @@ import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
-interface DisplayEvent { id: number; title: string; organizer: string; location: string; price: string | null; gradient: string; poster_url?: string; }
+import { EventPoster } from "@/components/concerts/event-poster";
+interface DisplayEvent { id: number; title: string; organizer: string; location: string; price: string | null; poster_url?: string; }
 // dekorasi kartu tanpa poster (bukan data)
-const GRADIENTS = ["linear-gradient(135deg,#7DD3E8,#4A90D9)", "linear-gradient(135deg,#8B0000,#2B0000)", "linear-gradient(135deg,#3D3D3D,#0A0A0A)", "linear-gradient(135deg,var(--foreground),#0D0C1F)", "linear-gradient(135deg,var(--primary),#211F2B)", "linear-gradient(135deg,#C6395A,#14131C)"];
 const extractConcerts = (data: unknown): Concert[] => {
   if (Array.isArray(data)) return data as Concert[];
   if (data && typeof data === "object") { const d = data as Record<string, unknown>; if (Array.isArray(d.concerts)) return d.concerts as Concert[]; if (Array.isArray(d.data)) return d.data as Concert[]; if (Array.isArray(d.events)) return d.events as Concert[]; if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) return (d.concerts as Record<string, unknown>).data as Concert[]; }
   return [];
 };
-const toDisplay = (c: Concert, idx: number): DisplayEvent => ({ id: c.id, title: c.title, organizer: c.organizer_name || c.artist_name || "", location: c.venue || "", price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null, gradient: GRADIENTS[idx % GRADIENTS.length], poster_url: c.poster_url });
+const toDisplay = (c: Concert): DisplayEvent => ({ id: c.id, title: c.title, organizer: c.organizer_name || c.artist_name || "", location: c.venue || "", price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null, poster_url: c.poster_url });
 // /concerts dulu; kalau kosong pakai /homepage. Tanpa data karangan.
 async function loadForYou(excludeId: string | number): Promise<DisplayEvent[]> {
   const notSelf = (c: Concert) => String(c.id) !== String(excludeId);
@@ -51,7 +51,7 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
             <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
               <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
                 <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)] group-hover:border-primary/30">
-                  {event.poster_url ? <img src={event.poster_url} alt={event.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy" /> : <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" style={{ background: event.gradient }} />}
+                  <EventPoster src={event.poster_url} title={event.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" />
                   <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                 </div>
               </div>

@@ -14,20 +14,10 @@ interface DisplayEvent {
   organizer: string;
   location: string;
   price: string | null;
-  gradient: string;
   poster_url?: string;
 }
 
 // dekorasi kartu tanpa poster (bukan data)
-const GRADIENTS = [
-  "linear-gradient(135deg,#7DD3E8,#4A90D9)",
-  "linear-gradient(135deg,#8B0000,#2B0000)",
-  "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
-  "linear-gradient(135deg,var(--foreground),#0D0C1F)",
-  "linear-gradient(135deg,var(--primary),#211F2B)",
-  "linear-gradient(135deg,#C6395A,#14131C)",
-];
-
 const extractConcerts = (data: unknown): Concert[] => {
   if (Array.isArray(data)) return data as Concert[];
   if (data && typeof data === "object") {
@@ -43,13 +33,12 @@ const extractConcerts = (data: unknown): Concert[] => {
   return [];
 };
 
-const toDisplay = (c: Concert, idx: number): DisplayEvent => ({
+const toDisplay = (c: Concert): DisplayEvent => ({
   id: c.id,
   title: c.title,
   organizer: c.organizer_name || c.artist_name || "",
   location: c.venue || "",
   price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null,
-  gradient: GRADIENTS[idx % GRADIENTS.length],
   poster_url: c.poster_url,
 });
 
@@ -187,7 +176,6 @@ export default function FeaturedEvents() {
                 location={event.location}
                 organizer={event.organizer}
                 price={event.price}
-                gradient={event.gradient}
                 poster_url={event.poster_url}
                 className="w-[260px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]"
               />

@@ -8,6 +8,7 @@ import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import { formatIDR } from "@/lib/price";
 import type { Concert } from "@/types/type";
 import { useLandingConcerts } from "./landing-data";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 function PosterCard({ c }: { c: Concert }) {
   const t = useTranslations("Landing.lineup");
@@ -18,18 +19,8 @@ function PosterCard({ c }: { c: Concert }) {
       className="group block w-[240px] shrink-0 sm:w-[280px]"
       aria-label={c.title}
     >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-border bg-gradient-to-br from-stage to-primary-glow">
-        {c.poster_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={c.poster_url}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-          />
-        ) : (
-          <p className="absolute inset-x-4 bottom-4 font-display text-xl font-bold leading-tight text-primary-foreground">{c.title}</p>
-        )}
+      <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-border">
+        <EventPoster src={c.poster_url} title={c.title} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
       </div>
       <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
         {c.date ? format.dateTime(new Date(c.date), { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }) : ""}

@@ -6,6 +6,7 @@ import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 export interface PickEvent {
     id: string;
@@ -60,8 +61,8 @@ async function loadPicks(): Promise<PickEvent[]> {
 
 const WEEK_MS = 7 * 24 * 3600 * 1000;
 
-function PickThumb({ src, className }: { src: string; className: string }) {
-    return src ? <img src={src} alt="" className={className} /> : <div className={`${className} bg-muted`} aria-hidden />;
+function PickThumb({ src, title, className }: { src: string; title: string; className: string }) {
+    return <EventPoster src={src} title={title} alt="" size="sm" className={className} />;
 }
 
 export default function FeaturedPicks({
@@ -206,6 +207,7 @@ export default function FeaturedPicks({
                                     <div className="flex justify-end pt-1">
                                         <PickThumb
                                             src={ev.image}
+                                            title={ev.title}
                                             className="h-[56px] w-[116px] rounded-[10px] object-cover shadow-sm ring-1 ring-black/5 sm:h-[60px] sm:w-[132px]"
                                         />
                                     </div>
@@ -287,7 +289,7 @@ export default function FeaturedPicks({
                                                 <p className="line-clamp-2 text-sm font-bold leading-tight text-foreground group-hover:text-primary">{ev.title}</p>
                                                 <p className="mt-1 truncate text-xs text-muted-foreground/70">{ev.meta}</p>
                                             </div>
-                                            <PickThumb src={ev.image} className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />
+                                            <PickThumb src={ev.image} title={ev.title} className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />
                                             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{ marginLeft: 52, backgroundImage: "repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 8px)" }} aria-hidden />
                                         </a>
                                     );

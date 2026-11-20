@@ -12,6 +12,7 @@ import { useAuthToken } from "@/hooks/use-auth-session";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import { StudioPageHeader } from "@/components/studio/studio-shell";
 import { btn, EventBadges, QuotaBar } from "@/components/studio/studio-ui";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 type View = "grid" | "table";
 
@@ -72,10 +73,7 @@ export default function StudioEventsPage() {
                   className="group flex flex-col overflow-hidden rounded-xl border border-border bg-background transition-colors hover:border-primary/40"
                 >
                   <div className="relative aspect-16/7 bg-stage">
-                    {ev.poster_url && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={ev.poster_url} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-                    )}
+                    <EventPoster src={ev.poster_url} title={ev.title} alt="" className="absolute inset-0 h-full w-full object-cover" />
                   </div>
                   <div className="flex flex-1 flex-col gap-3 p-4">
                     <EventBadges status={ev.status} salesStatus={ev.sales_status} />
