@@ -16,8 +16,8 @@ const readRole = () => {
 /**
  * Sesi panel admin: wajib token dengan role "admin" (disimpan saat POST /admin/login).
  * Token lain (customer/organizer) atau tidak ada token -> ke /admin/login.
- * Backend tidak punya GET /admin/me, jadi 401 dari request admin dilaporkan lewat
- * `useAdminUnauthorized(error)` di halaman.
+ * Profil admin diambil dari GET /admin/me di AdminShell; 401 dari request admin dilaporkan lewat
+ * `useAdminUnauthorized(error)`.
  */
 export function useAdminSession() {
   const router = useRouter();

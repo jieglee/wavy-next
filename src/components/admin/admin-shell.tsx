@@ -6,7 +6,9 @@ import { Building2, LayoutDashboard, LogOut } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { cn } from "@/lib/utils";
-import { useAdminSession } from "@/hooks/use-admin-session";
+import { apiGet } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useAdminSession, useAdminUnauthorized } from "@/hooks/use-admin-session";
 
 const NAV = [
   { href: "/admin/dashboard", key: "dashboard", icon: LayoutDashboard },
@@ -18,6 +20,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const t = useTranslations("Admin");
   const pathname = usePathname();
   const session = useAdminSession();
+  // profil dari GET /admin/me (bukan hanya data login di localStorage); 401 -> ke login admin
+  const me = useApiResource(session.ready ? "admin-me" : null, () => apiGet<{ id: number; name: string; email: string }>("/admin/me"));
+  useAdminUnauthorized(me.error);
+  const adminName = me.data?.name || me.data?.email || session.name || session.email;
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
@@ -31,7 +37,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
           <div className="rounded-xl border border-border bg-surface px-3 py-2">
             <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{t("role")}</p>
-            <p className="truncate text-sm font-semibold text-foreground">{session.name || session.email || "—"}</p>
+            {me.loading && !adminName ? (
+              <div className="mt-1 h-4 w-24 animate-pulse rounded bg-muted" aria-hidden />
+            ) : (
+              <p className="truncate text-sm font-semibold text-foreground">{adminName || "—"}</p>
+            )}
           </div>
 
           <nav aria-label={t("navLabel")} className="space-y-1">
@@ -69,7 +79,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <span className="font-display font-bold text-foreground">{t("brand")}</span>
           </Link>
           <div className="flex min-w-0 items-center gap-2">
-            <span className="truncate text-xs font-medium text-muted-foreground">{session.name}</span>
+            <span className="truncate text-xs font-medium text-muted-foreground">{adminName}</span>
             <button
               type="button"
               onClick={session.logout}
