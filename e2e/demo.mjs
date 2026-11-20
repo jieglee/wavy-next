@@ -121,20 +121,20 @@ async function checkout(page, eventId, categoryName, qty) {
     .first();
   await qtySelect.waitFor({ timeout: 20000 });
   await qtySelect.selectOption(String(qty));
-  await page.getByRole("button", { name: "Pesan Sekarang" }).click();
-  await page.getByPlaceholder("Nama depan").fill("Pembeli");
-  await page.getByPlaceholder("Nama belakang").fill("Demo");
+  await page.getByRole("button", { name: msg.Checkout.cta.order, exact: true }).click();
+  await page.locator("#co-first").fill("Pembeli");
+  await page.locator("#co-last").fill("Demo");
   await page.getByPlaceholder("81223333444").fill("81223333444");
-  await page.getByPlaceholder("Nomor identitas").fill("3171000000000001");
-  await page.getByPlaceholder("dd").fill("17");
-  await page.locator('select:has(option[value=""][disabled])').selectOption("8");
-  await page.getByPlaceholder("YYYY").fill("2000");
+  await page.locator("#co-id").fill("3171000000000001");
+  await page.getByLabel(msg.Checkout.form.dobDay, { exact: true }).fill("17");
+  await page.getByLabel(msg.Checkout.form.dobMonth, { exact: true }).selectOption("8");
+  await page.getByLabel(msg.Checkout.form.dobYear, { exact: true }).fill("2000");
   await page.locator('input[type="radio"][name="gender"]').first().check();
   const boxes = page.locator('input[type="checkbox"]');
   await boxes.nth(0).check();
   await boxes.nth(1).check();
-  await page.getByRole("button", { name: "Lanjut", exact: true }).click();
-  await page.getByRole("button", { name: "Lanjut", exact: true }).click();
+  await page.getByRole("button", { name: msg.Checkout.cta.next, exact: true }).click();
+  await page.getByRole("button", { name: msg.Checkout.cta.createOrder, exact: true }).click();
   try {
     await page.waitForURL(/\/orders\/\d+/, { timeout: 10000 });
     return Number(page.url().match(/\/orders\/(\d+)/)[1]);
@@ -235,13 +235,14 @@ async function main() {
 
   await step("2d. tiket + QR muncul di Tiket saya", async () => {
     await buyerA.goto(`${WEB}/id/tickets`);
-    const show = buyerA.getByRole("button", { name: "Tampilkan QR Code" });
+    const show = buyerA.getByRole("link", { name: msg.Tickets.showQr });
     await show.first().waitFor({ timeout: 15000 });
-    expect((await show.count()) >= 2, `jumlah tombol QR ${await show.count()}, harusnya ≥ 2`);
+    expect((await show.count()) >= 2, `jumlah link QR ${await show.count()}, harusnya ≥ 2`);
     await show.first().click();
-    await buyerA.locator("svg").filter({ has: buyerA.locator("path") }).last().waitFor({ timeout: 5000 });
-    const qrSvg = await buyerA.locator('svg[height][width]').count();
-    expect(qrSvg > 0, "SVG QR tidak dirender");
+    await buyerA.waitForURL(/\/tickets\/\d+/, { timeout: 15000 });
+    await buyerA.getByText(msg.Tickets.gatePass).first().waitFor({ timeout: 10000 });
+    const qrSvg = buyerA.locator("svg[height][width]").filter({ has: buyerA.locator("path") });
+    await qrSvg.first().waitFor({ timeout: 10000 });
     await buyerA.screenshot({ path: path.join(OUT, "tiket-qr.png") });
   });
 
@@ -296,10 +297,12 @@ async function main() {
     await admin.locator('input[type="password"]').fill(ADMIN.password);
     await admin.locator('button[type="submit"]').click();
     await admin.waitForURL(/\/admin\/dashboard/, { timeout: 20000 });
-    await admin.getByRole("button", { name: "Manajemen Organizer" }).click();
+    const ao = msg.Admin.organizers;
+    await admin.goto(`${WEB}/id/admin/organizers`);
     const row = admin.locator("tr", { hasText: EO.email });
-    await row.getByRole("button", { name: "Suspend EO" }).click();
-    await row.getByRole("button", { name: "Aktifkan EO" }).waitFor({ timeout: 10000 });
+    await row.getByRole("button", { name: ao.suspend, exact: true }).click();
+    await admin.getByRole("alertdialog").getByRole("button", { name: ao.suspend, exact: true }).click();
+    await row.getByRole("button", { name: ao.activate, exact: true }).waitFor({ timeout: 10000 });
     const [o] = await sql`SELECT status FROM organizers WHERE id = ${ctx.organizerId}`;
     expect(o.status === "suspended", `status organizer ${o.status}`);
     // token EO lama langsung tidak berlaku
@@ -318,7 +321,7 @@ async function main() {
     await ctx7.route(`${API}/**`, (route) => route.abort("connectionrefused"));
     await buyerA.goto(`${WEB}/id/tickets`);
     await buyerA.getByText(msg.Errors.network).first().waitFor({ timeout: 15000 });
-    expect((await buyerA.getByRole("button", { name: "Tampilkan QR Code" }).count()) === 0, "tiket tetap tampil saat backend mati");
+    expect((await buyerA.getByRole("link", { name: msg.Tickets.showQr }).count()) === 0, "tiket tetap tampil saat backend mati");
     await buyerA.screenshot({ path: path.join(OUT, "backend-mati.png") });
     await ctx7.unroute(`${API}/**`);
   });
