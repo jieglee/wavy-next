@@ -122,5 +122,25 @@
         "privacy": "Privacy Policy",
         "terms": "Terms & Conditions",
         "rights": "All rights reserved."
+    },
+    "States": {
+        "loading": "Loading...",
+        "errorTitle": "Couldn't load data",
+        "retry": "Try again",
+        "login": "Sign in"
+    },
+    "Errors": {
+        "generic": "Something went wrong. Please try again.",
+        "network": "Can't reach the server. Check your connection and try again.",
+        "unauthorized": "Your session has ended. Please sign in again.",
+        "notFound": "Data not found.",
+        "codes": {
+            "SALES_CLOSED": "Ticket sales for this concert are closed.",
+            "SALES_NOT_STARTED": "Ticket sales haven't opened yet. Try again once sales start.",
+            "SALES_ENDED": "The ticket sales period for this concert has ended.",
+            "QUOTA_EXCEEDED": "Not enough tickets left for the quantity you selected.",
+            "ORDER_EXPIRED": "This order has expired. Please place a new order.",
+            "ORGANIZER_SUSPENDED": "This organizer account is suspended."
+        }
     }
 }

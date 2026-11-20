@@ -122,5 +122,25 @@
         "privacy": "Kebijakan Privasi",
         "terms": "Syarat & Ketentuan",
         "rights": "All rights reserved."
+    },
+    "States": {
+        "loading": "Memuat...",
+        "errorTitle": "Gagal memuat data",
+        "retry": "Coba lagi",
+        "login": "Masuk"
+    },
+    "Errors": {
+        "generic": "Terjadi kesalahan. Silakan coba lagi.",
+        "network": "Tidak bisa terhubung ke server. Periksa koneksi lalu coba lagi.",
+        "unauthorized": "Sesi kamu sudah berakhir. Silakan masuk lagi.",
+        "notFound": "Data tidak ditemukan.",
+        "codes": {
+            "SALES_CLOSED": "Penjualan tiket untuk konser ini sudah ditutup.",
+            "SALES_NOT_STARTED": "Penjualan tiket belum dibuka. Coba lagi saat penjualan dimulai.",
+            "SALES_ENDED": "Masa penjualan tiket untuk konser ini sudah berakhir.",
+            "QUOTA_EXCEEDED": "Sisa tiket tidak cukup untuk jumlah yang kamu pilih.",
+            "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
+            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan."
+        }
     }
 }
