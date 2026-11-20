@@ -87,8 +87,9 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
               size="lg"
               loading="eager"
               className="block h-full w-full object-contain object-right-bottom"
-              // bagian bawah kotak poster tertutup section berikutnya, jadi judul fallback ditaruh di atas
-              fallbackClassName="flex items-start pt-8"
+              // "block" untuk img menimpa flex milik fallback; kembalikan supaya judul di bawah (bagian
+              // atas kotak ini tergeser ke luar layar oleh translate-y)
+              fallbackClassName="flex"
             />
           </div>
         </div>
