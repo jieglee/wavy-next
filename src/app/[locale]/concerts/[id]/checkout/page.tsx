@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Wallet, QrCode, BadgePercent, Layers, Info } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, BadgePercent, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
@@ -70,20 +70,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [agreeData, setAgreeData] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState(600);
-  const [payGroup, setPayGroup] = useState("cc");
-  const [payMethod, setPayMethod] = useState("cc-card");
   const [orderError, setOrderError] = useState<OrderSubmitError | null>(null);
   const [loadError, setLoadError] = useState<unknown>(null);
   const [loadNonce, setLoadNonce] = useState(0);
   const tCheckout = useTranslations("Checkout");
 
-  const PAY_GROUPS = [
-    { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card", info: "Bayar dengan kartu kredit atau debit berlogo Visa, Mastercard, atau JCB. Transaksi diproses aman dengan otentikasi 3D Secure dari bank penerbit kartumu." }] },
-    { id: "wallet", label: "Wallet", icon: Wallet, promo: true, children: [{ id: "w-gopay", label: "GoPay", info: "Bayar praktis dengan saldo GoPay. Pastikan saldo GoPay-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-ovo", label: "OVO", info: "Bayar praktis dengan saldo OVO. Pastikan saldo OVO-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-dana", label: "DANA", info: "Bayar praktis dengan saldo DANA. Pastikan saldo DANA-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-shopee", label: "ShopeePay", info: "Bayar praktis dengan saldo ShopeePay. Pastikan saldo ShopeePay-mu cukup sebelum melanjutkan pembayaran." }] },
-    { id: "paylater", label: "PayLater", icon: BadgePercent, promo: true, children: [{ id: "pl-kredivo", label: "Kredivo", info: "Bayar dengan Kredivo dan pilih tenor yang tersedia. Pastikan akun Kredivo-mu aktif dan limit mencukupi." }, { id: "pl-indodana", label: "Indodana", info: "Bayar dengan Indodana dan pilih tenor yang tersedia. Pastikan akun Indodana-mu aktif dan limit mencukupi." }] },
-    { id: "qr", label: "QR", icon: QrCode, children: [{ id: "qr-qris", label: "QRIS", info: "Quick Response Code Indonesian Standard atau biasa disingkat QRIS (dibaca KRIS) adalah penyatuan berbagai macam QR dari berbagai Penyelenggara Jasa Sistem Pembayaran (PJSP) menggunakan QR Code. QRIS dikembangkan oleh industri sistem pembayaran bersama dengan Bank Indonesia agar proses transaksi dengan QR Code dapat lebih mudah, cepat, dan terjaga." }] },
-    { id: "inst", label: "Installment", icon: Layers, children: [{ id: "in-3", label: "Cicilan 3x", info: "Bagi pembayaran menjadi cicilan 3x dengan kartu kredit yang mendukung program cicilan bank." }, { id: "in-6", label: "Cicilan 6x", info: "Bagi pembayaran menjadi cicilan 6x dengan kartu kredit yang mendukung program cicilan bank." }, { id: "in-12", label: "Cicilan 12x", info: "Bagi pembayaran menjadi cicilan 12x dengan kartu kredit yang mendukung program cicilan bank." }] },
-  ];
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -234,15 +225,6 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleKonfirmasi() {
-    if (!payMethod) {
-      toast.error("Pilih metode pembayaran dulu");
-      return;
-    }
-    handlePesan();
-  }
-
-  const selectedPay = PAY_GROUPS.flatMap((g) => g.children).find((c) => c.id === payMethod);
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -678,46 +660,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             </div>
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
-                <div className="rounded-lg bg-gradient-to-r from-orange-50 to-rose-50 px-4 py-3 ring-1 ring-orange-100">
-                  <p className="text-[13px] font-bold text-[#111827]">Promo Pembayaran</p>
-                </div>
-                <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3">
+                <div className="flex items-start gap-2.5 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#6B7280]" />
                   <p className="text-[13px] leading-relaxed text-[#374151]">{tCheckout("paymentNotice")}</p>
                 </div>
-                <p className="mt-4 text-[13px] font-bold text-[#111827]">Metode Pembayaran</p>
-                <div className="mt-2 space-y-2">
-                  {PAY_GROUPS.map((g) => {
-                    const open = payGroup === g.id;
-                    const Icon = g.icon;
-                    return (
-                      <div key={g.id} className="overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
-                        <button type="button" onClick={() => setPayGroup(open ? "" : g.id)} className="flex w-full items-center gap-2.5 px-4 py-3 text-left">
-                          <Icon className="h-4 w-4 shrink-0 text-[#6B7280]" />
-                          <span className="flex-1 text-[13px] font-bold text-[#111827]">{g.label}</span>
-                          {g.promo && <span className="rounded bg-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold text-white">Promo</span>}
-                          <ChevronDown className={`h-4 w-4 shrink-0 text-[#9CA3AF] transition-transform ${open ? "rotate-180" : ""}`} />
-                        </button>
-                        {open && (
-                          <div className="border-t border-[#F0F0F4] px-4 py-1">
-                            {g.children.map((c) => (
-                              <label key={c.id} className="flex cursor-pointer items-center gap-2.5 py-2 text-[13px] text-[#374151]">
-                                <input type="radio" name="paymethod" checked={payMethod === c.id} onChange={() => { setPayMethod(c.id); setPayGroup(g.id); }} className="h-4 w-4 shrink-0 accent-[#FF5470]" />
-                                {c.label}
-                              </label>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-                {selectedPay && (
-                  <div className="mt-2 overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
-                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">Informasi Pembayaran</p>
-                    <p className="px-4 py-3 text-justify text-[13px] leading-relaxed text-[#374151]">{selectedPay.info}</p>
-                  </div>
-                )}
               </div>
               <aside className="h-fit rounded-xl border border-[#F0F0F4] bg-[#FCFCFD] p-4 lg:sticky lg:top-[68px]">
                 <p className="text-[13px] font-bold leading-snug text-[#111827]">{concert.title}</p>
@@ -779,8 +725,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   </button>
                   <button
                     type="button"
-                    onClick={handleKonfirmasi}
-                    disabled={!payMethod || submitting}
+                    onClick={handlePesan}
+                    disabled={submitting}
                     className="flex-1 rounded-lg bg-[#FF5470] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
                   >
                     {submitting ? "Memproses..." : "Lanjut"}
