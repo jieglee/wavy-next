@@ -5,7 +5,8 @@ import { Search, LayoutGrid, Ticket, User, LogOut, Calendar } from "lucide-react
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
-import { getAuthToken, getAuthUser, clearAuthSession } from "@/lib/api";
+import { clearAuthSession } from "@/lib/api";
+import { useAuthToken, useAuthUser } from "@/hooks/use-auth-session";
 import SearchDropdown from "@/components/nav/search-dropdown";
 import AnimatedSearchPlaceholder from "@/components/nav/animated-search-placeholder";
 
@@ -18,14 +19,12 @@ export default function AppNavbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string } | null>(null);
+  // Read via useSyncExternalStore: no setState in an effect, no hydration mismatch.
+  const authToken = useAuthToken();
+  const authUser = useAuthUser<{ name?: string; email?: string }>();
+  const currentUser = authToken ? authUser : null;
   const menuRef = useRef<HTMLDivElement>(null);
   const searchWrapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const token = getAuthToken();
-    if (token) setCurrentUser(getAuthUser());
-  }, []);
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
