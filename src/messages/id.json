@@ -207,5 +207,11 @@
     },
     "ConcertDetail": {
         "loading": "Memuat informasi konser..."
+    },
+    "OrderDetail": {
+        "loading": "Memuat detail pesanan..."
+    },
+    "Tickets": {
+        "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy."
     }
 }

@@ -15,49 +15,23 @@ import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { apiGet, getAuthToken } from "@/lib/api";
+import { useTranslations } from "next-intl";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { ErrorState, LoadingState } from "@/components/states/async-states";
 import type { Order } from "@/types/type";
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const tOrder = useTranslations("OrderDetail");
 
-  const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(true);
+  const orderRes = useApiResource(`order-${id}`, () => apiGet<Order>(`/orders/${id}`));
+  const order = orderRes.data ?? null;
   const [timeLeft, setTimeLeft] = useState({ minutes: 14, seconds: 59 });
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/auth/login");
-      return;
-    }
-
-    async function loadOrder() {
-      setLoading(true);
-      try {
-        const data = await apiGet<Order>(`/orders/${id}`);
-        setOrder(data);
-      } catch {
-        const mock: Order = {
-          id: Number(id),
-          customer_id: 1,
-          event_id: 1,
-          ticket_category_id: 1,
-          quantity: 2,
-          total_price: 600000,
-          status: "pending_payment",
-          expires_at: new Date(Date.now() + 15 * 60000).toISOString(),
-          created_at: new Date().toISOString(),
-          event_title: "The Legends Infinity World Tour",
-          category_name: "Festival Standing",
-        };
-        setOrder(mock);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadOrder();
-  }, [id, router]);
+    if (!getAuthToken()) router.push("/auth/login");
+  }, [router]);
 
   // Payment timer
   useEffect(() => {
@@ -81,26 +55,18 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     toast.success(`${label} berhasil disalin!`);
   }
 
-  async function handleRefresh() {
-    setLoading(true);
-    try {
-      const data = await apiGet<Order>(`/orders/${id}`);
-      setOrder(data);
-      toast.success("Status pesanan diperbarui");
-    } catch {
-      toast("Status pesanan: Menunggu verifikasi organizer");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handleRefresh = orderRes.reload;
 
-  if (loading || !order) {
+  if (!order) {
     return (
-      <div className="min-h-screen bg-[#FDFCFB]">
+      <div className="min-h-screen bg-wavy-bg">
         <Navbar />
-        <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent mx-auto" />
-          <p className="mt-4 text-sm text-[#8B889C]">Memuat detail pesanan...</p>
+        <div className="mx-auto max-w-3xl px-4 py-12">
+          {orderRes.loading ? (
+            <LoadingState label={tOrder("loading")} />
+          ) : (
+            <ErrorState error={orderRes.error} onRetry={orderRes.reload} />
+          )}
         </div>
       </div>
     );

@@ -16,66 +16,28 @@ import toast from "react-hot-toast";
 import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
-import { apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { ApiError, apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { useTranslations } from "next-intl";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useErrorMessage } from "@/lib/error-message";
+import { ErrorState } from "@/components/states/async-states";
 import type { Ticket } from "@/types/type";
 
 export default function TicketsPage() {
   const router = useRouter();
 
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
+  const ticketsRes = useApiResource("tickets", () => apiGet<Ticket[]>("/tickets"));
+  const tickets = ticketsRes.data ?? [];
+  const loading = ticketsRes.loading;
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [transferModal, setTransferModal] = useState<Ticket | null>(null);
   const [targetEmail, setTargetEmail] = useState("");
   const [transferLoading, setTransferLoading] = useState(false);
+  const errorMessage = useErrorMessage();
+  const tTickets = useTranslations("Tickets");
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/auth/login");
-      return;
-    }
-
-    async function loadTickets() {
-      setLoading(true);
-      try {
-        const data = await apiGet<Ticket[]>("/tickets");
-        setTickets(data || []);
-      } catch {
-        const mock: Ticket[] = [
-          {
-            id: 101,
-            order_id: 1,
-            owner_id: 1,
-            qr_code: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.wavy-demo-ticket-1",
-            is_scanned: false,
-            event_id: 1,
-            title: "The Legends Infinity World Tour",
-            date: "2026-09-15T19:00:00Z",
-            venue: "ICE BSD Hall 1, Tangerang",
-            category: "VIP Center (Numbered)",
-            poster_url: "",
-          },
-          {
-            id: 102,
-            order_id: 1,
-            owner_id: 1,
-            qr_code: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.wavy-demo-ticket-2",
-            is_scanned: true,
-            event_id: 2,
-            title: "Jazz Under The Stars",
-            date: "2026-06-10T18:30:00Z",
-            venue: "Dago Tea House, Bandung",
-            category: "Festival Standing",
-            poster_url: "",
-          },
-        ];
-        setTickets(mock);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadTickets();
+    if (!getAuthToken()) router.push("/auth/login");
   }, [router]);
 
   async function handleTransferSubmit(e: React.FormEvent) {
@@ -86,11 +48,12 @@ export default function TicketsPage() {
     try {
       await apiPost(`/tickets/${transferModal.id}/transfer`, { to_email: targetEmail });
       toast.success(`Tiket berhasil ditransfer ke ${targetEmail}!`);
-      setTickets((prev) => prev.filter((t) => t.id !== transferModal.id));
+      ticketsRes.mutate((prev) => prev.filter((t) => t.id !== transferModal.id));
       setTransferModal(null);
       setTargetEmail("");
     } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal mentransfer tiket. Pastikan email terdaftar.");
+      // 404 = email penerima belum terdaftar sebagai customer Wavy
+      toast.error(err instanceof ApiError && err.status === 404 ? tTickets("transferRecipientNotFound") : errorMessage(err));
     } finally {
       setTransferLoading(false);
     }
@@ -127,6 +90,8 @@ export default function TicketsPage() {
               <div key={i} className="h-36 animate-pulse rounded-3xl bg-gray-200" />
             ))}
           </div>
+        ) : ticketsRes.error ? (
+          <ErrorState error={ticketsRes.error} onRetry={ticketsRes.reload} />
         ) : tickets.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-[#EDEBF2] bg-white py-16 text-center">
             <TicketIcon className="h-14 w-14 text-[#8B889C]" />

@@ -207,5 +207,11 @@
     },
     "ConcertDetail": {
         "loading": "Loading concert info..."
+    },
+    "OrderDetail": {
+        "loading": "Loading order details..."
+    },
+    "Tickets": {
+        "transferRecipientNotFound": "The recipient's email isn't registered on Wavy."
     }
 }
