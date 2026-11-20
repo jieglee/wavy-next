@@ -168,7 +168,7 @@ export interface AdminOrganizer {
   id: number;
   name: string;
   email: string;
-  status: "active" | "suspended";
+  status: "active" | "suspended" | "pending_verification";
   created_at: string;
   event_count: number;
   revenue: number;

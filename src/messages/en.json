@@ -745,5 +745,74 @@
         "emptyTitle": "No orders yet",
         "emptyDescription": "Your ticket orders will appear here.",
         "browse": "Browse concerts"
+    },
+    "Admin": {
+        "brand": "Wavy Admin",
+        "role": "Admin",
+        "navLabel": "Admin menu",
+        "logout": "Log out",
+        "nav": {
+            "dashboard": "Dashboard",
+            "organizers": "Organizers"
+        },
+        "status": {
+            "active": "Active",
+            "suspended": "Suspended",
+            "pending_verification": "Unverified"
+        },
+        "login": {
+            "title": "Admin sign in",
+            "subtitle": "Wavy platform management panel.",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Sign in",
+            "submitting": "Verifying...",
+            "invalid": "Wrong email or password.",
+            "expired": "Your admin session has ended. Please sign in again.",
+            "backHome": "Back to home"
+        },
+        "dashboard": {
+            "title": "Platform dashboard",
+            "subtitle": "Overview of all organizers, events, and transactions.",
+            "manageOrganizers": "Manage organizers",
+            "revenue": "Revenue",
+            "revenueNote": "Paid orders",
+            "orders": "Orders",
+            "ticketsNote": "{n} tickets sold",
+            "events": "Events",
+            "users": "Users",
+            "usersNote": "{organizers} organizers · {customers} customers",
+            "statusTitle": "Organizer status",
+            "statusCaption": "Account distribution",
+            "statusCenter": "{n} organizers",
+            "organizersEmpty": "No organizers registered yet.",
+            "revenueTitle": "Revenue per organizer",
+            "revenueCaption": "Top 6, paid orders",
+            "revenueEmpty": "No revenue yet",
+            "revenueEmptyText": "The chart appears once there are paid orders."
+        },
+        "organizers": {
+            "title": "Manage organizers",
+            "subtitle": "Suspension applies immediately: the organizer loses access to Creator Studio.",
+            "empty": "No organizers registered yet.",
+            "col": {
+                "organizer": "Organizer",
+                "joined": "Joined",
+                "events": "Events",
+                "revenue": "Revenue",
+                "status": "Status",
+                "action": "Action"
+            },
+            "suspend": "Suspend",
+            "activate": "Activate",
+            "cancel": "Cancel",
+            "saving": "Saving...",
+            "suspended": "{name} suspended",
+            "activated": "{name} activated",
+            "confirmSuspendTitle": "Suspend {name}?",
+            "confirmSuspendBody": "The organizer immediately loses access to Creator Studio. Existing events and orders are kept.",
+            "confirmActivateTitle": "Activate {name}?",
+            "confirmActivateBody": "The organizer can sign in and manage events again."
+        }
     }
 }
