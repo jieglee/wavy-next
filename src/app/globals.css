@@ -30,6 +30,9 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-stage: var(--stage);
   --color-success: var(--success);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-subtle: var(--info-subtle);
   --color-warning: var(--warning);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
@@ -286,6 +289,9 @@ body {
   --success: #047857;
   --warning: #D97706;
   --destructive: #DC2626;
+  --info: #2563EB;
+  --info-foreground: #FFFFFF;
+  --info-subtle: #EFF6FF;
 
   --chart-3: #FF9AAE;
 }
@@ -308,6 +314,9 @@ body {
   --success: #34D399;
   --warning: #FBBF24;
   --destructive: #F87171;
+  --info: #60A5FA;
+  --info-foreground: #14131C;
+  --info-subtle: rgb(96 165 250 / 0.14);
 
   --chart-3: #FFB3C1;
 }
