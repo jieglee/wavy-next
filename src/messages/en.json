@@ -826,5 +826,198 @@
             "confirmActivateTitle": "Activate {name}?",
             "confirmActivateBody": "The organizer can sign in and manage events again."
         }
+    },
+    "InfoPages": {
+        "eyebrow": "Wavy info",
+        "updated": "Updated {date}",
+        "howToBuy": {
+            "title": "How to buy tickets",
+            "updated": "November 20, 2026",
+            "intro": "Buying concert tickets on Wavy takes a few steps. All tickets are digital and live in your account.",
+            "ctaText": "Ready to find a concert?",
+            "ctaLabel": "Browse concerts",
+            "sections": [
+                {
+                    "title": "Sign in with your email",
+                    "body": [
+                        "Enter your email, then type the 6-digit OTP code we send you. No password needed."
+                    ]
+                },
+                {
+                    "title": "Pick a concert and ticket category",
+                    "body": [
+                        "Open a concert page and check the schedule and sales status. Ordering only works while sales are open and quota is left.",
+                        "One order holds one ticket category, up to 4 tickets."
+                    ]
+                },
+                {
+                    "title": "Fill in buyer details",
+                    "body": [
+                        "Enter your name, email, phone number, ID number, and date of birth as on your ID, then create the order."
+                    ]
+                },
+                {
+                    "title": "Pay within 15 minutes",
+                    "body": [
+                        "Your tickets are held for 15 minutes. On the order page, click Pay now to pay with Midtrans (sandbox mode, no real money). If time runs out, the order expires and the quota is released.",
+                        "If online payment is not active, the organizer verifies your payment manually."
+                    ]
+                },
+                {
+                    "title": "Show your QR at the gate",
+                    "body": [
+                        "Once paid, your tickets and QR codes appear in My tickets. Each QR can be scanned only once at the venue."
+                    ]
+                }
+            ]
+        },
+        "terms": {
+            "title": "Terms & conditions",
+            "updated": "November 20, 2026",
+            "intro": "Wavy is a school competency exam (UKK) project for a concert ticketing system. By using Wavy you agree to these terms.",
+            "sections": [
+                {
+                    "title": "Service status",
+                    "body": [
+                        "Wavy is built for learning and demonstration. Events, prices, and transactions do not represent real ticket sales.",
+                        "Payments run on Midtrans sandbox mode, so no real money is charged."
+                    ]
+                },
+                {
+                    "title": "Account",
+                    "body": [
+                        "You are responsible for the email you sign in with. Never share your OTP code."
+                    ]
+                },
+                {
+                    "title": "Orders",
+                    "body": [
+                        "One order holds one ticket category, up to 4 tickets. Orders not paid within 15 minutes expire automatically.",
+                        "Orders are rejected when sales have not opened, have closed, or the quota is not enough."
+                    ]
+                },
+                {
+                    "title": "Tickets",
+                    "body": [
+                        "A ticket is valid for one entry. A scanned QR cannot be used again. Transferring a ticket to another account invalidates the old QR."
+                    ]
+                },
+                {
+                    "title": "Organizers",
+                    "body": [
+                        "Event details, schedules, and quotas are managed by organizers. Wavy admins can suspend organizers who break the rules."
+                    ]
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Privacy policy",
+            "updated": "November 20, 2026",
+            "intro": "This page explains what data Wavy stores and why. Wavy is a school (UKK) project, not a commercial service.",
+            "sections": [
+                {
+                    "title": "What we store",
+                    "body": [
+                        "Your sign-in email, plus the buyer details you enter at checkout: name, phone number, ID number, date of birth, and gender."
+                    ]
+                },
+                {
+                    "title": "How it is used",
+                    "body": [
+                        "Your data is used to create orders and issue tickets, and is shown to the organizer of the event you bought for, for verification."
+                    ]
+                },
+                {
+                    "title": "Payments",
+                    "body": [
+                        "Payments are processed by Midtrans (sandbox). Wavy never stores card numbers or bank details; we only keep the transaction code and payment method."
+                    ]
+                },
+                {
+                    "title": "OTP codes",
+                    "body": [
+                        "OTP codes are sent to your email and expire quickly. We never ask for your OTP by chat or phone."
+                    ]
+                },
+                {
+                    "title": "A note",
+                    "body": [
+                        "Because this is a school project, avoid entering your real ID details when trying the app."
+                    ]
+                }
+            ]
+        },
+        "about": {
+            "title": "About Wavy",
+            "updated": "November 20, 2026",
+            "intro": "Wavy is a concert ticketing platform built as a school competency exam (UKK) project.",
+            "ctaText": "See concerts on sale.",
+            "ctaLabel": "Browse concerts",
+            "sections": [
+                {
+                    "title": "What it does",
+                    "body": [
+                        "Customers buy tickets and keep QR e-tickets. Organizers create events, set ticket categories and quotas, verify payments, and scan tickets at the gate. Admins manage organizer accounts."
+                    ]
+                },
+                {
+                    "title": "Rules the system enforces",
+                    "body": [
+                        "Sales only open within the window set by the organizer, quotas cannot be oversold, and orders unpaid after 15 minutes are released."
+                    ]
+                },
+                {
+                    "title": "Honest about limits",
+                    "body": [
+                        "Payments use Midtrans sandbox mode, so no real money moves. Some event data is sample data for the demo."
+                    ]
+                }
+            ]
+        },
+        "organizerGuide": {
+            "title": "Organizer guide",
+            "updated": "November 20, 2026",
+            "intro": "A short guide to selling concert tickets with Wavy Creator Studio.",
+            "ctaText": "No organizer account yet?",
+            "ctaLabel": "Become an organizer",
+            "sections": [
+                {
+                    "title": "Sign up and verify",
+                    "body": [
+                        "Sign up with your name, email, and password, then verify your email. Once active, you can open Creator Studio."
+                    ]
+                },
+                {
+                    "title": "Create an event",
+                    "body": [
+                        "Enter the title, artist, venue, concert date, and sales window (start and end). The event is saved as a draft first."
+                    ]
+                },
+                {
+                    "title": "Add ticket categories",
+                    "body": [
+                        "Add at least one category with a price and quota. Events without ticket categories cannot be published."
+                    ]
+                },
+                {
+                    "title": "Publish and monitor",
+                    "body": [
+                        "Once published, sales open within the sales window. You can close and reopen sales at any time and follow sales on the dashboard."
+                    ]
+                },
+                {
+                    "title": "Verify payments",
+                    "body": [
+                        "Successful Midtrans payments mark orders as paid automatically. As a fallback, you can approve or reject orders manually under Payments."
+                    ]
+                },
+                {
+                    "title": "Scan tickets at the gate",
+                    "body": [
+                        "Open Scan, point the camera at the QR or type the code. Tickets already scanned or from another event are rejected."
+                    ]
+                }
+            ]
+        }
     }
 }
