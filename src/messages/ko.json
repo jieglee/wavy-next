@@ -142,5 +142,55 @@
             "ORDER_EXPIRED": "This order has expired. Please place a new order.",
             "ORGANIZER_SUSPENDED": "This organizer account is suspended."
         }
+    },
+    "OrderStatus": {
+        "pending_payment": "Awaiting payment",
+        "paid": "Paid",
+        "expired": "Expired",
+        "rejected": "Rejected",
+        "refunded": "Refunded"
+    },
+    "Profile": {
+        "defaultName": "Wavy Customer",
+        "levelBadge": "Level {level}: {label}",
+        "logout": "Sign out",
+        "loggedOut": "Signed out.",
+        "tabs": {
+            "level": "Level",
+            "orders": "Order history",
+            "favorites": "Favorites",
+            "notifications": "Notifications"
+        },
+        "level": {
+            "title": "Wavy Fan Level",
+            "subtitle": "Level up by attending more concerts through Wavy.",
+            "current": "Level {level} ({label})",
+            "toNext": "Towards level {level}",
+            "max": "Highest level",
+            "progress": "{count} of {target} concerts",
+            "attended": "{count} concerts attended",
+            "tier": "Level {level}",
+            "tierRequirement": "{count, plural, =0 {No requirement} one {Min. # concert} other {Min. # concerts}}"
+        },
+        "orders": {
+            "title": "Ticket purchase history",
+            "orderNumber": "Order #{id}",
+            "summary": "{quantity, plural, one {# ticket} other {# tickets}}",
+            "detail": "Order details",
+            "emptyTitle": "No orders yet",
+            "emptyDescription": "Your ticket orders will show up here.",
+            "browse": "Browse concerts"
+        },
+        "favorites": {
+            "artists": "Favorite artists",
+            "artistsEmpty": "You don't follow any artists yet.",
+            "organizers": "Favorite organizers",
+            "organizersEmpty": "You don't follow any organizers yet."
+        },
+        "notifications": {
+            "title": "Notifications",
+            "empty": "No notifications.",
+            "unread": "Unread"
+        }
     }
 }

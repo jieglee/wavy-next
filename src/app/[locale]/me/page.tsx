@@ -1,371 +1,337 @@
-// @ts-nocheck
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
-import {
-  User,
-  Award,
-  History,
-  Heart,
-  Bell,
-  CheckCircle2,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
+import { Award, Bell, Heart, History, LogOut, Sparkles, Ticket } from "lucide-react";
 import toast from "react-hot-toast";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
-import { apiGet, apiPost, getAuthToken, getAuthUser, clearAuthSession } from "@/lib/api";
-import type { CustomerLevel, Order, NotificationItem, Artist, Organizer } from "@/types/type";
+import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
+import { OrderStatusBadge } from "@/components/orders/order-status-badge";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useAuthToken, useAuthUser } from "@/hooks/use-auth-session";
+import { useErrorMessage } from "@/lib/error-message";
+import { formatIDR } from "@/lib/price";
+import { cn } from "@/lib/utils";
+import { apiGet, apiPost, clearAuthSession, getAuthToken } from "@/lib/api";
+import type { CustomerLevel, FavoritesResponse, NotificationItem, Order } from "@/types/type";
 
-const LEVEL_COLORS: Record<number, { bg: string; text: string; border: string }> = {
-  1: { bg: "bg-gray-100", text: "text-gray-800", border: "border-gray-300" },
-  2: { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-300" },
-  3: { bg: "bg-purple-100", text: "text-purple-800", border: "border-purple-300" },
-  4: { bg: "bg-pink-100", text: "text-pink-800", border: "border-pink-300" },
-  5: { bg: "bg-amber-100", text: "text-amber-800", border: "border-amber-400" },
-};
+// Minimal konser (order paid, event berbeda) untuk level 1..5.
+// Harus sama dengan customerService.level di wavy-backend.
+const LEVEL_THRESHOLDS = [0, 1, 3, 5, 10];
+
+type Tab = "level" | "orders" | "favorites" | "notifications";
+
+const tabCls = (active: boolean) =>
+  cn(
+    "flex shrink-0 items-center gap-1.5 rounded-lg px-4 py-2.5 transition-colors",
+    active ? "bg-wavy-text-primary text-white" : "text-wavy-text-secondary hover:text-wavy-text-primary"
+  );
+const panelCls = "rounded-2xl border border-wavy-border bg-wavy-bg p-4 sm:p-8 space-y-4";
 
 export default function CustomerProfilePage() {
+  const t = useTranslations("Profile");
+  const format = useFormatter();
   const router = useRouter();
+  const errorMessage = useErrorMessage();
+  const [activeTab, setActiveTab] = useState<Tab>("level");
 
-  const [activeTab, setActiveTab] = useState<"level" | "orders" | "favorites" | "notifications">("level");
-  const [levelData, setLevelData] = useState<any>(null);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [favorites, setFavorites] = useState<{ organizers: Organizer[]; artists: Artist[] }>({ organizers: [], artists: [] });
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  // token null (server / render hidrasi pertama) -> semua resource dianggap loading
+  const authed = !!useAuthToken();
+  const currentUser = useAuthUser<{ name?: string; email?: string }>();
 
-  const currentUser = getAuthUser<{ name?: string; email?: string }>();
+  const level = useApiResource(authed ? "me-level" : null, () => apiGet<CustomerLevel>("/me/level"));
+  const orders = useApiResource(authed ? "orders-history" : null, () => apiGet<Order[]>("/orders/history"));
+  const favorites = useApiResource(authed ? "favorites" : null, () => apiGet<FavoritesResponse>("/favorites"));
+  const notifications = useApiResource(authed ? "notifications" : null, () =>
+    apiGet<NotificationItem[]>("/notifications")
+  );
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/auth/login");
-      return;
-    }
-
-    async function loadProfile() {
-      setLoading(true);
-      try {
-        const [lvl, ords, favs, notifs] = await Promise.allSettled([
-          apiGet<CustomerLevel>("/customers/me/level"),
-          apiGet<Order[]>("/orders"),
-          apiGet<{ organizers: Organizer[]; artists: Artist[] }>("/favorites"),
-          apiGet<NotificationItem[]>("/notifications"),
-        ]);
-
-        if (lvl.status === "fulfilled") setLevelData(lvl.value);
-        else {
-          setLevelData({
-            customer_id: 1,
-            name: currentUser?.name || "Penggemar Musik",
-            level: 3,
-            badge: "Festival Regular",
-            total_spend: 1850000,
-            order_count: 4,
-            current_level_min: 1000000,
-            next_level_min: 3000000,
-            progress_pct: 42,
-          });
-        }
-
-        if (ords.status === "fulfilled") setOrders(ords.value || []);
-        if (favs.status === "fulfilled") setFavorites(favs.value || { organizers: [], artists: [] });
-        if (notifs.status === "fulfilled") setNotifications(notifs.value || []);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadProfile();
-  }, [router, currentUser?.name]);
+    if (!getAuthToken()) router.push("/auth/login");
+  }, [router]);
 
   async function handleMarkNotifRead(id: number) {
     try {
       await apiPost(`/notifications/${id}/read`);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-      );
-    } catch {
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-      );
+      notifications.mutate((list) => list.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    } catch (err) {
+      toast.error(errorMessage(err));
     }
   }
 
   function handleLogout() {
     clearAuthSession();
     fetch("/api/auth/session", { method: "DELETE" }).catch(() => {});
-    toast.success("Berhasil keluar.");
+    toast.success(t("loggedOut"));
     router.push("/");
   }
 
+  const unread = notifications.data?.filter((n) => !n.read).length;
+
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-wavy-bg">
       <Navbar />
 
-      <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
-        {/* User Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-[#1B1A3A] p-6 text-white shadow-xl sm:p-8">
-          <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[#FF5470]/20 blur-3xl" />
-
-          <div className="relative z-10 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF5470] to-[#7DD3E8] text-2xl font-bold text-white shadow-lg">
-                {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : "U"}
+      <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:space-y-8 sm:px-6 sm:py-10 lg:px-8">
+        {/* Kartu user */}
+        <div className="relative overflow-hidden rounded-2xl bg-wavy-text-primary p-5 text-white sm:p-8">
+          <div className="relative z-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
+            <div className="flex min-w-0 items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-wavy-accent text-2xl font-bold sm:h-16 sm:w-16">
+                {(currentUser?.name || currentUser?.email || "W").charAt(0).toUpperCase()}
               </div>
-              <div>
-                <h1 className="font-display text-2xl font-bold">{currentUser?.name || "Customer Wavy"}</h1>
-                <p className="text-xs text-white/70">{currentUser?.email || "customer@wavy.test"}</p>
-                {levelData && (
-                  <span
-                    className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-bold ${
-                      LEVEL_COLORS[levelData.level]?.bg || "bg-white/20"
-                    } ${LEVEL_COLORS[levelData.level]?.text || "text-white"}`}
-                  >
+              <div className="min-w-0">
+                <h1 className="truncate font-display text-xl font-bold sm:text-2xl">{currentUser?.name || t("defaultName")}</h1>
+                {currentUser?.email && <p className="truncate text-xs text-white/70">{currentUser.email}</p>}
+                {level.data && (
+                  <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-0.5 text-xs font-bold">
                     <Award className="h-3.5 w-3.5" />
-                    Level {levelData.level}: {levelData.badge}
+                    {t("levelBadge", { level: level.data.level, label: level.data.level_label })}
                   </span>
                 )}
               </div>
             </div>
-
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold text-white/80 hover:bg-red-500 hover:text-white"
+              className="flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold text-white/80 hover:bg-white/20"
             >
               <LogOut className="h-3.5 w-3.5" />
-              Keluar Akun
+              {t("logout")}
             </button>
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-2 border-b border-[#EDEBF2] pb-2 text-xs font-bold overflow-x-auto">
-          <button
-            onClick={() => setActiveTab("level")}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2.5 transition-all ${
-              activeTab === "level" ? "bg-[#1B1A3A] text-white shadow" : "text-[#6B6875] hover:text-[#1B1A3A]"
-            }`}
-          >
-            <Sparkles className="h-4 w-4 text-[#FF5470]" />
-            Gamifikasi Level
+        {/* Tab */}
+        <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto border-b border-wavy-border px-4 pb-2 text-xs font-bold sm:mx-0 sm:px-0">
+          <button onClick={() => setActiveTab("level")} className={tabCls(activeTab === "level")}>
+            <Sparkles className="h-4 w-4" />
+            {t("tabs.level")}
           </button>
-          <button
-            onClick={() => setActiveTab("orders")}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2.5 transition-all ${
-              activeTab === "orders" ? "bg-[#1B1A3A] text-white shadow" : "text-[#6B6875] hover:text-[#1B1A3A]"
-            }`}
-          >
+          <button onClick={() => setActiveTab("orders")} className={tabCls(activeTab === "orders")}>
             <History className="h-4 w-4" />
-            Riwayat Pesanan ({orders.length})
+            {t("tabs.orders")}
+            {orders.data && ` (${orders.data.length})`}
           </button>
-          <button
-            onClick={() => setActiveTab("favorites")}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2.5 transition-all ${
-              activeTab === "favorites" ? "bg-[#1B1A3A] text-white shadow" : "text-[#6B6875] hover:text-[#1B1A3A]"
-            }`}
-          >
-            <Heart className="h-4 w-4 text-[#FF5470]" />
-            Favorit
+          <button onClick={() => setActiveTab("favorites")} className={tabCls(activeTab === "favorites")}>
+            <Heart className="h-4 w-4" />
+            {t("tabs.favorites")}
           </button>
-          <button
-            onClick={() => setActiveTab("notifications")}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2.5 transition-all ${
-              activeTab === "notifications" ? "bg-[#1B1A3A] text-white shadow" : "text-[#6B6875] hover:text-[#1B1A3A]"
-            }`}
-          >
+          <button onClick={() => setActiveTab("notifications")} className={tabCls(activeTab === "notifications")}>
             <Bell className="h-4 w-4" />
-            Notifikasi ({notifications.filter((n) => !n.read).length})
+            {t("tabs.notifications")}
+            {unread !== undefined && unread > 0 && ` (${unread})`}
           </button>
         </div>
 
-        {/* Tab 1: Level / Gamification */}
-        {activeTab === "level" && levelData && (
-          <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm space-y-6">
-            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-              <div>
-                <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Status Wavy Fan Level</h2>
-                <p className="text-xs text-[#6B6875]">Tingkatkan level dengan terus memesan tiket konser di Wavy.</p>
-              </div>
-              <div className="text-right">
-                <span className="text-xs text-[#8B889C]">Total Pembelian Akumulatif</span>
-                <p className="font-mono text-xl font-extrabold text-[#FF5470]">
-                  Rp{Number(levelData.total_spend).toLocaleString("id-ID")}
-                </p>
-              </div>
+        {/* Level */}
+        {activeTab === "level" && (
+          <section className={panelCls}>
+            <div>
+              <h2 className="font-display text-xl font-bold text-wavy-text-primary">{t("level.title")}</h2>
+              <p className="text-xs text-wavy-text-secondary">{t("level.subtitle")}</p>
             </div>
-
-            {/* Progress Bar */}
-            <div className="space-y-2 rounded-2xl bg-[#FAFAF8] p-5 border border-[#EDEBF2]">
-              <div className="flex justify-between text-xs font-bold text-[#1B1A3A]">
-                <span>Level {levelData.level} ({levelData.badge})</span>
-                <span>
-                  {levelData.next_level_min ? `Menuju Level ${levelData.level + 1}` : "Level Tertinggi!"}
-                </span>
-              </div>
-
-              <div className="h-3.5 w-full overflow-hidden rounded-full bg-[#EDEBF2]">
-                <div
-                  className="h-full bg-gradient-to-r from-[#FF5470] to-[#7DD3E8] transition-all duration-500"
-                  style={{ width: `${levelData.progress_pct}%` }}
-                />
-              </div>
-
-              <div className="flex justify-between text-[11px] text-[#8B889C]">
-                <span>Rp{Number(levelData.current_level_min).toLocaleString("id-ID")}</span>
-                <span>
-                  {levelData.next_level_min
-                    ? `Rp${Number(levelData.next_level_min).toLocaleString("id-ID")}`
-                    : "Maksimal"}
-                </span>
-              </div>
-            </div>
-
-            {/* Level Tier List */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-5 text-xs">
-              {[
-                { lvl: 1, name: "Newbie Fan", req: "Rp0", desc: "Akses konser dasar" },
-                { lvl: 2, name: "Concert Goer", req: "Rp250rb", desc: "Early notice broadcast" },
-                { lvl: 3, name: "Festival Regular", req: "Rp1jt", desc: "Prioritas Smart Queue" },
-                { lvl: 4, name: "Super VIP Fan", req: "Rp3jt", desc: "Fast-track waiting list" },
-                { lvl: 5, name: "Legendary Backstage", req: "Rp7.5jt", desc: "Akses pre-sale eksklusif" },
-              ].map((tier) => (
-                <div
-                  key={tier.lvl}
-                  className={`rounded-2xl p-3 border ${
-                    levelData.level >= tier.lvl
-                      ? "border-[#FF5470] bg-[#FF5470]/5"
-                      : "border-[#EDEBF2] bg-white opacity-60"
-                  }`}
-                >
-                  <p className="font-bold text-[#1B1A3A]">Lvl {tier.lvl}: {tier.name}</p>
-                  <p className="font-mono text-[10px] text-[#FF5470] font-semibold">{tier.req}</p>
-                  <p className="text-[10px] text-[#6B6875] mt-1">{tier.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+            {level.loading ? (
+              <LoadingState />
+            ) : level.error || !level.data ? (
+              <ErrorState error={level.error} onRetry={level.reload} />
+            ) : (
+              <LevelProgress data={level.data} />
+            )}
+          </section>
         )}
 
-        {/* Tab 2: Orders */}
+        {/* Riwayat order */}
         {activeTab === "orders" && (
-          <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm space-y-4">
-            <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Riwayat Pembelian Tiket</h2>
-            {orders.length === 0 ? (
-              <p className="py-6 text-center text-xs text-[#8B889C]">Belum ada riwayat pesanan.</p>
+          <section className={panelCls}>
+            <h2 className="font-display text-xl font-bold text-wavy-text-primary">{t("orders.title")}</h2>
+            {orders.loading ? (
+              <LoadingState rows={3} />
+            ) : orders.error || !orders.data ? (
+              <ErrorState error={orders.error} onRetry={orders.reload} />
+            ) : orders.data.length === 0 ? (
+              <EmptyState
+                icon={<Ticket className="h-10 w-10" />}
+                title={t("orders.emptyTitle")}
+                description={t("orders.emptyDescription")}
+                action={
+                  <Link href="/concerts" className="rounded-lg bg-wavy-accent px-5 py-2 text-xs font-bold text-white hover:brightness-110">
+                    {t("orders.browse")}
+                  </Link>
+                }
+              />
             ) : (
-              <div className="divide-y divide-[#EDEBF2]">
-                {orders.map((ord) => (
-                  <div key={ord.id} className="flex flex-col justify-between gap-3 py-4 sm:flex-row sm:items-center">
-                    <div>
-                      <span className="font-mono text-xs font-bold text-[#1B1A3A]">Order #{ord.id}</span>
-                      <p className="text-xs text-[#8B889C] mt-0.5">
-                        {ord.quantity} Tiket &bull; Rp{Number(ord.total_price).toLocaleString("id-ID")}
+              <ul className="divide-y divide-wavy-border">
+                {orders.data.map((ord) => (
+                  <li key={ord.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <span className="font-mono text-xs font-bold text-wavy-text-primary">{t("orders.orderNumber", { id: ord.id })}</span>
+                      <p className="mt-0.5 font-mono text-xs text-wavy-text-secondary">
+                        {format.dateTime(new Date(ord.created_at), { dateStyle: "medium", timeStyle: "short" })}
+                      </p>
+                      <p className="mt-0.5 text-xs text-wavy-text-secondary">
+                        {t("orders.summary", { quantity: ord.quantity })} &bull;{" "}
+                        <span className="font-mono">{formatIDR(Number(ord.total_price))}</span>
                       </p>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`rounded-full px-3 py-1 text-[10px] font-bold ${
-                          ord.status === "paid"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : ord.status === "pending_payment"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {ord.status}
-                      </span>
+                    <div className="flex items-center justify-between gap-3 sm:justify-end">
+                      <OrderStatusBadge status={ord.status} />
                       <Link
                         href={`/orders/${ord.id}`}
-                        className="rounded-xl border border-[#EDEBF2] px-3 py-1.5 text-xs font-bold text-[#1B1A3A] hover:bg-[#FAFAF8]"
+                        className="rounded-lg border border-wavy-border px-3 py-1.5 text-xs font-bold text-wavy-text-primary hover:bg-wavy-surface"
                       >
-                        Detail Order
+                        {t("orders.detail")}
                       </Link>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
-          </div>
+          </section>
         )}
 
-        {/* Tab 3: Favorites */}
-        {activeTab === "favorites" && (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 shadow-sm space-y-3">
-              <h3 className="font-display text-base font-bold text-[#1B1A3A]">Musisi Favorit</h3>
-              {favorites.artists?.length === 0 ? (
-                <p className="text-xs text-[#8B889C]">Belum ada musisi yang diikuti.</p>
-              ) : (
-                <div className="space-y-2">
-                  {favorites.artists.map((a) => (
-                    <div key={a.id} className="flex items-center justify-between rounded-2xl bg-[#FAFAF8] p-3 border border-[#EDEBF2]">
-                      <span className="font-bold text-xs text-[#1B1A3A]">{a.name}</span>
-                      <span className="text-[10px] text-[#8B889C]">{a.genre}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* Favorit */}
+        {activeTab === "favorites" &&
+          (favorites.loading ? (
+            <LoadingState rows={2} />
+          ) : favorites.error || !favorites.data ? (
+            <ErrorState error={favorites.error} onRetry={favorites.reload} />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+              <FavoriteList
+                title={t("favorites.artists")}
+                empty={t("favorites.artistsEmpty")}
+                items={favorites.data.artists.map((a) => ({ id: a.id, name: a.name, meta: a.genre }))}
+              />
+              <FavoriteList
+                title={t("favorites.organizers")}
+                empty={t("favorites.organizersEmpty")}
+                items={favorites.data.organizers.map((o) => ({ id: o.id, name: o.name }))}
+              />
             </div>
+          ))}
 
-            <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 shadow-sm space-y-3">
-              <h3 className="font-display text-base font-bold text-[#1B1A3A]">Organizer Favorit</h3>
-              {favorites.organizers?.length === 0 ? (
-                <p className="text-xs text-[#8B889C]">Belum ada organizer yang diikuti.</p>
-              ) : (
-                <div className="space-y-2">
-                  {favorites.organizers.map((o) => (
-                    <div key={o.id} className="flex items-center justify-between rounded-2xl bg-[#FAFAF8] p-3 border border-[#EDEBF2]">
-                      <span className="font-bold text-xs text-[#1B1A3A]">{o.name}</span>
-                      <span className="text-[10px] text-[#8B889C]">{o.email}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 4: Notifications */}
+        {/* Notifikasi */}
         {activeTab === "notifications" && (
-          <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-sm space-y-4">
-            <h2 className="font-display text-xl font-bold text-[#1B1A3A]">Kotak Notifikasi</h2>
-            {notifications.length === 0 ? (
-              <p className="py-6 text-center text-xs text-[#8B889C]">Tidak ada notifikasi.</p>
+          <section className={panelCls}>
+            <h2 className="font-display text-xl font-bold text-wavy-text-primary">{t("notifications.title")}</h2>
+            {notifications.loading ? (
+              <LoadingState rows={3} />
+            ) : notifications.error || !notifications.data ? (
+              <ErrorState error={notifications.error} onRetry={notifications.reload} />
+            ) : notifications.data.length === 0 ? (
+              <EmptyState icon={<Bell className="h-10 w-10" />} title={t("notifications.empty")} />
             ) : (
-              <div className="space-y-2">
-                {notifications.map((n) => (
-                  <div
-                    key={n.id}
-                    onClick={() => !n.read && handleMarkNotifRead(n.id)}
-                    className={`flex items-start justify-between rounded-2xl p-4 transition-all cursor-pointer border ${
-                      n.read ? "bg-[#FAFAF8] border-[#EDEBF2] opacity-70" : "bg-white border-[#FF5470]/30 shadow-sm"
-                    }`}
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-[#1B1A3A]">{n.title}</span>
-                        {!n.read && (
-                          <span className="h-2 w-2 rounded-full bg-[#FF5470]" />
-                        )}
-                      </div>
-                      <p className="text-xs text-[#6B6875]">{n.message}</p>
-                      <span className="text-[10px] text-[#8B889C]">
-                        {new Date(n.created_at).toLocaleString("id-ID")}
+              <ul className="space-y-2">
+                {notifications.data.map((n) => (
+                  <li key={n.id}>
+                    <button
+                      type="button"
+                      disabled={n.read}
+                      onClick={() => handleMarkNotifRead(n.id)}
+                      className={cn(
+                        "w-full space-y-1 rounded-xl border p-4 text-left transition-colors",
+                        n.read ? "border-wavy-border bg-wavy-surface opacity-70" : "border-wavy-accent/30 bg-wavy-bg hover:bg-wavy-surface"
+                      )}
+                    >
+                      <span className="flex items-center gap-2 text-xs font-bold text-wavy-text-primary">
+                        {n.title}
+                        {!n.read && <span className="h-2 w-2 rounded-full bg-wavy-accent" aria-label={t("notifications.unread")} />}
                       </span>
-                    </div>
-                  </div>
+                      <span className="block text-xs text-wavy-text-secondary">{n.message}</span>
+                      <span className="block font-mono text-[10px] text-wavy-text-secondary">
+                        {format.dateTime(new Date(n.created_at), { dateStyle: "medium", timeStyle: "short" })}
+                      </span>
+                    </button>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
-          </div>
+          </section>
         )}
       </main>
 
       <Footer />
     </div>
+  );
+}
+
+function LevelProgress({ data }: { data: CustomerLevel }) {
+  const t = useTranslations("Profile.level");
+  const next = LEVEL_THRESHOLDS[data.level]; // threshold level berikutnya (index = level saat ini)
+  // sama dengan teks "{count} dari {target} konser"
+  const pct = next === undefined ? 100 : Math.min(100, Math.round((data.attended_concerts / next) * 100));
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2 rounded-xl border border-wavy-border bg-wavy-surface p-4 sm:p-5">
+        <div className="flex flex-wrap justify-between gap-2 text-xs font-bold text-wavy-text-primary">
+          <span>{t("current", { level: data.level, label: data.level_label })}</span>
+          <span>{next === undefined ? t("max") : t("toNext", { level: data.level + 1 })}</span>
+        </div>
+        <div
+          className="h-3 w-full overflow-hidden rounded-full bg-wavy-border"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={pct}
+        >
+          <div className="h-full bg-wavy-accent transition-all duration-500" style={{ width: `${pct}%` }} />
+        </div>
+        <p className="font-mono text-[11px] text-wavy-text-secondary">
+          {next === undefined
+            ? t("attended", { count: data.attended_concerts })
+            : t("progress", { count: data.attended_concerts, target: next })}
+        </p>
+      </div>
+
+      <ol className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-5">
+        {LEVEL_THRESHOLDS.map((min, i) => {
+          const lvl = i + 1;
+          const reached = data.level >= lvl;
+          return (
+            <li
+              key={lvl}
+              className={cn(
+                "rounded-xl border p-3",
+                reached ? "border-wavy-accent bg-wavy-accent/5" : "border-wavy-border opacity-60"
+              )}
+            >
+              <p className="font-bold text-wavy-text-primary">{t("tier", { level: lvl })}</p>
+              <p className="font-mono text-[10px] font-semibold text-wavy-accent">{t("tierRequirement", { count: min })}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+function FavoriteList({
+  title,
+  empty,
+  items,
+}: {
+  title: string;
+  empty: string;
+  items: { id: number; name: string; meta?: string }[];
+}) {
+  return (
+    <section className="space-y-3 rounded-2xl border border-wavy-border bg-wavy-bg p-4 sm:p-6">
+      <h3 className="font-display text-base font-bold text-wavy-text-primary">{title}</h3>
+      {items.length === 0 ? (
+        <p className="text-xs text-wavy-text-secondary">{empty}</p>
+      ) : (
+        <ul className="space-y-2">
+          {items.map((it) => (
+            <li key={it.id} className="flex items-center justify-between gap-2 rounded-xl border border-wavy-border bg-wavy-surface p-3">
+              <span className="truncate text-xs font-bold text-wavy-text-primary">{it.name}</span>
+              {it.meta && <span className="shrink-0 text-[10px] text-wavy-text-secondary">{it.meta}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

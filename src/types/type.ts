@@ -58,8 +58,8 @@ export interface Order {
   ticket_category_id: number;
   quantity: number;
   total_price: string | number;
-  status: "pending_payment" | "paid" | "rejected" | "refunded";
-  expires_at: string;
+  status: OrderStatus;
+  expires_at: string | null;
   created_at: string;
   event_title?: string;
   category_name?: string;
@@ -70,6 +70,14 @@ export interface Order {
   birth_date?: string | null;
   gender?: string | null;
   wa_consent?: string | null;
+}
+
+// status order dari backend; "expired" = pending yang lewat 15 menit (lazy expiry)
+export type OrderStatus = "pending_payment" | "paid" | "rejected" | "refunded" | "expired";
+
+export interface FavoritesResponse {
+  organizers: { favorite_id: number; id: number; name: string }[];
+  artists: { favorite_id: number; id: number; name: string; genre: string; photo_url: string }[];
 }
 
 export interface Ticket {
