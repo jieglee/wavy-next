@@ -104,7 +104,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     const tiltClass = "group-hover:-rotate-[6deg]";
 
   return (
-    <div className="relative z-10 h-[88px] w-[88px] shrink-0 overflow-visible sm:h-[96px] sm:w-[96px]">
+    <div className="relative z-10 h-16 w-16 shrink-0 overflow-visible min-[420px]:h-[88px] min-[420px]:w-[88px] sm:h-[96px] sm:w-[96px]">
       {/* Glow shadow menyeluruh di belakang gambar - pink/biru Wavy, baru keliatan pas hover */}
       <div
         className="pointer-events-none absolute inset-0 rounded-[18px] blur-[18px] opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
@@ -150,10 +150,10 @@ export default function DiscoverCountries() {
                         <Link
                             key={city.id}
                             href={city.href}
-                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-border bg-white px-5 py-3 shadow-sm transition-all duration-200 hover:border-input hover:shadow-md sm:h-[118px]"
+                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-border bg-white px-4 py-3 shadow-sm min-[420px]:px-5 transition-all duration-200 hover:border-input hover:shadow-md sm:h-[118px]"
                         >
                             {/* Left: text */}
-                            <div className="flex flex-col justify-center">
+                            <div className="flex min-w-0 flex-col justify-center">
                                 <p className="font-display text-[15px] font-bold leading-tight text-foreground">
                                     {city.label1}
                                 </p>
