@@ -211,7 +211,12 @@
         "loading": "Loading concert info..."
     },
     "OrderDetail": {
-        "loading": "Loading order details..."
+        "loading": "Loading order details...",
+        "payBefore": "Complete your payment before time runs out",
+        "timeLeft": "Payment time left",
+        "expiredTitle": "Order expired",
+        "expiredBody": "The 15-minute payment window has passed, so the tickets were released back to the quota. Order again if they're still available.",
+        "orderAgain": "Order again"
     },
     "Tickets": {
         "transferRecipientNotFound": "The recipient's email isn't registered on Wavy.",

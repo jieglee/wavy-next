@@ -211,7 +211,12 @@
         "loading": "Memuat informasi konser..."
     },
     "OrderDetail": {
-        "loading": "Memuat detail pesanan..."
+        "loading": "Memuat detail pesanan...",
+        "payBefore": "Selesaikan pembayaran sebelum waktu habis",
+        "timeLeft": "Sisa waktu pembayaran",
+        "expiredTitle": "Pesanan kedaluwarsa",
+        "expiredBody": "Batas waktu pembayaran 15 menit sudah lewat, jadi tiket dilepas kembali ke kuota. Silakan pesan ulang jika masih tersedia.",
+        "orderAgain": "Pesan ulang"
     },
     "Tickets": {
         "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy.",
