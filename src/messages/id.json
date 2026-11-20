@@ -247,5 +247,18 @@
     },
     "OrganizerDashboard": {
         "noData": "Belum ada data"
+    },
+    "DevCharts": {
+        "title": "Uji Chart (internal)",
+        "subtitle": "Halaman uji Bklit UI. Data di bawah adalah contoh statis, bukan data penjualan.",
+        "salesTitle": "Penjualan per hari",
+        "salesCaption": "Area chart · tiket terjual",
+        "revenueTitle": "Pendapatan per kategori",
+        "revenueCaption": "Bar chart · juta rupiah",
+        "quotaTitle": "Kuota terisi",
+        "quotaCaption": "Ring chart · terjual / kuota",
+        "quotaCenter": "Tiket terjual",
+        "sold": "Terjual",
+        "revenue": "Pendapatan"
     }
 }

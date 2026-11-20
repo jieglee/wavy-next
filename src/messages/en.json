@@ -247,5 +247,18 @@
     },
     "OrganizerDashboard": {
         "noData": "No data yet"
+    },
+    "DevCharts": {
+        "title": "Chart test (internal)",
+        "subtitle": "Bklit UI test page. The data below is static sample data, not real sales.",
+        "salesTitle": "Sales per day",
+        "salesCaption": "Area chart · tickets sold",
+        "revenueTitle": "Revenue per category",
+        "revenueCaption": "Bar chart · million rupiah",
+        "quotaTitle": "Quota filled",
+        "quotaCaption": "Ring chart · sold / quota",
+        "quotaCenter": "Tickets sold",
+        "sold": "Sold",
+        "revenue": "Revenue"
     }
 }
