@@ -511,6 +511,29 @@
             "manualPlaceholder": "Paste the ticket QR code",
             "check": "Check",
             "history": "Scan history"
+        },
+        "artists": {
+            "title": "Artists",
+            "subtitle": "Artists you can pick as an event's main performer.",
+            "add": "Add artist",
+            "formNew": "New artist",
+            "formEdit": "Edit artist",
+            "name": "Name",
+            "genre": "Genre",
+            "photo": "Photo URL",
+            "bio": "Bio",
+            "cancel": "Cancel",
+            "save": "Save",
+            "saving": "Saving…",
+            "edit": "Edit",
+            "delete": "Delete",
+            "added": "Artist added.",
+            "updated": "Artist updated.",
+            "deleted": "Artist deleted.",
+            "confirmDelete": "Delete artist \"{name}\"?",
+            "errName": "Artist name is required.",
+            "emptyTitle": "No artists yet",
+            "emptyText": "Add an artist before creating an event."
         }
     }
 }
