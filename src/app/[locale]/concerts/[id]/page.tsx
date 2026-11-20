@@ -24,6 +24,7 @@ import { getMinPrice, formatIDR } from "@/lib/price";
 import type { ConcertDetail } from "@/types/type";
 import ConcertTabs from "@/components/concerts/concert-tabs";
 import { useSalesText } from "@/hooks/use-sales-text";
+import { categoryLabels } from "@/lib/concert-labels";
 
 
 export default function ConcertDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -285,13 +286,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
                       <div className="flex items-center gap-3 text-[14px] text-foreground">
                         <Layers className="h-4 w-4 shrink-0 text-foreground" />
-                        <span>
-                          {concert.category}
-                          &nbsp;•&nbsp;
-                          Musik
-                          &nbsp;•&nbsp;
-                          {concert.genre || "K-Pop"}
-                        </span>
+                        <span>{categoryLabels(concert.category, concert.genre).join(" • ")}</span>
                       </div>
 
                     </div>
