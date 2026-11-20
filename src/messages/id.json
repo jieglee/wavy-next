@@ -384,6 +384,8 @@
         "back": "Semua pesanan",
         "number": "Nomor pesanan",
         "summary": "Ringkasan tiket",
+        "category": "Kategori",
+        "eventUnavailable": "Event tidak tersedia",
         "quantity": "Jumlah tiket",
         "tickets": "{count} tiket",
         "serviceFee": "Biaya layanan Wavy",
@@ -752,7 +754,7 @@
         "eyebrow": "Riwayat",
         "title": "Pesanan saya",
         "code": "#{id}",
-        "event": "Event #{id}",
+        "eventUnavailable": "Event tidak tersedia",
         "quantity": "{count} tiket",
         "emptyTitle": "Belum ada pesanan",
         "emptyDescription": "Pesanan tiket kamu akan muncul di sini.",
@@ -825,6 +827,31 @@
             "confirmSuspendBody": "Organizer langsung kehilangan akses ke Creator Studio. Event dan order yang ada tidak dihapus.",
             "confirmActivateTitle": "Aktifkan {name}?",
             "confirmActivateBody": "Organizer bisa masuk dan mengelola event lagi."
+        },
+        "organizerDetail": {
+            "back": "Semua organizer",
+            "profile": "Profil",
+            "email": "Email",
+            "whatsapp": "WhatsApp",
+            "eventTypes": "Jenis event",
+            "social": "Media sosial",
+            "joined": "Bergabung",
+            "revenue": "Pendapatan",
+            "revenueNote": "Order lunas",
+            "ticketsSold": "Tiket terjual",
+            "paidOrders": "{n} order lunas",
+            "events": "Event",
+            "published": "{n} dipublikasikan",
+            "pending": "Menunggu bayar",
+            "pendingNote": "Order pending aktif",
+            "eventsTitle": "Event organizer",
+            "eventsEmpty": "Organizer ini belum membuat event.",
+            "col": {
+                "event": "Event",
+                "status": "Status",
+                "sold": "Terjual",
+                "revenue": "Pendapatan"
+            }
         }
     },
     "InfoPages": {

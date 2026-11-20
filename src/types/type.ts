@@ -69,8 +69,12 @@ export interface Order {
   status: OrderStatus;
   expires_at: string | null;
   created_at: string;
-  event_title?: string;
-  category_name?: string;
+  // join dari backend (LEFT JOIN: null jika event/kategori sudah dihapus)
+  event_title?: string | null;
+  category_name?: string | null;
+  poster_url?: string | null;
+  event_date?: string | null;
+  venue?: string | null;
   full_name?: string;
   email?: string;
   phone?: string;
@@ -172,4 +176,38 @@ export interface AdminOrganizer {
   created_at: string;
   event_count: number;
   revenue: number;
+}
+
+// GET /admin/organizers/:id
+export interface AdminOrganizerDetail {
+  organizer: {
+    id: number;
+    name: string;
+    email: string;
+    status: AdminOrganizer["status"];
+    created_at: string;
+    whatsapp: string;
+    event_types: string;
+    social_link: string;
+  };
+  events: {
+    id: number;
+    title: string;
+    category: string;
+    venue: string;
+    date: string | null;
+    status: "draft" | "published" | "closed";
+    poster_url: string | null;
+    quota: number;
+    sold: number;
+    revenue: number;
+  }[];
+  summary: {
+    event_count: number;
+    published_count: number;
+    paid_order_count: number;
+    pending_order_count: number;
+    ticket_sold: number;
+    revenue: number;
+  };
 }

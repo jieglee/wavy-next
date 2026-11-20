@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Building2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import toast from "react-hot-toast";
 import { apiGet, apiPatch } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -14,28 +15,8 @@ import { useAdminSession, useAdminUnauthorized } from "@/hooks/use-admin-session
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import { StudioPageHeader } from "@/components/studio/studio-shell";
 import { btn } from "@/components/studio/studio-ui";
+import { OrganizerStatusBadge } from "@/components/admin/organizer-status-badge";
 import type { AdminOrganizer } from "@/types/type";
-
-const STATUS_TONE: Record<string, string> = {
-  active: "bg-success/10 text-success",
-  suspended: "bg-destructive/10 text-destructive",
-  pending_verification: "bg-warning/10 text-warning",
-};
-
-function OrganizerStatusBadge({ status }: { status: string }) {
-  const t = useTranslations("Admin.status");
-  const known = status in STATUS_TONE;
-  return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest",
-        known ? STATUS_TONE[status] : "bg-muted text-muted-foreground"
-      )}
-    >
-      {known ? t(status as "active") : status}
-    </span>
-  );
-}
 
 type Pending = { org: AdminOrganizer; next: "active" | "suspended" };
 
@@ -120,7 +101,9 @@ export default function AdminOrganizersPage() {
                   {orgs.map((org) => (
                     <tr key={org.id} className="align-middle">
                       <td className="max-w-0 px-4 py-3">
-                        <p className="truncate font-semibold text-foreground">{org.name}</p>
+                        <Link href={`/admin/organizers/${org.id}`} className="block truncate font-semibold text-foreground hover:text-primary">
+                          {org.name}
+                        </Link>
                         <p className="truncate font-mono text-xs text-muted-foreground">{org.email}</p>
                         {inlineError(org)}
                       </td>
@@ -143,7 +126,9 @@ export default function AdminOrganizersPage() {
                 <li key={org.id} className="space-y-3 rounded-xl border border-border bg-card p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="truncate font-semibold text-foreground">{org.name}</p>
+                      <Link href={`/admin/organizers/${org.id}`} className="block truncate font-semibold text-foreground hover:text-primary">
+                        {org.name}
+                      </Link>
                       <p className="truncate font-mono text-xs text-muted-foreground">{org.email}</p>
                     </div>
                     <OrganizerStatusBadge status={org.status} />
