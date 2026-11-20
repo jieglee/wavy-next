@@ -3,7 +3,10 @@
  * The code stays in the repo; flip a flag to bring a section back.
  */
 
-/** Hotel recommendations ("traveler mode") on the landing and logged-in home. */
+/**
+ * Hotel recommendations ("traveler mode") on the landing and logged-in home.
+ * While false, /hotels/[id] redirects to the landing page.
+ */
 export const SHOW_TRAVELER_MODE = false;
 
 /**
