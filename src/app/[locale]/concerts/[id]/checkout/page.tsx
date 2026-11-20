@@ -333,10 +333,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const eventDateStr = eventDateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
   const eventTimeStr = eventDateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
   const inputCls = (bad?: string) =>
-    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25 ${bad ? "border-rose-400" : "border-border"}`;
+    `w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25 ${bad ? "border-destructive" : "border-border"}`;
   const labelCls = "mb-1.5 block text-xs font-semibold text-foreground/85";
-  const errCls = "mt-1 text-xs text-rose-500";
-  const req = <span className="text-rose-500"> *</span>;
+  const errCls = "mt-1 text-xs text-destructive";
+  const req = <span className="text-destructive"> *</span>;
 
   return (
     <div className="min-h-screen bg-surface">
@@ -379,9 +379,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <p className="mt-1 text-xs text-muted-foreground">{tCheckout("oneCategoryHint")}</p>
 
             {soldOutCount > 0 && (
-              <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                <p className="text-xs leading-relaxed text-amber-800">
+              <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-warning/30 bg-warning/5 px-3.5 py-3">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+                <p className="text-xs leading-relaxed text-warning">
                   <span className="font-bold">{soldOutCount} kategori sudah habis terjual.</span> Tiket habis ditandai
                   jelas di bawah — stok tersisa tidak bisa dipesan.
                 </p>

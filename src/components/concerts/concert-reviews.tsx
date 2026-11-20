@@ -18,9 +18,9 @@ export default function ConcertReviews({
         <div>
           <h2 className="text-[15px] font-bold text-foreground">Ulasan</h2>
           <div className="mt-1.5 flex items-center gap-2">
-            <span className="flex text-amber-400">
+            <span className="flex text-[#FFB800]">
               {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className={`h-4 w-4 ${s <= Math.round(avgRating) ? "fill-amber-400" : "fill-gray-200 text-gray-200"}`} />
+                <Star key={s} className={`h-4 w-4 ${s <= Math.round(avgRating) ? "fill-[#FFB800]" : "fill-border text-border"}`} />
               ))}
             </span>
             <span className="text-sm font-bold text-foreground">{avgRating.toFixed(1)}</span>
@@ -47,9 +47,9 @@ export default function ConcertReviews({
                     <p className="text-[11px] text-muted-foreground">{new Date(rev.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</p>
                   </div>
                 </div>
-                <span className="flex text-amber-400">
+                <span className="flex text-[#FFB800]">
                   {Array.from({ length: rev.rating }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                    <Star key={i} className="h-3.5 w-3.5 fill-[#FFB800]" />
                   ))}
                 </span>
               </div>

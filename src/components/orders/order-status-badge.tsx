@@ -6,11 +6,11 @@ import type { OrderStatus } from "@/types/type";
 
 // DESIGN §6: pending amber, paid hijau, expired abu, ditolak/refund merah. Teks uppercase.
 const STYLES: Record<OrderStatus, string> = {
-  pending_payment: "bg-amber-100 text-amber-800",
-  paid: "bg-emerald-100 text-emerald-800",
+  pending_payment: "bg-warning/10 text-warning",
+  paid: "bg-success/10 text-success",
   expired: "bg-muted text-muted-foreground",
-  rejected: "bg-red-100 text-red-700",
-  refunded: "bg-red-100 text-red-700",
+  rejected: "bg-destructive/10 text-destructive",
+  refunded: "bg-destructive/10 text-destructive",
 };
 
 export function OrderStatusBadge({ status, className }: { status: OrderStatus | string; className?: string }) {

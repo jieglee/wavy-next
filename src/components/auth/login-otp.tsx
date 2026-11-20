@@ -245,7 +245,7 @@ export default function LoginOtpCard() {
                                         />
                                     </div>
 
-                                    {error && <p className="text-xs text-red-400">{error}</p>}
+                                    {error && <p className="text-xs text-destructive">{error}</p>}
 
                                     <button
                                         type="submit"
@@ -306,7 +306,7 @@ export default function LoginOtpCard() {
                                         ))}
                                     </div>
 
-                                    {error && <p className="text-xs text-red-400">{error}</p>}
+                                    {error && <p className="text-xs text-destructive">{error}</p>}
 
                                     <p className="text-sm text-muted-foreground">
                                         {t("noOtpReceived")}{" "}

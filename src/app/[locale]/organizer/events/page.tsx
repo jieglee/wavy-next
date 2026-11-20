@@ -205,7 +205,7 @@ export default function OrganizerEventsPage() {
               <WavyIcon size={26} />
               <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
             </Link>
-            <span className="text-gray-300">/</span>
+            <span className="text-muted-foreground/40">/</span>
             <span className="text-xs font-bold text-primary">Manajemen Event</span>
           </div>
 
@@ -237,7 +237,7 @@ export default function OrganizerEventsPage() {
 
         {/* Events Table */}
         {loading ? (
-          <div className="h-48 animate-pulse rounded-3xl bg-gray-200" />
+          <div className="h-48 animate-pulse rounded-3xl bg-border" />
         ) : loadError ? (
           <ErrorState error={loadError} onRetry={() => setLoadNonce((n) => n + 1)} />
         ) : events.length === 0 ? (
@@ -277,10 +277,10 @@ export default function OrganizerEventsPage() {
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold ${
                             ev.status === "published"
-                              ? "bg-emerald-100 text-emerald-700"
+                              ? "bg-success/10 text-success"
                               : ev.status === "closed"
-                              ? "bg-gray-100 text-gray-700"
-                              : "bg-amber-100 text-amber-700"
+                              ? "bg-muted text-foreground/85"
+                              : "bg-warning/10 text-warning"
                           }`}
                         >
                           {ev.status === "published" ? "Published" : ev.status === "closed" ? "Closed" : "Draft"}
@@ -298,7 +298,7 @@ export default function OrganizerEventsPage() {
                         {ev.status === "draft" && (
                           <button
                             onClick={() => handlePublishEvent(ev.id)}
-                            className="rounded-xl bg-emerald-600 px-3 py-1.5 font-bold text-white hover:bg-emerald-700"
+                            className="rounded-xl bg-success px-3 py-1.5 font-bold text-white hover:bg-success/90"
                           >
                             Publish
                           </button>
@@ -307,7 +307,7 @@ export default function OrganizerEventsPage() {
                         {ev.status === "published" && (
                           <button
                             onClick={() => handleCloseSales(ev.id)}
-                            className="rounded-xl bg-gray-600 px-3 py-1.5 font-bold text-white hover:bg-gray-700"
+                            className="rounded-xl bg-muted-foreground px-3 py-1.5 font-bold text-white hover:bg-muted-foreground/90"
                           >
                             Tutup Jual
                           </button>
@@ -315,7 +315,7 @@ export default function OrganizerEventsPage() {
 
                         <button
                           onClick={() => handleDeleteEvent(ev.id)}
-                          className="rounded-xl border border-red-200 p-1.5 text-red-600 hover:bg-red-50"
+                          className="rounded-xl border border-destructive/30 p-1.5 text-destructive hover:bg-destructive/5"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -335,7 +335,7 @@ export default function OrganizerEventsPage() {
           <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <h3 className="font-display text-xl font-bold text-foreground">Buat Event Konser Baru</h3>
-              <button onClick={() => setCreateModal(false)} className="rounded-full bg-gray-100 p-1 text-gray-500">
+              <button onClick={() => setCreateModal(false)} className="rounded-full bg-muted p-1 text-muted-foreground">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -453,7 +453,7 @@ export default function OrganizerEventsPage() {
                 <h3 className="font-display text-lg font-bold text-foreground">Kategori Tiket</h3>
                 <p className="text-xs text-muted-foreground/80">{categoryModal.title}</p>
               </div>
-              <button onClick={() => setCategoryModal(null)} className="rounded-full bg-gray-100 p-1 text-gray-500">
+              <button onClick={() => setCategoryModal(null)} className="rounded-full bg-muted p-1 text-muted-foreground">
                 <X className="h-4 w-4" />
               </button>
             </div>

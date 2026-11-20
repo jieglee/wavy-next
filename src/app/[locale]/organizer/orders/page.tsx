@@ -82,7 +82,7 @@ export default function OrganizerOrdersPage() {
               <WavyIcon size={26} />
               <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
             </Link>
-            <span className="text-gray-300">/</span>
+            <span className="text-muted-foreground/40">/</span>
             <span className="text-xs font-bold text-primary">Verifikasi Pesanan</span>
           </div>
 
@@ -127,7 +127,7 @@ export default function OrganizerOrdersPage() {
 
         {/* Orders Table */}
         {loading ? (
-          <div className="h-48 animate-pulse rounded-3xl bg-gray-200" />
+          <div className="h-48 animate-pulse rounded-3xl bg-border" />
         ) : loadError ? (
           <ErrorState error={loadError} onRetry={ordersRes.reload} />
         ) : orders.length === 0 ? (
@@ -169,12 +169,12 @@ export default function OrganizerOrdersPage() {
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold ${
                             ord.status === "paid"
-                              ? "bg-emerald-100 text-emerald-700"
+                              ? "bg-success/10 text-success"
                               : ord.status === "pending_payment"
-                              ? "bg-amber-100 text-amber-700"
+                              ? "bg-warning/10 text-warning"
                               : ord.status === "rejected"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
+                              ? "bg-destructive/10 text-destructive"
+                              : "bg-muted text-foreground/85"
                           }`}
                         >
                           {ord.status}
@@ -189,14 +189,14 @@ export default function OrganizerOrdersPage() {
                             <button
                               onClick={() => handleVerify(ord.id, true)}
                               disabled={actionLoading === ord.id}
-                              className="rounded-xl bg-emerald-600 px-3.5 py-1.5 font-bold text-white shadow hover:bg-emerald-700 disabled:opacity-50"
+                              className="rounded-xl bg-success px-3.5 py-1.5 font-bold text-white shadow hover:bg-success/90 disabled:opacity-50"
                             >
                               Approve
                             </button>
                             <button
                               onClick={() => handleVerify(ord.id, false)}
                               disabled={actionLoading === ord.id}
-                              className="rounded-xl bg-red-600 px-3.5 py-1.5 font-bold text-white shadow hover:bg-red-700 disabled:opacity-50"
+                              className="rounded-xl bg-destructive px-3.5 py-1.5 font-bold text-white shadow hover:bg-destructive/90 disabled:opacity-50"
                             >
                               Reject
                             </button>
@@ -207,7 +207,7 @@ export default function OrganizerOrdersPage() {
                           <button
                             onClick={() => handleRefund(ord.id)}
                             disabled={actionLoading === ord.id}
-                            className="rounded-xl border border-gray-300 px-3 py-1.5 font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                            className="rounded-xl border border-input px-3 py-1.5 font-bold text-foreground/85 hover:bg-muted disabled:opacity-50"
                           >
                             <RotateCcw className="inline h-3.5 w-3.5 mr-1" />
                             Refund
@@ -215,7 +215,7 @@ export default function OrganizerOrdersPage() {
                         )}
 
                         {ord.status !== "pending_payment" && ord.status !== "paid" && (
-                          <span className="text-gray-400 font-semibold text-[11px]">Selesai</span>
+                          <span className="text-muted-foreground/70 font-semibold text-[11px]">Selesai</span>
                         )}
                       </td>
                     </tr>

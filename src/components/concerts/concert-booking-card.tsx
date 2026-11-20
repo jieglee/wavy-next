@@ -23,9 +23,9 @@ export default function ConcertBookingCard({
           <span className="text-xs text-muted-foreground">/ tiket</span>
         </div>
         {remaining !== undefined && !isSoldOut && (
-          <p className="mt-1 text-xs font-medium text-emerald-600">Sisa {remaining} tiket</p>
+          <p className="mt-1 text-xs font-medium text-success">Sisa {remaining} tiket</p>
         )}
-        {isSoldOut && <p className="mt-1 text-xs font-bold text-red-600">Tiket Habis</p>}
+        {isSoldOut && <p className="mt-1 text-xs font-bold text-destructive">Tiket Habis</p>}
 
         <button
           onClick={onBuyClick}
@@ -37,7 +37,7 @@ export default function ConcertBookingCard({
         </button>
 
         <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[11px] leading-relaxed text-muted-foreground/70">
-          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-success" />
           Tiket resmi • Smart Queue Wavy • Pembayaran aman
         </p>
       </div>

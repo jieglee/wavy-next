@@ -167,13 +167,13 @@ function ConcertsPageInner() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-16/7 w-full rounded-xl bg-gray-200" />
-                <div className="mt-3 h-3 w-1/2 rounded bg-gray-200" />
-                <div className="mt-2 h-4 w-3/4 rounded bg-gray-200" />
-                <div className="mt-1 h-3 w-2/3 rounded bg-gray-200" />
+                <div className="aspect-16/7 w-full rounded-xl bg-border" />
+                <div className="mt-3 h-3 w-1/2 rounded bg-border" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-border" />
+                <div className="mt-1 h-3 w-2/3 rounded bg-border" />
                 <div className="mt-3 border-t border-border pt-2.5">
-                  <div className="h-3 w-16 rounded bg-gray-200" />
-                  <div className="mt-1 h-4 w-24 rounded bg-gray-200" />
+                  <div className="h-3 w-16 rounded bg-border" />
+                  <div className="mt-1 h-4 w-24 rounded bg-border" />
                 </div>
               </div>
             ))}

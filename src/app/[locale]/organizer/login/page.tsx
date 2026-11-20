@@ -158,7 +158,7 @@ export default function OrganizerLoginPage() {
               </div>
 
               {error && (
-                <p className={`text-xs ${error.includes("verifikasi") ? "rounded-lg bg-muted px-3 py-2 leading-relaxed text-muted-foreground" : "text-red-400"}`}>
+                <p className={`text-xs ${error.includes("verifikasi") ? "rounded-lg bg-muted px-3 py-2 leading-relaxed text-muted-foreground" : "text-destructive"}`}>
                   {error}
                 </p>
               )}

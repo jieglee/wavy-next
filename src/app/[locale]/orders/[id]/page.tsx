@@ -81,15 +81,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Countdown ke batas bayar (order pending) */}
             {isPending && ticking && (
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                <div className="flex items-center gap-2 text-xs font-semibold text-amber-800">
-                  <Clock className="h-4 w-4 shrink-0 text-amber-600" />
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-warning/30 bg-warning/5 p-4">
+                <div className="flex items-center gap-2 text-xs font-semibold text-warning">
+                  <Clock className="h-4 w-4 shrink-0 text-warning" />
                   <span>{tOrder("payBefore")}</span>
                 </div>
                 <div
                   role="timer"
                   aria-label={tOrder("timeLeft")}
-                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-destructive" : "text-amber-800"}`}
+                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-destructive" : "text-warning"}`}
                 >
                   {formatCountdown(remainingMs)}
                 </div>
@@ -123,7 +123,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Biaya Layanan Platform Wavy</span>
-                  <span className="text-emerald-600 font-bold">GRATIS</span>
+                  <span className="text-success font-bold">GRATIS</span>
                 </div>
                 <div className="border-t border-border pt-2 flex justify-between text-base font-extrabold text-foreground">
                   <span>Total Tagihan</span>
@@ -146,7 +146,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
                 <button
                   onClick={handleRefresh}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-white py-3.5 text-xs font-bold text-foreground shadow-sm hover:bg-gray-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-white py-3.5 text-xs font-bold text-foreground shadow-sm hover:bg-surface"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Cek Status Pembayaran

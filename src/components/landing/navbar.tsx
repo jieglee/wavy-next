@@ -286,7 +286,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               <div className="border-t border-border mt-1 pt-1">
                 <button
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+                  className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-destructive hover:bg-destructive/5"
                 >
                   <LogOut className="h-4 w-4" />
                   Keluar

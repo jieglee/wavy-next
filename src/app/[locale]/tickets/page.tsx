@@ -88,7 +88,7 @@ export default function TicketsPage() {
         {loading ? (
           <div className="space-y-4">
             {[1, 2].map((i) => (
-              <div key={i} className="h-36 animate-pulse rounded-3xl bg-gray-200" />
+              <div key={i} className="h-36 animate-pulse rounded-3xl bg-border" />
             ))}
           </div>
         ) : ticketsRes.error ? (
@@ -127,12 +127,12 @@ export default function TicketsPage() {
                         {ticket.category}
                       </span>
                       {ticket.is_scanned ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Sudah Digunakan
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-success/5 px-3 py-1 text-xs font-bold text-success">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Tiket Aktif / Siap Pakai
                         </span>
@@ -199,7 +199,7 @@ export default function TicketsPage() {
           <div className="relative w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl text-center space-y-4">
             <button
               onClick={() => setSelectedTicket(null)}
-              className="absolute right-4 top-4 rounded-full bg-gray-100 p-1 text-gray-600 hover:bg-gray-200"
+              className="absolute right-4 top-4 rounded-full bg-muted p-1 text-muted-foreground hover:bg-border"
             >
               <X className="h-4 w-4" />
             </button>
@@ -228,7 +228,7 @@ export default function TicketsPage() {
           <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
             <button
               onClick={() => setTransferModal(null)}
-              className="absolute right-4 top-4 rounded-full bg-gray-100 p-1 text-gray-600 hover:bg-gray-200"
+              className="absolute right-4 top-4 rounded-full bg-muted p-1 text-muted-foreground hover:bg-border"
             >
               <X className="h-4 w-4" />
             </button>
@@ -253,7 +253,7 @@ export default function TicketsPage() {
                 />
               </div>
 
-              <div className="rounded-2xl bg-amber-50 p-3 text-[11px] text-amber-800 space-y-1">
+              <div className="rounded-2xl bg-warning/5 p-3 text-[11px] text-warning space-y-1">
                 <p className="font-bold">Perhatian Penting:</p>
                 <p>Setelah ditransfer, tiket akan langsung berpindah ke akun penerima dan QR tiket lama Anda akan otomatis dinonaktifkan.</p>
               </div>
@@ -262,7 +262,7 @@ export default function TicketsPage() {
                 <button
                   type="button"
                   onClick={() => setTransferModal(null)}
-                  className="flex-1 rounded-xl border border-border py-2.5 text-xs font-bold text-muted-foreground hover:bg-gray-50"
+                  className="flex-1 rounded-xl border border-border py-2.5 text-xs font-bold text-muted-foreground hover:bg-surface"
                 >
                   Batal
                 </button>

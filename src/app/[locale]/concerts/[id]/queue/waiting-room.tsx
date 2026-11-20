@@ -164,18 +164,18 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
 
           {/* Sold out notice & Waiting List */}
           {isSoldOut && (
-            <div className="rounded-2xl bg-amber-50 border border-amber-200 p-5 text-left space-y-3">
-              <div className="flex items-center gap-2 text-amber-800 font-bold text-sm">
-                <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
+            <div className="rounded-2xl bg-warning/5 border border-warning/30 p-5 text-left space-y-3">
+              <div className="flex items-center gap-2 text-warning font-bold text-sm">
+                <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
                 <span>Tiket Kategori Ini Telah Habis</span>
               </div>
-              <p className="text-xs text-amber-700">
+              <p className="text-xs text-warning">
                 Jangan khawatir! Anda dapat mendaftar ke <strong>Waiting List Auto-Offer</strong>. Jika ada pembeli yang gagal membayar atau melakukan refund, slot tiket akan otomatis ditawarkan kepada Anda secara berurutan.
               </p>
               <button
                 onClick={handleJoinWaitingList}
                 disabled={inWaitingList}
-                className="w-full rounded-xl bg-amber-600 py-3 text-xs font-bold text-white shadow hover:bg-amber-700 disabled:bg-emerald-600"
+                className="w-full rounded-xl bg-warning py-3 text-xs font-bold text-white shadow hover:bg-warning/90 disabled:bg-success"
               >
                 {inWaitingList ? "✓ Anda Telah Terdaftar di Waiting List" : "Daftar ke Waiting List Sekarang"}
               </button>
@@ -190,7 +190,7 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
               className={`w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-sm font-extrabold text-white shadow-xl transition-all ${
                 isReady
                   ? "bg-primary hover:brightness-110 active:scale-98 animate-pulse"
-                  : "bg-gray-400 cursor-not-allowed opacity-70"
+                  : "bg-muted-foreground/70 cursor-not-allowed opacity-70"
               }`}
             >
               <span>{isReady ? (loading ? "Memproses Order..." : "Lanjut ke Pembayaran") : "Menunggu Giliran..."}</span>
@@ -200,7 +200,7 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
 
           {/* Anti scalper badge */}
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/80 pt-2">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+            <ShieldCheck className="h-4 w-4 text-success" />
             <span>Dilindungi enkripsi JWT unik & sistem anti-bot</span>
           </div>
         </div>

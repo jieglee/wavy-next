@@ -28,7 +28,7 @@ export default function ConcertReviewModal({
             <div className="mt-2 flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button type="button" key={star} onClick={() => setRating(star)} className="p-1">
-                  <Star className={`h-7 w-7 transition-colors ${star <= rating ? "fill-amber-400 text-amber-400" : "text-gray-300"}`} />
+                  <Star className={`h-7 w-7 transition-colors ${star <= rating ? "fill-[#FFB800] text-[#FFB800]" : "text-muted-foreground/40"}`} />
                 </button>
               ))}
             </div>
@@ -38,7 +38,7 @@ export default function ConcertReviewModal({
             <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} placeholder="Ceritakan keseruan konser..." className="mt-1 w-full rounded-2xl border border-border p-3 text-xs outline-none focus:border-primary" />
           </div>
           <div className="flex gap-2 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 rounded-xl border border-border py-2.5 text-xs font-bold text-muted-foreground hover:bg-gray-50">Batal</button>
+            <button type="button" onClick={onClose} className="flex-1 rounded-xl border border-border py-2.5 text-xs font-bold text-muted-foreground hover:bg-surface">Batal</button>
             <button type="submit" disabled={submitting} className="flex-1 rounded-xl bg-foreground py-2.5 text-xs font-bold text-white hover:bg-black">{submitting ? "Mengirim..." : "Kirim Ulasan"}</button>
           </div>
         </form>

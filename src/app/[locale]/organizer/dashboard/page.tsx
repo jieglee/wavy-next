@@ -103,7 +103,7 @@ export default function OrganizerDashboardPage() {
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 rounded-2xl border border-red-200 px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50"
+          className="flex items-center gap-2 rounded-2xl border border-destructive/30 px-4 py-2.5 text-xs font-bold text-destructive hover:bg-destructive/5"
         >
           <LogOut className="h-4 w-4" />
           Keluar
@@ -160,21 +160,21 @@ export default function OrganizerDashboardPage() {
           <div className="rounded-3xl border border-border bg-white p-6 shadow-sm space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground/80 font-semibold">Total Pendapatan Bersih</span>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success/5 text-success">
                 <DollarSign className="h-5 w-5" />
               </div>
             </div>
             <p className="font-mono text-2xl font-extrabold text-foreground">
               Rp{stats.revenue.toLocaleString("id-ID")}
             </p>
-            <p className="text-[10px] text-emerald-600 font-bold">100% Bebas Biaya Admin Tersembunyi</p>
+            <p className="text-[10px] text-success font-bold">100% Bebas Biaya Admin Tersembunyi</p>
           </div>
 
           {/* Sold Tickets */}
           <div className="rounded-3xl border border-border bg-white p-6 shadow-sm space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground/80 font-semibold">Tiket Terjual</span>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-pink-50 text-primary">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/5 text-primary">
                 <Ticket className="h-5 w-5" />
               </div>
             </div>
@@ -188,7 +188,7 @@ export default function OrganizerDashboardPage() {
           <div className="rounded-3xl border border-border bg-white p-6 shadow-sm space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground/80 font-semibold">Sisa Kuota Tiket</span>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-info-subtle text-info">
                 <Users className="h-5 w-5" />
               </div>
             </div>
@@ -202,14 +202,14 @@ export default function OrganizerDashboardPage() {
           <div className="rounded-3xl border border-border bg-white p-6 shadow-sm space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground/80 font-semibold">Jam Puncak War Tiket</span>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-glow/10 text-primary-glow">
                 <Clock className="h-5 w-5" />
               </div>
             </div>
             <p className="font-mono text-2xl font-extrabold text-foreground">
               {`${String(stats.peak_purchase_hour).padStart(2, "0")}:00 WIB`}
             </p>
-            <p className="text-[10px] text-purple-600 font-bold">Kategori Terpopuler: {stats.popular_category || tDash("noData")}</p>
+            <p className="text-[10px] text-primary-glow font-bold">Kategori Terpopuler: {stats.popular_category || tDash("noData")}</p>
           </div>
         </div>
           )}

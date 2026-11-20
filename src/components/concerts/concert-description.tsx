@@ -7,7 +7,7 @@ const ConcertDescription = forwardRef<HTMLDivElement, { description: string }>((
   if (!/<[a-z][\s\S]*>/i.test(html)) html = html.replace(/\n/g, "<br>");
   return (
     <section ref={ref} id="sec-desc" className="scroll-mt-[72px]">
-      <div className="font-sans text-justify text-[15px] leading-6 text-gray-800 [&_a]:text-rose-500 [&_a]:underline [&_em]:text-rose-500" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="font-sans text-justify text-[15px] leading-6 text-foreground [&_a]:text-primary [&_a]:underline [&_em]:text-primary" dangerouslySetInnerHTML={{ __html: html }} />
     </section>
   );
 });

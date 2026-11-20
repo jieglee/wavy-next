@@ -132,19 +132,19 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 </h3>
                 <ul className="mt-3 grid gap-2 text-sm text-foreground/80 sm:grid-cols-2">
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Cek-in mulai 14.00, cek-out sampai 12.00
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Sarapan tersedia di beberapa paket
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Berdekatan dengan lokasi venue & destinasi
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Pemesanan hotel terintegrasi dengan Wavy
                   </li>
                 </ul>
@@ -161,7 +161,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                   Rp{Number(hotel.price).toLocaleString("id-ID")}
                 </p>
                 <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                  <Star className="h-3.5 w-3.5 fill-[#FFB800] text-[#FFB800]" />
                   Rating {hotel.rating} · {hotel.location}
                 </p>
                 <button

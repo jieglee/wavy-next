@@ -112,7 +112,7 @@ export default function OrganizerArtistsPage() {
               <WavyIcon size={26} />
               <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
             </Link>
-            <span className="text-gray-300">/</span>
+            <span className="text-muted-foreground/40">/</span>
             <span className="text-xs font-bold text-primary">Manajemen Artis</span>
           </div>
 
@@ -146,7 +146,7 @@ export default function OrganizerArtistsPage() {
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-40 animate-pulse rounded-3xl bg-gray-200" />
+              <div key={i} className="h-40 animate-pulse rounded-3xl bg-border" />
             ))}
           </div>
         ) : loadError ? (
@@ -180,14 +180,14 @@ export default function OrganizerArtistsPage() {
                 <div className="mt-6 flex items-center justify-end gap-2 border-t border-border pt-4">
                   <button
                     onClick={() => handleOpenEdit(art)}
-                    className="flex items-center gap-1 rounded-xl border border-border px-3 py-1.5 text-xs font-bold text-foreground hover:bg-gray-50"
+                    className="flex items-center gap-1 rounded-xl border border-border px-3 py-1.5 text-xs font-bold text-foreground hover:bg-surface"
                   >
                     <Edit2 className="h-3.5 w-3.5" />
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(art.id)}
-                    className="rounded-xl border border-red-200 p-1.5 text-red-600 hover:bg-red-50"
+                    className="rounded-xl border border-destructive/30 p-1.5 text-destructive hover:bg-destructive/5"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -206,7 +206,7 @@ export default function OrganizerArtistsPage() {
               <h3 className="font-display text-xl font-bold text-foreground">
                 {editingArtist ? "Edit Musisi" : "Tambah Musisi Baru"}
               </h3>
-              <button onClick={() => setModalOpen(false)} className="rounded-full bg-gray-100 p-1 text-gray-500">
+              <button onClick={() => setModalOpen(false)} className="rounded-full bg-muted p-1 text-muted-foreground">
                 <X className="h-4 w-4" />
               </button>
             </div>
