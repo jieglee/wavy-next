@@ -7,7 +7,9 @@ import { Clock, ShieldCheck, ArrowRight, AlertTriangle, CheckCircle2 } from "luc
 import toast from "react-hot-toast";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
-import { apiPost, getAuthToken } from "@/lib/api";
+import { ApiError, apiPost, getAuthToken } from "@/lib/api";
+import { useErrorMessage } from "@/lib/error-message";
+import { ErrorState, LoadingState } from "@/components/states/async-states";
 import type { Order } from "@/types/type";
 
 export default function WaitingRoomPage({ params }: { params: Promise<{ id: string }> }) {
@@ -23,6 +25,9 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
   const [isSoldOut, setIsSoldOut] = useState(false);
   const [inWaitingList, setInWaitingList] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [joinError, setJoinError] = useState<unknown>(null);
+  const [joinNonce, setJoinNonce] = useState(0);
+  const errorMessage = useErrorMessage();
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -37,14 +42,14 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
         );
         setPosition(res.position);
         setTotal(res.total);
-      } catch {
-        setPosition(3);
-        setTotal(24);
+        setJoinError(null);
+      } catch (err: unknown) {
+        setJoinError(err);
       }
     }
 
     joinQueue();
-  }, [id, router]);
+  }, [id, router, joinNonce]);
 
   // Simulate countdown queue progress
   useEffect(() => {
@@ -76,25 +81,8 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
       toast.success("Berhasil memesan tiket! Silakan selesaikan pembayaran.");
       router.push(`/orders/${order.id}`);
     } catch (err: unknown) {
-      const msg = (err as Error).message || "";
-      if (msg.includes("not enough") || msg.includes("stok")) {
-        setIsSoldOut(true);
-        toast.error("Maaf, kuota tiket pada kategori ini telah habis.");
-      } else {
-        const fallbackOrder: Order = {
-          id: Math.floor(1000 + Math.random() * 9000),
-          customer_id: 1,
-          event_id: Number(id),
-          ticket_category_id: catId,
-          quantity: qty,
-          total_price: 300000 * qty,
-          status: "pending_payment",
-          expires_at: new Date(Date.now() + 15 * 60000).toISOString(),
-          created_at: new Date().toISOString(),
-        };
-        toast.success("Masuk ke halaman checkout!");
-        router.push(`/orders/${fallbackOrder.id}`);
-      }
+      if (err instanceof ApiError && err.code === "QUOTA_EXCEEDED") setIsSoldOut(true);
+      toast.error(errorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -105,9 +93,8 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
       await apiPost(`/concerts/${id}/waiting-list`);
       setInWaitingList(true);
       toast.success("Anda terdaftar di Waiting List! Anda akan diprioritaskan saat ada tiket yang batal/refund.");
-    } catch {
-      setInWaitingList(true);
-      toast.success("Terdaftar di Waiting List.");
+    } catch (err: unknown) {
+      toast.error(errorMessage(err));
     }
   }
 
@@ -136,8 +123,13 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
             </p>
           </div>
 
+          {joinError !== null && (
+            <ErrorState error={joinError} onRetry={() => { setJoinError(null); setJoinNonce((n) => n + 1); }} />
+          )}
+          {joinError === null && position === null && <LoadingState />}
+
           {/* Queue Status Box */}
-          {!isSoldOut && (
+          {!isSoldOut && joinError === null && position !== null && (
             <div className="rounded-2xl bg-[#FAFAF8] p-6 border border-[#EDEBF2] space-y-4">
               <div className="flex items-center justify-between border-b border-[#EDEBF2] pb-4">
                 <div className="text-left">
@@ -191,7 +183,7 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
           )}
 
           {/* Action Button */}
-          {!isSoldOut && (
+          {!isSoldOut && joinError === null && (
             <button
               onClick={handleCheckoutNow}
               disabled={loading || !isReady}

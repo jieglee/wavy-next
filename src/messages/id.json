@@ -41,7 +41,8 @@
         "prev": "Sebelumnya",
         "next": "Berikutnya",
         "byOrganizer": "Oleh {organizer}",
-        "startingFrom": "Mulai dari"
+        "startingFrom": "Mulai dari",
+        "priceUnavailable": "Harga belum tersedia"
     },
     "AppNav": {
         "browse": "Jelajah Konser",
@@ -201,6 +202,10 @@
             "viewCreated": "Lihat pesanan yang sudah dibuat",
             "backToConcert": "Kembali ke detail konser",
             "reselect": "Pilih ulang tiket"
-        }
+        },
+        "loading": "Memuat tiket..."
+    },
+    "ConcertDetail": {
+        "loading": "Memuat informasi konser..."
     }
 }

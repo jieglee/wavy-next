@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, Ticket, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -8,9 +8,9 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import ConcertCard from "@/components/concerts/concert-card";
 import { apiGet } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { ErrorState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
-
-const FALLBACK_CATEGORIES = Array.from(new Set(["Festival", "K-Pop", "Pop", "EDM", "Indie", "Jazz"]));
 
 const GRADIENTS = [
   "linear-gradient(135deg,#7DD3E8,#4A90D9)",
@@ -19,15 +19,6 @@ const GRADIENTS = [
   "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
   "linear-gradient(135deg,#FF5470,#211F2B)",
   "linear-gradient(135deg,#C6395A,#14131C)",
-];
-
-const fallbackConcerts: Concert[] = [
-  { id: 1, title: "The Legends Infinity", category: "Festival", venue: "Jakarta Selatan", date: "2026-09-15T19:00:00Z", poster_url: "", status: "published", artist_name: "TRUST Orchestra", organizer_name: "TRUST Productions", min_price: 300000, remaining: 150 },
-  { id: 2, title: "Tiffany Young: Edge of Calm", category: "K-Pop", venue: "Jakarta Pusat", date: "2026-10-02T20:00:00Z", poster_url: "", status: "published", artist_name: "Tiffany Young", organizer_name: "Flabbergast Productions", min_price: 2000000, remaining: 80 },
-  { id: 3, title: "YE Jakarta 2026", category: "Pop", venue: "Jakarta Pusat", date: "2026-11-20T19:30:00Z", poster_url: "", status: "published", artist_name: "Kanye West", organizer_name: "Raw Vision Collective", min_price: 1875000, remaining: 320 },
-  { id: 4, title: "Whisnu Santika Live", category: "EDM", venue: "Bengkel Space, Jakarta", date: "2026-08-30T22:00:00Z", poster_url: "", status: "published", artist_name: "Whisnu Santika", organizer_name: "Bengkel Space", min_price: 150000, remaining: 45 },
-  { id: 5, title: "NIKI: Nicole World Tour", category: "Indie", venue: "ICE BSD, Tangerang", date: "2026-12-05T19:00:00Z", poster_url: "", status: "published", artist_name: "NIKI", organizer_name: "Ismaya Live", min_price: 850000, remaining: 500 },
-  { id: 6, title: "Jazz Under The Stars", category: "Jazz", venue: "Dago Tea House, Bandung", date: "2026-09-28T18:30:00Z", poster_url: "", status: "published", artist_name: "Tompi & Friends", organizer_name: "Java Festival", min_price: 425000, remaining: 200 },
 ];
 
 function extractConcerts(data: unknown): Concert[] {
@@ -91,73 +82,26 @@ function ConcertsPageInner() {
   const [query, setQuery] = useState(filteredInitialQuery);
   const [selectedCat, setSelectedCat] = useState(initialCat);
   const [country, setCountry] = useState(searchParams.get("country") || "");
-  const [concerts, setConcerts] = useState<Concert[]>([]);
-  const [categories, setCategories] = useState<string[]>(["Semua", ...FALLBACK_CATEGORIES]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const data = await apiGet<unknown>("/concerts");
-        const all = extractConcerts(data);
-        const source = all.length > 0 ? all : fallbackConcerts;
-        const uniq = uniqueCategories(source);
-        setCategories((prev) => {
-          const base = uniq.length > 0 ? uniq : uniqueCategories(fallbackConcerts);
-          const next = ["Semua", ...base];
-          if (initialCat !== "Semua" && !next.some((c) => c.toLowerCase() === initialCat.toLowerCase())) {
-            next.splice(1, 0, initialCat);
-          }
-          if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
-          return next;
-        });
-      } catch {
-        // keep fallback categories
-      }
+  // kategori diturunkan dari data asli (tanpa daftar cadangan statis)
+  const allRes = useApiResource("concerts-all", () => apiGet<unknown>("/concerts").then(extractConcerts));
+  const categories = useMemo(() => {
+    const next = ["Semua", ...uniqueCategories(allRes.data ?? [])];
+    if (initialCat !== "Semua" && !next.some((c) => c.toLowerCase() === initialCat.toLowerCase())) {
+      next.splice(1, 0, initialCat);
     }
-    fetchCategories();
-  }, [initialCat]);
+    return next;
+  }, [allRes.data, initialCat]);
 
-  useEffect(() => {
-    async function fetchConcerts() {
-      setLoading(true);
-      try {
-        const catParam = selectedCat !== "Semua" ? `category=${encodeURIComponent(selectedCat)}` : "";
-        const qParam = query.trim() ? `q=${encodeURIComponent(query.trim())}` : "";
-        const qs = [catParam, qParam].filter(Boolean).join("&");
-        const path = `/concerts${qs ? `?${qs}` : ""}`;
-
-        const data = await apiGet<unknown>(path);
-        const list = extractConcerts(data);
-        const applyCountry = (items: Concert[]) => (country ? items.filter((c) => byCountry(c, country)) : items);
-        if (list.length > 0) {
-          setConcerts(applyCountry(list));
-        } else if (!query && selectedCat === "Semua") {
-          setConcerts(applyCountry(fallbackConcerts));
-        } else {
-          // Filter fallback locally
-          const filtered = fallbackConcerts.filter((c) => {
-            const matchCat = selectedCat === "Semua" || c.category.toLowerCase() === selectedCat.toLowerCase();
-            const matchQ = !query || c.title.toLowerCase().includes(query.toLowerCase()) || c.artist_name.toLowerCase().includes(query.toLowerCase());
-            return matchCat && matchQ;
-          });
-          setConcerts(applyCountry(filtered));
-        }
-      } catch {
-        const filtered = fallbackConcerts.filter((c) => {
-          const matchCat = selectedCat === "Semua" || c.category.toLowerCase() === selectedCat.toLowerCase();
-          const matchQ = !query || c.title.toLowerCase().includes(query.toLowerCase()) || c.artist_name.toLowerCase().includes(query.toLowerCase());
-          return matchCat && matchQ;
-        });
-        setConcerts(country ? filtered.filter((c) => byCountry(c, country)) : filtered);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    const t = setTimeout(fetchConcerts, 200);
-    return () => clearTimeout(t);
-  }, [query, selectedCat, country]);
+  const catParam = selectedCat !== "Semua" ? `category=${encodeURIComponent(selectedCat)}` : "";
+  const qParam = query.trim() ? `q=${encodeURIComponent(query.trim())}` : "";
+  const qs = [catParam, qParam].filter(Boolean).join("&");
+  const listPath = `/concerts${qs ? `?${qs}` : ""}`;
+  const listRes = useApiResource(listPath, () => apiGet<unknown>(listPath).then(extractConcerts));
+  const loading = listRes.loading;
+  const concerts = useMemo(
+    () => (country ? (listRes.data ?? []).filter((c) => byCountry(c, country)) : listRes.data ?? []),
+    [listRes.data, country]
+  );
 
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
@@ -234,6 +178,8 @@ function ConcertsPageInner() {
               </div>
             ))}
           </div>
+        ) : listRes.error ? (
+          <ErrorState error={listRes.error} onRetry={listRes.reload} />
         ) : concerts.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-[#EDEBF2] bg-white py-16 text-center">
             <Ticket className="h-12 w-12 text-[#8B889C]" />
@@ -255,9 +201,7 @@ function ConcertsPageInner() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {concerts.map((concert, idx) => {
               const gradient = GRADIENTS[idx % GRADIENTS.length];
-              const priceStr = concert.min_price
-                ? Number(concert.min_price).toLocaleString("id-ID")
-                : "150.000";
+              const priceStr = concert.min_price ? Number(concert.min_price).toLocaleString("id-ID") : null;
               return (
                 <ConcertCard
                   key={concert.id}

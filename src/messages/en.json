@@ -41,7 +41,8 @@
         "prev": "Previous",
         "next": "Next",
         "byOrganizer": "By {organizer}",
-        "startingFrom": "Starting from"
+        "startingFrom": "Starting from",
+        "priceUnavailable": "Price not available yet"
     },
     "AppNav": {
         "browse": "Browse Concerts",
@@ -201,6 +202,10 @@
             "viewCreated": "View created order",
             "backToConcert": "Back to concert details",
             "reselect": "Choose tickets again"
-        }
+        },
+        "loading": "Loading tickets..."
+    },
+    "ConcertDetail": {
+        "loading": "Loading concert info..."
     }
 }
