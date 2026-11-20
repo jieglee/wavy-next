@@ -2,6 +2,7 @@ import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { WavyIcon } from "@/components/landing/wavy-icon"
+import { SHOW_PAYMENT_LOGOS } from "@/lib/features"
 
 const paymentMethods = [
   "QRIS", "BCA", "BRI", "BNI", "Mandiri", "BSI",
@@ -85,7 +86,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-border px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
+        <div className={`grid grid-cols-2 gap-10 ${SHOW_PAYMENT_LOGOS ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
           {/* Brand + Social */}
           <div className="col-span-2 sm:col-span-1">
             <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
@@ -158,6 +159,7 @@ export default function Footer() {
           </div>
 
           {/* Pilihan Pembayaran */}
+          {SHOW_PAYMENT_LOGOS && (
           <div className="col-span-2 sm:col-span-1">
             <p className="font-display text-sm font-semibold text-foreground">
               {t("paymentOptions")}
@@ -187,6 +189,7 @@ export default function Footer() {
               ))}
             </div>
           </div>
+          )}
         </div>
 
         {/* Bottom bar */}
