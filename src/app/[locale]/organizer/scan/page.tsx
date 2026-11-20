@@ -93,7 +93,7 @@ export default function OrganizerScanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1B1A3A] text-white">
+    <div className="min-h-screen bg-foreground text-white">
       {/* Top Bar */}
       <header className="border-b border-white/10 bg-black/30 px-6 py-4 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
@@ -118,7 +118,7 @@ export default function OrganizerScanPage() {
         {/* Scanner Input Card */}
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10 shadow-2xl backdrop-blur-xl space-y-6">
           <div className="text-center space-y-2">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF5470] text-white shadow-lg shadow-[#FF5470]/30 animate-pulse">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 animate-pulse">
               <Scan className="h-8 w-8" />
             </div>
             <h1 className="font-display text-2xl font-extrabold sm:text-3xl">
@@ -131,8 +131,8 @@ export default function OrganizerScanPage() {
 
           {/* Form Input for QR Token */}
           <form onSubmit={handleValidate} className="flex gap-2">
-            <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/20 bg-black/40 px-4 py-3 shadow-inner focus-within:border-[#FF5470]">
-              <QrCode className="h-5 w-5 text-[#FF5470]" />
+            <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/20 bg-black/40 px-4 py-3 shadow-inner focus-within:border-primary">
+              <QrCode className="h-5 w-5 text-primary" />
               <input
                 ref={inputRef}
                 type="text"
@@ -145,7 +145,7 @@ export default function OrganizerScanPage() {
             <button
               type="submit"
               disabled={loading || !qrInput.trim()}
-              className="rounded-2xl bg-[#FF5470] px-6 py-3 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 disabled:opacity-50"
+              className="rounded-2xl bg-primary px-6 py-3 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 disabled:opacity-50"
             >
               {loading ? "Memvalidasi..." : "Validasi"}
             </button>

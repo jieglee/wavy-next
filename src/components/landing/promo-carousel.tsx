@@ -18,12 +18,12 @@ interface PromoSlide {
 }
 
 const slideGradients = [
-  "linear-gradient(135deg, #FF5470 0%, #211F2B 100%)",
+  "linear-gradient(135deg, var(--primary) 0%, #211F2B 100%)",
   "linear-gradient(135deg, #211F2B 0%, #14131C 100%)",
-  "linear-gradient(135deg, #FF5470 0%, #14131C 100%)",
+  "linear-gradient(135deg, var(--primary) 0%, #14131C 100%)",
   "linear-gradient(135deg, #14131C 0%, #C6395A 100%)",
-  "linear-gradient(135deg, #211F2B 0%, #FF5470 100%)",
-  "linear-gradient(135deg, #FF5470 0%, #211F2B 60%, #14131C 100%)",
+  "linear-gradient(135deg, #211F2B 0%, var(--primary) 100%)",
+  "linear-gradient(135deg, var(--primary) 0%, #211F2B 60%, #14131C 100%)",
 ];
 
 const AUTO_PLAY_MS = 5000;
@@ -192,7 +192,7 @@ export default function PromoCarousel() {
                   href={slide.ctaHref}
                   className="absolute bottom-3 left-1/2 z-10 flex w-[70%] max-w-xl -translate-x-1/2 items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/85 px-4 py-2.5 text-center shadow-lg backdrop-blur-md sm:bottom-6 sm:px-6 sm:py-3"
                 >
-                  <p className="text-xs font-medium leading-snug text-[#374151] sm:text-sm">
+                  <p className="text-xs font-medium leading-snug text-foreground/85 sm:text-sm">
                     {slide.pill ?? `Who misses seeing ${slide.title || slide.eyebrow}? `}
                     <span className="font-semibold text-[#1E40AF]">{slide.pillCTA ?? "Click to get your tickets"}</span>
                   </p>

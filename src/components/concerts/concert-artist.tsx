@@ -18,11 +18,11 @@ export default function ConcertArtist({
   return (
     <section className="scroll-mt-[72px]">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-[15px] font-bold text-[#111827]">Tentang Penampil</h2>
+        <h2 className="text-[15px] font-bold text-foreground">Tentang Penampil</h2>
         <button
           onClick={onFollow}
           className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-all ${
-            isFollowing ? "bg-[#1E40AF] text-white" : "border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#1E40AF] hover:text-[#1E40AF]"
+            isFollowing ? "bg-[#1E40AF] text-white" : "border border-border bg-white text-foreground/85 hover:border-[#1E40AF] hover:text-[#1E40AF]"
           }`}
         >
           <Heart className={`h-3.5 w-3.5 ${isFollowing ? "fill-white" : ""}`} />
@@ -30,21 +30,21 @@ export default function ConcertArtist({
         </button>
       </div>
       <div className="mt-4 flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#111827] text-white">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-foreground text-white">
           <Music2 className="h-6 w-6" />
         </div>
         <div className="min-w-0">
-          <h3 className="flex flex-wrap items-center gap-2 text-sm font-bold text-[#111827]">
+          <h3 className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground">
             {artistName}
             {typeof followerCount === "number" && (
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-[#6B7280]">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 <Users className="h-3.5 w-3.5" />
                 {followerCount.toLocaleString("id-ID")} penggemar
               </span>
             )}
-            <span className="rounded-full bg-[#F3F4F6] px-2 py-0.5 text-[11px] font-semibold text-[#6B7280]">{genre}</span>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">{genre}</span>
           </h3>
-          {bio && <p className="mt-1.5 text-[13px] leading-6 text-[#4B5563]">{bio}</p>}
+          {bio && <p className="mt-1.5 text-[13px] leading-6 text-foreground/80">{bio}</p>}
         </div>
       </div>
     </section>

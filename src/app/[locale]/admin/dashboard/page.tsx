@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#14131C] text-white">
+    <div className="dark flex min-h-screen bg-background text-white">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col justify-between border-r border-white/10 bg-black/40 p-6 md:flex">
         <div className="space-y-6">
@@ -71,7 +71,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("overview")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "overview" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "overview" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Shield className="h-4 w-4" />
@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("organizers")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "organizers" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "organizers" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Building2 className="h-4 w-4" />
@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("events")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "events" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "events" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Calendar className="h-4 w-4" />
@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("customers")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "customers" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "customers" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Users className="h-4 w-4" />
@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
               {/* Total Revenue */}
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Total GMV Transaksi</span>
-                <p className="font-mono text-3xl font-extrabold text-[#FF5470]">
+                <p className="font-mono text-3xl font-extrabold text-primary">
                   Rp{stats.revenue.toLocaleString("id-ID")}
                 </p>
                 <p className="text-[10px] text-emerald-400">Dari pesanan paid</p>
@@ -227,7 +227,7 @@ export default function AdminDashboardPage() {
                       <td className="py-3 px-4 font-bold text-white">{org.name}</td>
                       <td className="py-3 px-4 text-white/70">{org.email}</td>
                       <td className="py-3 px-4">{org.event_count || 0} Event</td>
-                      <td className="py-3 px-4 font-mono font-bold text-[#FF5470]">
+                      <td className="py-3 px-4 font-mono font-bold text-primary">
                         Rp{Number(org.revenue || 0).toLocaleString("id-ID")}
                       </td>
                       <td className="py-3 px-4">

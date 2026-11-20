@@ -99,24 +99,24 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-surface">
       <Navbar />
 
       <main className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
-        <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-10 shadow-xl text-center space-y-6">
+        <div className="rounded-3xl border border-border bg-white p-6 sm:p-10 shadow-xl text-center space-y-6">
           {/* Header Icon */}
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#FF5470] to-[#1B1A3A] text-white shadow-lg">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-primary to-foreground text-white shadow-lg">
             {isReady ? <CheckCircle2 className="h-10 w-10 animate-bounce" /> : <Clock className="h-10 w-10 animate-pulse" />}
           </div>
 
           <div>
-            <span className="inline-block rounded-full bg-[#1B1A3A]/5 px-3 py-1 text-xs font-bold text-[#1B1A3A] uppercase tracking-wider">
+            <span className="inline-block rounded-full bg-foreground/5 px-3 py-1 text-xs font-bold text-foreground uppercase tracking-wider">
               Smart Queue System
             </span>
-            <h1 className="mt-2 font-display text-2xl font-extrabold text-[#1B1A3A] sm:text-3xl">
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-foreground sm:text-3xl">
               {isReady ? "Giliran Anda Telah Tiba!" : "Anda Berada dalam Antrean"}
             </h1>
-            <p className="mt-1 text-sm text-[#6B6875]">
+            <p className="mt-1 text-sm text-muted-foreground">
               {isReady
                 ? "Silakan lanjutkan untuk menyelesaikan pemesanan tiket Anda."
                 : "Sistem antrean cerdas Wavy memastikan alokasi tiket adil dan bebas bot scalper."}
@@ -130,17 +130,17 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
 
           {/* Queue Status Box */}
           {!isSoldOut && joinError === null && position !== null && (
-            <div className="rounded-2xl bg-[#FAFAF8] p-6 border border-[#EDEBF2] space-y-4">
-              <div className="flex items-center justify-between border-b border-[#EDEBF2] pb-4">
+            <div className="rounded-2xl bg-surface p-6 border border-border space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-4">
                 <div className="text-left">
-                  <p className="text-xs text-[#8B889C]">Nomor Antrean Anda</p>
-                  <p className="font-mono text-3xl font-extrabold text-[#FF5470]">
+                  <p className="text-xs text-muted-foreground/80">Nomor Antrean Anda</p>
+                  <p className="font-mono text-3xl font-extrabold text-primary">
                     #{position !== null ? position : "..."}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-[#8B889C]">Total Dalam Antrean</p>
-                  <p className="font-mono text-2xl font-bold text-[#1B1A3A]">
+                  <p className="text-xs text-muted-foreground/80">Total Dalam Antrean</p>
+                  <p className="font-mono text-2xl font-bold text-foreground">
                     {total} Orang
                   </p>
                 </div>
@@ -148,13 +148,13 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
 
               {/* Progress bar */}
               <div className="space-y-1 text-left">
-                <div className="flex justify-between text-xs text-[#8B889C]">
+                <div className="flex justify-between text-xs text-muted-foreground/80">
                   <span>Status Alokasi Tiket</span>
                   <span>{isReady ? "100%" : `${Math.max(15, 100 - (position || 1) * 20)}%`}</span>
                 </div>
-                <div className="h-3 w-full overflow-hidden rounded-full bg-[#EDEBF2]">
+                <div className="h-3 w-full overflow-hidden rounded-full bg-border">
                   <div
-                    className="h-full bg-gradient-to-r from-[#FF5470] to-[#1B1A3A] transition-all duration-700"
+                    className="h-full bg-gradient-to-r from-primary to-foreground transition-all duration-700"
                     style={{ width: isReady ? "100%" : `${Math.max(15, 100 - (position || 1) * 20)}%` }}
                   />
                 </div>
@@ -189,7 +189,7 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
               disabled={loading || !isReady}
               className={`w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-sm font-extrabold text-white shadow-xl transition-all ${
                 isReady
-                  ? "bg-[#FF5470] hover:brightness-110 active:scale-98 animate-pulse"
+                  ? "bg-primary hover:brightness-110 active:scale-98 animate-pulse"
                   : "bg-gray-400 cursor-not-allowed opacity-70"
               }`}
             >
@@ -199,7 +199,7 @@ export default function WaitingRoomPage({ params }: { params: Promise<{ id: stri
           )}
 
           {/* Anti scalper badge */}
-          <div className="flex items-center justify-center gap-2 text-xs text-[#8B889C] pt-2">
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/80 pt-2">
             <ShieldCheck className="h-4 w-4 text-emerald-600" />
             <span>Dilindungi enkripsi JWT unik & sistem anti-bot</span>
           </div>

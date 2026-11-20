@@ -36,7 +36,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
       id="concert-hero"
       data-aos="fade-in"
       data-aos-duration="800"
-      className="relative w-full overflow-visible bg-[#10191d] lg:h-[300px]"
+      className="relative w-full overflow-visible bg-stage lg:h-[300px]"
     >
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">

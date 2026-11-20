@@ -25,7 +25,7 @@ export default function ConcertStickyHeader({
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 top-0 z-50 border-b border-[#E5E7EB] bg-white shadow-sm">
+    <div className="fixed inset-x-0 top-0 z-50 border-b border-border bg-white shadow-sm">
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
         <div className="grid h-[64px] items-center lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
           <div className="min-w-0">
@@ -34,11 +34,11 @@ export default function ConcertStickyHeader({
 
           <div className="hidden items-center justify-between gap-3 px-5 lg:flex">
             <div className="leading-none">
-              <p className="text-[11px] text-[#6B7280]">
+              <p className="text-[11px] text-muted-foreground">
                 Harga mulai dari
               </p>
 
-              <p className="mt-1 text-[15px] font-bold text-[#111827]">
+              <p className="mt-1 text-[15px] font-bold text-foreground">
                 {formatIDR(minPrice)}
               </p>
             </div>

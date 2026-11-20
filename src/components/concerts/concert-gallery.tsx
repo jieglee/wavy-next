@@ -138,8 +138,8 @@ export default function ConcertGallery({
   return (
     <section id="sec-gallery" className="scroll-mt-[72px]" ref={sectionRef}>
       <div className="flex items-center gap-2">
-        <ImageIcon className="h-5 w-5 text-[#111827] stroke-[2.5]" />
-        <h2 className="font-sans text-[24px] font-bold text-[#111827]">Galeri</h2>
+        <ImageIcon className="h-5 w-5 text-foreground stroke-[2.5]" />
+        <h2 className="font-sans text-[24px] font-bold text-foreground">Galeri</h2>
       </div>
 
       <div className="mt-6 flex flex-col gap-5">

@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#14131C] text-white">
+    <div className="dark flex min-h-screen bg-background text-white">
       <div className="mx-auto flex w-full max-w-md flex-col justify-center px-6 py-12">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl space-y-6">
           <div className="text-center space-y-2">
@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
               <WavyIcon size={32} />
               <span className="font-display text-2xl font-bold tracking-tight">Wavy Admin</span>
             </Link>
-            <div className="mx-auto mt-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5470]/20 text-[#FF5470]">
+            <div className="mx-auto mt-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
               <Shield className="h-6 w-6" />
             </div>
             <h1 className="font-display text-2xl font-extrabold">Login Super Admin</h1>
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
           <form onSubmit={handleLogin} className="space-y-4 text-xs">
             <div>
               <label className="font-bold text-white/90">Email Admin</label>
-              <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 focus-within:border-[#FF5470]">
+              <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 focus-within:border-primary">
                 <Mail className="h-4 w-4 text-white/50" />
                 <input
                   type="email"
@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
 
             <div>
               <label className="font-bold text-white/90">Kata Sandi</label>
-              <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 focus-within:border-[#FF5470]">
+              <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 focus-within:border-primary">
                 <Lock className="h-4 w-4 text-white/50" />
                 <input
                   type="password"
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-[#FF5470] py-3.5 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-98 disabled:opacity-50"
+              className="w-full rounded-2xl bg-primary py-3.5 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-98 disabled:opacity-50"
             >
               {loading ? "Memverifikasi..." : "Masuk ke Panel Admin"}
             </button>

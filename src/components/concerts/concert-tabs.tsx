@@ -10,7 +10,7 @@ export default function ConcertTabs({ tabs, activeTab }: { tabs: Tab[]; activeTa
             key={tab.id}
             onClick={tab.onClick}
             className={`relative whitespace-nowrap px-6 py-3 text-[14px] font-semibold transition-colors sm:px-7 ${
-              active ? "text-[#1E40AF]" : "text-[#9AA0A6] hover:text-[#4B5563]"
+              active ? "text-[#1E40AF]" : "text-muted-foreground/70 hover:text-foreground/80"
             }`}
           >
             {tab.label}

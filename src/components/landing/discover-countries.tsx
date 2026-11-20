@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 function AnimatedOffIcon({
   size = 26,
-  color = "#FF5470",
+  color = "var(--primary)",
   className = "",
 }: {
   size?: number;
@@ -140,7 +140,7 @@ export default function DiscoverCountries() {
                 {/* Header like Loket: Jelajahi Event di Kotamu */}
                 <div className="mb-6 flex items-center gap-2">
                     <AnimatedOffIcon />
-                    <h2 className="font-display text-xl font-bold text-[#1B1A24] sm:text-2xl">
+                    <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">
                         {t("title")}
                     </h2>
                 </div>
@@ -150,15 +150,15 @@ export default function DiscoverCountries() {
                         <Link
                             key={city.id}
                             href={city.href}
-                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-[#E6E4F0] bg-white px-5 py-3 shadow-sm transition-all duration-200 hover:border-[#D8D5E8] hover:shadow-md sm:h-[118px]"
+                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-border bg-white px-5 py-3 shadow-sm transition-all duration-200 hover:border-input hover:shadow-md sm:h-[118px]"
                         >
                             {/* Left: text */}
                             <div className="flex flex-col justify-center">
-                                <p className="font-display text-[15px] font-bold leading-tight text-[#1B1A24]">
+                                <p className="font-display text-[15px] font-bold leading-tight text-foreground">
                                     {city.label1}
                                 </p>
                                 {city.label2 && (
-                                    <p className="font-display text-[15px] font-bold leading-tight text-[#1B1A24]">
+                                    <p className="font-display text-[15px] font-bold leading-tight text-foreground">
                                         {city.label2}
                                     </p>
                                 )}

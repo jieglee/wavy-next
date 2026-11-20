@@ -59,7 +59,7 @@ export default function OrganizerLoginPage() {
           <motion.div layout transition={{ duration: 0.6, ease: "easeOut" }}>
             <WavyIconAnimated
               size={48}
-              color="#fff"
+              color="var(--primary-foreground)"
               drawDuration={1.1}
               onFirstDrawComplete={() => setShowBrandName(true)}
             />

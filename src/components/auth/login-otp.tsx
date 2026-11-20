@@ -162,7 +162,7 @@ export default function LoginOtpCard() {
                     <motion.div layout transition={{ duration: 0.6, ease: "easeOut" }}>
                         <WavyIconAnimated
                             size={48}
-                            color="#fff"
+                            color="var(--primary-foreground)"
                             drawDuration={1.1}
                             onFirstDrawComplete={() => setShowBrandName(true)}
                         />
@@ -202,8 +202,8 @@ export default function LoginOtpCard() {
                     <div className="mb-8 flex items-center justify-between md:hidden">
                         <div className="flex items-center gap-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 15 Q6 8, 9 15 T15 15 T21 15" stroke="#FF5470" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-                                <circle cx="19" cy="6" r="2.2" fill="#FF5470" />
+                                <path d="M3 15 Q6 8, 9 15 T15 15 T21 15" stroke="var(--primary)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+                                <circle cx="19" cy="6" r="2.2" fill="var(--primary)" />
                             </svg>
                             <span className="font-display text-lg font-bold tracking-tight text-foreground">Wavy</span>
                         </div>

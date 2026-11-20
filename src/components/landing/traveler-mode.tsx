@@ -90,12 +90,12 @@ export default function TravelerMode() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <TravelerModeIcon className="text-[#FF5470]" />
-            <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
+            <TravelerModeIcon className="text-primary" />
+            <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">
               Make It a Trip
             </h2>
           </div>
-          <Link href="#" className="text-sm font-medium text-[#1B1A3A] underline underline-offset-4 transition-colors hover:text-[#FF5470]">
+          <Link href="#" className="text-sm font-medium text-foreground underline underline-offset-4 transition-colors hover:text-primary">
             Lihat semua &rarr;
           </Link>
         </div>
@@ -105,7 +105,7 @@ export default function TravelerMode() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label="Previous"
-              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
+              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -115,7 +115,7 @@ export default function TravelerMode() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label="Next"
-              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
+              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>
@@ -126,7 +126,7 @@ export default function TravelerMode() {
               <div key={hotel.id} className="w-[260px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]">
                 <Link href={`/hotels/${hotel.id}`} className="group block">
                   <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                    <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-[#1E40AF]/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
+                    <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-[#1E40AF]/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
                       {hotel.image ? (
                         <img
                           src={hotel.image}
@@ -140,15 +140,15 @@ export default function TravelerMode() {
                       <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                     </div>
                   </div>
-                  <p className="mt-3 truncate text-xs text-[#8B889C]">{hotel.location}</p>
-                  <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">{hotel.name}</h3>
+                  <p className="mt-3 truncate text-xs text-muted-foreground/80">{hotel.location}</p>
+                  <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-foreground transition-all duration-300 group-hover:text-primary">{hotel.name}</h3>
                   <div className="mt-1 flex items-center gap-1">
                     <StarIcon className="h-3.5 w-3.5" />
-                    <span className="text-xs font-semibold text-[#1B1A3A]">{hotel.rating}</span>
+                    <span className="text-xs font-semibold text-foreground">{hotel.rating}</span>
                   </div>
-                  <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
-                    <p className="text-[0.65rem] text-[#8B889C]">Mulai dari</p>
-                    <p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{Number(hotel.price).toLocaleString("id-ID")}/malam</p>
+                  <div className="mt-3 border-t border-border pt-2.5">
+                    <p className="text-[0.65rem] text-muted-foreground/80">Mulai dari</p>
+                    <p className="font-mono text-sm font-bold text-foreground">Rp{Number(hotel.price).toLocaleString("id-ID")}/malam</p>
                   </div>
                 </Link>
               </div>

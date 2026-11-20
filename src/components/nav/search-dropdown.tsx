@@ -32,11 +32,11 @@ interface Popular {
 
 // dekorasi thumbnail tanpa poster (bukan data)
 const GRADIENTS = [
-  "linear-gradient(135deg,#1B1A3A,#2a2a4a)",
+  "linear-gradient(135deg,var(--foreground),#2a2a4a)",
   "linear-gradient(135deg,#111,#444)",
   "linear-gradient(135deg,#222,#666)",
   "linear-gradient(135deg,#1e3a8a,#3b82f6)",
-  "linear-gradient(135deg,#7c3aed,#c084fc)",
+  "linear-gradient(135deg,var(--primary-glow),#c084fc)",
 ];
 
 function extractConcerts(data: unknown): Concert[] {
@@ -81,19 +81,19 @@ export default function SearchDropdown({
     : popular;
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-[#EDEBF2] bg-white shadow-[0_16px_48px_-8px_rgba(27,26,58,0.22)]">
+    <div className="w-full overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_48px_-8px_rgba(27,26,58,0.22)]">
       <div className="max-h-[min(72vh,520px)] overflow-y-auto p-4">
-        <p className="mb-3 text-[13px] font-bold text-[#1B1A3A]">Banyak Dicari</p>
+        <p className="mb-3 text-[13px] font-bold text-foreground">Banyak Dicari</p>
         <div className="mb-4 flex flex-wrap gap-2">
           {filteredTrending.length === 0 ? (
-            <p className="text-xs text-[#8B889C]">Tidak ada hasil untuk &quot;{query}&quot;</p>
+            <p className="text-xs text-muted-foreground/80">Tidak ada hasil untuk &quot;{query}&quot;</p>
           ) : (
             filteredTrending.map((term) => (
               <Link
                 key={term}
                 href={`/concerts?q=${encodeURIComponent(term)}`}
                 onClick={onSelect}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1.5 text-xs font-medium text-[#1B1A3A] transition-colors hover:bg-[#DBEAFE]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-[#DBEAFE]"
               >
                 <TrendingUp className="h-3.5 w-3.5 shrink-0 text-[#1E40AF]" />
                 {term}
@@ -102,8 +102,8 @@ export default function SearchDropdown({
           )}
         </div>
 
-        <div className="rounded-xl border border-[#EDEBF2] bg-white">
-          <p className="px-3 pt-3 text-[13px] font-bold text-[#1B1A3A] sm:px-4">Event Populer</p>
+        <div className="rounded-xl border border-border bg-white">
+          <p className="px-3 pt-3 text-[13px] font-bold text-foreground sm:px-4">Event Populer</p>
           {popularRes.loading && <p className="px-3 py-3 text-xs text-muted-foreground sm:px-4">{t("loading")}</p>}
           {popularRes.error !== undefined && (
             <div className="flex flex-wrap items-center gap-2 px-3 py-3 text-xs text-muted-foreground sm:px-4" role="alert">
@@ -116,15 +116,15 @@ export default function SearchDropdown({
           {popularRes.data && popular.length === 0 && (
             <p className="px-3 py-3 text-xs text-muted-foreground sm:px-4">{t("noEvents")}</p>
           )}
-          <div className="mt-2 divide-y divide-[#F0EFF7]">
+          <div className="mt-2 divide-y divide-border">
             {(filteredPopular.length ? filteredPopular : popular).slice(0, 5).map((ev) => (
               <Link
                 key={ev.id}
                 href={`/concerts/${ev.id}`}
                 onClick={onSelect}
-                className="flex items-center gap-3 px-3 py-3 transition-colors hover:bg-[#FAFAF8] sm:px-4"
+                className="flex items-center gap-3 px-3 py-3 transition-colors hover:bg-surface sm:px-4"
               >
-                <div className="relative h-12 w-20 shrink-0 overflow-hidden rounded-lg border border-[#EDEBF2] bg-[#F0EFF7]">
+                <div className="relative h-12 w-20 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
                   {ev.poster_url ? (
                     <img src={ev.poster_url} alt={ev.title} className="h-full w-full object-cover" loading="lazy" />
                   ) : (
@@ -132,8 +132,8 @@ export default function SearchDropdown({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="line-clamp-2 text-xs font-semibold leading-snug text-[#1B1A3A]">{ev.title}</p>
-                  <p className="mt-0.5 truncate text-[11px] text-[#8B889C]">{ev.venue}</p>
+                  <p className="line-clamp-2 text-xs font-semibold leading-snug text-foreground">{ev.title}</p>
+                  <p className="mt-0.5 truncate text-[11px] text-muted-foreground/80">{ev.venue}</p>
                 </div>
               </Link>
             ))}

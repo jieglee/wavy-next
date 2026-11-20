@@ -25,7 +25,7 @@ export default function ConcertCountdown({
       <button
         onClick={onNotify}
         className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all ${
-          isNotified ? "bg-emerald-600 text-white" : "border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#1E40AF] hover:text-[#1E40AF]"
+          isNotified ? "bg-emerald-600 text-white" : "border border-border bg-white text-foreground/85 hover:border-[#1E40AF] hover:text-[#1E40AF]"
         }`}
       >
         <Bell className="h-3.5 w-3.5" />

@@ -73,22 +73,22 @@ export default function OrganizerOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-surface">
       {/* Top Bar */}
-      <header className="border-b border-[#EDEBF2] bg-white px-6 py-4">
+      <header className="border-b border-border bg-white px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/organizer/dashboard" className="flex items-center gap-2">
               <WavyIcon size={26} />
-              <span className="font-display text-lg font-bold text-[#1B1A3A]">Wavy EO Portal</span>
+              <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
             </Link>
             <span className="text-gray-300">/</span>
-            <span className="text-xs font-bold text-[#FF5470]">Verifikasi Pesanan</span>
+            <span className="text-xs font-bold text-primary">Verifikasi Pesanan</span>
           </div>
 
           <Link
             href="/organizer/dashboard"
-            className="flex items-center gap-1.5 text-xs font-bold text-[#8B889C] hover:text-[#1B1A3A]"
+            className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/80 hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Kembali ke Dashboard
@@ -99,24 +99,24 @@ export default function OrganizerOrdersPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h1 className="font-display text-2xl font-extrabold text-[#1B1A3A]">
+            <h1 className="font-display text-2xl font-extrabold text-foreground">
               Daftar Pesanan & Pembayaran
             </h1>
-            <p className="text-xs text-[#6B6875]">
+            <p className="text-xs text-muted-foreground">
               Verifikasi transfer manual, terbitkan e-tiket QR, atau kelola refund pembeli.
             </p>
           </div>
 
           {/* Status filter chips */}
-          <div className="flex gap-1.5 overflow-x-auto rounded-2xl bg-white p-1.5 border border-[#EDEBF2]">
+          <div className="flex gap-1.5 overflow-x-auto rounded-2xl bg-white p-1.5 border border-border">
             {["all", "pending_payment", "paid", "rejected", "refunded"].map((st) => (
               <button
                 key={st}
                 onClick={() => setSelectedStatus(st)}
                 className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
                   selectedStatus === st
-                    ? "bg-[#1B1A3A] text-white"
-                    : "text-[#6B6875] hover:text-[#1B1A3A]"
+                    ? "bg-foreground text-white"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {st === "all" ? "Semua" : st}
@@ -131,16 +131,16 @@ export default function OrganizerOrdersPage() {
         ) : loadError ? (
           <ErrorState error={loadError} onRetry={ordersRes.reload} />
         ) : orders.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-[#EDEBF2] bg-white p-12 text-center space-y-3">
-            <ShoppingBag className="h-12 w-12 text-[#8B889C] mx-auto" />
-            <h3 className="text-base font-bold text-[#1B1A3A]">Tidak Ada Pesanan</h3>
-            <p className="text-xs text-[#6B6875]">Belum ada data pesanan pada filter ini.</p>
+          <div className="rounded-3xl border border-dashed border-border bg-white p-12 text-center space-y-3">
+            <ShoppingBag className="h-12 w-12 text-muted-foreground/80 mx-auto" />
+            <h3 className="text-base font-bold text-foreground">Tidak Ada Pesanan</h3>
+            <p className="text-xs text-muted-foreground">Belum ada data pesanan pada filter ini.</p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-3xl border border-[#EDEBF2] bg-white shadow-sm">
+          <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-[#EDEBF2] bg-[#FAFAF8] text-[#8B889C]">
+                <thead className="border-b border-border bg-surface text-muted-foreground/80">
                   <tr>
                     <th className="px-6 py-4 font-bold">No. Order</th>
                     <th className="px-6 py-4 font-bold">Customer ID</th>
@@ -150,18 +150,18 @@ export default function OrganizerOrdersPage() {
                     <th className="px-6 py-4 font-bold text-right">Aksi Verifikasi</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EDEBF2]">
+                <tbody className="divide-y divide-border">
                   {orders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-[#FAFAF8] transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-sm text-[#1B1A3A]">
+                    <tr key={ord.id} className="hover:bg-surface transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-sm text-foreground">
                         #{ord.id}
                       </td>
-                      <td className="px-6 py-4 font-semibold text-[#1B1A3A]">
+                      <td className="px-6 py-4 font-semibold text-foreground">
                         Customer #{ord.customer_id}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-bold text-[#1B1A3A]">{ord.quantity} Tiket</span>
-                        <p className="font-mono text-xs font-extrabold text-[#FF5470]">
+                        <span className="font-bold text-foreground">{ord.quantity} Tiket</span>
+                        <p className="font-mono text-xs font-extrabold text-primary">
                           Rp{Number(ord.total_price).toLocaleString("id-ID")}
                         </p>
                       </td>
@@ -180,7 +180,7 @@ export default function OrganizerOrdersPage() {
                           {ord.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-[#8B889C]">
+                      <td className="px-6 py-4 text-muted-foreground/80">
                         {new Date(ord.created_at).toLocaleString("id-ID")}
                       </td>
                       <td className="px-6 py-4 text-right space-x-2">

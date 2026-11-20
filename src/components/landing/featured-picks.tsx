@@ -127,8 +127,8 @@ export default function FeaturedPicks({
 
             <div className="ml-6 sm:ml-12">
                 <div className="flex items-center justify-between">
-                    <h3 className="flex items-center gap-2 text-2xl font-semibold text-[#14121A]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024" className="shrink-0 text-[#FF5470]">
+                    <h3 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024" className="shrink-0 text-primary">
                             <path d="M0 0h1024v1024H0z" fill="none" />
                             <path fill="currentColor" d="M128 384v512h768V192H768v32a32 32 0 1 1-64 0v-32H320v32a32 32 0 0 1-64 0v-32H128v128h768v64zm192-256h384V96a32 32 0 1 1 64 0v32h160a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h160V96a32 32 0 0 1 64 0zm-32 384h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 1 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64" />
                         </svg>
@@ -146,7 +146,7 @@ export default function FeaturedPicks({
                             onClick={() => setTab(key)}
                             className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 px-5 py-2 text-xs font-bold leading-none transition-all ${tab === key
                                 ? "border-[#1A4BDE] bg-white text-[#1A4BDE] shadow-[0_2px_8px_rgba(26,75,222,0.14)]"
-                                : "border-[#E8E3F2] bg-white text-[#6B6673] hover:border-[#D4CFE6]"
+                                : "border-border bg-white text-muted-foreground hover:border-input"
                                 }`}
                         >
                             {key === "popular" ? "🔥 Populer" : "🏆 Minggu ini"}
@@ -178,10 +178,10 @@ export default function FeaturedPicks({
                                 >
                                     <div className="relative flex flex-col items-center self-stretch">
                                         {showDate ? (
-                                            <div className="relative z-[1] flex w-[52px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-1 py-[10px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:w-[56px]">
-                                                <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9CA3AF]">{ev.month}</span>
-                                                <span className="mt-[2px] text-[20px] font-extrabold leading-none text-[#111827]">{ev.day}</span>
-                                                <span className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[#9CA3AF]">{ev.weekday}</span>
+                                            <div className="relative z-[1] flex w-[52px] flex-col items-center justify-center rounded-[10px] border border-border bg-surface px-1 py-[10px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:w-[56px]">
+                                                <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">{ev.month}</span>
+                                                <span className="mt-[2px] text-[20px] font-extrabold leading-none text-foreground">{ev.day}</span>
+                                                <span className="mt-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">{ev.weekday}</span>
                                             </div>
                                         ) : (
                                             <div className="w-[52px] sm:w-[56px]" aria-hidden />
@@ -191,17 +191,17 @@ export default function FeaturedPicks({
                                             style={{
                                                 top: showDate ? 62 : -18,
                                                 bottom: isLast ? -6 : -34,
-                                                backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)",
+                                                backgroundImage: "repeating-linear-gradient(to bottom, var(--input) 0 4px, transparent 4px 8px)",
                                                 opacity: 0.7,
                                             }}
                                             aria-hidden
                                         />
                                     </div>
                                     <div className="min-w-0 pb-1 pl-3 pt-1">
-                                        <p className={`line-clamp-2 text-[15px] font-bold leading-[1.35] ${isBlue ? "text-[#1A4BDE] group-hover:text-[#1A3AB8]" : "text-[#111827] group-hover:text-[#1A4BDE]"}`}>
+                                        <p className={`line-clamp-2 text-[15px] font-bold leading-[1.35] ${isBlue ? "text-[#1A4BDE] group-hover:text-[#1A3AB8]" : "text-foreground group-hover:text-[#1A4BDE]"}`}>
                                             {ev.title}
                                         </p>
-                                        <p className="mt-[6px] truncate text-[12.5px] leading-none text-[#9CA3AF]">{ev.meta}</p>
+                                        <p className="mt-[6px] truncate text-[12.5px] leading-none text-muted-foreground/70">{ev.meta}</p>
                                     </div>
                                     <div className="flex justify-end pt-1">
                                         <PickThumb
@@ -213,7 +213,7 @@ export default function FeaturedPicks({
                                         className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
                                         style={{
                                             marginLeft: 60,
-                                            backgroundImage: "repeating-linear-gradient(to right, #E5E7EB 0 4px, transparent 4px 8px)",
+                                            backgroundImage: "repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 8px)",
                                         }}
                                         aria-hidden
                                     />
@@ -253,9 +253,9 @@ export default function FeaturedPicks({
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <button aria-label="Close" onClick={() => setShowAll(false)} className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
                     <div className="relative flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-                        <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-4">
-                            <h4 className="text-base font-bold text-[#111827]">Semua Event</h4>
-                            <button onClick={() => setShowAll(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]">✕</button>
+                        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+                            <h4 className="text-base font-bold text-foreground">Semua Event</h4>
+                            <button onClick={() => setShowAll(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-border">✕</button>
                         </div>
                         <div className="overflow-y-auto px-6 py-2">
                             {(() => {
@@ -266,29 +266,29 @@ export default function FeaturedPicks({
                                     const isLast = idx === allItems.length - 1;
                                     last = key;
                                     return (
-                                        <a key={`all-${ev.id}`} href={ev.href} className="group relative grid grid-cols-[52px_1fr_96px] items-start gap-4 py-4 hover:bg-[#FAFAFF]">
+                                        <a key={`all-${ev.id}`} href={ev.href} className="group relative grid grid-cols-[52px_1fr_96px] items-start gap-4 py-4 hover:bg-surface">
                                             <div className="relative flex flex-col items-center self-stretch">
                                                 {showDate ? (
-                                                    <div className="relative z-[1] flex w-[48px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-1 py-2 text-center shadow-sm">
-                                                        <span className="text-[9px] font-semibold uppercase tracking-wide text-[#9CA3AF]">{ev.month}</span>
-                                                        <span className="text-base font-extrabold leading-none text-[#111827]">{ev.day}</span>
-                                                        <span className="mt-0.5 text-[9px] font-medium uppercase text-[#9CA3AF]">{ev.weekday}</span>
+                                                    <div className="relative z-[1] flex w-[48px] flex-col items-center justify-center rounded-[10px] border border-border bg-surface px-1 py-2 text-center shadow-sm">
+                                                        <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/70">{ev.month}</span>
+                                                        <span className="text-base font-extrabold leading-none text-foreground">{ev.day}</span>
+                                                        <span className="mt-0.5 text-[9px] font-medium uppercase text-muted-foreground/70">{ev.weekday}</span>
                                                     </div>
                                                 ) : (
                                                     <div className="w-[48px]" aria-hidden />
                                                 )}
                                                 <div
                                                     className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
-                                                    style={{ top: showDate ? 56 : -16, bottom: isLast ? -6 : -28, backgroundImage: "repeating-linear-gradient(to bottom, #D1D5DB 0 4px, transparent 4px 8px)", opacity: 0.6 }}
+                                                    style={{ top: showDate ? 56 : -16, bottom: isLast ? -6 : -28, backgroundImage: "repeating-linear-gradient(to bottom, var(--input) 0 4px, transparent 4px 8px)", opacity: 0.6 }}
                                                     aria-hidden
                                                 />
                                             </div>
                                             <div className="min-w-0 py-1">
-                                                <p className="line-clamp-2 text-sm font-bold leading-tight text-[#111827] group-hover:text-[#1A4BDE]">{ev.title}</p>
-                                                <p className="mt-1 truncate text-xs text-[#9CA3AF]">{ev.meta}</p>
+                                                <p className="line-clamp-2 text-sm font-bold leading-tight text-foreground group-hover:text-[#1A4BDE]">{ev.title}</p>
+                                                <p className="mt-1 truncate text-xs text-muted-foreground/70">{ev.meta}</p>
                                             </div>
                                             <PickThumb src={ev.image} className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />
-                                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{ marginLeft: 52, backgroundImage: "repeating-linear-gradient(to right, #E5E7EB 0 4px, transparent 4px 8px)" }} aria-hidden />
+                                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{ marginLeft: 52, backgroundImage: "repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 8px)" }} aria-hidden />
                                         </a>
                                     );
                                 });

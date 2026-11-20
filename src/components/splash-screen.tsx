@@ -38,7 +38,7 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                     >
                         <path
                             d="M0,32 C50,6 100,6 150,32 C200,58 250,58 300,32 C340,12 370,10 400,18"
-                            stroke="#FF5470"
+                            stroke="var(--primary)"
                             strokeWidth="3"
                             strokeLinecap="round"
                             fill="none"
