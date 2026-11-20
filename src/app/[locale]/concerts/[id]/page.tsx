@@ -216,6 +216,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                         salesStatus={concert.sales_status}
                         salesStartAt={concert.sales_start_at}
                         salesEndAt={concert.sales_end_at}
+                        organizerName={concert.organizer_name}
                       />
                     </div>
                   )}

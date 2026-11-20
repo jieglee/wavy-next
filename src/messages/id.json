@@ -212,7 +212,8 @@
         "loading": "Memuat informasi konser...",
         "ticket": {
             "title": "Tiket",
-            "summary": "{count} kategori tiket - Harga mulai dari {price}"
+            "summary": "{count} kategori tiket - Harga mulai dari {price}",
+            "organizerFallback": "Penyelenggara"
         },
         "priceFrom": "Harga mulai dari",
         "priceFromShort": "Mulai dari"
