@@ -4,7 +4,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Toaster } from "react-hot-toast";
 import { bagelFatOne, poppins } from "@/lib/fonts";
-import AosProvider from "@/components/aos-provider";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -52,7 +51,7 @@ export default async function LocaleLayout({
     <html lang={locale} data-scroll-behavior="smooth" className={`${poppins.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col">
         <NextIntlClientProvider messages={messages}>
-          <AosProvider>{children}</AosProvider>
+          {children}
           <Toaster />
         </NextIntlClientProvider>
       </body>

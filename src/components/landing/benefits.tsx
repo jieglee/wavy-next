@@ -19,7 +19,7 @@ const benefits = [
 
 export default function Benefits() {
   return (
-    <section data-aos="fade-up" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
+    <section className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
@@ -34,8 +34,6 @@ export default function Benefits() {
           {benefits.map((b, i) => (
             <div
               key={b.title}
-              data-aos="fade-up"
-              data-aos-delay={i * 100}
               className={`rounded-xl border border-border bg-muted p-5 transition-colors sm:p-6 ${
                 i % 2 === 0
                   ? "hover:border-primary/40"

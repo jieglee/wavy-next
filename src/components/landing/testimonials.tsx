@@ -21,7 +21,7 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section data-aos="fade-up" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
+    <section className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
@@ -36,8 +36,6 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <div
               key={t.name}
-              data-aos="fade-up"
-              data-aos-delay={i * 100}
               className="relative flex flex-col rounded-xl border border-border bg-muted p-5 sm:p-6"
             >
               <svg

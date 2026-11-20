@@ -9,7 +9,7 @@ const concerts = [
 
 export default function Featured() {
   return (
-    <section id="featured" data-aos="fade-up" className="px-4 pb-24 sm:px-6 lg:px-8">
+    <section id="featured" className="px-4 pb-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="flex items-end justify-between">
           <div>
@@ -33,8 +33,6 @@ export default function Featured() {
             <Link
               key={concert.title}
               href={`/concerts/${concert.id}`}
-              data-aos="fade-up"
-              data-aos-delay={i * 100}
               className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-muted transition-colors hover:border-primary/40"
             >
               <div className="aspect-4/3 w-full bg-linear-to-br from-primary/25 via-primary-glow/20 to-primary/25" />

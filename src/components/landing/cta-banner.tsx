@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation";
 
 export default function CtaBanner() {
   return (
-    <section data-aos="zoom-in" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
+    <section className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-2xl border border-border bg-muted px-6 py-14 text-center shadow-[0_24px_80px_color-mix(in_oklab,var(--foreground)_8%,transparent)] sm:px-14">
           <div
