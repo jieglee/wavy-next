@@ -143,7 +143,9 @@
             "SALES_ENDED": "Masa penjualan tiket untuk konser ini sudah berakhir.",
             "QUOTA_EXCEEDED": "Sisa tiket tidak cukup untuk jumlah yang kamu pilih.",
             "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
-            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan."
+            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan.",
+            "INVALID_QUANTITY": "Jumlah tiket tidak valid. Pilih 1 sampai 4 tiket.",
+            "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu."
         }
     },
     "OrderStatus": {

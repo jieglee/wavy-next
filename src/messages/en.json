@@ -143,7 +143,9 @@
             "SALES_ENDED": "The ticket sales period for this concert has ended.",
             "QUOTA_EXCEEDED": "Not enough tickets left for the quantity you selected.",
             "ORDER_EXPIRED": "This order has expired. Please place a new order.",
-            "ORGANIZER_SUSPENDED": "This organizer account is suspended."
+            "ORGANIZER_SUSPENDED": "This organizer account is suspended.",
+            "INVALID_QUANTITY": "Invalid ticket quantity. Choose 1 to 4 tickets.",
+            "VALIDATION_ERROR": "The data you sent is not valid. Please check your input."
         }
     },
     "OrderStatus": {

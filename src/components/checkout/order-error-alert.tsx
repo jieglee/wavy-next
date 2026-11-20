@@ -11,7 +11,7 @@ export type OrderSubmitError = {
 };
 
 const SALES_CODES = new Set(["SALES_CLOSED", "SALES_NOT_STARTED", "SALES_ENDED"]);
-const RESELECT_CODES = new Set(["QUOTA_EXCEEDED", "ORDER_EXPIRED"]);
+const RESELECT_CODES = new Set(["QUOTA_EXCEEDED", "ORDER_EXPIRED", "INVALID_QUANTITY"]);
 
 /**
  * Pesan gagal membuat order di checkout. Teks per error.code backend; error lain
