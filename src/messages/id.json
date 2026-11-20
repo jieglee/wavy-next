@@ -511,6 +511,29 @@
             "manualPlaceholder": "Tempel kode QR tiket",
             "check": "Cek",
             "history": "Riwayat scan"
+        },
+        "artists": {
+            "title": "Artis",
+            "subtitle": "Artis yang bisa kamu pilih sebagai penampil utama event.",
+            "add": "Tambah artis",
+            "formNew": "Artis baru",
+            "formEdit": "Edit artis",
+            "name": "Nama",
+            "genre": "Genre",
+            "photo": "URL foto",
+            "bio": "Bio",
+            "cancel": "Batal",
+            "save": "Simpan",
+            "saving": "Menyimpan…",
+            "edit": "Edit",
+            "delete": "Hapus",
+            "added": "Artis ditambahkan.",
+            "updated": "Artis diperbarui.",
+            "deleted": "Artis dihapus.",
+            "confirmDelete": "Hapus artis \"{name}\"?",
+            "errName": "Nama artis wajib diisi.",
+            "emptyTitle": "Belum ada artis",
+            "emptyText": "Tambahkan artis dulu sebelum membuat event."
         }
     }
 }

@@ -1,272 +1,156 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
-import { Plus, Trash2, Edit2, Music, ArrowLeft, X } from "lucide-react";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
-import { Link } from "@/i18n/navigation";
-import { WavyIcon } from "@/components/landing/wavy-icon";
-import { ErrorState } from "@/components/states/async-states";
-import { apiGet, apiPost, apiPut, apiDelete, getAuthToken } from "@/lib/api";
-import type { Artist } from "@/types/type";
+import { Mic2, Pencil, Plus, Trash2 } from "lucide-react";
+import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api";
+import type { StudioArtist } from "@/lib/organizer";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useAuthToken } from "@/hooks/use-auth-session";
+import { useStudioError } from "@/hooks/use-studio-error";
+import { AsyncContent, EmptyState } from "@/components/states/async-states";
+import { StudioPageHeader } from "@/components/studio/studio-shell";
+import { btn, inputCls, labelCls } from "@/components/studio/studio-ui";
 
-export default function OrganizerArtistsPage() {
-  const router = useRouter();
+type Draft = { name: string; genre: string; photo_url: string; bio: string };
+const empty: Draft = { name: "", genre: "", photo_url: "", bio: "" };
 
-  const [artists, setArtists] = useState<Artist[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingArtist, setEditingArtist] = useState<Artist | null>(null);
+export default function StudioArtistsPage() {
+  const t = useTranslations("Studio.artists");
+  const studioError = useStudioError();
+  const authed = !!useAuthToken();
+  const artists = useApiResource(authed ? "studio-artists" : null, () => apiGet<StudioArtist[]>("/organizer/artists"));
+  const [editing, setEditing] = useState<number | "new" | null>(null);
+  const [draft, setDraft] = useState<Draft>(empty);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [name, setName] = useState("");
-  const [genre, setGenre] = useState("");
-  const [bio, setBio] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [loadError, setLoadError] = useState<unknown>(null);
-  const [loadNonce, setLoadNonce] = useState(0);
-
-  useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/organizer/login");
-      return;
-    }
-
-    async function loadArtists() {
-      setLoading(true);
-      setLoadError(null);
-      try {
-        const data = await apiGet<Artist[]>("/organizer/artists");
-        setArtists(data || []);
-      } catch (err: unknown) {
-        setLoadError(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadArtists();
-  }, [router, loadNonce]);
-
-  function handleOpenCreate() {
-    setEditingArtist(null);
-    setName("");
-    setGenre("");
-    setBio("");
-    setModalOpen(true);
+  function open(a?: StudioArtist) {
+    setError(null);
+    setEditing(a ? a.id : "new");
+    setDraft(a ? { name: a.name, genre: a.genre ?? "", photo_url: a.photo_url ?? "", bio: a.bio ?? "" } : empty);
   }
 
-  function handleOpenEdit(artist: Artist) {
-    setEditingArtist(artist);
-    setName(artist.name);
-    setGenre(artist.genre);
-    setBio(artist.bio);
-    setModalOpen(true);
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function save(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
+    if (!draft.name.trim()) return setError(t("errName"));
+    setSaving(true);
+    setError(null);
+    const body = { name: draft.name.trim(), genre: draft.genre.trim(), photo_url: draft.photo_url.trim(), bio: draft.bio.trim() };
     try {
-      const payload = {
-        name,
-        genre: genre || "Pop",
-        photo_url: "",
-        bio: bio || "Musisi profesional",
-      };
-
-      if (editingArtist) {
-        const updated = await apiPut<Artist>(`/organizer/artists/${editingArtist.id}`, payload);
-        toast.success("Artis berhasil diperbarui!");
-        setArtists((prev) => prev.map((a) => (a.id === editingArtist.id ? updated : a)));
+      if (editing === "new") {
+        const created = await apiPost<StudioArtist>("/organizer/artists", body);
+        artists.mutate((list) => [created, ...list]);
+        toast.success(t("added"));
       } else {
-        const created = await apiPost<Artist>("/organizer/artists", payload);
-        toast.success("Artis berhasil ditambahkan!");
-        setArtists((prev) => [created, ...prev]);
+        const updated = await apiPut<StudioArtist>(`/organizer/artists/${editing}`, body);
+        artists.mutate((list) => list.map((a) => (a.id === updated.id ? updated : a)));
+        toast.success(t("updated"));
       }
-      setModalOpen(false);
-    } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal menyimpan data artis");
+      setEditing(null);
+    } catch (err) {
+      setError(studioError(err));
     } finally {
-      setSubmitting(false);
+      setSaving(false);
     }
   }
 
-  async function handleDelete(id: number) {
-    if (!confirm("Yakin ingin menghapus musisi ini?")) return;
+  async function remove(a: StudioArtist) {
+    if (!window.confirm(t("confirmDelete", { name: a.name }))) return;
+    setError(null);
     try {
-      await apiDelete(`/organizer/artists/${id}`);
-      toast.success("Musisi berhasil dihapus.");
-      setArtists((prev) => prev.filter((a) => a.id !== id));
-    } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal menghapus musisi");
+      await apiDelete(`/organizer/artists/${a.id}`);
+      artists.mutate((list) => list.filter((x) => x.id !== a.id));
+      toast.success(t("deleted"));
+    } catch (err) {
+      setError(studioError(err));
     }
   }
+
+  const addBtn = (
+    <button type="button" className={btn.primary} onClick={() => open()} disabled={editing !== null}>
+      <Plus className="h-4 w-4" />
+      {t("add")}
+    </button>
+  );
 
   return (
-    <div>
-      {/* Top Bar */}
-      <header className="border-b border-border bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/organizer/dashboard" className="flex items-center gap-2">
-              <WavyIcon size={26} />
-              <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
-            </Link>
-            <span className="text-muted-foreground/40">/</span>
-            <span className="text-xs font-bold text-primary">Manajemen Artis</span>
-          </div>
+    <>
+      <StudioPageHeader title={t("title")} description={t("subtitle")} actions={addBtn} />
 
-          <Link
-            href="/organizer/dashboard"
-            className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/80 hover:text-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Kembali ke Dashboard
-          </Link>
-        </div>
-      </header>
-
-      <div className="space-y-6">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <h1 className="font-display text-2xl font-extrabold text-foreground">Daftar Musisi & Penampil</h1>
-            <p className="text-xs text-muted-foreground">Kelola profil musisi dan grup musik yang tampil pada event Anda.</p>
-          </div>
-
-          <button
-            onClick={handleOpenCreate}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-xs font-bold text-white shadow-lg hover:brightness-110"
-          >
-            <Plus className="h-4 w-4" />
-            Tambah Musisi
-          </button>
-        </div>
-
-        {/* Artists Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-40 animate-pulse rounded-3xl bg-border" />
-            ))}
-          </div>
-        ) : loadError ? (
-          <ErrorState error={loadError} onRetry={() => setLoadNonce((n) => n + 1)} />
-        ) : artists.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border bg-white p-12 text-center space-y-3">
-            <Music className="h-12 w-12 text-muted-foreground/80 mx-auto" />
-            <h3 className="text-base font-bold text-foreground">Belum Ada Musisi</h3>
-            <p className="text-xs text-muted-foreground">Tambahkan artis pertama Anda untuk dikaitkan dengan event konser.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {artists.map((art) => (
-              <div
-                key={art.id}
-                className="flex flex-col justify-between rounded-3xl border border-border bg-white p-6 shadow-sm hover:shadow-md transition-all"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground to-primary text-white">
-                    <Music className="h-7 w-7" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base text-foreground">{art.name}</h3>
-                    <span className="inline-block rounded-full bg-foreground/5 px-2.5 py-0.5 text-[10px] font-bold text-primary mt-1">
-                      {art.genre}
-                    </span>
-                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{art.bio}</p>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex items-center justify-end gap-2 border-t border-border pt-4">
-                  <button
-                    onClick={() => handleOpenEdit(art)}
-                    className="flex items-center gap-1 rounded-xl border border-border px-3 py-1.5 text-xs font-bold text-foreground hover:bg-surface"
-                  >
-                    <Edit2 className="h-3.5 w-3.5" />
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(art.id)}
-                    className="rounded-xl border border-destructive/30 p-1.5 text-destructive hover:bg-destructive/5"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Modal Add / Edit Artist */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <h3 className="font-display text-xl font-bold text-foreground">
-                {editingArtist ? "Edit Musisi" : "Tambah Musisi Baru"}
-              </h3>
-              <button onClick={() => setModalOpen(false)} className="rounded-full bg-muted p-1 text-muted-foreground">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-3 pt-2 text-xs">
-              <div>
-                <label className="font-bold text-foreground">Nama Musisi / Band</label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Contoh: Dewa 19 / NIKI"
-                  className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="font-bold text-foreground">Genre Musik</label>
-                <input
-                  type="text"
-                  required
-                  value={genre}
-                  onChange={(e) => setGenre(e.target.value)}
-                  placeholder="Contoh: Pop Rock / Jazz / Symphonic"
-                  className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="font-bold text-foreground">Biografi Singkat</label>
-                <textarea
-                  rows={3}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="Profil singkat musisi..."
-                  className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
-                />
-              </div>
-
-              <div className="flex gap-2 pt-3">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="flex-1 rounded-2xl border border-border py-3 font-bold text-muted-foreground"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="flex-1 rounded-2xl bg-foreground py-3 font-bold text-white shadow hover:bg-black disabled:opacity-50"
-                >
-                  {submitting ? "Menyimpan..." : "Simpan Musisi"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {error && editing === null && (
+        <p role="alert" className="mb-4 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
       )}
-    </div>
+
+      {editing !== null && (
+        <form onSubmit={save} className="mb-6 grid grid-cols-1 gap-4 rounded-xl border border-border bg-background p-4 sm:grid-cols-2 sm:p-6">
+          <h2 className="font-display text-lg font-bold tracking-tight text-foreground sm:col-span-2">
+            {editing === "new" ? t("formNew") : t("formEdit")}
+          </h2>
+          <div>
+            <label htmlFor="ar-name" className={labelCls}>{t("name")}</label>
+            <input id="ar-name" className={inputCls} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} autoFocus />
+          </div>
+          <div>
+            <label htmlFor="ar-genre" className={labelCls}>{t("genre")}</label>
+            <input id="ar-genre" className={inputCls} value={draft.genre} onChange={(e) => setDraft({ ...draft, genre: e.target.value })} />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="ar-photo" className={labelCls}>{t("photo")}</label>
+            <input id="ar-photo" type="url" className={inputCls} value={draft.photo_url} onChange={(e) => setDraft({ ...draft, photo_url: e.target.value })} placeholder="https://" />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="ar-bio" className={labelCls}>{t("bio")}</label>
+            <textarea id="ar-bio" rows={3} className={inputCls} value={draft.bio} onChange={(e) => setDraft({ ...draft, bio: e.target.value })} />
+          </div>
+          {error && (
+            <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive sm:col-span-2">
+              {error}
+            </p>
+          )}
+          <div className="flex flex-col-reverse gap-2 sm:col-span-2 sm:flex-row sm:justify-end">
+            <button type="button" className={btn.outline} onClick={() => setEditing(null)}>{t("cancel")}</button>
+            <button type="submit" disabled={saving} className={btn.primary}>{saving ? t("saving") : t("save")}</button>
+          </div>
+        </form>
+      )}
+
+      <AsyncContent resource={artists} empty={<EmptyState icon={<Mic2 className="h-10 w-10" />} title={t("emptyTitle")} description={t("emptyText")} />}>
+        {(list) => (
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {list.map((a) => (
+              <li key={a.id} className="flex gap-4 rounded-xl border border-border bg-background p-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-stage font-display text-lg font-bold text-primary-foreground">
+                  {a.photo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={a.photo_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    a.name.slice(0, 1).toUpperCase()
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-semibold text-foreground">{a.name}</p>
+                  {a.genre && <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{a.genre}</p>}
+                  {a.bio && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{a.bio}</p>}
+                  <div className="mt-2 flex gap-1">
+                    <button type="button" className={btn.ghost} onClick={() => open(a)} disabled={editing !== null}>
+                      <Pencil className="h-3.5 w-3.5" />
+                      {t("edit")}
+                    </button>
+                    <button type="button" className={`${btn.ghost} hover:text-destructive`} onClick={() => remove(a)} disabled={editing !== null}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                      {t("delete")}
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </AsyncContent>
+    </>
   );
 }
