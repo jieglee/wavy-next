@@ -827,6 +827,31 @@
             "confirmSuspendBody": "The organizer immediately loses access to Creator Studio. Existing events and orders are kept.",
             "confirmActivateTitle": "Activate {name}?",
             "confirmActivateBody": "The organizer can sign in and manage events again."
+        },
+        "organizerDetail": {
+            "back": "All organizers",
+            "profile": "Profile",
+            "email": "Email",
+            "whatsapp": "WhatsApp",
+            "eventTypes": "Event types",
+            "social": "Social media",
+            "joined": "Joined",
+            "revenue": "Revenue",
+            "revenueNote": "Paid orders",
+            "ticketsSold": "Tickets sold",
+            "paidOrders": "{n, plural, one {# paid order} other {# paid orders}}",
+            "events": "Events",
+            "published": "{n} published",
+            "pending": "Awaiting payment",
+            "pendingNote": "Active pending orders",
+            "eventsTitle": "Organizer events",
+            "eventsEmpty": "This organizer hasn't created any events yet.",
+            "col": {
+                "event": "Event",
+                "status": "Status",
+                "sold": "Sold",
+                "revenue": "Revenue"
+            }
         }
     },
     "InfoPages": {

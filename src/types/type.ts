@@ -177,3 +177,37 @@ export interface AdminOrganizer {
   event_count: number;
   revenue: number;
 }
+
+// GET /admin/organizers/:id
+export interface AdminOrganizerDetail {
+  organizer: {
+    id: number;
+    name: string;
+    email: string;
+    status: AdminOrganizer["status"];
+    created_at: string;
+    whatsapp: string;
+    event_types: string;
+    social_link: string;
+  };
+  events: {
+    id: number;
+    title: string;
+    category: string;
+    venue: string;
+    date: string | null;
+    status: "draft" | "published" | "closed";
+    poster_url: string | null;
+    quota: number;
+    sold: number;
+    revenue: number;
+  }[];
+  summary: {
+    event_count: number;
+    published_count: number;
+    paid_order_count: number;
+    pending_order_count: number;
+    ticket_sold: number;
+    revenue: number;
+  };
+}
