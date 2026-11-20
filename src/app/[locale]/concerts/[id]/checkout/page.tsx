@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, BadgePercent, Info } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
@@ -682,12 +682,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   ))}
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
-                  <BadgePercent className="h-5 w-5 shrink-0 text-[#FF5470]" />
-                  <span className="flex-1 text-xs font-bold text-[#111827]">Makin hemat pakai promo</span>
-                  <span className="text-base text-[#9CA3AF]">&gt;</span>
-                </button>
-                <p className="mt-3 text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
+                <p className="text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
                 <div className="mt-2 space-y-1.5">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-center justify-between text-xs text-[#374151]">
