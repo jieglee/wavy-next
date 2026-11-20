@@ -6,6 +6,7 @@ import { Plus, Trash2, Edit2, Music, ArrowLeft, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
+import { ErrorState } from "@/components/states/async-states";
 import { apiGet, apiPost, apiPut, apiDelete, getAuthToken } from "@/lib/api";
 import type { Artist } from "@/types/type";
 
@@ -21,6 +22,8 @@ export default function OrganizerArtistsPage() {
   const [genre, setGenre] = useState("");
   const [bio, setBio] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [loadError, setLoadError] = useState<unknown>(null);
+  const [loadNonce, setLoadNonce] = useState(0);
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -30,21 +33,19 @@ export default function OrganizerArtistsPage() {
 
     async function loadArtists() {
       setLoading(true);
+      setLoadError(null);
       try {
         const data = await apiGet<Artist[]>("/organizer/artists");
         setArtists(data || []);
-      } catch {
-        setArtists([
-          { id: 1, name: "TRUST Orchestra", genre: "Symphonic Orchestra", photo_url: "", bio: "Ansambel orkestra independen terkemuka di Indonesia." },
-          { id: 2, name: "Sheila on 7", genre: "Pop Rock", photo_url: "", bio: "Band legendaris Indonesia dengan jutaan penggemar setia." },
-        ]);
+      } catch (err: unknown) {
+        setLoadError(err);
       } finally {
         setLoading(false);
       }
     }
 
     loadArtists();
-  }, [router]);
+  }, [router, loadNonce]);
 
   function handleOpenCreate() {
     setEditingArtist(null);
@@ -148,6 +149,8 @@ export default function OrganizerArtistsPage() {
               <div key={i} className="h-40 animate-pulse rounded-3xl bg-gray-200" />
             ))}
           </div>
+        ) : loadError ? (
+          <ErrorState error={loadError} onRetry={() => setLoadNonce((n) => n + 1)} />
         ) : artists.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-[#EDEBF2] bg-white p-12 text-center space-y-3">
             <Music className="h-12 w-12 text-[#8B889C] mx-auto" />

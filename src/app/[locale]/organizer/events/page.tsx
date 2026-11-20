@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { Link } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, apiDelete, getAuthToken } from "@/lib/api";
+import { ErrorState, LoadingState } from "@/components/states/async-states";
 import type { Artist, TicketCategory } from "@/types/type";
 
 interface OrganizerEvent {
@@ -49,6 +50,10 @@ export default function OrganizerEventsPage() {
   // Manage Categories Modal
   const [categoryModal, setCategoryModal] = useState<OrganizerEvent | null>(null);
   const [categories, setCategories] = useState<TicketCategory[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState<unknown>(null);
+  const [loadError, setLoadError] = useState<unknown>(null);
+  const [loadNonce, setLoadNonce] = useState(0);
   const [catName, setCatName] = useState("");
   const [catPrice, setCatPrice] = useState<number | "">("");
   const [catQuota, setCatQuota] = useState<number | "">("");
@@ -61,52 +66,22 @@ export default function OrganizerEventsPage() {
 
     async function loadData() {
       setLoading(true);
+      setLoadError(null);
       try {
         const [evs, arts] = await Promise.allSettled([
           apiGet<OrganizerEvent[]>("/organizer/events"),
           apiGet<Artist[]>("/organizer/artists"),
         ]);
 
-        if (evs.status === "fulfilled" && Array.isArray(evs.value)) {
-          setEvents(evs.value);
-        } else {
-          setEvents([
-            {
-              id: 1,
-              organizer_id: 1,
-              artist_id: 1,
-              title: "The Legends Infinity World Tour",
-              category: "Festival",
-              venue: "ICE BSD Hall 1, Tangerang",
-              date: "2026-09-15T19:00:00Z",
-              poster_url: "",
-              description: "Konser simfoni orkestra spektakuler.",
-              status: "published",
-            },
-            {
-              id: 2,
-              organizer_id: 1,
-              artist_id: 2,
-              title: "Pop Wave Festival 2026",
-              category: "Pop",
-              venue: "Stadion Utama GBK, Jakarta",
-              date: "2026-11-20T18:00:00Z",
-              poster_url: "",
-              description: "Festival musik pop terbesar tahun ini.",
-              status: "draft",
-            },
-          ]);
-        }
+        // tanpa event/artis karangan: kegagalan ditampilkan sebagai error
+        if (evs.status === "fulfilled" && Array.isArray(evs.value)) setEvents(evs.value);
+        else setLoadError(evs.status === "rejected" ? evs.reason : new Error("invalid events response"));
 
         if (arts.status === "fulfilled" && Array.isArray(arts.value)) {
           setArtists(arts.value);
           if (arts.value.length > 0) setArtistId(arts.value[0].id);
         } else {
-          setArtists([
-            { id: 1, name: "TRUST Orchestra", genre: "Orchestra", photo_url: "", bio: "" },
-            { id: 2, name: "Sheila on 7", genre: "Pop Rock", photo_url: "", bio: "" },
-          ]);
-          setArtistId(1);
+          setLoadError(arts.status === "rejected" ? arts.reason : new Error("invalid artists response"));
         }
       } finally {
         setLoading(false);
@@ -114,7 +89,7 @@ export default function OrganizerEventsPage() {
     }
 
     loadData();
-  }, [router]);
+  }, [router, loadNonce]);
 
   async function handleCreateEvent(e: React.FormEvent) {
     e.preventDefault();
@@ -184,14 +159,16 @@ export default function OrganizerEventsPage() {
 
   async function openCategoriesModal(ev: OrganizerEvent) {
     setCategoryModal(ev);
+    setCategories([]);
+    setCategoriesError(null);
+    setCategoriesLoading(true);
     try {
       const data = await apiGet<TicketCategory[]>(`/organizer/events/${ev.id}/ticket-categories`);
       setCategories(data || []);
-    } catch {
-      setCategories([
-        { id: 1, event_id: ev.id, name: "VIP", price: 750000, quota: 100, sold: 20 },
-        { id: 2, event_id: ev.id, name: "Regular", price: 350000, quota: 300, sold: 120 },
-      ]);
+    } catch (err: unknown) {
+      setCategoriesError(err);
+    } finally {
+      setCategoriesLoading(false);
     }
   }
 
@@ -261,6 +238,8 @@ export default function OrganizerEventsPage() {
         {/* Events Table */}
         {loading ? (
           <div className="h-48 animate-pulse rounded-3xl bg-gray-200" />
+        ) : loadError ? (
+          <ErrorState error={loadError} onRetry={() => setLoadNonce((n) => n + 1)} />
         ) : events.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-[#EDEBF2] bg-white p-12 text-center space-y-3">
             <Calendar className="h-12 w-12 text-[#8B889C] mx-auto" />
@@ -481,7 +460,11 @@ export default function OrganizerEventsPage() {
 
             {/* Existing Categories List */}
             <div className="space-y-2 max-h-44 overflow-y-auto pr-1">
-              {categories.length === 0 ? (
+              {categoriesLoading ? (
+                <LoadingState />
+              ) : categoriesError ? (
+                <ErrorState error={categoriesError} onRetry={() => categoryModal && openCategoriesModal(categoryModal)} />
+              ) : categories.length === 0 ? (
                 <p className="text-center py-4 text-xs text-[#8B889C]">Belum ada kategori tiket.</p>
               ) : (
                 categories.map((c) => (

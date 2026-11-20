@@ -13,61 +13,27 @@ import toast from "react-hot-toast";
 import { Link } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPatch, getAuthToken, clearAuthSession } from "@/lib/api";
+import { useTranslations } from "next-intl";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useAuthToken } from "@/hooks/use-auth-session";
+import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import type { AdminStats, AdminOrganizer, AdminCustomer, Concert } from "@/types/type";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<"overview" | "organizers" | "events" | "customers">("overview");
-  const [stats, setStats] = useState<AdminStats | null>(null);
-  const [organizers, setOrganizers] = useState<AdminOrganizer[]>([]);
-  const [events, setEvents] = useState<Concert[]>([]);
-  const [customers, setCustomers] = useState<AdminCustomer[]>([]);
+  const tAdmin = useTranslations("AdminDashboard");
+  const authed = !!useAuthToken();
+  // tanpa angka/daftar karangan: tiap dataset punya loading / error / kosong sendiri
+  const statsRes = useApiResource(authed ? "admin-stats" : null, () => apiGet<AdminStats>("/admin/stats"));
+  const organizersRes = useApiResource(authed ? "admin-organizers" : null, () => apiGet<AdminOrganizer[]>("/admin/organizers"));
+  const eventsRes = useApiResource(authed ? "admin-events" : null, () => apiGet<Concert[]>("/admin/events"));
+  const customersRes = useApiResource(authed ? "admin-customers" : null, () => apiGet<AdminCustomer[]>("/admin/customers"));
   const [togglingId, setTogglingId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/admin/login");
-      return;
-    }
-
-    async function loadAdminData() {
-      try {
-        const [st, orgs, evs, custs] = await Promise.allSettled([
-          apiGet<AdminStats>("/admin/stats"),
-          apiGet<AdminOrganizer[]>("/admin/organizers"),
-          apiGet<Concert[]>("/admin/events"),
-          apiGet<AdminCustomer[]>("/admin/customers"),
-        ]);
-
-        if (st.status === "fulfilled") setStats(st.value);
-        else {
-          setStats({
-            organizer_count: 5,
-            customer_count: 42,
-            event_count: 12,
-            order_count: 88,
-            revenue: 125000000,
-            ticket_sold: 340,
-          });
-        }
-
-        if (orgs.status === "fulfilled") setOrganizers(orgs.value || []);
-        else {
-          setOrganizers([
-            { id: 1, name: "TRUST Productions", email: "trust@test.com", status: "active", created_at: new Date().toISOString(), event_count: 3, revenue: 45000000 },
-            { id: 2, name: "Flabbergast EO", email: "flabbergast@test.com", status: "active", created_at: new Date().toISOString(), event_count: 2, revenue: 80000000 },
-          ]);
-        }
-
-        if (evs.status === "fulfilled") setEvents(evs.value || []);
-        if (custs.status === "fulfilled") setCustomers(custs.value || []);
-      } catch {
-        // Fallback
-      }
-    }
-
-    loadAdminData();
+    if (!getAuthToken()) router.push("/admin/login");
   }, [router]);
 
   async function handleToggleOrganizerStatus(org: AdminOrganizer) {
@@ -76,9 +42,7 @@ export default function AdminDashboardPage() {
     try {
       await apiPatch(`/admin/organizers/${org.id}`, { status: nextStatus });
       toast.success(`Status ${org.name} diubah menjadi ${nextStatus}`);
-      setOrganizers((prev) =>
-        prev.map((o) => (o.id === org.id ? { ...o, status: nextStatus } : o))
-      );
+      organizersRes.mutate((prev) => prev.map((o) => (o.id === org.id ? { ...o, status: nextStatus } : o)));
     } catch (err: unknown) {
       toast.error((err as Error).message || "Gagal mengubah status organizer");
     } finally {
@@ -173,13 +137,15 @@ export default function AdminDashboardPage() {
 
         {/* Tab Overview */}
         {activeTab === "overview" && (
+          <AsyncContent resource={statsRes} loadingRows={2}>
+            {(stats) => (
           <div className="space-y-6">
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {/* Total Revenue */}
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Total GMV Transaksi</span>
                 <p className="font-mono text-3xl font-extrabold text-[#FF5470]">
-                  Rp{stats ? stats.revenue.toLocaleString("id-ID") : "..."}
+                  Rp{stats.revenue.toLocaleString("id-ID")}
                 </p>
                 <p className="text-[10px] text-emerald-400">Dari pesanan paid</p>
               </div>
@@ -188,7 +154,7 @@ export default function AdminDashboardPage() {
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Total Tiket Terjual</span>
                 <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats ? stats.ticket_sold : "..."}
+                  {stats.ticket_sold}
                 </p>
                 <p className="text-[10px] text-white/40">Seluruh kategori konser</p>
               </div>
@@ -197,7 +163,7 @@ export default function AdminDashboardPage() {
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Total Pesanan Dibuat</span>
                 <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats ? stats.order_count : "..."}
+                  {stats.order_count}
                 </p>
                 <p className="text-[10px] text-white/40">Order terdaftar di DB</p>
               </div>
@@ -206,7 +172,7 @@ export default function AdminDashboardPage() {
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Event Organizer Terdaftar</span>
                 <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats ? stats.organizer_count : "..."}
+                  {stats.organizer_count}
                 </p>
                 <p className="text-[10px] text-white/40">Mitra EO aktif & suspended</p>
               </div>
@@ -215,7 +181,7 @@ export default function AdminDashboardPage() {
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Pengguna / Pembeli</span>
                 <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats ? stats.customer_count : "..."}
+                  {stats.customer_count}
                 </p>
                 <p className="text-[10px] text-white/40">Akun customer aktif</p>
               </div>
@@ -224,18 +190,25 @@ export default function AdminDashboardPage() {
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Total Event Konser</span>
                 <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats ? stats.event_count : "..."}
+                  {stats.event_count}
                 </p>
                 <p className="text-[10px] text-white/40">Draft, published, & closed</p>
               </div>
             </div>
           </div>
+            )}
+          </AsyncContent>
         )}
 
         {/* Tab Organizers */}
         {activeTab === "organizers" && (
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-4">
             <h2 className="font-display text-lg font-bold">Daftar Event Organizer</h2>
+            <AsyncContent
+              resource={organizersRes}
+              empty={<EmptyState title={tAdmin("emptyOrganizers")} />}
+            >
+              {(organizers) => (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="border-b border-white/10 text-white/50">
@@ -286,6 +259,8 @@ export default function AdminDashboardPage() {
                 </tbody>
               </table>
             </div>
+              )}
+            </AsyncContent>
           </div>
         )}
 
@@ -293,6 +268,11 @@ export default function AdminDashboardPage() {
         {activeTab === "events" && (
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-4">
             <h2 className="font-display text-lg font-bold">Monitoring Seluruh Event</h2>
+            <AsyncContent
+              resource={eventsRes}
+              empty={<EmptyState title={tAdmin("emptyEvents")} />}
+            >
+              {(events) => (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="border-b border-white/10 text-white/50">
@@ -321,6 +301,8 @@ export default function AdminDashboardPage() {
                 </tbody>
               </table>
             </div>
+              )}
+            </AsyncContent>
           </div>
         )}
 
@@ -328,6 +310,11 @@ export default function AdminDashboardPage() {
         {activeTab === "customers" && (
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-4">
             <h2 className="font-display text-lg font-bold">Daftar Pengguna / Pembeli</h2>
+            <AsyncContent
+              resource={customersRes}
+              empty={<EmptyState title={tAdmin("emptyCustomers")} />}
+            >
+              {(customers) => (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="border-b border-white/10 text-white/50">
@@ -354,6 +341,8 @@ export default function AdminDashboardPage() {
                 </tbody>
               </table>
             </div>
+              )}
+            </AsyncContent>
           </div>
         )}
       </main>

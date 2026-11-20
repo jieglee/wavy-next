@@ -225,5 +225,13 @@
         "loading": "Memuat event populer...",
         "retry": "Coba lagi",
         "noEvents": "Belum ada event."
+    },
+    "AdminDashboard": {
+        "emptyOrganizers": "Belum ada organizer terdaftar.",
+        "emptyEvents": "Belum ada event.",
+        "emptyCustomers": "Belum ada customer."
+    },
+    "OrganizerDashboard": {
+        "noData": "Belum ada data"
     }
 }

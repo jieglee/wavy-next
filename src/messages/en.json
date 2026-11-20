@@ -225,5 +225,13 @@
         "loading": "Loading popular events...",
         "retry": "Try again",
         "noEvents": "No events yet."
+    },
+    "AdminDashboard": {
+        "emptyOrganizers": "No organizers registered yet.",
+        "emptyEvents": "No events yet.",
+        "emptyCustomers": "No customers yet."
+    },
+    "OrganizerDashboard": {
+        "noData": "No data yet"
     }
 }

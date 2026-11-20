@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { isUnauthorized, useErrorMessage } from "@/lib/error-message";
+import type { ApiResource } from "@/hooks/use-api-resource";
 
 // State standar untuk data dari API: loading, kosong, error.
 // Dipakai semua halaman yang fetch data — tidak boleh ada fallback ke data mock.
@@ -66,6 +67,31 @@ export function EmptyState({
       {action && <div className="mt-4">{action}</div>}
     </div>
   );
+}
+
+/**
+ * Render data dari useApiResource dengan state standar:
+ * loading -> LoadingState, error -> ErrorState (+coba lagi), kosong -> `empty`.
+ */
+export function AsyncContent<T>({
+  resource,
+  children,
+  empty,
+  isEmpty = (data) => Array.isArray(data) && data.length === 0,
+  loadingRows = 3,
+}: {
+  resource: ApiResource<T>;
+  children: (data: T) => ReactNode;
+  empty?: ReactNode;
+  isEmpty?: (data: T) => boolean;
+  loadingRows?: number;
+}) {
+  if (resource.loading) return <LoadingState rows={loadingRows} />;
+  if (resource.error !== undefined || resource.data === undefined) {
+    return <ErrorState error={resource.error} onRetry={resource.reload} />;
+  }
+  if (empty !== undefined && isEmpty(resource.data)) return <>{empty}</>;
+  return <>{children(resource.data)}</>;
 }
 
 export function ErrorState({

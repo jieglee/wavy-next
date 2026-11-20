@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   ShoppingBag,
@@ -10,61 +10,34 @@ import {
 import toast from "react-hot-toast";
 import { Link } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
-import { apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { ErrorState } from "@/components/states/async-states";
+import { ApiError, apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useAuthToken } from "@/hooks/use-auth-session";
+import { isKnownErrorCode, useErrorMessage } from "@/lib/error-message";
 import type { Order } from "@/types/type";
 
 export default function OrganizerOrdersPage() {
   const router = useRouter();
 
-  const [orders, setOrders] = useState<Order[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
-  const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const errorMessage = useErrorMessage();
 
-  const loadOrders = useCallback(async () => {
-    setLoading(true);
-    try {
-      const path = selectedStatus === "all" ? "/organizer/orders" : `/organizer/orders?status=${selectedStatus}`;
-      const data = await apiGet<Order[]>(path);
-      setOrders(data || []);
-    } catch {
-      // Fallback demo
-      setOrders([
-        {
-          id: 501,
-          customer_id: 1,
-          event_id: 1,
-          ticket_category_id: 1,
-          quantity: 2,
-          total_price: 600000,
-          status: "pending_payment",
-          expires_at: new Date(Date.now() + 10 * 60000).toISOString(),
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: 502,
-          customer_id: 2,
-          event_id: 1,
-          ticket_category_id: 1,
-          quantity: 1,
-          total_price: 300000,
-          status: "paid",
-          expires_at: new Date().toISOString(),
-          created_at: new Date(Date.now() - 3600000).toISOString(),
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedStatus]);
+  const authed = !!useAuthToken();
+  const ordersPath = selectedStatus === "all" ? "/organizer/orders" : `/organizer/orders?status=${selectedStatus}`;
+  const ordersRes = useApiResource(authed ? ordersPath : null, () => apiGet<Order[]>(ordersPath));
+  const orders = ordersRes.data ?? [];
+  const loading = ordersRes.loading;
+  const loadError = ordersRes.error;
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/organizer/login");
-      return;
-    }
-    loadOrders();
-  }, [router, loadOrders]);
+    if (!getAuthToken()) router.push("/organizer/login");
+  }, [router]);
+
+  // kode aturan bisnis (mis. ORDER_EXPIRED) pakai teks terjemahan; selain itu pesan backend
+  const actionError = (err: unknown, fallback: string) =>
+    err instanceof ApiError && isKnownErrorCode(err.code) ? errorMessage(err) : (err as Error).message || fallback;
 
   async function handleVerify(id: number, approve: boolean) {
     setActionLoading(id);
@@ -75,11 +48,11 @@ export default function OrganizerOrdersPage() {
           ? "Pembayaran disetujui! E-tiket QR telah diterbitkan untuk pembeli."
           : "Pesanan ditolak. Kuota tiket otomatis ditawarkan ke Waiting List."
       );
-      setOrders((prev) =>
-        prev.map((o) => (o.id === id ? { ...o, status: approve ? "paid" : "rejected" } : o))
-      );
+      ordersRes.mutate((prev) => prev.map((o) => (o.id === id ? { ...o, status: approve ? "paid" : "rejected" } : o)));
     } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal memverifikasi pesanan");
+      toast.error(actionError(err, "Gagal memverifikasi pesanan"));
+      // order bisa sudah expired (lazy expiry di backend) -> segarkan status di tabel
+      if (err instanceof ApiError && err.code === "ORDER_EXPIRED") ordersRes.reload();
     } finally {
       setActionLoading(null);
     }
@@ -91,9 +64,9 @@ export default function OrganizerOrdersPage() {
     try {
       await apiPost(`/organizer/orders/${id}/refund`);
       toast.success("Pesanan direfund. Slot tiket kembali tersedia & Waiting List ternotifikasi.");
-      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: "refunded" } : o)));
+      ordersRes.mutate((prev) => prev.map((o) => (o.id === id ? { ...o, status: "refunded" } : o)));
     } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal merefund pesanan");
+      toast.error(actionError(err, "Gagal merefund pesanan"));
     } finally {
       setActionLoading(null);
     }
@@ -155,6 +128,8 @@ export default function OrganizerOrdersPage() {
         {/* Orders Table */}
         {loading ? (
           <div className="h-48 animate-pulse rounded-3xl bg-gray-200" />
+        ) : loadError ? (
+          <ErrorState error={loadError} onRetry={ordersRes.reload} />
         ) : orders.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-[#EDEBF2] bg-white p-12 text-center space-y-3">
             <ShoppingBag className="h-12 w-12 text-[#8B889C] mx-auto" />
