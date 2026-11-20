@@ -1,5 +1,6 @@
 "use client";
 
+import { MIDTRANS_ENABLED } from "@/lib/midtrans";
 import { useEffect, useState, use, type ReactNode } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
 import { Ticket, ChevronDown, ChevronLeft, AlertTriangle, Check, Info } from "lucide-react";
@@ -625,7 +626,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                 </dl>
                 <div className="flex items-start gap-2.5 rounded-lg border border-border bg-surface px-4 py-3">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                  <p className="text-sm leading-relaxed text-foreground/85">{t("paymentNotice")}</p>
+                  <p className="text-sm leading-relaxed text-foreground/85">{MIDTRANS_ENABLED ? t("paymentNotice") : t("paymentNoticeManual")}</p>
                 </div>
                 {orderError && (
                   <OrderErrorAlert value={orderError} concertId={id} onRetry={handlePesan} onReselect={handleReselect} />

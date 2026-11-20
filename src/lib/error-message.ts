@@ -14,6 +14,9 @@ export const KNOWN_ERROR_CODES = [
   "ORGANIZER_SUSPENDED",
   "INVALID_QUANTITY",
   "VALIDATION_ERROR",
+  "ORDER_NOT_PENDING",
+  "PAYMENT_NOT_CONFIGURED",
+  "PAYMENT_GATEWAY_ERROR",
 ] as const;
 export type KnownErrorCode = (typeof KNOWN_ERROR_CODES)[number];
 

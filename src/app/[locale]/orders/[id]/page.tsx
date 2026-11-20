@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, use } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   Clock,
@@ -13,6 +13,9 @@ import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { apiGet, getAuthToken } from "@/lib/api";
+import { MIDTRANS_ENABLED } from "@/lib/midtrans";
+import { PayNowButton } from "@/components/orders/pay-now-button";
+import { useErrorMessage } from "@/lib/error-message";
 import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import { formatIDR } from "@/lib/price";
@@ -42,7 +45,23 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     if (!getAuthToken()) router.push("/auth/login");
   }, [router]);
 
-  const handleRefresh = orderRes.reload;
+  const errorMessage = useErrorMessage();
+  const [checking, setChecking] = useState(false);
+  const [checkError, setCheckError] = useState<string | null>(null);
+
+  // Tanya status pembayaran ke backend (yang meneruskan ke Midtrans) lalu muat ulang order.
+  const handleRefresh = async () => {
+    setChecking(true);
+    setCheckError(null);
+    try {
+      if (MIDTRANS_ENABLED) await apiGet(`/orders/${id}/payment-status`);
+    } catch (err) {
+      setCheckError(errorMessage(err));
+    } finally {
+      setChecking(false);
+      orderRes.reload();
+    }
+  };
 
   if (!order) {
     return (
@@ -147,16 +166,28 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 
                 <div className="flex items-start gap-3 rounded-xl border border-border bg-surface p-5">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                  <p className="text-xs text-muted-foreground">{tOrder("paymentNotice")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {MIDTRANS_ENABLED ? tOrder("paymentOnline") : tOrder("paymentManual")}
+                  </p>
                 </div>
 
+                {MIDTRANS_ENABLED && <PayNowButton orderId={order.id} onSettled={orderRes.reload} />}
+
                 <button
+                  type="button"
                   onClick={handleRefresh}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background py-3 text-sm font-semibold text-foreground hover:bg-surface"
+                  disabled={checking}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background py-3 text-sm font-semibold text-foreground hover:bg-surface disabled:opacity-60"
                 >
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className={`h-4 w-4 ${checking ? "animate-spin" : ""}`} />
                   {tOrder("checkStatus")}
                 </button>
+                {checkError && (
+                  <p role="alert" className="text-xs font-semibold text-destructive">
+                    {checkError}
+                  </p>
+                )}
+                {MIDTRANS_ENABLED && <p className="text-[11px] text-muted-foreground">{tOrder("manualFallback")}</p>}
               </div>
             )}
 

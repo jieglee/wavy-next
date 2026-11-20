@@ -145,7 +145,10 @@
             "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
             "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan.",
             "INVALID_QUANTITY": "Jumlah tiket tidak valid. Pilih 1 sampai 4 tiket.",
-            "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu."
+            "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu.",
+            "ORDER_NOT_PENDING": "Pesanan ini sudah tidak menunggu pembayaran.",
+            "PAYMENT_NOT_CONFIGURED": "Pembayaran online belum aktif. Tunggu verifikasi dari penyelenggara.",
+            "PAYMENT_GATEWAY_ERROR": "Layanan pembayaran sedang bermasalah. Coba lagi sebentar lagi."
         }
     },
     "OrderStatus": {
@@ -212,7 +215,8 @@
     "Checkout": {
         "oneCategoryHint": "Satu transaksi untuk satu kategori tiket, maksimal 4 tiket.",
         "oneCategorySwitched": "Kategori tiket diganti. Satu transaksi hanya untuk satu kategori.",
-        "paymentNotice": "Pembayaran online segera hadir. Saat ini pembayaran diverifikasi oleh penyelenggara.",
+        "paymentNotice": "Setelah pesanan dibuat, kamu bisa membayar lewat Midtrans (sandbox) di halaman pesanan. Selesaikan dalam 15 menit.",
+        "paymentNoticeManual": "Setelah pesanan dibuat, penyelenggara memverifikasi pembayaran kamu secara manual. Selesaikan dalam 15 menit.",
         "created": "{count, plural, =1 {Pesanan dibuat, lanjut ke pembayaran} other {# pesanan dibuat, lanjut ke pembayaran}}",
         "orderError": {
             "title": "Pesanan gagal dibuat",
@@ -372,7 +376,6 @@
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",
-        "paymentNotice": "Pembayaran online segera hadir. Saat ini pembayaran diverifikasi oleh penyelenggara.",
         "payBefore": "Selesaikan pembayaran sebelum waktu habis",
         "timeLeft": "Sisa waktu pembayaran",
         "expiredTitle": "Pesanan kedaluwarsa",
@@ -388,7 +391,16 @@
         "total": "Total tagihan",
         "instructions": "Instruksi pembayaran",
         "checkStatus": "Cek status pembayaran",
-        "openTickets": "Buka tiket saya"
+        "openTickets": "Buka tiket saya",
+        "paymentOnline": "Bayar lewat Midtrans (mode sandbox untuk proyek UKK): transfer bank/VA, QRIS, atau e-wallet. Status pesanan diperbarui setelah pembayaran berhasil.",
+        "paymentManual": "Pembayaran online belum aktif. Pembayaran diverifikasi manual oleh penyelenggara, lalu tiket terbit otomatis.",
+        "manualFallback": "Ada kendala saat membayar? Penyelenggara tetap bisa memverifikasi pembayaran kamu secara manual.",
+        "pay": {
+            "cta": "Bayar sekarang",
+            "processing": "Membuka pembayaran...",
+            "failed": "Pembayaran gagal. Coba lagi atau pilih metode lain.",
+            "snapUnavailable": "Halaman pembayaran Midtrans tidak bisa dimuat. Periksa koneksi lalu coba lagi."
+        }
     },
     "Tickets": {
         "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy.",
