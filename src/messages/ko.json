@@ -214,7 +214,14 @@
         "loading": "Loading order details..."
     },
     "Tickets": {
-        "transferRecipientNotFound": "The recipient's email isn't registered on Wavy."
+        "transferRecipientNotFound": "The recipient's email isn't registered on Wavy.",
+        "qr": {
+            "label": "Ticket QR code",
+            "used": "Already used",
+            "copy": "Copy ticket code",
+            "copied": "Ticket code copied",
+            "copyFailed": "Couldn't copy the ticket code"
+        }
     },
     "FeaturedPicks": {
         "loading": "Loading events...",

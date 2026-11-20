@@ -21,6 +21,7 @@ import { useTranslations } from "next-intl";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useErrorMessage } from "@/lib/error-message";
 import { ErrorState } from "@/components/states/async-states";
+import { TicketQr } from "@/components/tickets/ticket-qr";
 import type { Ticket } from "@/types/type";
 
 export default function TicketsPage() {
@@ -211,14 +212,7 @@ export default function TicketsPage() {
               <p className="text-xs text-[#8B889C]">{selectedTicket.category}</p>
             </div>
 
-            <div className="mx-auto flex h-52 w-52 items-center justify-center rounded-2xl border-4 border-[#1B1A3A] bg-white p-4 shadow-inner">
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <QrCode className="h-36 w-36 text-[#1B1A3A]" />
-                <p className="font-mono text-[9px] text-[#8B889C] truncate max-w-[170px]">
-                  {selectedTicket.qr_code.slice(0, 24)}...
-                </p>
-              </div>
-            </div>
+            <TicketQr code={selectedTicket.qr_code} used={selectedTicket.is_scanned} />
 
             <div className="rounded-xl bg-[#FAFAF8] p-3 text-xs text-[#6B6875] space-y-1">
               <p>Tunjukkan QR Code ini kepada petugas scan gate tiket konser saat check-in.</p>

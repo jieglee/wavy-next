@@ -214,7 +214,14 @@
         "loading": "Memuat detail pesanan..."
     },
     "Tickets": {
-        "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy."
+        "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy.",
+        "qr": {
+            "label": "QR code tiket",
+            "used": "Sudah digunakan",
+            "copy": "Salin kode tiket",
+            "copied": "Kode tiket disalin",
+            "copyFailed": "Gagal menyalin kode tiket"
+        }
     },
     "FeaturedPicks": {
         "loading": "Memuat event...",
