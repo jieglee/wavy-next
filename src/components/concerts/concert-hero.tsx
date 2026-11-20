@@ -2,6 +2,7 @@
 
 import { MapPin, Calendar, Layers } from "lucide-react";
 import type { ConcertDetail } from "@/types/type";
+import { categoryLabels } from "@/lib/concert-labels";
 
 export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
   const banner =
@@ -84,11 +85,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
               />
 
               <span className="font-medium tracking-wide">
-                {concert.category}
-                &nbsp; • &nbsp;
-                Musik
-                &nbsp; • &nbsp;
-                {concert.genre || "K-Pop"}
+                {categoryLabels(concert.category, concert.genre).join("  •  ")}
               </span>
             </div>
           </div>

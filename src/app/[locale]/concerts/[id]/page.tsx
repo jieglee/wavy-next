@@ -23,12 +23,16 @@ import { ErrorState, LoadingState } from "@/components/states/async-states";
 import { getMinPrice, formatIDR } from "@/lib/price";
 import type { ConcertDetail } from "@/types/type";
 import ConcertTabs from "@/components/concerts/concert-tabs";
+import { useSalesText } from "@/hooks/use-sales-text";
+import { categoryLabels } from "@/lib/concert-labels";
 
 
 export default function ConcertDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const tDetail = useTranslations("ConcertDetail");
+  const tSales = useTranslations("Sales");
+  const sales = useSalesText();
   const concertRes = useApiResource(`concert-${id}`, () => apiGet<ConcertDetail>(`/concerts/${id}`));
   const concert = concertRes.data ?? null;
   const [isFollowingArtist, setIsFollowingArtist] = useState(false);
@@ -95,7 +99,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     }
   }
   function handleBuyTicket() {
-    if (!concert) return;
+    if (!concert || concert.sales_status !== "open") return;
     if (!getAuthToken()) { toast.error("Silakan masuk untuk melanjutkan pembelian"); router.push("/auth/login"); return; }
     router.push(`/concerts/${id}/checkout`);
   }
@@ -123,12 +127,11 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const remaining =
-    concert.remaining ??
-    (concert.ticket_categories?.length
-      ? concert.ticket_categories.reduce((sum, c) => sum + (c.remaining ?? c.quota - c.sold), 0)
-      : undefined);
-  const soldOut = remaining !== undefined && remaining <= 0;
+  // status penjualan dihitung backend (sales_status); selain "open" tombol beli dinonaktifkan
+  const salesOpen = concert.sales_status === "open";
+  const blockedReason =
+    concert.sales_status === "open" ? null : sales.notOpen(concert.sales_status, concert.sales_start_at);
+  const buyLabel = salesOpen ? tSales("buy") : sales.badge(concert.sales_status);
   const minPrice = getMinPrice(concert);
   const hasSeatmap = !!(concert.seatmap?.images?.length);
 
@@ -158,17 +161,23 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
           <div className="min-w-0">
             <ConcertTabs tabs={tabs} activeTab={activeTab} />
           </div>
-          <div className="flex items-center justify-between gap-3 px-2 py-3 lg:px-3">
-            <div className="leading-none">
-              <p className="text-[12px] text-muted-foreground">Harga mulai dari</p>
-              <p className="mt-1 text-[20px] font-bold text-foreground">{formatIDR(minPrice)}</p>
+          <div className="px-2 py-3 lg:px-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="leading-none">
+                <p className="text-[12px] text-muted-foreground">{tDetail("priceFrom")}</p>
+                <p className="mt-1 font-mono text-[20px] font-bold text-foreground">{formatIDR(minPrice)}</p>
+              </div>
+              <button
+                onClick={handleBuyTicket}
+                disabled={!salesOpen}
+                className="shrink-0 rounded-lg bg-primary px-6 py-3 text-[15px] font-bold text-primary-foreground transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-muted-foreground/70 disabled:hover:brightness-100"
+              >
+                {buyLabel}
+              </button>
             </div>
-            <button
-              onClick={handleBuyTicket}
-              className="shrink-0 rounded-lg bg-primary px-6 py-3 text-[15px] font-bold text-primary-foreground transition hover:brightness-110"
-            >
-              Beli Tiket
-            </button>
+            {blockedReason && (
+              <p role="status" className="mt-2 hidden text-[12px] font-medium text-destructive lg:block">{blockedReason}</p>
+            )}
           </div>
         </div>
       </div>
@@ -202,7 +211,12 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
                   {concert.ticket_categories?.length > 0 && (
                     <div ref={ticketRef}>
-                      <ConcertTicketSidebar categories={concert.ticket_categories} />
+                      <ConcertTicketSidebar
+                        categories={concert.ticket_categories}
+                        salesStatus={concert.sales_status}
+                        salesStartAt={concert.sales_start_at}
+                        salesEndAt={concert.sales_end_at}
+                      />
                     </div>
                   )}
 
@@ -272,13 +286,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
                       <div className="flex items-center gap-3 text-[14px] text-foreground">
                         <Layers className="h-4 w-4 shrink-0 text-foreground" />
-                        <span>
-                          {concert.category}
-                          &nbsp;•&nbsp;
-                          Musik
-                          &nbsp;•&nbsp;
-                          {concert.genre || "K-Pop"}
-                        </span>
+                        <span>{categoryLabels(concert.category, concert.genre).join(" • ")}</span>
                       </div>
 
                     </div>
@@ -316,7 +324,13 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* ── Mobile sticky bottom bar ── */}
-      <ConcertStickyBar minPrice={minPrice} soldOut={soldOut} onBuy={handleBuyTicket} />
+      <ConcertStickyBar
+        minPrice={minPrice}
+        priceLabel={tDetail("priceFromShort")}
+        buyLabel={buyLabel}
+        blockedReason={blockedReason}
+        onBuy={handleBuyTicket}
+      />
 
       {reviewModal && (
         <ConcertReviewModal rating={ratingInput} setRating={setRatingInput} comment={commentInput} setComment={setCommentInput} submitting={submittingReview} onClose={() => setReviewModal(false)} onSubmit={handleSubmitReview} />

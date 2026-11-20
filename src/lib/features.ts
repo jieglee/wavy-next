@@ -21,3 +21,9 @@ export const SHOW_QUEUE = false;
  * the logos would promise methods we do not offer yet.
  */
 export const SHOW_PAYMENT_LOGOS = false;
+
+/**
+ * Social media icons in the site footer.
+ * Hidden until Wavy has real accounts; every icon currently points nowhere.
+ */
+export const SHOW_SOCIAL_LINKS = false;

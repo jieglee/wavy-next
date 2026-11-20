@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, Info } from "lucide-react";
+import { Ticket, ChevronDown, AlertTriangle, Check, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
@@ -13,6 +13,7 @@ import { formatIDR } from "@/lib/price";
 import type { ConcertDetail, TicketCategory } from "@/types/type";
 import Footer from "@/components/landing/footer";
 import ConcertSeatmap from "@/components/concerts/concert-seatmap";
+import { useSalesText } from "@/hooks/use-sales-text";
 
 function CheckoutStepper({ step = 1 }: { step?: number }) {
   const steps = ["Pilih Kategori", "Informasi Personal", "Konfirmasi", "Bayar"];
@@ -74,6 +75,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [loadError, setLoadError] = useState<unknown>(null);
   const [loadNonce, setLoadNonce] = useState(0);
   const tCheckout = useTranslations("Checkout");
+  const sales = useSalesText();
 
 
   useEffect(() => {
@@ -170,10 +172,13 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const totalTickets = entries.reduce((s, e) => s + e.qty, 0);
   const totalPrice = entries.reduce((s, e) => s + Number(e.cat.price) * e.qty, 0);
   const soldOutCount = categories.filter((c) => c.remaining !== undefined && c.remaining <= 0).length;
+  // status dari backend; selain "open" checkout dikunci (POST /orders juga akan menolak)
+  const salesBlocked = !!concert && concert.sales_status !== "open";
   const timerMm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const timerSs = String(timeLeft % 60).padStart(2, "0");
 
   function goToPersonal() {
+    if (salesBlocked) return;
     if (!concert || totalTickets === 0) {
       toast.error("Pilih minimal 1 tiket");
       return;
@@ -259,6 +264,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   }
 
   async function handlePesan() {
+    if (salesBlocked) return;
     if (!concert || totalTickets === 0) {
       toast.error("Pilih minimal 1 tiket");
       return;
@@ -366,6 +372,15 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
           <div className="h-px flex-1 bg-border" />
         </div>
 
+        {concert.sales_status !== "open" && (
+          <div role="alert" className="mt-4 flex items-start gap-2.5 rounded-xl border border-destructive/30 bg-destructive/5 px-3.5 py-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+            <p className="text-[13px] font-semibold leading-relaxed text-destructive">
+              {sales.notOpen(concert.sales_status, concert.sales_start_at)}
+            </p>
+          </div>
+        )}
+
         {step === 1 && concert.seatmap?.images?.length ? (
           <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-white p-4 shadow-sm sm:p-5">
             <ConcertSeatmap seatmap={concert.seatmap} />
@@ -410,15 +425,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[12px] leading-snug text-muted-foreground">
                         <li>Harga belum termasuk Pajak Hiburan Daerah, Biaya Admin, dan biaya lainnya.</li>
                       </ul>
-                      {soldOut ? (
+                      {soldOut && (
                         <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-destructive">
                           <AlertTriangle className="h-3 w-3 shrink-0" />
                           Maaf, kategori ini sudah habis dan tidak bisa dipesan lagi
-                        </p>
-                      ) : (
-                        <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-primary">
-                          <Clock className="h-3 w-3" />
-                          Penjualan berakhir pada {new Date(concert.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })} • 21:00
                         </p>
                       )}
                     </div>
@@ -434,8 +444,9 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                         <div className="relative">
                           <select
                             value={qty}
+                            disabled={salesBlocked}
                             onChange={(e) => setQty(cat.id, Number(e.target.value))}
-                            className="min-w-[72px] appearance-none rounded-lg border border-border bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
+                            className="min-w-[72px] appearance-none rounded-lg border border-border bg-white px-3 py-1.5 pr-7 text-center text-sm font-semibold text-foreground outline-none focus:border-primary disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
                           >
                             {[0, 1, 2, 3, 4].map((n) => (
                               <option key={n} value={n}>
@@ -485,7 +496,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
               <button
                 onClick={goToPersonal}
-                disabled={totalTickets === 0 || submitting}
+                disabled={salesBlocked || totalTickets === 0 || submitting}
                 className="mt-3 w-full rounded-lg bg-primary py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-muted-foreground/70 disabled:hover:brightness-100"
               >
                 {submitting ? "Memproses..." : "Pesan Sekarang"}
@@ -606,7 +617,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     <button
                       type="button"
                       onClick={handleLanjut}
-                      disabled={submitting || !agreeTerms || !agreeData}
+                      disabled={salesBlocked || submitting || !agreeTerms || !agreeData}
                       className="rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-muted-foreground/70 disabled:hover:brightness-100"
                     >
                       {submitting ? "Memproses..." : "Lanjut"}
@@ -716,7 +727,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   <button
                     type="button"
                     onClick={handlePesan}
-                    disabled={submitting}
+                    disabled={salesBlocked || submitting}
                     className="flex-1 rounded-lg bg-primary py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-muted-foreground/70"
                   >
                     {submitting ? "Memproses..." : "Lanjut"}

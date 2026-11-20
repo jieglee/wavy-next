@@ -22,7 +22,12 @@ export interface TicketCategory {
   sold: number;
   remaining?: number;
   benefits?: string;
+  // dikirim GET /concerts/:id; tidak ada di endpoint organizer
+  sales_status?: SalesStatus;
 }
+
+// status penjualan dari backend (wavy-backend src/utils/sales-status.ts)
+export type SalesStatus = "upcoming" | "open" | "closed" | "sold_out";
 
 export interface Review {
   id: number;
@@ -45,6 +50,9 @@ export interface ConcertDetail extends Concert {
   gallery?: string[];
   seatmap?: { name: string; images: string[] } | null;
   terms_conditions?: string | null;
+  sales_status: SalesStatus;
+  sales_start_at: string | null; // null = tanpa batas awal
+  sales_end_at: string | null; // null = tanpa batas akhir
   ticket_categories: TicketCategory[];
   reviews: Review[];
   avg_rating: number;

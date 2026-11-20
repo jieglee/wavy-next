@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { WavyIcon } from "@/components/landing/wavy-icon"
-import { SHOW_PAYMENT_LOGOS } from "@/lib/features"
+import { SHOW_PAYMENT_LOGOS, SHOW_SOCIAL_LINKS } from "@/lib/features"
 
 const paymentMethods = [
   "QRIS", "BCA", "BRI", "BNI", "Mandiri", "BSI",
@@ -63,30 +63,48 @@ function ThreadsIcon({ className }: { className?: string }) {
   )
 }
 
+// href null = halaman belum ada; link disembunyikan sampai tujuannya nyata (bukan "#")
 const socials = [
-  { icon: InstagramIcon, href: "#", label: "Instagram" },
-  { icon: FacebookIcon, href: "#", label: "Facebook" },
-]
+  { icon: InstagramIcon, href: null, label: "Instagram" },
+  { icon: FacebookIcon, href: null, label: "Facebook" },
+  { icon: TikTokIcon, href: null, label: "TikTok" },
+  { icon: ThreadsIcon, href: null, label: "Threads" },
+] satisfies { icon: (p: { className?: string }) => React.ReactNode; href: string | null; label: string }[]
+
+type FooterLink = { label: string; href: string | null }
+const withTarget = (links: FooterLink[]) =>
+  links.filter((l): l is { label: string; href: string } => l.href !== null)
+
+// kelas statis supaya terbaca Tailwind
+const smCols: Record<number, string> = { 1: "sm:grid-cols-1", 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-4" }
 
 export default function Footer() {
   const t = useTranslations("Footer");
-  const menuLinks = [
-    { label: t("aboutUs"), href: "#" },
-    { label: t("verifyOrganizer"), href: "#" },
-    { label: t("costSimulation"), href: "#" },
-    { label: t("help"), href: "#" },
-  ];
+  const menuLinks = withTarget([
+    { label: t("aboutUs"), href: null },
+    { label: t("becomeOrganizer"), href: "/organizer/register" },
+    { label: t("costSimulation"), href: null },
+    { label: t("help"), href: null },
+  ]);
 
-  const panduanLinks = [
-    { label: t("howToBuy"), href: "#" },
-    { label: t("ticketProtection"), href: "#" },
-    { label: t("organizerGuide"), href: "#" },
-  ];
+  const panduanLinks = withTarget([
+    { label: t("howToBuy"), href: null },
+    { label: t("ticketProtection"), href: null },
+    { label: t("organizerGuide"), href: null },
+  ]);
+
+  const legalLinks = withTarget([
+    { label: t("privacy"), href: null },
+    { label: t("terms"), href: null },
+  ]);
+
+  const visibleSocials = SHOW_SOCIAL_LINKS ? socials.filter((s) => s.href !== null) : [];
+  const columns = 1 + (menuLinks.length ? 1 : 0) + (panduanLinks.length ? 1 : 0) + (SHOW_PAYMENT_LOGOS ? 1 : 0);
 
   return (
     <footer className="border-t border-border px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className={`grid grid-cols-2 gap-10 ${SHOW_PAYMENT_LOGOS ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
+        <div className={`grid grid-cols-2 gap-10 ${smCols[columns]}`}>
           {/* Brand + Social */}
           <div className="col-span-2 sm:col-span-1">
             <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
@@ -97,36 +115,29 @@ export default function Footer() {
               Wavy
             </Link>
 
-            <p className="mt-6 text-sm font-semibold text-foreground">{t("followUs")}</p>
-            <div className="mt-3 flex items-center gap-3">
-              {socials.map(({ icon: Icon, href, label }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-                >
-                  <Icon className="h-4 w-4" />
-                </Link>
-              ))}
-              <Link
-                href="#"
-                aria-label="TikTok"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-              >
-                <TikTokIcon className="h-4 w-4" />
-              </Link>
-              <Link
-                href="#"
-                aria-label="Threads"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-              >
-                <ThreadsIcon className="h-4 w-4" />
-              </Link>
-            </div>
+            {visibleSocials.length > 0 && (
+              <>
+                <p className="mt-6 text-sm font-semibold text-foreground">{t("followUs")}</p>
+                <div className="mt-3 flex items-center gap-3">
+                  {visibleSocials.map(({ icon: Icon, href, label }) => (
+                    <a
+                      key={label}
+                      href={href!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Menu */}
+          {menuLinks.length > 0 && (
           <div>
             <p className="font-display text-sm font-semibold text-foreground">{t("menu")}</p>
             <nav className="mt-4 flex flex-col gap-3">
@@ -141,8 +152,10 @@ export default function Footer() {
               ))}
             </nav>
           </div>
+          )}
 
           {/* Panduan */}
+          {panduanLinks.length > 0 && (
           <div>
             <p className="font-display text-sm font-semibold text-foreground">{t("guide")}</p>
             <nav className="mt-4 flex flex-col gap-3">
@@ -157,6 +170,7 @@ export default function Footer() {
               ))}
             </nav>
           </div>
+          )}
 
           {/* Pilihan Pembayaran */}
           {SHOW_PAYMENT_LOGOS && (
@@ -197,14 +211,15 @@ export default function Footer() {
           <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Wavy. {t("rights")}
           </p>
-          <div className="flex items-center gap-6">
-            <Link href="#" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
-              {t("privacy")}
-            </Link>
-            <Link href="#" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
-              {t("terms")}
-            </Link>
-          </div>
+          {legalLinks.length > 0 && (
+            <div className="flex items-center gap-6">
+              {legalLinks.map((l) => (
+                <Link key={l.label} href={l.href} className="text-xs text-muted-foreground transition-colors hover:text-foreground">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </footer>
