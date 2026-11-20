@@ -213,7 +213,9 @@
         "ticket": {
             "title": "Tiket",
             "summary": "{count} kategori tiket - Harga mulai dari {price}"
-        }
+        },
+        "priceFrom": "Harga mulai dari",
+        "priceFromShort": "Mulai dari"
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",

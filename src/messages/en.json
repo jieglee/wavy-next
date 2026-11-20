@@ -213,7 +213,9 @@
         "ticket": {
             "title": "Tickets",
             "summary": "{count, plural, =1 {# ticket category} other {# ticket categories}} - Price starting from {price}"
-        }
+        },
+        "priceFrom": "Price starting from",
+        "priceFromShort": "From"
     },
     "OrderDetail": {
         "loading": "Loading order details...",
