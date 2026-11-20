@@ -17,7 +17,7 @@ function TicketCard({ step, index, big }: { step: Step; index: number; big: bool
     ? {}
     : {
         initial: { x: 0, rotate: 0 },
-        whileInView: { x: 10, rotate: 6 },
+        whileInView: { x: 16, y: 6, rotate: 9 },
         viewport: { once: true, amount: 0.6 },
         transition: { duration: 0.5, delay: 0.15 + index * 0.08, ease: [0.22, 1, 0.36, 1] as const },
       };
@@ -32,8 +32,8 @@ function TicketCard({ step, index, big }: { step: Step; index: number; big: bool
 
   return (
     <motion.li {...enter} className={cn("flex min-w-0", big && "sm:col-span-2 lg:row-span-2")}>
-      <div className="flex min-w-0 flex-1 rounded-xl border border-border bg-surface">
-        <div className="flex min-w-0 flex-1 flex-col justify-between gap-6 p-5 sm:p-6">
+      <div className="flex min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 flex-col justify-between gap-6 rounded-l-xl border-y border-l border-border bg-surface p-5 sm:p-6">
           <span className="font-mono text-xs font-semibold text-primary">{String(index + 1).padStart(2, "0")}</span>
           <div>
             <h3 className={cn("font-display font-bold tracking-tight text-foreground", big ? "text-2xl sm:text-3xl" : "text-lg")}>
@@ -47,7 +47,7 @@ function TicketCard({ step, index, big }: { step: Step; index: number; big: bool
         <motion.div
           {...tear}
           aria-hidden
-          className="flex w-12 shrink-0 origin-bottom-left items-center justify-center rounded-r-xl bg-surface sm:w-14"
+          className="flex w-12 shrink-0 origin-bottom-left items-center justify-center rounded-r-xl border-y border-r border-border bg-surface sm:w-14"
         >
           <span className="rotate-90 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
             Wavy · {String(index + 1).padStart(2, "0")}
