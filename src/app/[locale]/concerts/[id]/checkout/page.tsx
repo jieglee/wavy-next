@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Wallet, QrCode, BadgePercent, Layers, ShieldCheck, Info } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Wallet, QrCode, BadgePercent, Layers, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
@@ -72,7 +72,6 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [timeLeft, setTimeLeft] = useState(600);
   const [payGroup, setPayGroup] = useState("cc");
   const [payMethod, setPayMethod] = useState("cc-card");
-  const [proteksiOn, setProteksiOn] = useState(true);
   const [orderError, setOrderError] = useState<OrderSubmitError | null>(null);
   const [loadError, setLoadError] = useState<unknown>(null);
   const [loadNonce, setLoadNonce] = useState(0);
@@ -243,11 +242,6 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     handlePesan();
   }
 
-  const feeTax = Math.round(totalPrice * 0.1);
-  const feeAdmin = Math.round(totalPrice * 0.05);
-  const feeProteksi = proteksiOn ? 10000 * totalTickets : 0;
-  const feePlatform = 600;
-  const grandTotal = totalPrice + feeTax + feeAdmin + feeProteksi + feePlatform;
   const selectedPay = PAY_GROUPS.flatMap((g) => g.children).find((c) => c.id === payMethod);
 
   function setQty(catId: number, v: number) {
@@ -760,50 +754,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       <span className="font-semibold">{formatIDR(Number(cat.price) * qty)}</span>
                     </div>
                   ))}
-                  <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Local Tax</span>
-                    <span className="font-semibold">{formatIDR(feeTax)}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Biaya Admin</span>
-                    <span className="font-semibold">{formatIDR(feeAdmin)}</span>
-                  </div>
-                  {proteksiOn && (
-                    <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                      <span>Proteksi Pembeli Tiket <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan) (x{totalTickets})</span></span>
-                      <span className="shrink-0 font-semibold">{formatIDR(feeProteksi)}</span>
-                    </div>
-                  )}
-                  <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                    <span>Biaya Platform <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan)</span></span>
-                    <span className="shrink-0 font-semibold">{formatIDR(feePlatform)}</span>
-                  </div>
                 </div>
                 <div className="my-3 border-t border-dashed border-[#E5E7EB]" />
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] font-bold text-[#111827]">Total Keseluruhan</span>
-                  <span className="text-sm font-extrabold text-[#111827]">{formatIDR(grandTotal)}</span>
+                  <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
                 </div>
-                {proteksiOn ? (
-                  <div className="mt-3 rounded-lg bg-[#FFF1F3] p-3 ring-1 ring-[#FFD9E0]">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="h-5 w-5 shrink-0 text-[#F97316]" />
-                      <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Ubah</button>
-                    </div>
-                    <p className="mt-1 text-xs text-[#6B7280]">Rp. 10.000/orang</p>
-                    <p className="text-[11px] font-semibold text-[#FF5470]">Syarat Ketentuan</p>
-                    <p className="mt-2 flex items-center gap-1.5 rounded bg-[#16A34A] px-2 py-1.5 text-[11px] font-bold text-white">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> Yeay, tiket kamu terlindungi!
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mt-3 flex items-center gap-2 rounded-lg border border-dashed border-[#E5E7EB] bg-white p-3">
-                    <ShieldCheck className="h-5 w-5 shrink-0 text-[#9CA3AF]" />
-                    <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
-                  </div>
-                )}
                 {orderError && (
                   <OrderErrorAlert
                     value={orderError}
