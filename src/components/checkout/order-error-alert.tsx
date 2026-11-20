@@ -8,8 +8,6 @@ import { isUnauthorized, useErrorMessage } from "@/lib/error-message";
 
 export type OrderSubmitError = {
   error: unknown;
-  /** order yang sudah berhasil dibuat sebelum error (checkout multi-kategori) */
-  createdOrderIds: number[];
 };
 
 const SALES_CODES = new Set(["SALES_CLOSED", "SALES_NOT_STARTED", "SALES_ENDED"]);
@@ -34,7 +32,6 @@ export function OrderErrorAlert({
   const tStates = useTranslations("States");
   const message = useErrorMessage()(value.error);
   const code = value.error instanceof ApiError ? value.error.code : undefined;
-  const partial = value.createdOrderIds.length > 0;
 
   const actionCls = "inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold";
 
@@ -45,18 +42,11 @@ export function OrderErrorAlert({
         <div className="min-w-0 space-y-1">
           <p className="text-xs font-bold text-wavy-text-primary">{t("title")}</p>
           <p className="text-xs text-wavy-text-secondary">{message}</p>
-          {partial && (
-            <p className="text-xs text-wavy-text-secondary">{t("partial", { count: value.createdOrderIds.length })}</p>
-          )}
         </div>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        {partial ? (
-          <Link href={`/orders/${value.createdOrderIds[0]}`} className={`${actionCls} bg-wavy-accent text-white`}>
-            {t("viewCreated")}
-          </Link>
-        ) : isUnauthorized(value.error) ? (
+        {isUnauthorized(value.error) ? (
           <Link href="/auth/login" className={`${actionCls} bg-wavy-accent text-white`}>
             {tStates("login")}
           </Link>

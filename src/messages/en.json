@@ -203,8 +203,6 @@
         "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
         "orderError": {
             "title": "Couldn't create your order",
-            "partial": "{count, plural, =1 {1 order was} other {# orders were}} created before the error. Check them before ordering again.",
-            "viewCreated": "View created order",
             "backToConcert": "Back to concert details",
             "reselect": "Choose tickets again"
         },

@@ -203,8 +203,6 @@
         "created": "{count, plural, =1 {Pesanan dibuat, lanjut ke pembayaran} other {# pesanan dibuat, lanjut ke pembayaran}}",
         "orderError": {
             "title": "Pesanan gagal dibuat",
-            "partial": "{count} pesanan sudah terbuat sebelum error terjadi. Cek pesanan itu sebelum memesan lagi.",
-            "viewCreated": "Lihat pesanan yang sudah dibuat",
             "backToConcert": "Kembali ke detail konser",
             "reselect": "Pilih ulang tiket"
         },

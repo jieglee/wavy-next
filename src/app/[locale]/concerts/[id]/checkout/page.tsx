@@ -277,7 +277,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       toast.success(tCheckout("created", { count: 1 }));
       router.push(`/orders/${order.id}`);
     } catch (err: unknown) {
-      setOrderError({ error: err, createdOrderIds: [] });
+      setOrderError({ error: err });
     } finally {
       setSubmitting(false);
     }
@@ -298,7 +298,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         return next;
       });
     } catch (err: unknown) {
-      setOrderError({ error: err, createdOrderIds: [] });
+      setOrderError({ error: err });
       return;
     }
     setStep(1);
