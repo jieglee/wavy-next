@@ -492,6 +492,25 @@
             "confirmApprove": "Approve order #{id}? Tiket + QR akan diterbitkan ke pembeli.",
             "confirmReject": "Tolak order #{id}?",
             "confirmRefund": "Refund order #{id}? Tiketnya akan dibatalkan."
+        },
+        "scan": {
+            "title": "Scan tiket",
+            "subtitle": "Arahkan kamera ke QR tiket pengunjung. Tiap tiket hanya bisa masuk sekali.",
+            "cameraOff": "Kamera belum aktif.",
+            "cameraDenied": "Kamera tidak bisa dibuka. Izinkan akses kamera di browser (butuh HTTPS atau localhost), atau pakai input manual.",
+            "cameraUnavailable": "Perangkat ini tidak punya kamera. Pakai input manual di bawah.",
+            "startCamera": "Nyalakan kamera",
+            "starting": "Menyalakan…",
+            "stopCamera": "Matikan kamera",
+            "checking": "Memeriksa tiket…",
+            "waiting": "Hasil scan muncul di sini.",
+            "valid": "VALID — silakan masuk",
+            "invalid": "DITOLAK",
+            "order": "Order",
+            "manualLabel": "Input manual",
+            "manualPlaceholder": "Tempel kode QR tiket",
+            "check": "Cek",
+            "history": "Riwayat scan"
         }
     }
 }
