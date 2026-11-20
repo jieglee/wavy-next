@@ -29,6 +29,11 @@
 - Backend: operasi kuota/order dalam transaksi dengan row lock.
 - Chart hanya pakai Bklit UI.
 
+## Server & port
+- Port 3000 (frontend) dan 1420 (backend) milik Kalsah. Server yang dijalankan agen pakai port 3001 ke atas.
+- Server uji backend hanya ke database lokal `*_test`. Jangan pernah menjalankan server/script ke Neon production.
+- Matikan semua server yang dijalankan sebelum menyatakan pekerjaan selesai.
+
 ## Selesai berarti
 - Lolos lint/typecheck/build.
 - Dicek di lebar 360px dan desktop.
