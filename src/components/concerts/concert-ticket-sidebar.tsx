@@ -13,9 +13,10 @@ type TicketSidebarProps = {
   salesStatus: SalesStatus;
   salesStartAt: string | null;
   salesEndAt: string | null;
+  organizerName: string;
 };
 
-export default function ConcertTicketSidebar({ categories, salesStatus, salesStartAt, salesEndAt }: TicketSidebarProps) {
+export default function ConcertTicketSidebar({ categories, salesStatus, salesStartAt, salesEndAt, organizerName }: TicketSidebarProps) {
   const [expanded, setExpanded] = useState(true);
   const t = useTranslations("ConcertDetail.ticket");
   const sales = useSalesText();
@@ -29,10 +30,10 @@ export default function ConcertTicketSidebar({ categories, salesStatus, salesSta
         <h2 className="text-[20px] font-bold text-foreground">{t("title")}</h2>
       </div>
 
-      <div className="mt-3 overflow-hidden rounded-xl border border-border bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+      <div className="mt-3 overflow-hidden rounded-xl border border-border bg-surface">
         <button type="button" onClick={() => setExpanded(!expanded)} className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left">
           <div className="min-w-0">
-            <p className="text-[15px] font-bold text-foreground">Loket Platform</p>
+            <p className="truncate text-[15px] font-bold text-foreground">{organizerName || t("organizerFallback")}</p>
             <p className="mt-0.5 text-[13px] text-muted-foreground/70">
               {t("summary", { count: categories.length, price: formatIDR(minPrice) })}
             </p>
