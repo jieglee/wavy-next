@@ -294,6 +294,21 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     setQtyMap((prev) => ({ ...prev, [catId]: Math.min(v, 4) }));
   }
 
+  function buildOrderPayload(catId: number, qty: number) {
+    return {
+      event_id: Number(id),
+      ticket_category_id: catId,
+      quantity: qty,
+      full_name: `${firstName} ${lastName}`.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      id_number: idNumber.trim(),
+      birth_date: dobYear && dobMonth && dobDay ? `${dobYear}-${String(dobMonth).padStart(2, "0")}-${String(dobDay).padStart(2, "0")}` : null,
+      gender: gender || null,
+      wa_consent: waConsent,
+    } as unknown as Record<string, unknown>;
+  }
+
   async function handlePesan() {
     if (!concert || totalTickets === 0) {
       toast.error("Pilih minimal 1 tiket");
@@ -307,11 +322,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     try {
       if (entries.length === 1) {
         const first = entries[0];
-        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
-          event_id: Number(id),
-          ticket_category_id: first.cat.id,
-          quantity: first.qty,
-        } as unknown as Record<string, unknown>);
+        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", buildOrderPayload(first.cat.id, first.qty));
         const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
         if (orderId) {
           toast.success("Pesanan dibuat, lanjut ke pembayaran");
@@ -325,11 +336,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       }
       const orderIds: number[] = [];
       for (const e of entries) {
-        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", {
-          event_id: Number(id),
-          ticket_category_id: e.cat.id,
-          quantity: e.qty,
-        } as unknown as Record<string, unknown>);
+        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", buildOrderPayload(e.cat.id, e.qty));
         const oid = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
         if (oid) orderIds.push(Number(oid));
       }
@@ -595,7 +602,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                           className={`${inputCls(formErrors.dob)} w-full appearance-none pr-8 ${dobMonth ? "text-[#111827]" : "text-[#9CA3AF]"}`}
                         >
                           <option value="" disabled>mm</option>
-                          {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m, i) => (
+                          {[
+                            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                            "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+                          ].map((m, i) => (
                             <option key={m} value={i + 1}>{m}</option>
                           ))}
                         </select>
