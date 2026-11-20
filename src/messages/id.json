@@ -143,7 +143,9 @@
             "SALES_ENDED": "Masa penjualan tiket untuk konser ini sudah berakhir.",
             "QUOTA_EXCEEDED": "Sisa tiket tidak cukup untuk jumlah yang kamu pilih.",
             "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
-            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan."
+            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan.",
+            "INVALID_QUANTITY": "Jumlah tiket tidak valid. Pilih 1 sampai 4 tiket.",
+            "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu."
         }
     },
     "OrderStatus": {
@@ -173,7 +175,17 @@
             "progress": "{count} dari {target} konser",
             "attended": "{count} konser ditonton",
             "tier": "Level {level}",
-            "tierRequirement": "{count, plural, =0 {Tanpa syarat} other {Min. # konser}}"
+            "tierRequirement": "{count, plural, =0 {Tanpa syarat} other {Min. # konser}}",
+            "ringLabel": "Konser ditonton",
+            "center": "Level",
+            "statLevel": "Status",
+            "statAttended": "Konser ditonton",
+            "statNext": "Ke level berikut",
+            "statOrders": "Total pesanan",
+            "remaining": "{count} konser lagi",
+            "tiersLabel": "Tingkatan level",
+            "tierShort": "Lv {level}",
+            "tierMin": "{count}+"
         },
         "orders": {
             "title": "Riwayat pembelian tiket",
@@ -182,7 +194,8 @@
             "detail": "Detail order",
             "emptyTitle": "Belum ada pesanan",
             "emptyDescription": "Pesanan tiket kamu akan muncul di sini.",
-            "browse": "Jelajahi konser"
+            "browse": "Jelajahi konser",
+            "all": "Lihat semua pesanan"
         },
         "favorites": {
             "artists": "Musisi favorit",
@@ -206,7 +219,90 @@
             "backToConcert": "Kembali ke detail konser",
             "reselect": "Pilih ulang tiket"
         },
-        "loading": "Memuat tiket..."
+        "loading": "Memuat tiket...",
+        "steps": {
+            "label": "Langkah checkout",
+            "category": "Pilih kategori",
+            "personal": "Data diri",
+            "confirm": "Konfirmasi",
+            "pay": "Bayar"
+        },
+        "stepOf": "Langkah {step}/{total}",
+        "loginFirst": "Silakan masuk terlebih dahulu",
+        "timeUp": "Waktu pemesanan habis, silakan pilih kategori lagi",
+        "pickAtLeastOne": "Pilih minimal 1 tiket",
+        "maxTickets": "Maksimal {max} tiket per pesanan",
+        "eventTime": "{date} • {time} WIB",
+        "timerLabel": "Sisa waktu untuk memesan tiket",
+        "categoriesTitle": "Kategori tiket",
+        "noCategories": "Belum ada kategori tiket untuk konser ini.",
+        "soldOutWarning": "{count, plural, other {# kategori sudah habis terjual dan tidak bisa dipesan.}}",
+        "priceNote": "Harga belum termasuk pajak hiburan daerah, biaya admin, dan biaya lainnya.",
+        "soldOutCategory": "Kategori ini sudah habis dan tidak bisa dipesan lagi.",
+        "soldOutBadge": "Habis",
+        "quantityFor": "Jumlah tiket {name}",
+        "termsHint": "Dengan melanjutkan, kamu menyetujui Syarat & Ketentuan yang berlaku.",
+        "cta": {
+            "order": "Pesan sekarang",
+            "next": "Lanjut",
+            "back": "Kembali",
+            "createOrder": "Buat pesanan",
+            "processing": "Memproses..."
+        },
+        "summary": {
+            "title": "Ringkasan pesanan",
+            "empty": "Tiket yang dipilih akan dicantumkan di sini.",
+            "line": "{qty} tiket x {price}",
+            "total": "Jumlah ({count} tiket)",
+            "show": "Lihat ringkasan pesanan",
+            "hide": "Sembunyikan ringkasan pesanan"
+        },
+        "confirm": {
+            "title": "Konfirmasi data pemesan",
+            "name": "Nama"
+        },
+        "form": {
+            "title": "Data diri",
+            "firstName": "Nama depan",
+            "firstNamePlaceholder": "Nama depan",
+            "lastName": "Nama belakang",
+            "lastNamePlaceholder": "Nama belakang",
+            "email": "Email",
+            "emailPlaceholder": "email@contoh.com",
+            "phone": "No. handphone",
+            "idNumber": "Nomor identitas (KTP/paspor, dll.)",
+            "idNumberPlaceholder": "Nomor identitas",
+            "dob": "Tanggal lahir",
+            "dobDay": "Tanggal",
+            "dobMonth": "Bulan",
+            "dobYear": "Tahun",
+            "dobDayPlaceholder": "dd",
+            "dobMonthPlaceholder": "Bulan",
+            "dobYearPlaceholder": "yyyy",
+            "gender": "Jenis kelamin",
+            "male": "Laki-laki",
+            "female": "Perempuan",
+            "waConsent": "Saya setuju menerima notifikasi pemesanan tiket ini lewat WhatsApp.",
+            "yes": "Ya",
+            "no": "Tidak",
+            "agreeTerms": "Saya menyetujui <link>Syarat & Ketentuan</link> dan <link>Kebijakan Privasi</link> Wavy.",
+            "agreeData": "Saya menyetujui <link>Kebijakan Pemrosesan Data Pribadi</link> Wavy."
+        },
+        "errors": {
+            "firstName": "Nama depan wajib diisi",
+            "emailRequired": "Email wajib diisi",
+            "emailInvalid": "Format email tidak valid",
+            "phoneRequired": "No. handphone wajib diisi",
+            "phoneShort": "No. handphone minimal 9 digit",
+            "idNumber": "Nomor identitas wajib diisi",
+            "dobRequired": "Tanggal lahir wajib diisi",
+            "dobInvalid": "Tanggal lahir tidak valid",
+            "dobYear": "Tahun lahir tidak valid",
+            "gender": "Pilih jenis kelamin",
+            "agreeTerms": "Centang persetujuan Syarat & Ketentuan",
+            "agreeData": "Centang persetujuan pemrosesan data",
+            "completeForm": "Lengkapi data diri dulu"
+        }
     },
     "ConcertDetail": {
         "loading": "Memuat informasi konser...",
@@ -216,7 +312,63 @@
             "organizerFallback": "Penyelenggara"
         },
         "priceFrom": "Harga mulai dari",
-        "priceFromShort": "Mulai dari"
+        "priceFromShort": "Mulai dari",
+        "schedule": "{date}, {start} - {end} WIB",
+        "organizedBy": "Diselenggarakan oleh",
+        "seatmap": "Denah tempat duduk",
+        "defaultTerms": "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- Anak di bawah 7 tahun tidak diperbolehkan masuk.",
+        "tabs": {
+            "label": "Bagian halaman konser",
+            "desc": "Deskripsi",
+            "gallery": "Galeri",
+            "ticket": "Tiket",
+            "terms": "Syarat dan Ketentuan"
+        },
+        "toast": {
+            "loginFirst": "Silakan masuk terlebih dahulu",
+            "loginToBuy": "Silakan masuk untuk melanjutkan pembelian",
+            "unfollowed": "Berhasil membatalkan follow",
+            "followed": "Berhasil mengikuti {name}",
+            "followFailed": "Gagal mengikuti artis",
+            "reviewSent": "Ulasan berhasil dikirim",
+            "reviewFailed": "Gagal mengirim ulasan"
+        },
+        "gallery": {
+            "title": "Galeri",
+            "close": "Tutup galeri",
+            "previous": "Sebelumnya",
+            "next": "Berikutnya"
+        },
+        "artist": {
+            "title": "Tentang penampil",
+            "follow": "Ikuti",
+            "following": "Mengikuti",
+            "followers": "{formatted} penggemar"
+        },
+        "terms": {
+            "title": "Syarat & Ketentuan",
+            "expand": "Lihat selengkapnya",
+            "collapse": "Tutup"
+        },
+        "share": {
+            "title": "Bagikan event",
+            "fallbackTitle": "Event di Wavy",
+            "copy": "Salin link",
+            "copied": "Link event disalin",
+            "copyFailed": "Gagal menyalin link"
+        },
+        "review": {
+            "title": "Tulis ulasan konser",
+            "subtitle": "Bagikan pengalaman menonton konser ini kepada pengguna lain.",
+            "rating": "Rating (1 - 5 bintang)",
+            "star": "{n} bintang",
+            "comment": "Komentar",
+            "commentPlaceholder": "Ceritakan keseruan konser...",
+            "cancel": "Batal",
+            "submit": "Kirim ulasan",
+            "submitting": "Mengirim..."
+        },
+        "forYou": "Event untuk kamu"
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",
@@ -225,7 +377,18 @@
         "timeLeft": "Sisa waktu pembayaran",
         "expiredTitle": "Pesanan kedaluwarsa",
         "expiredBody": "Batas waktu pembayaran 15 menit sudah lewat, jadi tiket dilepas kembali ke kuota. Silakan pesan ulang jika masih tersedia.",
-        "orderAgain": "Pesan ulang"
+        "orderAgain": "Pesan ulang",
+        "back": "Semua pesanan",
+        "number": "Nomor pesanan",
+        "summary": "Ringkasan tiket",
+        "quantity": "Jumlah tiket",
+        "tickets": "{count} tiket",
+        "serviceFee": "Biaya layanan Wavy",
+        "free": "Gratis",
+        "total": "Total tagihan",
+        "instructions": "Instruksi pembayaran",
+        "checkStatus": "Cek status pembayaran",
+        "openTickets": "Buka tiket saya"
     },
     "Tickets": {
         "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy.",
@@ -235,6 +398,43 @@
             "copy": "Salin kode tiket",
             "copied": "Kode tiket disalin",
             "copyFailed": "Gagal menyalin kode tiket"
+        },
+        "eyebrow": "Dompet tiket",
+        "title": "Tiket saya",
+        "subtitle": "Semua e-tiket resmi kamu, lengkap dengan QR untuk masuk gate.",
+        "emptyTitle": "Belum ada tiket",
+        "emptyDescription": "Tiket muncul di sini setelah pesanan kamu lunas.",
+        "browse": "Jelajahi konser",
+        "status": {
+            "active": "Aktif",
+            "used": "Sudah dipakai"
+        },
+        "code": "Tiket #{id}",
+        "showQr": "Lihat QR",
+        "back": "Kembali ke tiket saya",
+        "gatePass": "Akses gate",
+        "gateHint": "Tunjukkan QR ini ke petugas di gate saat check-in. Satu QR hanya bisa dipindai sekali.",
+        "detail": {
+            "date": "Tanggal",
+            "time": "Jam",
+            "venue": "Lokasi",
+            "ticket": "Kode tiket",
+            "order": "Pesanan"
+        },
+        "transfer": {
+            "action": "Transfer tiket",
+            "title": "Transfer kepemilikan tiket",
+            "description": "Pindahkan tiket {title} ke akun customer Wavy lain.",
+            "email": "Email penerima",
+            "emailPlaceholder": "contoh: kawan@gmail.com",
+            "warningTitle": "Perhatian",
+            "warningBody": "Setelah ditransfer, tiket langsung pindah ke akun penerima dan QR lama kamu tidak berlaku lagi.",
+            "cancel": "Batal",
+            "submit": "Kirim tiket",
+            "sending": "Mengirim...",
+            "success": "Tiket berhasil ditransfer ke {email}",
+            "recipientNotFound": "Email penerima belum terdaftar di Wavy.",
+            "close": "Tutup"
         }
     },
     "FeaturedPicks": {
@@ -535,5 +735,15 @@
             "emptyTitle": "Belum ada artis",
             "emptyText": "Tambahkan artis dulu sebelum membuat event."
         }
+    },
+    "Orders": {
+        "eyebrow": "Riwayat",
+        "title": "Pesanan saya",
+        "code": "#{id}",
+        "event": "Event #{id}",
+        "quantity": "{count} tiket",
+        "emptyTitle": "Belum ada pesanan",
+        "emptyDescription": "Pesanan tiket kamu akan muncul di sini.",
+        "browse": "Jelajahi konser"
     }
 }

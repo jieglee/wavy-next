@@ -12,6 +12,8 @@ export const KNOWN_ERROR_CODES = [
   "QUOTA_EXCEEDED",
   "ORDER_EXPIRED",
   "ORGANIZER_SUSPENDED",
+  "INVALID_QUANTITY",
+  "VALIDATION_ERROR",
 ] as const;
 export type KnownErrorCode = (typeof KNOWN_ERROR_CODES)[number];
 

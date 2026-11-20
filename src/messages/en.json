@@ -143,7 +143,9 @@
             "SALES_ENDED": "The ticket sales period for this concert has ended.",
             "QUOTA_EXCEEDED": "Not enough tickets left for the quantity you selected.",
             "ORDER_EXPIRED": "This order has expired. Please place a new order.",
-            "ORGANIZER_SUSPENDED": "This organizer account is suspended."
+            "ORGANIZER_SUSPENDED": "This organizer account is suspended.",
+            "INVALID_QUANTITY": "Invalid ticket quantity. Choose 1 to 4 tickets.",
+            "VALIDATION_ERROR": "The data you sent is not valid. Please check your input."
         }
     },
     "OrderStatus": {
@@ -173,7 +175,17 @@
             "progress": "{count} of {target} concerts",
             "attended": "{count} concerts attended",
             "tier": "Level {level}",
-            "tierRequirement": "{count, plural, =0 {No requirement} one {Min. # concert} other {Min. # concerts}}"
+            "tierRequirement": "{count, plural, =0 {No requirement} one {Min. # concert} other {Min. # concerts}}",
+            "ringLabel": "Concerts attended",
+            "center": "Level",
+            "statLevel": "Status",
+            "statAttended": "Concerts attended",
+            "statNext": "To next level",
+            "statOrders": "Total orders",
+            "remaining": "{count, plural, one {# more concert} other {# more concerts}}",
+            "tiersLabel": "Level tiers",
+            "tierShort": "Lv {level}",
+            "tierMin": "{count}+"
         },
         "orders": {
             "title": "Ticket purchase history",
@@ -182,7 +194,8 @@
             "detail": "Order details",
             "emptyTitle": "No orders yet",
             "emptyDescription": "Your ticket orders will show up here.",
-            "browse": "Browse concerts"
+            "browse": "Browse concerts",
+            "all": "See all orders"
         },
         "favorites": {
             "artists": "Favorite artists",
@@ -206,7 +219,90 @@
             "backToConcert": "Back to concert details",
             "reselect": "Choose tickets again"
         },
-        "loading": "Loading tickets..."
+        "loading": "Loading tickets...",
+        "steps": {
+            "label": "Checkout steps",
+            "category": "Choose category",
+            "personal": "Your details",
+            "confirm": "Confirm",
+            "pay": "Pay"
+        },
+        "stepOf": "Step {step}/{total}",
+        "loginFirst": "Please sign in first",
+        "timeUp": "Your booking time ran out, please choose a category again",
+        "pickAtLeastOne": "Choose at least 1 ticket",
+        "maxTickets": "Up to {max} tickets per order",
+        "eventTime": "{date} • {time} WIB",
+        "timerLabel": "Time left to book your tickets",
+        "categoriesTitle": "Ticket categories",
+        "noCategories": "This concert has no ticket categories yet.",
+        "soldOutWarning": "{count, plural, one {# category is sold out and can't be ordered.} other {# categories are sold out and can't be ordered.}}",
+        "priceNote": "Price excludes local entertainment tax, admin fee, and other charges.",
+        "soldOutCategory": "This category is sold out and can no longer be ordered.",
+        "soldOutBadge": "Sold out",
+        "quantityFor": "Number of {name} tickets",
+        "termsHint": "By continuing, you agree to the applicable Terms & Conditions.",
+        "cta": {
+            "order": "Order now",
+            "next": "Continue",
+            "back": "Back",
+            "createOrder": "Place order",
+            "processing": "Processing..."
+        },
+        "summary": {
+            "title": "Order summary",
+            "empty": "Your selected tickets will appear here.",
+            "line": "{qty} ticket(s) x {price}",
+            "total": "Total ({count} tickets)",
+            "show": "Show order summary",
+            "hide": "Hide order summary"
+        },
+        "confirm": {
+            "title": "Confirm buyer details",
+            "name": "Name"
+        },
+        "form": {
+            "title": "Your details",
+            "firstName": "First name",
+            "firstNamePlaceholder": "First name",
+            "lastName": "Last name",
+            "lastNamePlaceholder": "Last name",
+            "email": "Email",
+            "emailPlaceholder": "email@example.com",
+            "phone": "Phone number",
+            "idNumber": "ID number (national ID/passport, etc.)",
+            "idNumberPlaceholder": "ID number",
+            "dob": "Date of birth",
+            "dobDay": "Day",
+            "dobMonth": "Month",
+            "dobYear": "Year",
+            "dobDayPlaceholder": "dd",
+            "dobMonthPlaceholder": "Month",
+            "dobYearPlaceholder": "yyyy",
+            "gender": "Gender",
+            "male": "Male",
+            "female": "Female",
+            "waConsent": "I agree to receive notifications about this ticket order via WhatsApp.",
+            "yes": "Yes",
+            "no": "No",
+            "agreeTerms": "I agree to Wavy's <link>Terms & Conditions</link> and <link>Privacy Policy</link>.",
+            "agreeData": "I agree to Wavy's <link>Personal Data Processing Policy</link>."
+        },
+        "errors": {
+            "firstName": "First name is required",
+            "emailRequired": "Email is required",
+            "emailInvalid": "Invalid email format",
+            "phoneRequired": "Phone number is required",
+            "phoneShort": "Phone number must be at least 9 digits",
+            "idNumber": "ID number is required",
+            "dobRequired": "Date of birth is required",
+            "dobInvalid": "Invalid date of birth",
+            "dobYear": "Invalid birth year",
+            "gender": "Choose a gender",
+            "agreeTerms": "Tick to agree to the Terms & Conditions",
+            "agreeData": "Tick to agree to data processing",
+            "completeForm": "Please complete your details first"
+        }
     },
     "ConcertDetail": {
         "loading": "Loading concert info...",
@@ -216,7 +312,63 @@
             "organizerFallback": "Organizer"
         },
         "priceFrom": "Price starting from",
-        "priceFromShort": "From"
+        "priceFromShort": "From",
+        "schedule": "{date}, {start} - {end} WIB",
+        "organizedBy": "Organized by",
+        "seatmap": "Seat map",
+        "defaultTerms": "- Purchased tickets cannot be exchanged or refunded.\n- The promoter is not responsible for tickets bought outside the official platform.\n- Fan benefits apply only to certain ticket categories.\n- Professional cameras & livestreaming are not allowed without permission.\n- No admission for infants & children below 7 years old.",
+        "tabs": {
+            "label": "Concert page sections",
+            "desc": "Description",
+            "gallery": "Gallery",
+            "ticket": "Tickets",
+            "terms": "Terms & Conditions"
+        },
+        "toast": {
+            "loginFirst": "Please sign in first",
+            "loginToBuy": "Please sign in to continue your purchase",
+            "unfollowed": "Unfollowed",
+            "followed": "You are now following {name}",
+            "followFailed": "Couldn't follow the artist",
+            "reviewSent": "Review sent",
+            "reviewFailed": "Couldn't send your review"
+        },
+        "gallery": {
+            "title": "Gallery",
+            "close": "Close gallery",
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "artist": {
+            "title": "About the performer",
+            "follow": "Follow",
+            "following": "Following",
+            "followers": "{formatted} fans"
+        },
+        "terms": {
+            "title": "Terms & Conditions",
+            "expand": "Show more",
+            "collapse": "Show less"
+        },
+        "share": {
+            "title": "Share event",
+            "fallbackTitle": "Event on Wavy",
+            "copy": "Copy link",
+            "copied": "Event link copied",
+            "copyFailed": "Couldn't copy the link"
+        },
+        "review": {
+            "title": "Write a concert review",
+            "subtitle": "Share your concert experience with other fans.",
+            "rating": "Rating (1 - 5 stars)",
+            "star": "{n} stars",
+            "comment": "Comment",
+            "commentPlaceholder": "Tell us how the concert was...",
+            "cancel": "Cancel",
+            "submit": "Send review",
+            "submitting": "Sending..."
+        },
+        "forYou": "Events for you"
     },
     "OrderDetail": {
         "loading": "Loading order details...",
@@ -225,7 +377,18 @@
         "timeLeft": "Payment time left",
         "expiredTitle": "Order expired",
         "expiredBody": "The 15-minute payment window has passed, so the tickets were released back to the quota. Order again if they're still available.",
-        "orderAgain": "Order again"
+        "orderAgain": "Order again",
+        "back": "All orders",
+        "number": "Order number",
+        "summary": "Ticket summary",
+        "quantity": "Tickets",
+        "tickets": "{count, plural, one {# ticket} other {# tickets}}",
+        "serviceFee": "Wavy service fee",
+        "free": "Free",
+        "total": "Total due",
+        "instructions": "Payment instructions",
+        "checkStatus": "Check payment status",
+        "openTickets": "Open my tickets"
     },
     "Tickets": {
         "transferRecipientNotFound": "The recipient's email isn't registered on Wavy.",
@@ -235,6 +398,43 @@
             "copy": "Copy ticket code",
             "copied": "Ticket code copied",
             "copyFailed": "Couldn't copy the ticket code"
+        },
+        "eyebrow": "Ticket wallet",
+        "title": "My tickets",
+        "subtitle": "All your official e-tickets, each with a QR code for gate entry.",
+        "emptyTitle": "No tickets yet",
+        "emptyDescription": "Tickets appear here once your order is paid.",
+        "browse": "Browse concerts",
+        "status": {
+            "active": "Active",
+            "used": "Used"
+        },
+        "code": "Ticket #{id}",
+        "showQr": "Show QR",
+        "back": "Back to my tickets",
+        "gatePass": "Gate access",
+        "gateHint": "Show this QR to the gate staff at check-in. Each QR can only be scanned once.",
+        "detail": {
+            "date": "Date",
+            "time": "Time",
+            "venue": "Venue",
+            "ticket": "Ticket code",
+            "order": "Order"
+        },
+        "transfer": {
+            "action": "Transfer ticket",
+            "title": "Transfer ticket ownership",
+            "description": "Move the {title} ticket to another Wavy customer account.",
+            "email": "Recipient email",
+            "emailPlaceholder": "e.g. friend@gmail.com",
+            "warningTitle": "Heads up",
+            "warningBody": "Once transferred, the ticket moves to the recipient's account right away and your old QR stops working.",
+            "cancel": "Cancel",
+            "submit": "Send ticket",
+            "sending": "Sending...",
+            "success": "Ticket transferred to {email}",
+            "recipientNotFound": "The recipient email is not registered on Wavy.",
+            "close": "Close"
         }
     },
     "FeaturedPicks": {
@@ -535,5 +735,15 @@
             "emptyTitle": "No artists yet",
             "emptyText": "Add an artist before creating an event."
         }
+    },
+    "Orders": {
+        "eyebrow": "History",
+        "title": "My orders",
+        "code": "#{id}",
+        "event": "Event #{id}",
+        "quantity": "{count, plural, one {# ticket} other {# tickets}}",
+        "emptyTitle": "No orders yet",
+        "emptyDescription": "Your ticket orders will appear here.",
+        "browse": "Browse concerts"
     }
 }

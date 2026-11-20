@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { MapPin, Calendar, Layers } from "lucide-react";
 import toast from "react-hot-toast";
 import Navbar from "@/components/landing/navbar";
@@ -32,6 +32,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const router = useRouter();
   const tDetail = useTranslations("ConcertDetail");
   const tSales = useTranslations("Sales");
+  const format = useFormatter();
   const sales = useSalesText();
   const concertRes = useApiResource(`concert-${id}`, () => apiGet<ConcertDetail>(`/concerts/${id}`));
   const concert = concertRes.data ?? null;
@@ -86,29 +87,29 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   }
 
   async function handleFollowArtist() {
-    if (!getAuthToken()) { toast.error("Silakan masuk terlebih dahulu"); router.push("/auth/login"); return; }
+    if (!getAuthToken()) { toast.error(tDetail("toast.loginFirst")); router.push("/auth/login"); return; }
     const previous = isFollowingArtist;
     setIsFollowingArtist(!previous);
     try {
       if (previous) await apiPost(`/favorites/artists/${concert?.artist_id}`, {}, getAuthToken()!);
       else await apiPost(`/favorites/artists/${concert?.artist_id}`);
-      toast.success(previous ? "Berhasil membatalkan follow" : `Berhasil mengikuti ${concert?.artist_name}`);
+      toast.success(previous ? tDetail("toast.unfollowed") : tDetail("toast.followed", { name: concert?.artist_name ?? "" }));
     } catch {
       setIsFollowingArtist(previous);
-      toast.error("Gagal mengikuti artis");
+      toast.error(tDetail("toast.followFailed"));
     }
   }
   function handleBuyTicket() {
     if (!concert || concert.sales_status !== "open") return;
-    if (!getAuthToken()) { toast.error("Silakan masuk untuk melanjutkan pembelian"); router.push("/auth/login"); return; }
+    if (!getAuthToken()) { toast.error(tDetail("toast.loginToBuy")); router.push("/auth/login"); return; }
     router.push(`/concerts/${id}/checkout`);
   }
   async function handleSubmitReview(e: React.FormEvent) {
     e.preventDefault();
-    if (!getAuthToken()) { toast.error("Silakan masuk terlebih dahulu"); return; }
+    if (!getAuthToken()) { toast.error(tDetail("toast.loginFirst")); return; }
     setSubmittingReview(true);
-    try { await apiPost(`/events/${id}/reviews`, { rating: ratingInput, comment: commentInput }); toast.success("Ulasan berhasil dikirim!"); setReviewModal(false); setCommentInput(""); }
-    catch { toast.error("Gagal mengirim ulasan."); }
+    try { await apiPost(`/events/${id}/reviews`, { rating: ratingInput, comment: commentInput }); toast.success(tDetail("toast.reviewSent")); setReviewModal(false); setCommentInput(""); }
+    catch { toast.error(tDetail("toast.reviewFailed")); }
     finally { setSubmittingReview(false); }
   }
 
@@ -136,16 +137,19 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const hasSeatmap = !!(concert.seatmap?.images?.length);
 
   const dateObj = new Date(concert.date);
-  const dateStr = dateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
-  const startHour = dateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
   const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000);
-  const endHour = endDate.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const hourFmt = { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Jakarta" } as const;
+  const schedule = tDetail("schedule", {
+    date: format.dateTime(dateObj, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }),
+    start: format.dateTime(dateObj, hourFmt),
+    end: format.dateTime(endDate, hourFmt),
+  });
 
   const tabs = [
-    { id: "desc", label: "Deskripsi", onClick: () => scrollToSection("desc", descRef) },
-    ...(hasSeatmap ? [{ id: "gallery", label: "Galeri", onClick: () => scrollToSection("gallery", galleryRef) }] : []),
-    ...(concert.ticket_categories?.length ? [{ id: "ticket", label: "Tiket", onClick: () => scrollToSection("ticket", ticketRef) }] : []),
-    { id: "terms", label: "Syarat dan Ketentuan", onClick: () => scrollToSection("terms", termsRef) },
+    { id: "desc", label: tDetail("tabs.desc"), onClick: () => scrollToSection("desc", descRef) },
+    ...(hasSeatmap ? [{ id: "gallery", label: tDetail("tabs.gallery"), onClick: () => scrollToSection("gallery", galleryRef) }] : []),
+    ...(concert.ticket_categories?.length ? [{ id: "ticket", label: tDetail("tabs.ticket"), onClick: () => scrollToSection("ticket", ticketRef) }] : []),
+    { id: "terms", label: tDetail("tabs.terms"), onClick: () => scrollToSection("terms", termsRef) },
   ];
 
   return (
@@ -159,7 +163,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       <div className="relative z-40 border-b border-border bg-white lg:sticky lg:top-0">
         <div className="mx-auto grid max-w-[1440px] items-center px-2 sm:px-4 lg:grid-cols-[minmax(0,1fr)_520px] lg:gap-4 lg:px-6">
           <div className="min-w-0">
-            <ConcertTabs tabs={tabs} activeTab={activeTab} />
+            <ConcertTabs tabs={tabs} activeTab={activeTab} label={tDetail("tabs.label")} />
           </div>
           <div className="px-2 py-3 lg:px-3">
             <div className="flex items-center justify-between gap-3">
@@ -224,10 +228,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
               <div ref={termsRef}>
                 <ConcertTerms
                   concertId={id}
-                  terms={
-                    concert.terms_conditions ??
-                    "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- No admission for infants & children below 7 years old."
-                  }
+                  terms={concert.terms_conditions ?? tDetail("defaultTerms")}
                 />
               </div>
 
@@ -281,7 +282,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                       <div className="flex items-center gap-3 text-[14px] text-foreground">
                         <Calendar className="h-4 w-4 shrink-0 text-foreground" />
                         <span>
-                          {dateStr}, {startHour} - {endHour} WIB
+                          {schedule}
                         </span>
                       </div>
 
@@ -301,7 +302,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                     {concert.organizer_name?.[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] text-muted-foreground">Diselenggarakan oleh</p>
+                    <p className="text-[11px] text-muted-foreground">{tDetail("organizedBy")}</p>
                     <p className="truncate text-[14px] font-semibold text-foreground">{concert.organizer_name}</p>
                   </div>
                 </div>
