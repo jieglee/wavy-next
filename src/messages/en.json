@@ -1019,5 +1019,34 @@
                 }
             ]
         }
+    },
+    "Landing": {
+        "hero": {
+            "eyebrow": "#EveryConcert",
+            "title": "The lights go down. Your ticket is ready.",
+            "subtitle": "Find a concert, book in minutes, and get through the gate with the QR on your phone.",
+            "cta": "Browse concerts",
+            "secondary": "How to buy",
+            "scroll": "Scroll"
+        },
+        "lineup": {
+            "eyebrow": "Lineup",
+            "title": "Now showing on Wavy",
+            "all": "See all concerts",
+            "empty": "No concerts are listed yet.",
+            "from": "From {price}",
+            "noPrice": "Price not available"
+        },
+        "stats": {
+            "label": "Wavy in numbers",
+            "concerts": "Concerts listed",
+            "venues": "Venues",
+            "remaining": "Tickets left"
+        },
+        "steps": {
+            "eyebrow": "How to buy",
+            "title": "From picking a seat to the gate",
+            "more": "Full guide"
+        }
     }
 }

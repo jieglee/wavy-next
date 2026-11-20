@@ -1019,5 +1019,34 @@
                 }
             ]
         }
+    },
+    "Landing": {
+        "hero": {
+            "eyebrow": "#EveryConcert",
+            "title": "Lampu meredup. Tiketmu sudah siap.",
+            "subtitle": "Cari konser, pesan dalam hitungan menit, dan masuk gate cukup dengan QR di ponselmu.",
+            "cta": "Jelajahi konser",
+            "secondary": "Cara beli tiket",
+            "scroll": "Gulir"
+        },
+        "lineup": {
+            "eyebrow": "Lineup",
+            "title": "Sedang tayang di Wavy",
+            "all": "Lihat semua konser",
+            "empty": "Belum ada konser yang tayang.",
+            "from": "Mulai {price}",
+            "noPrice": "Harga belum tersedia"
+        },
+        "stats": {
+            "label": "Wavy dalam angka",
+            "concerts": "Konser tayang",
+            "venues": "Venue",
+            "remaining": "Tiket tersisa"
+        },
+        "steps": {
+            "eyebrow": "Cara beli",
+            "title": "Dari pilih kursi sampai gate",
+            "more": "Panduan lengkap"
+        }
     }
 }
