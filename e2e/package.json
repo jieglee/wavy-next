@@ -1,0 +1,13 @@
+{
+  "name": "wavy-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Skenario demo UKK (PRD §7) end-to-end dengan Playwright headless. Lihat README.md.",
+  "scripts": {
+    "demo": "node demo.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.49.1",
+    "postgres": "3.4.5"
+  }
+}

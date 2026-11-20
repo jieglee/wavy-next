@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { ApiError, apiGet, clearAuthSession } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
@@ -23,19 +23,23 @@ export function useOrganizerSession() {
   const router = useRouter();
   const token = useAuthToken();
   const stored = useAuthUser<{ name?: string; email?: string }>();
+  // setelah sesi dihapus karena suspend/expired, jangan timpa redirect yang membawa ?reason
+  const leaving = useRef(false);
   const me = useApiResource(token ? `organizer-me:${token}` : null, () => apiGet<OrganizerProfile>("/organizer/me"));
 
   useEffect(() => {
     // token dibaca lewat useSyncExternalStore; null saat render server, jadi cek langsung
-    if (!localStorage.getItem("wavy_auth_token")) router.replace("/organizer/login");
+    if (!leaving.current && !localStorage.getItem("wavy_auth_token")) router.replace("/organizer/login");
   }, [router, token]);
 
   useEffect(() => {
     if (me.error === undefined) return;
     if (isSuspended(me.error)) {
+      leaving.current = true;
       clearAuthSession();
       router.replace("/organizer/login?reason=suspended");
     } else if (me.error instanceof ApiError && me.error.status === 401) {
+      leaving.current = true;
       clearAuthSession();
       router.replace("/organizer/login?reason=expired");
     }
@@ -43,6 +47,7 @@ export function useOrganizerSession() {
 
   useEffect(() => {
     const onSuspended = () => {
+      leaving.current = true;
       clearAuthSession();
       router.replace("/organizer/login?reason=suspended");
     };
