@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type PosterSize = "sm" | "md" | "lg";
@@ -50,6 +50,7 @@ export function PosterFallback({ title, size = "md", className }: { title: strin
 /**
  * Poster/banner event. `src` kosong atau gagal dimuat → PosterFallback.
  * `className` dipakai di elemen akar (img atau fallback), jadi posisi/ukuran/hover tetap sama.
+ * `fallbackClassName` ditambahkan hanya pada fallback (mis. posisi judul).
  */
 export function EventPoster({
   src,
@@ -57,6 +58,7 @@ export function EventPoster({
   alt,
   size = "md",
   className,
+  fallbackClassName,
   loading = "lazy",
 }: {
   src?: string | null;
@@ -64,12 +66,21 @@ export function EventPoster({
   alt?: string;
   size?: PosterSize;
   className?: string;
+  fallbackClassName?: string;
   loading?: "lazy" | "eager";
 }) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  if (!src || failedSrc === src) return <PosterFallback title={title} size={size} className={className} />;
+  // Gambar dari HTML server bisa gagal sebelum React terhidrasi, jadi onError tidak terpanggil.
+  // Saat elemen terpasang, cek apakah gambar sudah selesai tapi rusak (naturalWidth 0).
+  const checkBroken = useCallback(
+    (el: HTMLImageElement | null) => {
+      if (el && src && el.complete && el.naturalWidth === 0) setFailedSrc(src);
+    },
+    [src]
+  );
+  if (!src || failedSrc === src) return <PosterFallback title={title} size={size} className={cn(className, fallbackClassName)} />;
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt ?? title} loading={loading} onError={() => setFailedSrc(src)} className={className} />
+    <img ref={checkBroken} src={src} alt={alt ?? title} loading={loading} onError={() => setFailedSrc(src)} className={className} />
   );
 }
