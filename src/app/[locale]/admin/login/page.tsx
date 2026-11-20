@@ -27,8 +27,8 @@ export default function AdminLoginPage() {
       setAuthToken(res.access_token, "admin", res.admin);
       toast.success(`Selamat datang, Super Admin ${res.admin.name}!`);
       router.push("/admin/dashboard");
-    } catch (err: any) {
-      toast.error(err.message || "Email atau password admin salah.");
+    } catch (err) {
+      toast.error((err instanceof Error && err.message) || "Email atau password admin salah.");
     } finally {
       setLoading(false);
     }
