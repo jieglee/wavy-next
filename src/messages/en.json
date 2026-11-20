@@ -287,5 +287,38 @@
             "closed": "Ticket sales for this concert are closed."
         },
         "buy": "Buy Ticket"
+    },
+    "Studio": {
+        "brand": "Wavy Studio",
+        "organizer": "Organizer",
+        "navLabel": "Creator Studio navigation",
+        "logout": "Sign out",
+        "nav": {
+            "dashboard": "Dashboard",
+            "events": "Events",
+            "orders": "Payment verification",
+            "scan": "Scan tickets",
+            "artists": "Artists"
+        },
+        "navShort": {
+            "dashboard": "Home",
+            "events": "Events",
+            "orders": "Orders",
+            "scan": "Scan",
+            "artists": "Artists"
+        },
+        "session": {
+            "suspended": "Your organizer account has been suspended by an admin. Contact Wavy admin to reactivate it.",
+            "expired": "Your session has ended. Please sign in again."
+        },
+        "dashboard": {
+            "title": "Dashboard",
+            "subtitle": "Sales summary across all your events.",
+            "newEvent": "Create event",
+            "revenue": "Revenue",
+            "sold": "Tickets sold",
+            "remaining": "Remaining quota",
+            "peakHour": "Peak hour"
+        }
     }
 }
