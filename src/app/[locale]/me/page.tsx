@@ -11,7 +11,6 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-
 import { OrderHistoryList } from "@/components/orders/order-history-list";
 import { RingChart } from "@/components/charts/ring-chart";
 import { Ring } from "@/components/charts/ring";
-import { RingCenter } from "@/components/charts/ring-center";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAuthToken, useAuthUser } from "@/hooks/use-auth-session";
 import { useErrorMessage } from "@/lib/error-message";
@@ -239,28 +238,28 @@ function LevelRadial({ data, orders }: { data: CustomerLevel; orders?: number })
   const tile = (s: (typeof stats)[number]) => (
     <div key={s.key} className="min-w-0 rounded-xl border border-border bg-surface p-4 text-center lg:text-left">
       <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{s.label}</p>
-      <p className="mt-1 truncate font-display text-xl font-bold tracking-tight text-foreground">{s.value}</p>
+      <p className="mt-1 break-words font-display text-lg font-bold leading-tight tracking-tight text-foreground sm:text-xl">{s.value}</p>
     </div>
   );
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] lg:gap-8">
+        {/* Pusat ring dirender sendiri: render-prop RingCenter (Bklit) hanya dipakai saat hover,
+            jadi tanpa hover ia menampilkan total nilai ("1 Total"), bukan level. */}
         <div className="flex flex-col items-center lg:order-2">
-          <RingChart data={ring} size={220} strokeWidth={16} baseInnerRadius={80}>
-            <Ring index={0} />
-            <RingCenter>
-              {() => (
-                <div className="flex flex-col items-center">
-                  <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{t("center")}</span>
-                  <span className="font-display text-5xl font-bold tracking-tight text-foreground">{data.level}</span>
-                  <span className="font-mono text-[11px] text-muted-foreground">
-                    {next === undefined ? t("attended", { count: data.attended_concerts }) : t("progress", { count: data.attended_concerts, target: next })}
-                  </span>
-                </div>
-              )}
-            </RingCenter>
-          </RingChart>
+          <div className="relative">
+            <RingChart data={ring} size={220} strokeWidth={16} baseInnerRadius={80}>
+              <Ring index={0} />
+            </RingChart>
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{t("center")}</span>
+              <span className="font-display text-5xl font-bold tracking-tight text-foreground">{data.level}</span>
+              <span className="font-mono text-[11px] text-muted-foreground">
+                {next === undefined ? t("attended", { count: data.attended_concerts }) : t("progress", { count: data.attended_concerts, target: next })}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:order-1 lg:grid-cols-1">{stats.slice(0, 2).map(tile)}</div>
         <div className="grid grid-cols-2 gap-3 lg:order-3 lg:grid-cols-1">{stats.slice(2).map(tile)}</div>
