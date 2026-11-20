@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Wallet, QrCode, BadgePercent, Layers, ShieldCheck, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
@@ -80,7 +80,6 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
 
   const PAY_GROUPS = [
     { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card", info: "Bayar dengan kartu kredit atau debit berlogo Visa, Mastercard, atau JCB. Transaksi diproses aman dengan otentikasi 3D Secure dari bank penerbit kartumu." }] },
-    { id: "va", label: "Virtual Account", icon: Landmark, children: [{ id: "va-bca", label: "BCA Virtual Account", info: "Transfer ke nomor BCA Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-bri", label: "BRI Virtual Account", info: "Transfer ke nomor BRI Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-mandiri", label: "Mandiri Virtual Account", info: "Transfer ke nomor Mandiri Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-bni", label: "BNI Virtual Account", info: "Transfer ke nomor BNI Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }] },
     { id: "wallet", label: "Wallet", icon: Wallet, promo: true, children: [{ id: "w-gopay", label: "GoPay", info: "Bayar praktis dengan saldo GoPay. Pastikan saldo GoPay-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-ovo", label: "OVO", info: "Bayar praktis dengan saldo OVO. Pastikan saldo OVO-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-dana", label: "DANA", info: "Bayar praktis dengan saldo DANA. Pastikan saldo DANA-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-shopee", label: "ShopeePay", info: "Bayar praktis dengan saldo ShopeePay. Pastikan saldo ShopeePay-mu cukup sebelum melanjutkan pembayaran." }] },
     { id: "paylater", label: "PayLater", icon: BadgePercent, promo: true, children: [{ id: "pl-kredivo", label: "Kredivo", info: "Bayar dengan Kredivo dan pilih tenor yang tersedia. Pastikan akun Kredivo-mu aktif dan limit mencukupi." }, { id: "pl-indodana", label: "Indodana", info: "Bayar dengan Indodana dan pilih tenor yang tersedia. Pastikan akun Indodana-mu aktif dan limit mencukupi." }] },
     { id: "qr", label: "QR", icon: QrCode, children: [{ id: "qr-qris", label: "QRIS", info: "Quick Response Code Indonesian Standard atau biasa disingkat QRIS (dibaca KRIS) adalah penyatuan berbagai macam QR dari berbagai Penyelenggara Jasa Sistem Pembayaran (PJSP) menggunakan QR Code. QRIS dikembangkan oleh industri sistem pembayaran bersama dengan Bank Indonesia agar proses transaksi dengan QR Code dapat lebih mudah, cepat, dan terjaga." }] },
@@ -687,6 +686,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
               <div>
                 <div className="rounded-lg bg-gradient-to-r from-orange-50 to-rose-50 px-4 py-3 ring-1 ring-orange-100">
                   <p className="text-[13px] font-bold text-[#111827]">Promo Pembayaran</p>
+                </div>
+                <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#6B7280]" />
+                  <p className="text-[13px] leading-relaxed text-[#374151]">{tCheckout("paymentNotice")}</p>
                 </div>
                 <p className="mt-4 text-[13px] font-bold text-[#111827]">Metode Pembayaran</p>
                 <div className="mt-2 space-y-2">

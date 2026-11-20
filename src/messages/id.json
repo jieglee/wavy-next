@@ -197,6 +197,7 @@
         }
     },
     "Checkout": {
+        "paymentNotice": "Pembayaran online segera hadir. Saat ini pembayaran diverifikasi oleh penyelenggara.",
         "created": "{count, plural, =1 {Pesanan dibuat, lanjut ke pembayaran} other {# pesanan dibuat, lanjut ke pembayaran}}",
         "orderError": {
             "title": "Pesanan gagal dibuat",

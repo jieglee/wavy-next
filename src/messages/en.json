@@ -197,6 +197,7 @@
         }
     },
     "Checkout": {
+        "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
         "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
         "orderError": {
             "title": "Couldn't create your order",
