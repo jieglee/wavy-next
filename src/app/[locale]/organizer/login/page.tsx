@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
@@ -16,7 +18,17 @@ interface LoginResult {
 }
 
 export default function OrganizerLoginPage() {
+  return (
+    <Suspense>
+      <OrganizerLoginForm />
+    </Suspense>
+  );
+}
+
+function OrganizerLoginForm() {
   const router = useRouter();
+  const reason = useSearchParams().get("reason");
+  const tStudio = useTranslations("Studio.session");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -157,6 +169,11 @@ export default function OrganizerLoginPage() {
                 </div>
               </div>
 
+              {!error && (reason === "suspended" || reason === "expired") && (
+                <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-relaxed text-destructive">
+                  {tStudio(reason)}
+                </p>
+              )}
               {error && (
                 <p className={`text-xs ${error.includes("verifikasi") ? "rounded-lg bg-muted px-3 py-2 leading-relaxed text-muted-foreground" : "text-destructive"}`}>
                   {error}

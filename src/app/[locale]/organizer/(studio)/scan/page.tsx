@@ -93,7 +93,7 @@ export default function OrganizerScanPage() {
   }
 
   return (
-    <div className="dark min-h-screen bg-background text-white">
+    <div className="dark rounded-2xl bg-background p-4 text-foreground sm:p-6">
       {/* Top Bar */}
       <header className="border-b border-white/10 bg-black/30 px-6 py-4 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
@@ -114,7 +114,7 @@ export default function OrganizerScanPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 space-y-8">
+      <div className="space-y-6">
         {/* Scanner Input Card */}
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10 shadow-2xl backdrop-blur-xl space-y-6">
           <div className="text-center space-y-2">
@@ -224,7 +224,7 @@ export default function OrganizerScanPage() {
             </div>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

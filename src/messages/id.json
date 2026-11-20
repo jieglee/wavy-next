@@ -287,5 +287,38 @@
             "closed": "Penjualan tiket untuk konser ini sudah ditutup."
         },
         "buy": "Beli Tiket"
+    },
+    "Studio": {
+        "brand": "Wavy Studio",
+        "organizer": "Organizer",
+        "navLabel": "Navigasi Creator Studio",
+        "logout": "Keluar",
+        "nav": {
+            "dashboard": "Dashboard",
+            "events": "Event",
+            "orders": "Verifikasi pembayaran",
+            "scan": "Scan tiket",
+            "artists": "Artis"
+        },
+        "navShort": {
+            "dashboard": "Dasbor",
+            "events": "Event",
+            "orders": "Order",
+            "scan": "Scan",
+            "artists": "Artis"
+        },
+        "session": {
+            "suspended": "Akun organizer kamu sedang dinonaktifkan admin. Hubungi admin Wavy untuk mengaktifkannya kembali.",
+            "expired": "Sesi kamu sudah berakhir. Silakan masuk lagi."
+        },
+        "dashboard": {
+            "title": "Dashboard",
+            "subtitle": "Ringkasan penjualan semua event kamu.",
+            "newEvent": "Buat event",
+            "revenue": "Pendapatan",
+            "sold": "Tiket terjual",
+            "remaining": "Sisa kuota",
+            "peakHour": "Jam ramai"
+        }
     }
 }

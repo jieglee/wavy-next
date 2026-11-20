@@ -196,7 +196,7 @@ export default function OrganizerEventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div>
       {/* Top Bar */}
       <header className="border-b border-border bg-white px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
@@ -219,7 +219,7 @@ export default function OrganizerEventsPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+      <div className="space-y-6">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <h1 className="font-display text-2xl font-extrabold text-foreground">Daftar Event Konser</h1>
@@ -327,7 +327,7 @@ export default function OrganizerEventsPage() {
             </div>
           </div>
         )}
-      </main>
+      </div>
 
       {/* Create Event Modal */}
       {createModal && (
