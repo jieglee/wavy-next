@@ -56,10 +56,15 @@ export default function ConcertTicketSidebar({ categories, salesStatus, salesSta
                 return (
                   <div
                     key={cat.id}
-                    className={`flex flex-wrap items-center gap-x-4 gap-y-1 py-4 sm:flex-nowrap ${!isLast ? "border-b border-dashed border-border" : ""}`}
+                    className={`flex items-center gap-4 py-4 ${!isLast ? "border-b border-dashed border-border" : ""}`}
                   >
-                    <span className="w-[120px] shrink-0 font-mono text-[15px] font-medium text-foreground/85">{formatIDR(Number(cat.price))}</span>
-                    <span className="min-w-0 flex-1 text-[14px] font-medium text-foreground">{cat.name}</span>
+                    {/* mobile: nama di atas, harga di bawah; sm+: harga | nama | badge */}
+                    <div className="min-w-0 flex-1 sm:flex sm:items-center sm:gap-4">
+                      <span className="block text-[14px] font-medium text-foreground sm:min-w-0 sm:flex-1">{cat.name}</span>
+                      <span className="mt-0.5 block font-mono text-[14px] font-medium text-foreground/85 sm:order-first sm:mt-0 sm:w-[120px] sm:shrink-0 sm:text-[15px]">
+                        {formatIDR(Number(cat.price))}
+                      </span>
+                    </div>
                     <SalesBadge status={status} />
                   </div>
                 );
