@@ -212,6 +212,7 @@
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",
+        "paymentNotice": "Pembayaran online segera hadir. Saat ini pembayaran diverifikasi oleh penyelenggara.",
         "payBefore": "Selesaikan pembayaran sebelum waktu habis",
         "timeLeft": "Sisa waktu pembayaran",
         "expiredTitle": "Pesanan kedaluwarsa",

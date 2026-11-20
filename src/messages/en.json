@@ -212,6 +212,7 @@
     },
     "OrderDetail": {
         "loading": "Loading order details...",
+        "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
         "payBefore": "Complete your payment before time runs out",
         "timeLeft": "Payment time left",
         "expiredTitle": "Order expired",

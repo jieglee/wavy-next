@@ -5,11 +5,10 @@ import { useRouter } from "@/i18n/navigation";
 import {
   Clock,
   AlertCircle,
-  Copy,
+  Info,
   Ticket,
   RefreshCw,
 } from "lucide-react";
-import toast from "react-hot-toast";
 import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
@@ -40,11 +39,6 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     if (!getAuthToken()) router.push("/auth/login");
   }, [router]);
-
-  function copyToClipboard(text: string, label: string) {
-    navigator.clipboard.writeText(text);
-    toast.success(`${label} berhasil disalin!`);
-  }
 
   const handleRefresh = orderRes.reload;
 
@@ -145,37 +139,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <div className="mt-8 space-y-4">
                 <h2 className="font-display text-sm font-bold text-[#1B1A3A]">Instruksi Pembayaran</h2>
                 
-                <div className="rounded-2xl border border-[#EDEBF2] p-5 space-y-4 bg-white">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-bold text-xs">
-                        BCA
-                      </div>
-                      <div>
-                        <p className="text-xs text-[#8B889C]">BCA Virtual Account</p>
-                        <p className="font-mono font-extrabold text-sm text-[#1B1A3A]">8277 0812 3456 7890</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => copyToClipboard("8277081234567890", "Nomor VA")}
-                      className="flex items-center gap-1 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-bold text-[#1B1A3A] hover:bg-gray-200"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                      Salin
-                    </button>
-                  </div>
-
-                  <div className="border-t border-[#EDEBF2] pt-3">
-                    <p className="text-xs text-[#6B6875]">
-                      1. Buka m-BCA &gt; m-Transfer &gt; <strong>BCA Virtual Account</strong>.
-                    </p>
-                    <p className="text-xs text-[#6B6875] mt-1">
-                      2. Masukkan nomor VA di atas dan pastikan nominal sesuai: <strong>Rp{Number(order.total_price).toLocaleString("id-ID")}</strong>.
-                    </p>
-                    <p className="text-xs text-[#6B6875] mt-1">
-                      3. Tiket QR akan otomatis diterbitkan ke <strong>Dompet Tiket</strong> Anda setelah pembayaran disetujui.
-                    </p>
-                  </div>
+                <div className="flex items-start gap-3 rounded-2xl border border-[#EDEBF2] bg-white p-5">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#6B6875]" />
+                  <p className="text-xs text-[#6B6875]">{tOrder("paymentNotice")}</p>
                 </div>
 
                 <button
