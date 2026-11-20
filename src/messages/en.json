@@ -492,6 +492,25 @@
             "confirmApprove": "Approve order #{id}? Tickets + QR will be issued to the buyer.",
             "confirmReject": "Reject order #{id}?",
             "confirmRefund": "Refund order #{id}? Its tickets will be cancelled."
+        },
+        "scan": {
+            "title": "Scan tickets",
+            "subtitle": "Point the camera at the visitor's ticket QR. Each ticket can enter only once.",
+            "cameraOff": "Camera is off.",
+            "cameraDenied": "Couldn't open the camera. Allow camera access in the browser (needs HTTPS or localhost), or use manual input.",
+            "cameraUnavailable": "This device has no camera. Use manual input below.",
+            "startCamera": "Turn on camera",
+            "starting": "Starting…",
+            "stopCamera": "Turn off camera",
+            "checking": "Checking ticket…",
+            "waiting": "Scan results appear here.",
+            "valid": "VALID — let them in",
+            "invalid": "REJECTED",
+            "order": "Order",
+            "manualLabel": "Manual input",
+            "manualPlaceholder": "Paste the ticket QR code",
+            "check": "Check",
+            "history": "Scan history"
         }
     }
 }
