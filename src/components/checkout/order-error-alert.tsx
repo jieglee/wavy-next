@@ -36,31 +36,31 @@ export function OrderErrorAlert({
   const actionCls = "inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold";
 
   return (
-    <div role="alert" className="mt-3 rounded-lg border border-coral-gelap/30 bg-coral-gelap/5 p-3">
+    <div role="alert" className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
       <div className="flex gap-2">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-coral-gelap" />
+        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
         <div className="min-w-0 space-y-1">
-          <p className="text-xs font-bold text-wavy-text-primary">{t("title")}</p>
-          <p className="text-xs text-wavy-text-secondary">{message}</p>
+          <p className="text-xs font-bold text-foreground">{t("title")}</p>
+          <p className="text-xs text-muted-foreground">{message}</p>
         </div>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
         {isUnauthorized(value.error) ? (
-          <Link href="/auth/login" className={`${actionCls} bg-wavy-accent text-white`}>
+          <Link href="/auth/login" className={`${actionCls} bg-primary text-white`}>
             {tStates("login")}
           </Link>
         ) : code && SALES_CODES.has(code) ? (
-          <Link href={`/concerts/${concertId}`} className={`${actionCls} bg-wavy-text-primary text-white`}>
+          <Link href={`/concerts/${concertId}`} className={`${actionCls} bg-foreground text-white`}>
             {t("backToConcert")}
           </Link>
         ) : code && RESELECT_CODES.has(code) ? (
-          <button type="button" onClick={onReselect} className={`${actionCls} bg-wavy-text-primary text-white`}>
+          <button type="button" onClick={onReselect} className={`${actionCls} bg-foreground text-white`}>
             <RefreshCw className="h-3.5 w-3.5" />
             {t("reselect")}
           </button>
         ) : (
-          <button type="button" onClick={onRetry} className={`${actionCls} bg-wavy-text-primary text-white`}>
+          <button type="button" onClick={onRetry} className={`${actionCls} bg-foreground text-white`}>
             <RefreshCw className="h-3.5 w-3.5" />
             {tStates("retry")}
           </button>

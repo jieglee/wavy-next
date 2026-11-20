@@ -8,7 +8,7 @@ import type { OrderStatus } from "@/types/type";
 const STYLES: Record<OrderStatus, string> = {
   pending_payment: "bg-amber-100 text-amber-800",
   paid: "bg-emerald-100 text-emerald-800",
-  expired: "bg-wavy-surface text-wavy-text-secondary",
+  expired: "bg-muted text-muted-foreground",
   rejected: "bg-red-100 text-red-700",
   refunded: "bg-red-100 text-red-700",
 };
@@ -20,7 +20,7 @@ export function OrderStatusBadge({ status, className }: { status: OrderStatus | 
     <span
       className={cn(
         "inline-flex items-center rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider",
-        known ? STYLES[known] : "bg-wavy-surface text-wavy-text-secondary",
+        known ? STYLES[known] : "bg-muted text-muted-foreground",
         className
       )}
     >

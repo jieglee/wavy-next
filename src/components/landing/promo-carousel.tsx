@@ -209,7 +209,7 @@ export default function PromoCarousel() {
                 {slide.subtitle && <p className="mt-2 text-sm text-white/70 sm:text-base">{slide.subtitle}</p>}
                 <a
                   href={slide.ctaHref}
-                  className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-wavy-text-primary transition-transform hover:-translate-y-0.5 sm:text-sm"
+                  className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-foreground transition-transform hover:-translate-y-0.5 sm:text-sm"
                 >
                   {slide.ctaLabel}
                 </a>
@@ -223,14 +223,14 @@ export default function PromoCarousel() {
       <button
         onClick={prev}
         aria-label={t("prev")}
-        className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-md transition-colors hover:brightness-95 sm:left-5"
+        className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-colors hover:brightness-95 sm:left-5"
       >
         <ArrowLeftIcon className="h-4 w-4" />
       </button>
       <button
         onClick={next}
         aria-label={t("next")}
-        className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-wavy-text-primary shadow-md transition-colors hover:brightness-95 sm:right-5"
+        className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-colors hover:brightness-95 sm:right-5"
       >
         <ArrowRightIcon className="h-4 w-4" />
       </button>

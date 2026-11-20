@@ -10,10 +10,10 @@ export default function WelcomeBanner() {
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6">
-      <h1 className="font-display text-2xl font-bold tracking-tight text-wavy-text-primary sm:text-3xl">
+      <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
         {name ? t("greeting", { name }) : t("greetingFallback")}
       </h1>
-      <p className="mt-1 text-sm text-wavy-text-secondary">{t("subtitle")}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
     </section>
   );
 }

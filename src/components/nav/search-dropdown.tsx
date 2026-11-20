@@ -104,17 +104,17 @@ export default function SearchDropdown({
 
         <div className="rounded-xl border border-[#EDEBF2] bg-white">
           <p className="px-3 pt-3 text-[13px] font-bold text-[#1B1A3A] sm:px-4">Event Populer</p>
-          {popularRes.loading && <p className="px-3 py-3 text-xs text-wavy-text-secondary sm:px-4">{t("loading")}</p>}
+          {popularRes.loading && <p className="px-3 py-3 text-xs text-muted-foreground sm:px-4">{t("loading")}</p>}
           {popularRes.error !== undefined && (
-            <div className="flex flex-wrap items-center gap-2 px-3 py-3 text-xs text-wavy-text-secondary sm:px-4" role="alert">
+            <div className="flex flex-wrap items-center gap-2 px-3 py-3 text-xs text-muted-foreground sm:px-4" role="alert">
               <span>{errorMessage(popularRes.error)}</span>
-              <button type="button" onClick={popularRes.reload} className="font-bold text-wavy-accent">
+              <button type="button" onClick={popularRes.reload} className="font-bold text-primary">
                 {t("retry")}
               </button>
             </div>
           )}
           {popularRes.data && popular.length === 0 && (
-            <p className="px-3 py-3 text-xs text-wavy-text-secondary sm:px-4">{t("noEvents")}</p>
+            <p className="px-3 py-3 text-xs text-muted-foreground sm:px-4">{t("noEvents")}</p>
           )}
           <div className="mt-2 divide-y divide-[#F0EFF7]">
             {(filteredPopular.length ? filteredPopular : popular).slice(0, 5).map((ev) => (

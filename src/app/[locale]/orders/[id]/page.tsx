@@ -44,7 +44,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-wavy-bg">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="mx-auto max-w-3xl px-4 py-12">
           {orderRes.loading ? (
@@ -89,7 +89,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <div
                   role="timer"
                   aria-label={tOrder("timeLeft")}
-                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-coral-gelap" : "text-amber-800"}`}
+                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-destructive" : "text-amber-800"}`}
                 >
                   {formatCountdown(remainingMs)}
                 </div>
@@ -98,15 +98,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Lewat batas waktu */}
             {isExpired && (
-              <div role="status" className="mt-6 space-y-2 rounded-2xl border border-wavy-border bg-wavy-surface p-4">
-                <div className="flex items-center gap-2 text-sm font-bold text-wavy-text-primary">
-                  <AlertCircle className="h-4 w-4 shrink-0 text-wavy-text-secondary" />
+              <div role="status" className="mt-6 space-y-2 rounded-2xl border border-border bg-muted p-4">
+                <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
                   {tOrder("expiredTitle")}
                 </div>
-                <p className="text-xs text-wavy-text-secondary">{tOrder("expiredBody")}</p>
+                <p className="text-xs text-muted-foreground">{tOrder("expiredBody")}</p>
                 <Link
                   href={`/concerts/${order.event_id}`}
-                  className="inline-flex rounded-lg bg-wavy-accent px-4 py-2 text-xs font-bold text-white hover:brightness-110"
+                  className="inline-flex rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:brightness-110"
                 >
                   {tOrder("orderAgain")}
                 </Link>

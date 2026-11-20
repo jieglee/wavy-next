@@ -29,7 +29,7 @@ export default function ConcertCard({
   return (
     <Link href={`/concerts/${id}`} className={`group block ${className ?? ""}`}>
       <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-wavy-blue/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
+        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-[#1E40AF]/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
           {poster_url ? (
             <img
               src={poster_url}
@@ -50,7 +50,7 @@ export default function ConcertCard({
       <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">
         {title}
       </h3>
-      <p className="mt-0.5 truncate text-xs text-abu-ungu">
+      <p className="mt-0.5 truncate text-xs text-muted-foreground">
         {t("byOrganizer", { organizer })}
       </p>
       <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
@@ -60,7 +60,7 @@ export default function ConcertCard({
             <p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{price}</p>
           </>
         ) : (
-          <p className="text-xs text-wavy-text-secondary">{t("priceUnavailable")}</p>
+          <p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>
         )}
       </div>
     </Link>

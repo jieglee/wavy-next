@@ -61,7 +61,7 @@ async function loadPicks(): Promise<PickEvent[]> {
 const WEEK_MS = 7 * 24 * 3600 * 1000;
 
 function PickThumb({ src, className }: { src: string; className: string }) {
-    return src ? <img src={src} alt="" className={className} /> : <div className={`${className} bg-wavy-surface`} aria-hidden />;
+    return src ? <img src={src} alt="" className={className} /> : <div className={`${className} bg-muted`} aria-hidden />;
 }
 
 export default function FeaturedPicks({

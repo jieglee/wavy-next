@@ -29,7 +29,7 @@ export function TicketQr({ code, used, className }: { code: string; used?: boole
 
   return (
     <div className={cn("flex flex-col items-center gap-3", className)}>
-      <div className="relative w-full max-w-[260px] rounded-2xl border border-wavy-border bg-white p-3">
+      <div className="relative w-full max-w-[260px] rounded-2xl border border-border bg-white p-3">
         <QRCodeSVG
           value={code}
           level="M"
@@ -42,7 +42,7 @@ export function TicketQr({ code, used, className }: { code: string; used?: boole
         />
         {used && (
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="rounded-full bg-wavy-text-primary px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white">
+            <span className="rounded-full bg-foreground px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white">
               {t("used")}
             </span>
           </span>
@@ -51,7 +51,7 @@ export function TicketQr({ code, used, className }: { code: string; used?: boole
       <button
         type="button"
         onClick={copyCode}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-wavy-border px-3 py-1.5 text-xs font-bold text-wavy-text-primary hover:bg-wavy-surface"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-bold text-foreground hover:bg-muted"
       >
         {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
         {copied ? t("copied") : t("copy")}

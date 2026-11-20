@@ -146,9 +146,9 @@ export default function FeaturedEvents() {
           <div className="flex gap-3 overflow-hidden pb-2 pt-2 sm:gap-4" role="status" aria-label={t("loading")}>
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="w-[260px] shrink-0 animate-pulse sm:w-[280px] lg:w-[270px]">
-                <div className="aspect-16/7 w-full rounded-xl bg-wavy-surface" />
-                <div className="mt-3 h-3 w-1/2 rounded bg-wavy-surface" />
-                <div className="mt-2 h-4 w-3/4 rounded bg-wavy-surface" />
+                <div className="aspect-16/7 w-full rounded-xl bg-muted" />
+                <div className="mt-3 h-3 w-1/2 rounded bg-muted" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-muted" />
               </div>
             ))}
           </div>

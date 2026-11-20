@@ -10,7 +10,7 @@ import ScrollToTop from "@/components/scroll-to-top";
 
 export default function LoggedInHomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-wavy-bg">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1">
         <PromoCarousel />

@@ -14,7 +14,7 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
             {isVisible && (
                 <motion.div
                     key="splash"
-                    className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-wavy-bg"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-background"
                     initial={{ y: 0 }}
                     animate={{ y: 0 }}
                     exit={{
@@ -54,7 +54,7 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                     >
                         <div
                             aria-hidden
-                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-azure/20 blur-[80px]"
+                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1E40AF]/20 blur-[80px]"
                         />
                         <WavyIcon size={108} className="relative drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]" />
                     </motion.div>
