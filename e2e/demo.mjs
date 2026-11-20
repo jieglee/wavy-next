@@ -268,8 +268,7 @@ async function main() {
     expect(res.status >= 400 && res.status < 500 && res.json.error?.code === "SALES_CLOSED", `POST /orders -> ${res.status} ${JSON.stringify(res.json)}`);
     // UI: tombol pesan nonaktif / pesan penjualan ditutup
     await buyerB.goto(`${WEB}/id/concerts/${ctx.eventId}/checkout`);
-    await buyerB.locator("select").first().waitFor({ timeout: 20000 });
-    expect(await buyerB.locator("select").first().isDisabled(), "pilihan jumlah tiket masih aktif saat penjualan ditutup");
+    await buyerB.getByText(msg.Errors.codes.SALES_CLOSED).first().waitFor({ timeout: 20000 });
   });
 
   await step("5a. EO scan QR -> valid", async () => {
@@ -307,7 +306,9 @@ async function main() {
     const me = await api("/organizer/me", { token: ctx.eoToken });
     expect(me.status === 403 && me.json.error?.code === "ORGANIZER_SUSPENDED", `/organizer/me -> ${me.status}`);
     await eo.goto(`${WEB}/id/organizer/dashboard`);
-    await eo.waitForURL(/\/organizer\/login\?reason=suspended/, { timeout: 15000 });
+    await eo.waitForURL(/\/organizer\/login/, { timeout: 15000 });
+    await eo.waitForTimeout(1000);
+    expect(eo.url().includes("reason=suspended"), `URL EO setelah suspend: ${eo.url()}`);
     await eo.getByText(msg.Studio.session.suspended).waitFor({ timeout: 5000 });
   });
 
