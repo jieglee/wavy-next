@@ -16,8 +16,8 @@ const GRADIENTS = [
   "linear-gradient(135deg,#7DD3E8,#4A90D9)",
   "linear-gradient(135deg,#8B0000,#2B0000)",
   "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
-  "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
-  "linear-gradient(135deg,#FF5470,#211F2B)",
+  "linear-gradient(135deg,var(--foreground),#0D0C1F)",
+  "linear-gradient(135deg,var(--primary),#211F2B)",
   "linear-gradient(135deg,#C6395A,#14131C)",
 ];
 
@@ -104,7 +104,7 @@ function ConcertsPageInner() {
   );
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-surface">
       <Navbar />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -113,15 +113,15 @@ function ConcertsPageInner() {
           <div>
             <Link
               href="/"
-              className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#8B889C] hover:text-[#1B1A3A]"
+              className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground/80 hover:text-foreground"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Kembali ke Beranda
             </Link>
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-[#1B1A3A] sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
               Jelajahi Semua Konser
             </h1>
-            <p className="mt-1 text-sm text-[#6B6875]">
+            <p className="mt-1 text-sm text-muted-foreground">
               Temukan konser musik terfavorit dari musisi top dunia & Indonesia
             </p>
           </div>
@@ -137,8 +137,8 @@ function ConcertsPageInner() {
                 onClick={() => setSelectedCat(cat)}
                 className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                   active
-                    ? "bg-[#1B1A3A] text-white shadow-md"
-                    : "border border-[#EDEBF2] bg-white text-[#6B6875] hover:border-[#1B1A3A]/20 hover:text-[#1B1A3A]"
+                    ? "bg-foreground text-white shadow-md"
+                    : "border border-border bg-white text-muted-foreground hover:border-foreground/20 hover:text-foreground"
                 }`}
               >
                 {cat}
@@ -150,12 +150,12 @@ function ConcertsPageInner() {
         {/* Country filter chip (from DiscoverCountries section) */}
         {country && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center rounded-full bg-[#FF5470]/10 px-4 py-2 text-xs font-bold text-[#FF5470]">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary">
               Explore: {COUNTRY_LABELS[country] ?? country}
             </span>
             <button
               onClick={() => setCountry("")}
-              className="rounded-full border border-[#EDEBF2] bg-white px-4 py-2 text-xs font-bold text-[#6B6875] hover:border-[#1B1A3A]/20 hover:text-[#1B1A3A]"
+              className="rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground hover:border-foreground/20 hover:text-foreground"
             >
               Hapus filter negara
             </button>
@@ -167,13 +167,13 @@ function ConcertsPageInner() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-16/7 w-full rounded-xl bg-gray-200" />
-                <div className="mt-3 h-3 w-1/2 rounded bg-gray-200" />
-                <div className="mt-2 h-4 w-3/4 rounded bg-gray-200" />
-                <div className="mt-1 h-3 w-2/3 rounded bg-gray-200" />
-                <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
-                  <div className="h-3 w-16 rounded bg-gray-200" />
-                  <div className="mt-1 h-4 w-24 rounded bg-gray-200" />
+                <div className="aspect-16/7 w-full rounded-xl bg-border" />
+                <div className="mt-3 h-3 w-1/2 rounded bg-border" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-border" />
+                <div className="mt-1 h-3 w-2/3 rounded bg-border" />
+                <div className="mt-3 border-t border-border pt-2.5">
+                  <div className="h-3 w-16 rounded bg-border" />
+                  <div className="mt-1 h-4 w-24 rounded bg-border" />
                 </div>
               </div>
             ))}
@@ -181,10 +181,10 @@ function ConcertsPageInner() {
         ) : listRes.error ? (
           <ErrorState error={listRes.error} onRetry={listRes.reload} />
         ) : concerts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-[#EDEBF2] bg-white py-16 text-center">
-            <Ticket className="h-12 w-12 text-[#8B889C]" />
-            <h3 className="mt-3 text-lg font-bold text-[#1B1A3A]">Tidak ada konser ditemukan</h3>
-            <p className="mt-1 text-sm text-[#6B6875]">
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-white py-16 text-center">
+            <Ticket className="h-12 w-12 text-muted-foreground/80" />
+            <h3 className="mt-3 text-lg font-bold text-foreground">Tidak ada konser ditemukan</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
               {country ? `Belum ada konser di ${COUNTRY_LABELS[country] ?? "negara ini"}.` : "Coba ubah kata kunci pencarian atau kategori filter kamu."}
             </p>
             <button
@@ -192,7 +192,7 @@ function ConcertsPageInner() {
                 setQuery("");
                 setSelectedCat("Semua");
               }}
-              className="mt-4 rounded-full bg-[#1B1A3A] px-5 py-2 text-xs font-bold text-white hover:bg-black"
+              className="mt-4 rounded-full bg-foreground px-5 py-2 text-xs font-bold text-white hover:bg-black"
             >
               Reset Filter
             </button>

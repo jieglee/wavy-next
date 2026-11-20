@@ -29,7 +29,7 @@ export default function ConcertCard({
   return (
     <Link href={`/concerts/${id}`} className={`group block ${className ?? ""}`}>
       <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:border-wavy-blue/30 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)]">
+        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)]">
           {poster_url ? (
             <img
               src={poster_url}
@@ -46,21 +46,21 @@ export default function ConcertCard({
           <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
         </div>
       </div>
-      <p className="mt-3 truncate text-xs text-[#8B889C]">{location}</p>
-      <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">
+      <p className="mt-3 truncate text-xs text-muted-foreground/80">{location}</p>
+      <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-foreground transition-all duration-300 group-hover:text-primary">
         {title}
       </h3>
-      <p className="mt-0.5 truncate text-xs text-abu-ungu">
+      <p className="mt-0.5 truncate text-xs text-muted-foreground">
         {t("byOrganizer", { organizer })}
       </p>
-      <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
+      <div className="mt-3 border-t border-border pt-2.5">
         {price ? (
           <>
-            <p className="text-[0.65rem] text-[#8B889C]">{t("startingFrom")}</p>
-            <p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{price}</p>
+            <p className="text-[0.65rem] text-muted-foreground/80">{t("startingFrom")}</p>
+            <p className="font-mono text-sm font-bold text-foreground">Rp{price}</p>
           </>
         ) : (
-          <p className="text-xs text-wavy-text-secondary">{t("priceUnavailable")}</p>
+          <p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>
         )}
       </div>
     </Link>

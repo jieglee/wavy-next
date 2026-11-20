@@ -33,9 +33,9 @@ export default function AnimatedSearchPlaceholder({ active }: { active: boolean 
 
   return (
     <span className="pointer-events-none flex items-center truncate text-sm">
-      <span className="shrink-0 font-normal text-[#8B889C]">Cari event&nbsp;</span>
+      <span className="shrink-0 font-normal text-muted-foreground/80">Cari event&nbsp;</span>
       <span
-        className={`truncate font-bold text-[#1B1A3A] transition-all duration-200 ${phase === "in" ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"}`}
+        className={`truncate font-bold text-foreground transition-all duration-200 ${phase === "in" ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"}`}
       >
         {PHRASES[idx]}
       </span>

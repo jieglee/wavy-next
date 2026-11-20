@@ -44,7 +44,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-wavy-bg">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="mx-auto max-w-3xl px-4 py-12">
           {orderRes.loading ? (
@@ -62,17 +62,17 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const isExpired = status === "expired";
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-surface">
       <Navbar />
 
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         <div className="space-y-6">
           {/* Header Card */}
-          <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 sm:p-8 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#EDEBF2] pb-6">
+          <div className="rounded-3xl border border-border bg-white p-6 sm:p-8 shadow-xl">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
               <div>
-                <span className="text-xs text-[#8B889C]">Nomor Pesanan</span>
-                <h1 className="font-mono text-2xl font-extrabold text-[#1B1A3A]">#{order.id}</h1>
+                <span className="text-xs text-muted-foreground/80">Nomor Pesanan</span>
+                <h1 className="font-mono text-2xl font-extrabold text-foreground">#{order.id}</h1>
               </div>
 
               {/* Status Badge */}
@@ -81,15 +81,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Countdown ke batas bayar (order pending) */}
             {isPending && ticking && (
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                <div className="flex items-center gap-2 text-xs font-semibold text-amber-800">
-                  <Clock className="h-4 w-4 shrink-0 text-amber-600" />
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-warning/30 bg-warning/5 p-4">
+                <div className="flex items-center gap-2 text-xs font-semibold text-warning">
+                  <Clock className="h-4 w-4 shrink-0 text-warning" />
                   <span>{tOrder("payBefore")}</span>
                 </div>
                 <div
                   role="timer"
                   aria-label={tOrder("timeLeft")}
-                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-coral-gelap" : "text-amber-800"}`}
+                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-destructive" : "text-warning"}`}
                 >
                   {formatCountdown(remainingMs)}
                 </div>
@@ -98,15 +98,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Lewat batas waktu */}
             {isExpired && (
-              <div role="status" className="mt-6 space-y-2 rounded-2xl border border-wavy-border bg-wavy-surface p-4">
-                <div className="flex items-center gap-2 text-sm font-bold text-wavy-text-primary">
-                  <AlertCircle className="h-4 w-4 shrink-0 text-wavy-text-secondary" />
+              <div role="status" className="mt-6 space-y-2 rounded-2xl border border-border bg-muted p-4">
+                <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
                   {tOrder("expiredTitle")}
                 </div>
-                <p className="text-xs text-wavy-text-secondary">{tOrder("expiredBody")}</p>
+                <p className="text-xs text-muted-foreground">{tOrder("expiredBody")}</p>
                 <Link
                   href={`/concerts/${order.event_id}`}
-                  className="inline-flex rounded-lg bg-wavy-accent px-4 py-2 text-xs font-bold text-white hover:brightness-110"
+                  className="inline-flex rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:brightness-110"
                 >
                   {tOrder("orderAgain")}
                 </Link>
@@ -115,19 +115,19 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Order Items Summary */}
             <div className="mt-6 space-y-3">
-              <h2 className="font-display text-sm font-bold text-[#1B1A3A]">Ringkasan Tiket</h2>
-              <div className="rounded-2xl bg-[#FAFAF8] p-4 border border-[#EDEBF2] space-y-2">
+              <h2 className="font-display text-sm font-bold text-foreground">Ringkasan Tiket</h2>
+              <div className="rounded-2xl bg-surface p-4 border border-border space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="font-bold text-[#1B1A3A]">Jumlah Tiket</span>
-                  <span className="font-mono font-bold text-[#1B1A3A]">{order.quantity} Tiket</span>
+                  <span className="font-bold text-foreground">Jumlah Tiket</span>
+                  <span className="font-mono font-bold text-foreground">{order.quantity} Tiket</span>
                 </div>
-                <div className="flex justify-between text-xs text-[#6B6875]">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Biaya Layanan Platform Wavy</span>
-                  <span className="text-emerald-600 font-bold">GRATIS</span>
+                  <span className="text-success font-bold">GRATIS</span>
                 </div>
-                <div className="border-t border-[#EDEBF2] pt-2 flex justify-between text-base font-extrabold text-[#1B1A3A]">
+                <div className="border-t border-border pt-2 flex justify-between text-base font-extrabold text-foreground">
                   <span>Total Tagihan</span>
-                  <span className="font-mono text-lg text-[#FF5470]">
+                  <span className="font-mono text-lg text-primary">
                     Rp{Number(order.total_price).toLocaleString("id-ID")}
                   </span>
                 </div>
@@ -137,16 +137,16 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {/* Payment Method / Instructions if pending */}
             {isPending && (
               <div className="mt-8 space-y-4">
-                <h2 className="font-display text-sm font-bold text-[#1B1A3A]">Instruksi Pembayaran</h2>
+                <h2 className="font-display text-sm font-bold text-foreground">Instruksi Pembayaran</h2>
                 
-                <div className="flex items-start gap-3 rounded-2xl border border-[#EDEBF2] bg-white p-5">
-                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#6B6875]" />
-                  <p className="text-xs text-[#6B6875]">{tOrder("paymentNotice")}</p>
+                <div className="flex items-start gap-3 rounded-2xl border border-border bg-white p-5">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">{tOrder("paymentNotice")}</p>
                 </div>
 
                 <button
                   onClick={handleRefresh}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#EDEBF2] bg-white py-3.5 text-xs font-bold text-[#1B1A3A] shadow-sm hover:bg-gray-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-white py-3.5 text-xs font-bold text-foreground shadow-sm hover:bg-surface"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Cek Status Pembayaran
@@ -159,7 +159,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <div className="mt-8 space-y-3">
                 <Link
                   href="/tickets"
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF5470] py-4 text-center text-sm font-extrabold text-white shadow-lg hover:brightness-110"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-center text-sm font-extrabold text-white shadow-lg hover:brightness-110"
                 >
                   <Ticket className="h-4 w-4" />
                   Buka Dompet Tiket Saya (Wavy Wallet)

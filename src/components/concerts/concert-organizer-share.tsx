@@ -15,9 +15,9 @@ export default function ConcertOrganizerShare({ eventTitle, inline }: { eventTit
 
   const content = (
     <>
-      <h2 className="text-[15px] font-bold text-[#111827]">Bagikan Event</h2>
+      <h2 className="text-[15px] font-bold text-foreground">Bagikan Event</h2>
       <div className="mt-3 flex items-center gap-2">
-        <button onClick={handleCopy} className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#111827]" aria-label="Salin link">
+        <button onClick={handleCopy} className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-foreground/85 hover:border-foreground" aria-label="Salin link">
           <Copy className="h-4 w-4" />
         </button>
         <a href={`https://wa.me/?text=${encodeURIComponent(`${title} - ${url}`)}`} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white" aria-label="WhatsApp">
@@ -36,7 +36,7 @@ export default function ConcertOrganizerShare({ eventTitle, inline }: { eventTit
 
   // Standalone (mobile) — with card wrapper
   return (
-    <section className="rounded-2xl border border-[#E5E7EB] bg-white p-5 sm:p-6">
+    <section className="rounded-2xl border border-border bg-white p-5 sm:p-6">
       {content}
     </section>
   );

@@ -8,7 +8,7 @@ export function WavyIcon({ size = 24, className, style }: { size?: number; class
       role="img"
       aria-label="Wavy logo"
       style={style}
-      className={`shrink-0 text-wavy-accent ${className ?? ""}`}
+      className={`shrink-0 text-primary ${className ?? ""}`}
     >
       <path d="M0 0h512v512H0z" fill="none" />
       <path

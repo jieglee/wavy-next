@@ -13,16 +13,16 @@ export default function Featured() {
       <div className="mx-auto max-w-7xl">
         <div className="flex items-end justify-between">
           <div>
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-off-white sm:text-3xl">
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Konser Pilihan
             </h2>
-            <p className="mt-1 text-sm text-lavender-gray">
+            <p className="mt-1 text-sm text-muted-foreground">
               Konser yang lagi naik daun bulan ini
             </p>
           </div>
 <Link
              href="/concerts"
-             className="hidden text-sm font-medium text-azure transition-colors hover:brightness-110 sm:inline-flex"
+             className="hidden text-sm font-medium text-primary transition-colors hover:brightness-110 sm:inline-flex"
            >
             Lihat semua &rarr;
           </Link>
@@ -35,16 +35,16 @@ export default function Featured() {
               href={`/concerts/${concert.id}`}
               data-aos="fade-up"
               data-aos-delay={i * 100}
-              className="group relative flex flex-col overflow-hidden rounded-xl border border-border-dark bg-graphite-plum transition-colors hover:border-coral-spotlight/40"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-muted transition-colors hover:border-primary/40"
             >
-              <div className="aspect-4/3 w-full bg-linear-to-br from-coral-spotlight/25 via-azure/20 to-coral-spotlight/25" />
+              <div className="aspect-4/3 w-full bg-linear-to-br from-primary/25 via-primary-glow/20 to-primary/25" />
               <div className="flex flex-col gap-1.5 p-4">
-                <h3 className="font-display text-base font-medium text-off-white group-hover:text-coral-spotlight">
+                <h3 className="font-display text-base font-medium text-foreground group-hover:text-primary">
                   {concert.title}
                 </h3>
-                <p className="text-xs text-lavender-gray">{concert.venue}</p>
-                <p className="text-xs text-lavender-gray">{concert.date}</p>
-                <p className="mt-1 font-display text-sm font-semibold text-coral-spotlight">
+                <p className="text-xs text-muted-foreground">{concert.venue}</p>
+                <p className="text-xs text-muted-foreground">{concert.date}</p>
+                <p className="mt-1 font-display text-sm font-semibold text-primary">
                   Mulai {concert.price}
                 </p>
               </div>
@@ -55,7 +55,7 @@ export default function Featured() {
         <div className="mt-6 text-center sm:hidden">
           <Link
             href="#"
-            className="text-sm font-medium text-azure transition-colors hover:brightness-110"
+            className="text-sm font-medium text-primary transition-colors hover:brightness-110"
           >
             Lihat semua &rarr;
           </Link>

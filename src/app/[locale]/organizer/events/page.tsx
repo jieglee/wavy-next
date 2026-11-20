@@ -196,22 +196,22 @@ export default function OrganizerEventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-surface">
       {/* Top Bar */}
-      <header className="border-b border-[#EDEBF2] bg-white px-6 py-4">
+      <header className="border-b border-border bg-white px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/organizer/dashboard" className="flex items-center gap-2">
               <WavyIcon size={26} />
-              <span className="font-display text-lg font-bold text-[#1B1A3A]">Wavy EO Portal</span>
+              <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
             </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs font-bold text-[#FF5470]">Manajemen Event</span>
+            <span className="text-muted-foreground/40">/</span>
+            <span className="text-xs font-bold text-primary">Manajemen Event</span>
           </div>
 
           <Link
             href="/organizer/dashboard"
-            className="flex items-center gap-1.5 text-xs font-bold text-[#8B889C] hover:text-[#1B1A3A]"
+            className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/80 hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Kembali ke Dashboard
@@ -222,13 +222,13 @@ export default function OrganizerEventsPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h1 className="font-display text-2xl font-extrabold text-[#1B1A3A]">Daftar Event Konser</h1>
-            <p className="text-xs text-[#6B6875]">Kelola konser, atur kategori tiket, dan pantau status publikasi.</p>
+            <h1 className="font-display text-2xl font-extrabold text-foreground">Daftar Event Konser</h1>
+            <p className="text-xs text-muted-foreground">Kelola konser, atur kategori tiket, dan pantau status publikasi.</p>
           </div>
 
           <button
             onClick={() => setCreateModal(true)}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-[#FF5470] px-5 py-3 text-xs font-bold text-white shadow-lg hover:brightness-110"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-xs font-bold text-white shadow-lg hover:brightness-110"
           >
             <Plus className="h-4 w-4" />
             Buat Event Baru
@@ -237,20 +237,20 @@ export default function OrganizerEventsPage() {
 
         {/* Events Table */}
         {loading ? (
-          <div className="h-48 animate-pulse rounded-3xl bg-gray-200" />
+          <div className="h-48 animate-pulse rounded-3xl bg-border" />
         ) : loadError ? (
           <ErrorState error={loadError} onRetry={() => setLoadNonce((n) => n + 1)} />
         ) : events.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-[#EDEBF2] bg-white p-12 text-center space-y-3">
-            <Calendar className="h-12 w-12 text-[#8B889C] mx-auto" />
-            <h3 className="text-base font-bold text-[#1B1A3A]">Belum Ada Event</h3>
-            <p className="text-xs text-[#6B6875]">Mulai buat event konser pertama Anda sekarang.</p>
+          <div className="rounded-3xl border border-dashed border-border bg-white p-12 text-center space-y-3">
+            <Calendar className="h-12 w-12 text-muted-foreground/80 mx-auto" />
+            <h3 className="text-base font-bold text-foreground">Belum Ada Event</h3>
+            <p className="text-xs text-muted-foreground">Mulai buat event konser pertama Anda sekarang.</p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-3xl border border-[#EDEBF2] bg-white shadow-sm">
+          <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-[#EDEBF2] bg-[#FAFAF8] text-[#8B889C]">
+                <thead className="border-b border-border bg-surface text-muted-foreground/80">
                   <tr>
                     <th className="px-6 py-4 font-bold">Judul Event</th>
                     <th className="px-6 py-4 font-bold">Kategori</th>
@@ -259,28 +259,28 @@ export default function OrganizerEventsPage() {
                     <th className="px-6 py-4 font-bold text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EDEBF2]">
+                <tbody className="divide-y divide-border">
                   {events.map((ev) => (
-                    <tr key={ev.id} className="hover:bg-[#FAFAF8] transition-colors">
+                    <tr key={ev.id} className="hover:bg-surface transition-colors">
                       <td className="px-6 py-4">
-                        <span className="font-bold text-[#1B1A3A] text-sm block">{ev.title}</span>
-                        <span className="text-[10px] text-[#8B889C]">ID: #{ev.id}</span>
+                        <span className="font-bold text-foreground text-sm block">{ev.title}</span>
+                        <span className="text-[10px] text-muted-foreground/80">ID: #{ev.id}</span>
                       </td>
-                      <td className="px-6 py-4 font-semibold text-[#1B1A3A]">{ev.category}</td>
+                      <td className="px-6 py-4 font-semibold text-foreground">{ev.category}</td>
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-[#1B1A3A]">
+                        <p className="font-semibold text-foreground">
                           {new Date(ev.date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                         </p>
-                        <p className="text-[10px] text-[#8B889C] truncate max-w-[180px]">{ev.venue}</p>
+                        <p className="text-[10px] text-muted-foreground/80 truncate max-w-[180px]">{ev.venue}</p>
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold ${
                             ev.status === "published"
-                              ? "bg-emerald-100 text-emerald-700"
+                              ? "bg-success/10 text-success"
                               : ev.status === "closed"
-                              ? "bg-gray-100 text-gray-700"
-                              : "bg-amber-100 text-amber-700"
+                              ? "bg-muted text-foreground/85"
+                              : "bg-warning/10 text-warning"
                           }`}
                         >
                           {ev.status === "published" ? "Published" : ev.status === "closed" ? "Closed" : "Draft"}
@@ -289,16 +289,16 @@ export default function OrganizerEventsPage() {
                       <td className="px-6 py-4 text-right space-x-2">
                         <button
                           onClick={() => openCategoriesModal(ev)}
-                          className="rounded-xl border border-[#EDEBF2] bg-white px-3 py-1.5 font-bold text-[#1B1A3A] hover:border-[#FF5470]"
+                          className="rounded-xl border border-border bg-white px-3 py-1.5 font-bold text-foreground hover:border-primary"
                         >
-                          <Tag className="inline h-3.5 w-3.5 mr-1 text-[#FF5470]" />
+                          <Tag className="inline h-3.5 w-3.5 mr-1 text-primary" />
                           Kategori Tiket
                         </button>
 
                         {ev.status === "draft" && (
                           <button
                             onClick={() => handlePublishEvent(ev.id)}
-                            className="rounded-xl bg-emerald-600 px-3 py-1.5 font-bold text-white hover:bg-emerald-700"
+                            className="rounded-xl bg-success px-3 py-1.5 font-bold text-white hover:bg-success/90"
                           >
                             Publish
                           </button>
@@ -307,7 +307,7 @@ export default function OrganizerEventsPage() {
                         {ev.status === "published" && (
                           <button
                             onClick={() => handleCloseSales(ev.id)}
-                            className="rounded-xl bg-gray-600 px-3 py-1.5 font-bold text-white hover:bg-gray-700"
+                            className="rounded-xl bg-muted-foreground px-3 py-1.5 font-bold text-white hover:bg-muted-foreground/90"
                           >
                             Tutup Jual
                           </button>
@@ -315,7 +315,7 @@ export default function OrganizerEventsPage() {
 
                         <button
                           onClick={() => handleDeleteEvent(ev.id)}
-                          className="rounded-xl border border-red-200 p-1.5 text-red-600 hover:bg-red-50"
+                          className="rounded-xl border border-destructive/30 p-1.5 text-destructive hover:bg-destructive/5"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -333,33 +333,33 @@ export default function OrganizerEventsPage() {
       {createModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#EDEBF2] pb-3">
-              <h3 className="font-display text-xl font-bold text-[#1B1A3A]">Buat Event Konser Baru</h3>
-              <button onClick={() => setCreateModal(false)} className="rounded-full bg-gray-100 p-1 text-gray-500">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <h3 className="font-display text-xl font-bold text-foreground">Buat Event Konser Baru</h3>
+              <button onClick={() => setCreateModal(false)} className="rounded-full bg-muted p-1 text-muted-foreground">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreateEvent} className="space-y-3 pt-2 text-xs">
               <div>
-                <label className="font-bold text-[#1B1A3A]">Judul Event</label>
+                <label className="font-bold text-foreground">Judul Event</label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Contoh: Jakarta Soundwave 2026"
-                  className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 outline-none focus:border-[#FF5470]"
+                  className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-[#1B1A3A]">Musisi / Penampil</label>
+                  <label className="font-bold text-foreground">Musisi / Penampil</label>
                   <select
                     value={artistId}
                     onChange={(e) => setArtistId(Number(e.target.value))}
-                    className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 outline-none bg-white focus:border-[#FF5470]"
+                    className="mt-1 w-full rounded-2xl border border-border p-3 outline-none bg-white focus:border-primary"
                   >
                     {artists.map((a) => (
                       <option key={a.id} value={a.id}>
@@ -370,11 +370,11 @@ export default function OrganizerEventsPage() {
                 </div>
 
                 <div>
-                  <label className="font-bold text-[#1B1A3A]">Kategori Musik</label>
+                  <label className="font-bold text-foreground">Kategori Musik</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 outline-none bg-white focus:border-[#FF5470]"
+                    className="mt-1 w-full rounded-2xl border border-border p-3 outline-none bg-white focus:border-primary"
                   >
                     <option value="Festival">Festival</option>
                     <option value="Rock">Rock</option>
@@ -389,37 +389,37 @@ export default function OrganizerEventsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-[#1B1A3A]">Lokasi / Venue</label>
+                  <label className="font-bold text-foreground">Lokasi / Venue</label>
                   <input
                     type="text"
                     required
                     value={venue}
                     onChange={(e) => setVenue(e.target.value)}
                     placeholder="Contoh: Istora Senayan, Jakarta"
-                    className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 outline-none focus:border-[#FF5470]"
+                    className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-[#1B1A3A]">Tanggal & Waktu</label>
+                  <label className="font-bold text-foreground">Tanggal & Waktu</label>
                   <input
                     type="datetime-local"
                     required
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 outline-none focus:border-[#FF5470]"
+                    className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="font-bold text-[#1B1A3A]">Deskripsi Event</label>
+                <label className="font-bold text-foreground">Deskripsi Event</label>
                 <textarea
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Jelaskan detail line-up, fasilitas, dan ketentuan konser..."
-                  className="mt-1 w-full rounded-2xl border border-[#EDEBF2] p-3 outline-none focus:border-[#FF5470]"
+                  className="mt-1 w-full rounded-2xl border border-border p-3 outline-none focus:border-primary"
                 />
               </div>
 
@@ -427,14 +427,14 @@ export default function OrganizerEventsPage() {
                 <button
                   type="button"
                   onClick={() => setCreateModal(false)}
-                  className="flex-1 rounded-2xl border border-[#EDEBF2] py-3 font-bold text-[#6B6875]"
+                  className="flex-1 rounded-2xl border border-border py-3 font-bold text-muted-foreground"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 rounded-2xl bg-[#FF5470] py-3 font-bold text-white shadow hover:brightness-110 disabled:opacity-50"
+                  className="flex-1 rounded-2xl bg-primary py-3 font-bold text-white shadow hover:brightness-110 disabled:opacity-50"
                 >
                   {submitting ? "Menyimpan..." : "Simpan Sebagai Draft"}
                 </button>
@@ -448,12 +448,12 @@ export default function OrganizerEventsPage() {
       {categoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#EDEBF2] pb-3">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
-                <h3 className="font-display text-lg font-bold text-[#1B1A3A]">Kategori Tiket</h3>
-                <p className="text-xs text-[#8B889C]">{categoryModal.title}</p>
+                <h3 className="font-display text-lg font-bold text-foreground">Kategori Tiket</h3>
+                <p className="text-xs text-muted-foreground/80">{categoryModal.title}</p>
               </div>
-              <button onClick={() => setCategoryModal(null)} className="rounded-full bg-gray-100 p-1 text-gray-500">
+              <button onClick={() => setCategoryModal(null)} className="rounded-full bg-muted p-1 text-muted-foreground">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -465,17 +465,17 @@ export default function OrganizerEventsPage() {
               ) : categoriesError ? (
                 <ErrorState error={categoriesError} onRetry={() => categoryModal && openCategoriesModal(categoryModal)} />
               ) : categories.length === 0 ? (
-                <p className="text-center py-4 text-xs text-[#8B889C]">Belum ada kategori tiket.</p>
+                <p className="text-center py-4 text-xs text-muted-foreground/80">Belum ada kategori tiket.</p>
               ) : (
                 categories.map((c) => (
-                  <div key={c.id} className="flex items-center justify-between p-3 rounded-2xl bg-[#FAFAF8] border border-[#EDEBF2]">
+                  <div key={c.id} className="flex items-center justify-between p-3 rounded-2xl bg-surface border border-border">
                     <div>
-                      <p className="font-bold text-xs text-[#1B1A3A]">{c.name}</p>
-                      <p className="text-[11px] text-[#FF5470] font-mono font-bold">
+                      <p className="font-bold text-xs text-foreground">{c.name}</p>
+                      <p className="text-[11px] text-primary font-mono font-bold">
                         Rp{Number(c.price).toLocaleString("id-ID")}
                       </p>
                     </div>
-                    <div className="text-right text-[11px] text-[#8B889C]">
+                    <div className="text-right text-[11px] text-muted-foreground/80">
                       <span>Kuota: {c.quota}</span> &bull; <span>Terjual: {c.sold}</span>
                     </div>
                   </div>
@@ -484,8 +484,8 @@ export default function OrganizerEventsPage() {
             </div>
 
             {/* Add New Category Form */}
-            <form onSubmit={handleAddCategory} className="border-t border-[#EDEBF2] pt-4 space-y-3 text-xs">
-              <p className="font-bold text-[#1B1A3A]">Tambah Kategori Baru</p>
+            <form onSubmit={handleAddCategory} className="border-t border-border pt-4 space-y-3 text-xs">
+              <p className="font-bold text-foreground">Tambah Kategori Baru</p>
               <div>
                 <input
                   type="text"
@@ -493,7 +493,7 @@ export default function OrganizerEventsPage() {
                   value={catName}
                   onChange={(e) => setCatName(e.target.value)}
                   placeholder="Nama Kategori (misal: VIP, CAT 1, Presale)"
-                  className="w-full rounded-2xl border border-[#EDEBF2] p-2.5 outline-none focus:border-[#FF5470]"
+                  className="w-full rounded-2xl border border-border p-2.5 outline-none focus:border-primary"
                 />
               </div>
 
@@ -504,7 +504,7 @@ export default function OrganizerEventsPage() {
                   value={catPrice}
                   onChange={(e) => setCatPrice(e.target.value ? Number(e.target.value) : "")}
                   placeholder="Harga (Rp)"
-                  className="w-full rounded-2xl border border-[#EDEBF2] p-2.5 outline-none focus:border-[#FF5470]"
+                  className="w-full rounded-2xl border border-border p-2.5 outline-none focus:border-primary"
                 />
                 <input
                   type="number"
@@ -512,13 +512,13 @@ export default function OrganizerEventsPage() {
                   value={catQuota}
                   onChange={(e) => setCatQuota(e.target.value ? Number(e.target.value) : "")}
                   placeholder="Kuota Tiket"
-                  className="w-full rounded-2xl border border-[#EDEBF2] p-2.5 outline-none focus:border-[#FF5470]"
+                  className="w-full rounded-2xl border border-border p-2.5 outline-none focus:border-primary"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-2xl bg-[#1B1A3A] py-2.5 font-bold text-white hover:bg-black"
+                className="w-full rounded-2xl bg-foreground py-2.5 font-bold text-white hover:bg-black"
               >
                 + Tambah Kategori
               </button>

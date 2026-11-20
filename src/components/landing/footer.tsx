@@ -2,6 +2,7 @@ import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { WavyIcon } from "@/components/landing/wavy-icon"
+import { SHOW_PAYMENT_LOGOS } from "@/lib/features"
 
 const paymentMethods = [
   "QRIS", "BCA", "BRI", "BNI", "Mandiri", "BSI",
@@ -83,27 +84,27 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="border-t border-wavy-border px-4 py-14 sm:px-6 lg:px-8">
+    <footer className="border-t border-border px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
+        <div className={`grid grid-cols-2 gap-10 ${SHOW_PAYMENT_LOGOS ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
           {/* Brand + Social */}
           <div className="col-span-2 sm:col-span-1">
-            <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-wavy-accent to-wavy-blue bg-clip-text text-transparent">
+            <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
               {t("everyConcert")}
             </p>
-            <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-wavy-text-primary">
+            <Link href="/" className="mt-1 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-foreground">
               <WavyIcon size={26} />
               Wavy
             </Link>
 
-            <p className="mt-6 text-sm font-semibold text-wavy-text-primary">{t("followUs")}</p>
+            <p className="mt-6 text-sm font-semibold text-foreground">{t("followUs")}</p>
             <div className="mt-3 flex items-center gap-3">
               {socials.map(({ icon: Icon, href, label }) => (
                 <Link
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-wavy-surface text-wavy-text-secondary transition-colors hover:bg-wavy-accent hover:text-wavy-bg"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
                 >
                   <Icon className="h-4 w-4" />
                 </Link>
@@ -111,14 +112,14 @@ export default function Footer() {
               <Link
                 href="#"
                 aria-label="TikTok"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-wavy-surface text-wavy-text-secondary transition-colors hover:bg-wavy-accent hover:text-wavy-bg"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <TikTokIcon className="h-4 w-4" />
               </Link>
               <Link
                 href="#"
                 aria-label="Threads"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-wavy-surface text-wavy-text-secondary transition-colors hover:bg-wavy-accent hover:text-wavy-bg"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <ThreadsIcon className="h-4 w-4" />
               </Link>
@@ -127,13 +128,13 @@ export default function Footer() {
 
           {/* Menu */}
           <div>
-            <p className="font-display text-sm font-semibold text-wavy-text-primary">{t("menu")}</p>
+            <p className="font-display text-sm font-semibold text-foreground">{t("menu")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               {menuLinks.map((l) => (
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="text-sm text-wavy-text-secondary transition-colors hover:text-wavy-text-primary"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {l.label}
                 </Link>
@@ -143,13 +144,13 @@ export default function Footer() {
 
           {/* Panduan */}
           <div>
-            <p className="font-display text-sm font-semibold text-wavy-text-primary">{t("guide")}</p>
+            <p className="font-display text-sm font-semibold text-foreground">{t("guide")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               {panduanLinks.map((l) => (
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="text-sm text-wavy-text-secondary transition-colors hover:text-wavy-text-primary"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {l.label}
                 </Link>
@@ -158,18 +159,19 @@ export default function Footer() {
           </div>
 
           {/* Pilihan Pembayaran */}
+          {SHOW_PAYMENT_LOGOS && (
           <div className="col-span-2 sm:col-span-1">
-            <p className="font-display text-sm font-semibold text-wavy-text-primary">
+            <p className="font-display text-sm font-semibold text-foreground">
               {t("paymentOptions")}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {paymentMethods.map((method, i) => (
                 <span
                   key={method}
-                  className={`flex items-center justify-center rounded-md bg-wavy-surface px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-wavy-text-secondary transition-all duration-200 ring-1 ring-transparent hover:-translate-y-0.5 hover:text-wavy-text-primary ${
+                  className={`flex items-center justify-center rounded-md bg-muted px-2.5 py-1.5 font-mono text-[0.65rem] font-medium text-muted-foreground transition-all duration-200 ring-1 ring-transparent hover:-translate-y-0.5 hover:text-foreground ${
                     i % 2 === 0
-                      ? "hover:ring-wavy-accent/60 hover:shadow-[0_4px_16px_rgba(255,84,112,0.25)]"
-                      : "hover:ring-wavy-blue/60 hover:shadow-[0_4px_16px_rgba(30,64,175,0.25)]"
+                      ? "hover:ring-primary/60 hover:shadow-[0_4px_16px_color-mix(in_oklab,var(--primary)_25%,transparent)]"
+                      : "hover:ring-primary-glow/60 hover:shadow-[0_4px_16px_color-mix(in_oklab,var(--primary-glow)_25%,transparent)]"
                   }`}
                 >
                   {paymentLogos[method] ? (
@@ -187,18 +189,19 @@ export default function Footer() {
               ))}
             </div>
           </div>
+          )}
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-wavy-border pt-6 sm:flex-row">
-          <p className="text-xs text-wavy-text-secondary">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:flex-row">
+          <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Wavy. {t("rights")}
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-xs text-wavy-text-secondary transition-colors hover:text-wavy-text-primary">
+            <Link href="#" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
               {t("privacy")}
             </Link>
-            <Link href="#" className="text-xs text-wavy-text-secondary transition-colors hover:text-wavy-text-primary">
+            <Link href="#" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
               {t("terms")}
             </Link>
           </div>

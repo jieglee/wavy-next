@@ -162,7 +162,7 @@ export default function LoginOtpCard() {
                     <motion.div layout transition={{ duration: 0.6, ease: "easeOut" }}>
                         <WavyIconAnimated
                             size={48}
-                            color="#fff"
+                            color="var(--primary-foreground)"
                             drawDuration={1.1}
                             onFirstDrawComplete={() => setShowBrandName(true)}
                         />
@@ -185,12 +185,12 @@ export default function LoginOtpCard() {
             </div>
 
             {/* Panel kanan: form */}
-            <div className="flex w-full flex-col bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
+            <div className="flex w-full flex-col bg-background px-8 sm:px-16 md:w-[45%] md:px-20">
                 <div className="pt-6">
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
                     >
                         <ArrowLeft className="h-3.5 w-3.5" />
                         Kembali
@@ -202,10 +202,10 @@ export default function LoginOtpCard() {
                     <div className="mb-8 flex items-center justify-between md:hidden">
                         <div className="flex items-center gap-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 15 Q6 8, 9 15 T15 15 T21 15" stroke="#FF5470" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-                                <circle cx="19" cy="6" r="2.2" fill="#FF5470" />
+                                <path d="M3 15 Q6 8, 9 15 T15 15 T21 15" stroke="var(--primary)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+                                <circle cx="19" cy="6" r="2.2" fill="var(--primary)" />
                             </svg>
-                            <span className="font-display text-lg font-bold tracking-tight text-wavy-text-primary">Wavy</span>
+                            <span className="font-display text-lg font-bold tracking-tight text-foreground">Wavy</span>
                         </div>
                     </div>
 
@@ -220,18 +220,18 @@ export default function LoginOtpCard() {
                             >
                                 <div className="mb-6 flex items-center gap-2">
                                     <WavyIcon size={28} />
-                                    <span className="font-display text-xl font-bold tracking-tight text-wavy-text-primary">Wavy</span>
+                                    <span className="font-display text-xl font-bold tracking-tight text-foreground">Wavy</span>
                                 </div>
-                                <h1 className="font-display text-2xl font-bold text-wavy-text-primary">
+                                <h1 className="font-display text-2xl font-bold text-foreground">
                                     {t("welcomeBack")}
                                 </h1>
-                                <p className="mt-2 text-sm text-wavy-text-secondary">
+                                <p className="mt-2 text-sm text-muted-foreground">
                                     {t("emailPrompt")}
                                 </p>
 
                                 <form onSubmit={handleSendOtp} className="mt-8 flex flex-col gap-4">
                                     <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-wavy-text-primary">{t("emailLabel")}</label>
+                                        <label className="mb-1.5 block text-sm font-medium text-foreground">{t("emailLabel")}</label>
                                         <input
                                             type="email"
                                             autoFocus
@@ -241,16 +241,16 @@ export default function LoginOtpCard() {
                                                 setEmail(e.target.value);
                                                 setError("");
                                             }}
-                                            className="w-full rounded-lg bg-wavy-surface px-4 py-3 text-sm text-wavy-text-primary placeholder:text-wavy-text-secondary/60 outline-none focus:ring-2 focus:ring-wavy-accent"
+                                            className="w-full rounded-lg bg-muted px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
                                         />
                                     </div>
 
-                                    {error && <p className="text-xs text-red-400">{error}</p>}
+                                    {error && <p className="text-xs text-destructive">{error}</p>}
 
                                     <button
                                         type="submit"
                                         disabled={loading || !emailValid}
-                                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
+                                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
                                     >
                                         <ArrowRight className="h-4 w-4" />
                                         {loading ? t("sending") : t("continue")}
@@ -271,19 +271,19 @@ export default function LoginOtpCard() {
                                         setOtp(Array(OTP_LENGTH).fill(""));
                                         setError("");
                                     }}
-                                    className="mb-4 flex items-center gap-1 text-xs text-wavy-text-secondary hover:text-wavy-text-primary"
+                                    className="mb-4 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                                 >
                                     <ArrowLeft className="h-3.5 w-3.5" />
                                     {t("changeEmail")}
                                 </button>
 
-                                <h1 className="font-display text-3xl font-bold text-wavy-text-primary">
+                                <h1 className="font-display text-3xl font-bold text-foreground">
                                     {t("enterOtpTitle")}
                                 </h1>
-                                <p className="mt-3 text-sm text-wavy-text-secondary">
+                                <p className="mt-3 text-sm text-muted-foreground">
                                     {t("otpPrompt")}
                                     <br />
-                                    <span className="font-semibold text-wavy-accent">{email}</span>
+                                    <span className="font-semibold text-primary">{email}</span>
                                 </p>
 
                                 <form onSubmit={handleVerify} className="mt-8 flex flex-col gap-4">
@@ -301,17 +301,17 @@ export default function LoginOtpCard() {
                                                 onChange={(e) => handleOtpChange(i, e.target.value)}
                                                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
                                                 onPaste={handleOtpPaste}
-                                                className="h-14 w-12 rounded-xl border-2 border-wavy-border bg-transparent text-center font-mono text-xl text-wavy-text-primary outline-none transition-colors focus:border-wavy-accent"
+                                                className="h-14 w-12 rounded-xl border-2 border-border bg-transparent text-center font-mono text-xl text-foreground outline-none transition-colors focus:border-primary"
                                             />
                                         ))}
                                     </div>
 
-                                    {error && <p className="text-xs text-red-400">{error}</p>}
+                                    {error && <p className="text-xs text-destructive">{error}</p>}
 
-                                    <p className="text-sm text-wavy-text-secondary">
+                                    <p className="text-sm text-muted-foreground">
                                         {t("noOtpReceived")}{" "}
                                         {resendIn > 0 ? (
-                                            <span className="font-semibold text-wavy-accent">
+                                            <span className="font-semibold text-primary">
                                                 {t("resendIn", { count: resendIn })}
                                             </span>
                                         ) : (
@@ -319,7 +319,7 @@ export default function LoginOtpCard() {
                                                 type="button"
                                                 onClick={handleResend}
                                                 disabled={loading}
-                                                className="font-semibold text-wavy-accent hover:underline disabled:opacity-50"
+                                                className="font-semibold text-primary hover:underline disabled:opacity-50"
                                             >
                                                 {t("resendButton")}
                                             </button>
@@ -329,7 +329,7 @@ export default function LoginOtpCard() {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-60"
+                                        className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-60"
                                     >
                                         <ArrowRight className="h-4 w-4" />
                                         {loading ? t("verifying") : t("signIn")}

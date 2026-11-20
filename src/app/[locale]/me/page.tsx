@@ -26,9 +26,9 @@ type Tab = "level" | "orders" | "favorites" | "notifications";
 const tabCls = (active: boolean) =>
   cn(
     "flex shrink-0 items-center gap-1.5 rounded-lg px-4 py-2.5 transition-colors",
-    active ? "bg-wavy-text-primary text-white" : "text-wavy-text-secondary hover:text-wavy-text-primary"
+    active ? "bg-foreground text-white" : "text-muted-foreground hover:text-foreground"
   );
-const panelCls = "rounded-2xl border border-wavy-border bg-wavy-bg p-4 sm:p-8 space-y-4";
+const panelCls = "rounded-2xl border border-border bg-background p-4 sm:p-8 space-y-4";
 
 export default function CustomerProfilePage() {
   const t = useTranslations("Profile");
@@ -71,15 +71,15 @@ export default function CustomerProfilePage() {
   const unread = notifications.data?.filter((n) => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-wavy-bg">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:space-y-8 sm:px-6 sm:py-10 lg:px-8">
         {/* Kartu user */}
-        <div className="relative overflow-hidden rounded-2xl bg-wavy-text-primary p-5 text-white sm:p-8">
+        <div className="relative overflow-hidden rounded-2xl bg-foreground p-5 text-white sm:p-8">
           <div className="relative z-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
             <div className="flex min-w-0 items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-wavy-accent text-2xl font-bold sm:h-16 sm:w-16">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary text-2xl font-bold sm:h-16 sm:w-16">
                 {(currentUser?.name || currentUser?.email || "W").charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
@@ -104,7 +104,7 @@ export default function CustomerProfilePage() {
         </div>
 
         {/* Tab */}
-        <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto border-b border-wavy-border px-4 pb-2 text-xs font-bold sm:mx-0 sm:px-0">
+        <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto border-b border-border px-4 pb-2 text-xs font-bold sm:mx-0 sm:px-0">
           <button onClick={() => setActiveTab("level")} className={tabCls(activeTab === "level")}>
             <Sparkles className="h-4 w-4" />
             {t("tabs.level")}
@@ -129,8 +129,8 @@ export default function CustomerProfilePage() {
         {activeTab === "level" && (
           <section className={panelCls}>
             <div>
-              <h2 className="font-display text-xl font-bold text-wavy-text-primary">{t("level.title")}</h2>
-              <p className="text-xs text-wavy-text-secondary">{t("level.subtitle")}</p>
+              <h2 className="font-display text-xl font-bold text-foreground">{t("level.title")}</h2>
+              <p className="text-xs text-muted-foreground">{t("level.subtitle")}</p>
             </div>
             {level.loading ? (
               <LoadingState />
@@ -145,7 +145,7 @@ export default function CustomerProfilePage() {
         {/* Riwayat order */}
         {activeTab === "orders" && (
           <section className={panelCls}>
-            <h2 className="font-display text-xl font-bold text-wavy-text-primary">{t("orders.title")}</h2>
+            <h2 className="font-display text-xl font-bold text-foreground">{t("orders.title")}</h2>
             {orders.loading ? (
               <LoadingState rows={3} />
             ) : orders.error || !orders.data ? (
@@ -156,21 +156,21 @@ export default function CustomerProfilePage() {
                 title={t("orders.emptyTitle")}
                 description={t("orders.emptyDescription")}
                 action={
-                  <Link href="/concerts" className="rounded-lg bg-wavy-accent px-5 py-2 text-xs font-bold text-white hover:brightness-110">
+                  <Link href="/concerts" className="rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:brightness-110">
                     {t("orders.browse")}
                   </Link>
                 }
               />
             ) : (
-              <ul className="divide-y divide-wavy-border">
+              <ul className="divide-y divide-border">
                 {orders.data.map((ord) => (
                   <li key={ord.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
-                      <span className="font-mono text-xs font-bold text-wavy-text-primary">{t("orders.orderNumber", { id: ord.id })}</span>
-                      <p className="mt-0.5 font-mono text-xs text-wavy-text-secondary">
+                      <span className="font-mono text-xs font-bold text-foreground">{t("orders.orderNumber", { id: ord.id })}</span>
+                      <p className="mt-0.5 font-mono text-xs text-muted-foreground">
                         {format.dateTime(new Date(ord.created_at), { dateStyle: "medium", timeStyle: "short" })}
                       </p>
-                      <p className="mt-0.5 text-xs text-wavy-text-secondary">
+                      <p className="mt-0.5 text-xs text-muted-foreground">
                         {t("orders.summary", { quantity: ord.quantity })} &bull;{" "}
                         <span className="font-mono">{formatIDR(Number(ord.total_price))}</span>
                       </p>
@@ -179,7 +179,7 @@ export default function CustomerProfilePage() {
                       <OrderStatusBadge status={ord.status} />
                       <Link
                         href={`/orders/${ord.id}`}
-                        className="rounded-lg border border-wavy-border px-3 py-1.5 text-xs font-bold text-wavy-text-primary hover:bg-wavy-surface"
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-bold text-foreground hover:bg-muted"
                       >
                         {t("orders.detail")}
                       </Link>
@@ -215,7 +215,7 @@ export default function CustomerProfilePage() {
         {/* Notifikasi */}
         {activeTab === "notifications" && (
           <section className={panelCls}>
-            <h2 className="font-display text-xl font-bold text-wavy-text-primary">{t("notifications.title")}</h2>
+            <h2 className="font-display text-xl font-bold text-foreground">{t("notifications.title")}</h2>
             {notifications.loading ? (
               <LoadingState rows={3} />
             ) : notifications.error || !notifications.data ? (
@@ -232,15 +232,15 @@ export default function CustomerProfilePage() {
                       onClick={() => handleMarkNotifRead(n.id)}
                       className={cn(
                         "w-full space-y-1 rounded-xl border p-4 text-left transition-colors",
-                        n.read ? "border-wavy-border bg-wavy-surface opacity-70" : "border-wavy-accent/30 bg-wavy-bg hover:bg-wavy-surface"
+                        n.read ? "border-border bg-muted opacity-70" : "border-primary/30 bg-background hover:bg-muted"
                       )}
                     >
-                      <span className="flex items-center gap-2 text-xs font-bold text-wavy-text-primary">
+                      <span className="flex items-center gap-2 text-xs font-bold text-foreground">
                         {n.title}
-                        {!n.read && <span className="h-2 w-2 rounded-full bg-wavy-accent" aria-label={t("notifications.unread")} />}
+                        {!n.read && <span className="h-2 w-2 rounded-full bg-primary" aria-label={t("notifications.unread")} />}
                       </span>
-                      <span className="block text-xs text-wavy-text-secondary">{n.message}</span>
-                      <span className="block font-mono text-[10px] text-wavy-text-secondary">
+                      <span className="block text-xs text-muted-foreground">{n.message}</span>
+                      <span className="block font-mono text-[10px] text-muted-foreground">
                         {format.dateTime(new Date(n.created_at), { dateStyle: "medium", timeStyle: "short" })}
                       </span>
                     </button>
@@ -265,21 +265,21 @@ function LevelProgress({ data }: { data: CustomerLevel }) {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2 rounded-xl border border-wavy-border bg-wavy-surface p-4 sm:p-5">
-        <div className="flex flex-wrap justify-between gap-2 text-xs font-bold text-wavy-text-primary">
+      <div className="space-y-2 rounded-xl border border-border bg-muted p-4 sm:p-5">
+        <div className="flex flex-wrap justify-between gap-2 text-xs font-bold text-foreground">
           <span>{t("current", { level: data.level, label: data.level_label })}</span>
           <span>{next === undefined ? t("max") : t("toNext", { level: data.level + 1 })}</span>
         </div>
         <div
-          className="h-3 w-full overflow-hidden rounded-full bg-wavy-border"
+          className="h-3 w-full overflow-hidden rounded-full bg-border"
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={pct}
         >
-          <div className="h-full bg-wavy-accent transition-all duration-500" style={{ width: `${pct}%` }} />
+          <div className="h-full bg-primary transition-all duration-500" style={{ width: `${pct}%` }} />
         </div>
-        <p className="font-mono text-[11px] text-wavy-text-secondary">
+        <p className="font-mono text-[11px] text-muted-foreground">
           {next === undefined
             ? t("attended", { count: data.attended_concerts })
             : t("progress", { count: data.attended_concerts, target: next })}
@@ -295,11 +295,11 @@ function LevelProgress({ data }: { data: CustomerLevel }) {
               key={lvl}
               className={cn(
                 "rounded-xl border p-3",
-                reached ? "border-wavy-accent bg-wavy-accent/5" : "border-wavy-border opacity-60"
+                reached ? "border-primary bg-primary/5" : "border-border opacity-60"
               )}
             >
-              <p className="font-bold text-wavy-text-primary">{t("tier", { level: lvl })}</p>
-              <p className="font-mono text-[10px] font-semibold text-wavy-accent">{t("tierRequirement", { count: min })}</p>
+              <p className="font-bold text-foreground">{t("tier", { level: lvl })}</p>
+              <p className="font-mono text-[10px] font-semibold text-primary">{t("tierRequirement", { count: min })}</p>
             </li>
           );
         })}
@@ -318,16 +318,16 @@ function FavoriteList({
   items: { id: number; name: string; meta?: string }[];
 }) {
   return (
-    <section className="space-y-3 rounded-2xl border border-wavy-border bg-wavy-bg p-4 sm:p-6">
-      <h3 className="font-display text-base font-bold text-wavy-text-primary">{title}</h3>
+    <section className="space-y-3 rounded-2xl border border-border bg-background p-4 sm:p-6">
+      <h3 className="font-display text-base font-bold text-foreground">{title}</h3>
       {items.length === 0 ? (
-        <p className="text-xs text-wavy-text-secondary">{empty}</p>
+        <p className="text-xs text-muted-foreground">{empty}</p>
       ) : (
         <ul className="space-y-2">
           {items.map((it) => (
-            <li key={it.id} className="flex items-center justify-between gap-2 rounded-xl border border-wavy-border bg-wavy-surface p-3">
-              <span className="truncate text-xs font-bold text-wavy-text-primary">{it.name}</span>
-              {it.meta && <span className="shrink-0 text-[10px] text-wavy-text-secondary">{it.meta}</span>}
+            <li key={it.id} className="flex items-center justify-between gap-2 rounded-xl border border-border bg-muted p-3">
+              <span className="truncate text-xs font-bold text-foreground">{it.name}</span>
+              {it.meta && <span className="shrink-0 text-[10px] text-muted-foreground">{it.meta}</span>}
             </li>
           ))}
         </ul>

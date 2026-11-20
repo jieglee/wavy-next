@@ -16,13 +16,13 @@ type Step = "account" | "profile" | "done";
 
 function ContactLine() {
   return (
-    <p className="text-xs text-wavy-text-secondary">
+    <p className="text-xs text-muted-foreground">
       Butuh bantuan?{" "}
       <a
         href={`https://wa.me/${WA_NUMBER}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-0.5 font-semibold text-green-400 hover:underline"
+        className="inline-flex items-center gap-0.5 font-semibold text-[#25D366] hover:underline"
       >
         <MessageCircle className="h-3 w-3" />
         WhatsApp
@@ -41,21 +41,21 @@ function ContactLine() {
 
 function ContactCard() {
   return (
-    <div className="rounded-xl border border-wavy-border bg-wavy-surface p-4">
-      <p className="text-xs font-semibold text-wavy-text-primary">Ada pertanyaan soal pengajuan Anda?</p>
+    <div className="rounded-xl border border-border bg-muted p-4">
+      <p className="text-xs font-semibold text-foreground">Ada pertanyaan soal pengajuan Anda?</p>
       <div className="mt-3 flex gap-2">
         <a
           href={`https://wa.me/${WA_NUMBER}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-green-400 py-2 text-xs font-semibold text-white transition-colors hover:brightness-110"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#25D366] py-2 text-xs font-semibold text-white transition-colors hover:brightness-110"
         >
           <MessageCircle className="h-3.5 w-3.5" />
           WhatsApp
         </a>
         <a
           href={`mailto:${PARTNERSHIP_EMAIL}?subject=Pengajuan%20Kerja%20Sama%20Event%20Organizer`}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-wavy-border bg-transparent py-2 text-xs font-semibold text-wavy-text-primary transition-colors hover:bg-white"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-transparent py-2 text-xs font-semibold text-foreground transition-colors hover:bg-white"
         >
           <Mail className="h-3.5 w-3.5" />
           Email
@@ -120,8 +120,8 @@ export default function OrganizerRegisterPage() {
   }
 
   const inputClass =
-    "w-full rounded-lg bg-wavy-surface px-4 py-2.5 text-sm text-wavy-text-primary placeholder:text-wavy-text-secondary/60 outline-none focus:ring-2 focus:ring-wavy-accent";
-  const labelClass = "mb-1 block text-xs font-medium text-wavy-text-primary";
+    "w-full rounded-lg bg-muted px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary";
+  const labelClass = "mb-1 block text-xs font-medium text-foreground";
 
   return (
     <div className="flex min-h-screen w-full">
@@ -137,13 +137,13 @@ export default function OrganizerRegisterPage() {
       </div>
 
       {/* Panel kanan: form */}
-      <div className="flex w-full flex-col bg-wavy-bg px-8 sm:px-12 md:w-[45%] md:px-14">
+      <div className="flex w-full flex-col bg-background px-8 sm:px-12 md:w-[45%] md:px-14">
         <div className="flex items-center justify-between pt-5">
           {step === "profile" ? (
             <button
               type="button"
               onClick={() => setStep("account")}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Kembali
@@ -152,14 +152,14 @@ export default function OrganizerRegisterPage() {
             <button
               type="button"
               onClick={() => router.push("/organizer/login")}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Kembali ke Login
             </button>
           )}
           {step !== "done" && (
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-wavy-text-secondary">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Langkah {step === "account" ? 1 : 2} dari 2
             </span>
           )}
@@ -176,23 +176,23 @@ export default function OrganizerRegisterPage() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <CheckCircle2 className="h-10 w-10 text-wavy-accent" />
-                  <h1 className="mt-3 font-display text-xl font-bold text-wavy-text-primary">
+                  <CheckCircle2 className="h-10 w-10 text-primary" />
+                  <h1 className="mt-3 font-display text-xl font-bold text-foreground">
                     Pengajuan Terkirim!
                   </h1>
-                  <p className="mt-2 text-sm leading-relaxed text-wavy-text-secondary">
-                    Terima kasih, <span className="font-semibold text-wavy-text-primary">{organizerName}</span>.
-                    Akun Anda berstatus <span className="font-semibold text-wavy-accent">Menunggu Verifikasi</span>.
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    Terima kasih, <span className="font-semibold text-foreground">{organizerName}</span>.
+                    Akun Anda berstatus <span className="font-semibold text-primary">Menunggu Verifikasi</span>.
                     Tim kurasi kami akan menghubungi melalui WhatsApp{" "}
-                    <span className="font-semibold text-wavy-text-primary">{whatsapp}</span> atau email{" "}
-                    <span className="font-semibold text-wavy-text-primary">{email}</span>.
+                    <span className="font-semibold text-foreground">{whatsapp}</span> atau email{" "}
+                    <span className="font-semibold text-foreground">{email}</span>.
                   </p>
                   <div className="mt-4 space-y-3">
                     <ContactCard />
                     <button
                       type="button"
                       onClick={() => router.push("/organizer/login")}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110"
                     >
                       <ArrowRight className="h-4 w-4" />
                       Ke Halaman Login
@@ -207,10 +207,10 @@ export default function OrganizerRegisterPage() {
                   exit={{ opacity: 0, x: -12 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <h1 className="font-display text-xl font-bold text-wavy-text-primary">
+                  <h1 className="font-display text-xl font-bold text-foreground">
                     Ajukan Kerja Sama
                   </h1>
-                  <p className="mt-1 text-xs text-wavy-text-secondary">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Data akun dan kontak organizer Anda.
                   </p>
 
@@ -268,13 +268,13 @@ export default function OrganizerRegisterPage() {
                     </div>
 
                     {error && (
-                      <p className="col-span-2 text-xs text-red-400">{error}</p>
+                      <p className="col-span-2 text-xs text-destructive">{error}</p>
                     )}
 
                     <button
                       type="submit"
                       disabled={loading}
-                      className="col-span-2 mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
+                      className="col-span-2 mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
                     >
                       Lanjut
                       <ArrowRight className="h-4 w-4" />
@@ -282,9 +282,9 @@ export default function OrganizerRegisterPage() {
 
                     <div className="col-span-2 flex items-center justify-between">
                       <ContactLine />
-                      <p className="text-xs text-wavy-text-secondary">
+                      <p className="text-xs text-muted-foreground">
                         Sudah punya akun?{" "}
-                        <Link href="/organizer/login" className="font-semibold text-wavy-accent hover:underline">
+                        <Link href="/organizer/login" className="font-semibold text-primary hover:underline">
                           Masuk
                         </Link>
                       </p>
@@ -299,10 +299,10 @@ export default function OrganizerRegisterPage() {
                   exit={{ opacity: 0, x: 12 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <h1 className="font-display text-xl font-bold text-wavy-text-primary">
+                  <h1 className="font-display text-xl font-bold text-foreground">
                     Profil Penyelenggara
                   </h1>
-                  <p className="mt-1 text-xs text-wavy-text-secondary">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Jenis event yang biasa Anda kelola.
                   </p>
 
@@ -319,8 +319,8 @@ export default function OrganizerRegisterPage() {
                               onClick={() => toggleEventType(type)}
                               className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                                 active
-                                  ? "border-wavy-accent bg-wavy-accent text-wavy-bg"
-                                  : "border-wavy-border bg-transparent text-wavy-text-secondary hover:border-wavy-accent hover:text-wavy-text-primary"
+                                  ? "border-primary bg-primary text-primary-foreground"
+                                  : "border-border bg-transparent text-muted-foreground hover:border-primary hover:text-foreground"
                               }`}
                             >
                               {type}
@@ -331,7 +331,7 @@ export default function OrganizerRegisterPage() {
                     </div>
                     <div>
                       <label className={labelClass}>
-                        Link Sosmed / Portofolio <span className="font-normal text-wavy-text-secondary">(opsional)</span>
+                        Link Sosmed / Portofolio <span className="font-normal text-muted-foreground">(opsional)</span>
                       </label>
                       <input
                         type="url"
@@ -342,12 +342,12 @@ export default function OrganizerRegisterPage() {
                       />
                     </div>
 
-                    {error && <p className="text-xs text-red-400">{error}</p>}
+                    {error && <p className="text-xs text-destructive">{error}</p>}
 
                     <button
                       type="submit"
                       disabled={loading}
-                      className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
+                      className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
                     >
                       {loading ? "Mengirim..." : "Kirim Pengajuan"}
                       {!loading && <ArrowRight className="h-4 w-4" />}

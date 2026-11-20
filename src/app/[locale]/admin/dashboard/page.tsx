@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#14131C] text-white">
+    <div className="dark flex min-h-screen bg-background text-white">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col justify-between border-r border-white/10 bg-black/40 p-6 md:flex">
         <div className="space-y-6">
@@ -71,7 +71,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("overview")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "overview" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "overview" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Shield className="h-4 w-4" />
@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("organizers")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "organizers" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "organizers" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Building2 className="h-4 w-4" />
@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("events")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "events" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "events" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Calendar className="h-4 w-4" />
@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab("customers")}
               className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "customers" ? "bg-[#FF5470] text-white shadow-lg" : "text-white/60 hover:bg-white/5"
+                activeTab === "customers" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <Users className="h-4 w-4" />
@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 rounded-2xl border border-red-500/30 px-4 py-2.5 text-xs font-bold text-red-400 hover:bg-red-500/10"
+          className="flex items-center gap-2 rounded-2xl border border-destructive/30 px-4 py-2.5 text-xs font-bold text-destructive hover:bg-destructive/10"
         >
           <LogOut className="h-4 w-4" />
           Keluar Admin
@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 text-xs font-bold text-emerald-400">
+            <span className="rounded-full bg-success/20 border border-success/40 px-3 py-1 text-xs font-bold text-success">
               ● API Server Online
             </span>
           </div>
@@ -144,10 +144,10 @@ export default function AdminDashboardPage() {
               {/* Total Revenue */}
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
                 <span className="text-xs text-white/50">Total GMV Transaksi</span>
-                <p className="font-mono text-3xl font-extrabold text-[#FF5470]">
+                <p className="font-mono text-3xl font-extrabold text-primary">
                   Rp{stats.revenue.toLocaleString("id-ID")}
                 </p>
-                <p className="text-[10px] text-emerald-400">Dari pesanan paid</p>
+                <p className="text-[10px] text-success">Dari pesanan paid</p>
               </div>
 
               {/* Total Ticket Sold */}
@@ -227,15 +227,15 @@ export default function AdminDashboardPage() {
                       <td className="py-3 px-4 font-bold text-white">{org.name}</td>
                       <td className="py-3 px-4 text-white/70">{org.email}</td>
                       <td className="py-3 px-4">{org.event_count || 0} Event</td>
-                      <td className="py-3 px-4 font-mono font-bold text-[#FF5470]">
+                      <td className="py-3 px-4 font-mono font-bold text-primary">
                         Rp{Number(org.revenue || 0).toLocaleString("id-ID")}
                       </td>
                       <td className="py-3 px-4">
                         <span
                           className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
                             org.status === "active"
-                              ? "bg-emerald-500/20 text-emerald-300"
-                              : "bg-red-500/20 text-red-300"
+                              ? "bg-success/20 text-success"
+                              : "bg-destructive/20 text-destructive"
                           }`}
                         >
                           {org.status}
@@ -247,8 +247,8 @@ export default function AdminDashboardPage() {
                           disabled={togglingId === org.id}
                           className={`rounded-xl px-3 py-1 text-xs font-bold transition-all ${
                             org.status === "active"
-                              ? "bg-red-600 hover:bg-red-700 text-white"
-                              : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                              ? "bg-destructive hover:bg-destructive/90 text-background"
+                              : "bg-success hover:bg-success/90 text-background"
                           }`}
                         >
                           {org.status === "active" ? "Suspend EO" : "Aktifkan EO"}
@@ -333,7 +333,7 @@ export default function AdminDashboardPage() {
                       <td className="py-3 px-4 text-white">{c.name || "Customer"}</td>
                       <td className="py-3 px-4 text-white/70">{c.email}</td>
                       <td className="py-3 px-4 font-bold">{c.order_count || 0} Order</td>
-                      <td className="py-3 px-4 font-mono font-bold text-emerald-400">
+                      <td className="py-3 px-4 font-mono font-bold text-success">
                         Rp{Number(c.spend || 0).toLocaleString("id-ID")}
                       </td>
                     </tr>

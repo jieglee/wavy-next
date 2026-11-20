@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 function AnimatedOffIcon({
   size = 26,
-  color = "#FF5470",
+  color = "var(--primary)",
   className = "",
 }: {
   size?: number;
@@ -99,16 +99,16 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     // Shadow pink/biru selang-seling, miring lucu ke kanan
     const isPink = idx % 2 === 0;
     const shadowClass = isPink
-        ? "group-hover:drop-shadow-[0_12px_22px_rgba(255,84,112,0.42)]"
-        : "group-hover:drop-shadow-[0_12px_22px_rgba(30,64,175,0.42)]";
+        ? "group-hover:drop-shadow-[0_12px_22px_color-mix(in_oklab,var(--primary)_42%,transparent)]"
+        : "group-hover:drop-shadow-[0_12px_22px_color-mix(in_oklab,var(--primary-glow)_42%,transparent)]";
     const tiltClass = "group-hover:-rotate-[6deg]";
 
   return (
-    <div className="relative z-10 h-[88px] w-[88px] shrink-0 overflow-visible sm:h-[96px] sm:w-[96px]">
+    <div className="relative z-10 h-16 w-16 shrink-0 overflow-visible min-[420px]:h-[88px] min-[420px]:w-[88px] sm:h-[96px] sm:w-[96px]">
       {/* Glow shadow menyeluruh di belakang gambar - pink/biru Wavy, baru keliatan pas hover */}
       <div
         className="pointer-events-none absolute inset-0 rounded-[18px] blur-[18px] opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
-        style={{ background: isPink ? "rgba(255,84,112,0.38)" : "rgba(30,64,175,0.35)" }}
+        style={{ background: isPink ? "color-mix(in oklab,var(--primary) 38%,transparent)" : "color-mix(in oklab,var(--primary-glow) 35%,transparent)" }}
       />
             {/* Zoom miring lucu + shadow - trigger pas card kena kursor (group-hover) */}
             <img
@@ -140,7 +140,7 @@ export default function DiscoverCountries() {
                 {/* Header like Loket: Jelajahi Event di Kotamu */}
                 <div className="mb-6 flex items-center gap-2">
                     <AnimatedOffIcon />
-                    <h2 className="font-display text-xl font-bold text-[#1B1A24] sm:text-2xl">
+                    <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">
                         {t("title")}
                     </h2>
                 </div>
@@ -150,15 +150,15 @@ export default function DiscoverCountries() {
                         <Link
                             key={city.id}
                             href={city.href}
-                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-[#E6E4F0] bg-white px-5 py-3 shadow-sm transition-all duration-200 hover:border-[#D8D5E8] hover:shadow-md sm:h-[118px]"
+                            className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-border bg-white px-4 py-3 shadow-sm min-[420px]:px-5 transition-all duration-200 hover:border-input hover:shadow-md sm:h-[118px]"
                         >
                             {/* Left: text */}
-                            <div className="flex flex-col justify-center">
-                                <p className="font-display text-[15px] font-bold leading-tight text-[#1B1A24]">
+                            <div className="flex min-w-0 flex-col justify-center">
+                                <p className="font-display text-[15px] font-bold leading-tight text-foreground">
                                     {city.label1}
                                 </p>
                                 {city.label2 && (
-                                    <p className="font-display text-[15px] font-bold leading-tight text-[#1B1A24]">
+                                    <p className="font-display text-[15px] font-bold leading-tight text-foreground">
                                         {city.label2}
                                     </p>
                                 )}

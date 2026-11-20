@@ -55,20 +55,20 @@ const categories: Category[] = [
 
 export default function CategoryDropdown({ onSelect }: { onSelect?: () => void }) {
   return (
-    <div className="w-[min(92vw,860px)] rounded-2xl border border-[#EDEBF2] bg-white p-6 shadow-2xl sm:w-[860px]">
-      <p className="mb-5 text-[17px] font-bold tracking-tight text-[#111111]">Kategori Event</p>
+    <div className="w-[min(92vw,860px)] rounded-2xl border border-border bg-white p-6 shadow-2xl sm:w-[860px]">
+      <p className="mb-5 text-[17px] font-bold tracking-tight text-foreground">Kategori Event</p>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
         {categories.map((cat) => (
           <Link
             key={cat.name}
             href={cat.href}
             onClick={onSelect}
-            className="flex items-center gap-3 rounded-xl px-1 py-1.5 transition-colors hover:bg-[#FAFAF8]"
+            className="flex items-center gap-3 rounded-xl px-1 py-1.5 transition-colors hover:bg-surface"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#EFF6FF] text-[#1E40AF]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-info-subtle text-info">
               <cat.icon className="h-[18px] w-[18px]" />
             </div>
-            <span className="text-[13px] font-medium leading-tight text-[#1B1A3A]">{cat.name}</span>
+            <span className="text-[13px] font-medium leading-tight text-foreground">{cat.name}</span>
           </Link>
         ))}
       </div>

@@ -11,8 +11,8 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
   return (
     <section ref={ref} id="sec-terms" className="scroll-mt-[72px]">
       <div className="flex items-center gap-2">
-        <ShieldCheck className="h-5 w-5 text-[#111827] stroke-[2.5]" />
-        <h2 className="font-sans text-[24px] font-bold text-[#111827]">Syarat & Ketentuan</h2>
+        <ShieldCheck className="h-5 w-5 text-foreground stroke-[2.5]" />
+        <h2 className="font-sans text-[24px] font-bold text-foreground">Syarat & Ketentuan</h2>
       </div>
       <div className="relative mt-4">
         <div
@@ -21,7 +21,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
           }`}
         >
           <div
-            className="tnc-terms font-sans text-base leading-6 text-gray-800 text-justify [&_a]:text-rose-500 [&_a]:underline [&_em]:!text-rose-500 [&_h3_em]:!text-rose-500 [&_h4_em]:!text-rose-500 [&_strong_em]:!text-rose-500"
+            className="tnc-terms font-sans text-base leading-6 text-foreground text-justify [&_a]:text-primary [&_a]:underline [&_em]:!text-primary [&_h3_em]:!text-primary [&_h4_em]:!text-primary [&_strong_em]:!text-primary"
             dangerouslySetInnerHTML={{ __html: html }}
           />
           {!open && (
@@ -32,7 +32,7 @@ const ConcertTerms = forwardRef<HTMLDivElement, { terms: string; concertId?: num
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex items-center gap-1 rounded-full border border-[#EDEBF2] bg-white px-4 py-1.5 text-xs font-bold text-[#6B6875] transition hover:border-[#FF5470] hover:text-[#FF5470]"
+            className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary hover:text-primary"
           >
             {open ? "Tutup" : "Lihat Selengkapnya"}
             <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />

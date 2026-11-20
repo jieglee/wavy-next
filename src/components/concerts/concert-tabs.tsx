@@ -2,7 +2,7 @@ type Tab = { id: string; label: string; onClick: () => void };
 
 export default function ConcertTabs({ tabs, activeTab }: { tabs: Tab[]; activeTab: string }) {
   return (
-    <nav className="scrollbar-hide -mx-4 flex items-center gap-0 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+    <nav className="scrollbar-hide -mx-2 flex items-center gap-0 overflow-x-auto px-2 sm:mx-0 sm:px-0">
       {tabs.map((tab) => {
         const active = activeTab === tab.id;
         return (
@@ -10,11 +10,11 @@ export default function ConcertTabs({ tabs, activeTab }: { tabs: Tab[]; activeTa
             key={tab.id}
             onClick={tab.onClick}
             className={`relative whitespace-nowrap px-6 py-3 text-[14px] font-semibold transition-colors sm:px-7 ${
-              active ? "text-[#1E40AF]" : "text-[#9AA0A6] hover:text-[#4B5563]"
+              active ? "text-primary" : "text-muted-foreground/70 hover:text-foreground/80"
             }`}
           >
             {tab.label}
-            <span className={`absolute bottom-0 left-6 right-6 h-[3px] rounded-sm ${active ? "bg-[#1E40AF]" : "bg-transparent"}`} />
+            <span className={`absolute bottom-0 left-6 right-6 h-[3px] rounded-sm ${active ? "bg-primary" : "bg-transparent"}`} />
           </button>
         );
       })}

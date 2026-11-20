@@ -19,13 +19,13 @@ const benefits = [
 
 export default function Benefits() {
   return (
-    <section data-aos="fade-up" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
+    <section data-aos="fade-up" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-off-white sm:text-3xl">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             Kenapa Wavy?
           </h2>
-          <p className="mt-2 text-sm text-lavender-gray">
+          <p className="mt-2 text-sm text-muted-foreground">
             Masalah lama di industri tiket konser — kami bikin solusinya
           </p>
         </div>
@@ -36,16 +36,16 @@ export default function Benefits() {
               key={b.title}
               data-aos="fade-up"
               data-aos-delay={i * 100}
-              className={`rounded-xl border border-border-dark bg-graphite-plum p-5 transition-colors sm:p-6 ${
+              className={`rounded-xl border border-border bg-muted p-5 transition-colors sm:p-6 ${
                 i % 2 === 0
-                  ? "hover:border-coral-spotlight/40"
-                  : "hover:border-azure/40"
+                  ? "hover:border-primary/40"
+                  : "hover:border-primary/40"
               }`}
             >
-              <h3 className="font-display text-base font-medium text-off-white">
+              <h3 className="font-display text-base font-medium text-foreground">
                 {b.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-lavender-gray">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {b.desc}
               </p>
             </div>

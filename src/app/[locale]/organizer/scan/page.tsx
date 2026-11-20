@@ -93,7 +93,7 @@ export default function OrganizerScanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1B1A3A] text-white">
+    <div className="dark min-h-screen bg-background text-white">
       {/* Top Bar */}
       <header className="border-b border-white/10 bg-black/30 px-6 py-4 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
@@ -118,7 +118,7 @@ export default function OrganizerScanPage() {
         {/* Scanner Input Card */}
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10 shadow-2xl backdrop-blur-xl space-y-6">
           <div className="text-center space-y-2">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF5470] text-white shadow-lg shadow-[#FF5470]/30 animate-pulse">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 animate-pulse">
               <Scan className="h-8 w-8" />
             </div>
             <h1 className="font-display text-2xl font-extrabold sm:text-3xl">
@@ -131,8 +131,8 @@ export default function OrganizerScanPage() {
 
           {/* Form Input for QR Token */}
           <form onSubmit={handleValidate} className="flex gap-2">
-            <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/20 bg-black/40 px-4 py-3 shadow-inner focus-within:border-[#FF5470]">
-              <QrCode className="h-5 w-5 text-[#FF5470]" />
+            <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/20 bg-black/40 px-4 py-3 shadow-inner focus-within:border-primary">
+              <QrCode className="h-5 w-5 text-primary" />
               <input
                 ref={inputRef}
                 type="text"
@@ -145,7 +145,7 @@ export default function OrganizerScanPage() {
             <button
               type="submit"
               disabled={loading || !qrInput.trim()}
-              className="rounded-2xl bg-[#FF5470] px-6 py-3 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 disabled:opacity-50"
+              className="rounded-2xl bg-primary px-6 py-3 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 disabled:opacity-50"
             >
               {loading ? "Memvalidasi..." : "Validasi"}
             </button>
@@ -156,15 +156,15 @@ export default function OrganizerScanPage() {
             <div
               className={`rounded-3xl p-6 border text-left transition-all ${
                 lastResult.ticket
-                  ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-300"
-                  : "bg-red-500/10 border-red-500/40 text-red-300"
+                  ? "bg-success/10 border-success/40 text-success"
+                  : "bg-destructive/10 border-destructive/40 text-destructive"
               }`}
             >
               <div className="flex items-center gap-3">
                 {lastResult.ticket ? (
-                  <CheckCircle2 className="h-8 w-8 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="h-8 w-8 text-success shrink-0" />
                 ) : (
-                  <XCircle className="h-8 w-8 text-red-400 shrink-0" />
+                  <XCircle className="h-8 w-8 text-destructive shrink-0" />
                 )}
                 <div>
                   <h3 className="font-display text-lg font-bold text-white">
@@ -175,17 +175,17 @@ export default function OrganizerScanPage() {
               </div>
 
               {lastResult.ticket && (
-                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-emerald-500/20 pt-4 text-xs text-white">
+                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-success/20 pt-4 text-xs text-white">
                   <div>
-                    <span className="text-[10px] text-emerald-400/80 block">Event:</span>
+                    <span className="text-[10px] text-success/80 block">Event:</span>
                     <strong className="text-sm">{lastResult.ticket.title}</strong>
                   </div>
                   <div>
-                    <span className="text-[10px] text-emerald-400/80 block">ID Tiket:</span>
+                    <span className="text-[10px] text-success/80 block">ID Tiket:</span>
                     <strong className="font-mono text-sm">#{lastResult.ticket.id}</strong>
                   </div>
                   <div className="col-span-2">
-                    <span className="text-[10px] text-emerald-400/80 block">Lokasi:</span>
+                    <span className="text-[10px] text-success/80 block">Lokasi:</span>
                     <span>{lastResult.ticket.venue}</span>
                   </div>
                 </div>
@@ -212,9 +212,9 @@ export default function OrganizerScanPage() {
                 >
                   <div className="flex items-center gap-2">
                     {h.ticket ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                      <CheckCircle2 className="h-4 w-4 text-success" />
                     ) : (
-                      <XCircle className="h-4 w-4 text-red-400" />
+                      <XCircle className="h-4 w-4 text-destructive" />
                     )}
                     <span className="font-bold">{h.ticket ? h.ticket.title : h.error}</span>
                   </div>

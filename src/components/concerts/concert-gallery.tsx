@@ -138,8 +138,8 @@ export default function ConcertGallery({
   return (
     <section id="sec-gallery" className="scroll-mt-[72px]" ref={sectionRef}>
       <div className="flex items-center gap-2">
-        <ImageIcon className="h-5 w-5 text-[#111827] stroke-[2.5]" />
-        <h2 className="font-sans text-[24px] font-bold text-[#111827]">Galeri</h2>
+        <ImageIcon className="h-5 w-5 text-foreground stroke-[2.5]" />
+        <h2 className="font-sans text-[24px] font-bold text-foreground">Galeri</h2>
       </div>
 
       <div className="mt-6 flex flex-col gap-5">
@@ -150,7 +150,7 @@ export default function ConcertGallery({
               key={i}
               type="button"
               onClick={() => openAt(i)}
-              className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F56FF]"
+              className="group relative block cursor-zoom-in overflow-hidden rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               style={{
                 opacity: revealed ? 1 : 0,
                 transform: revealed ? "translateY(0)" : "translateY(16px)",

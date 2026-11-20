@@ -8,8 +8,8 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import hotels from "@/data/hotels.json";
 
-const NAVY = "#1B1A3A";
-const PINK = "#FF5470";
+const NAVY = "var(--foreground)";
+const PINK = "var(--primary)";
 
 interface Hotel {
   id: number;
@@ -33,13 +33,13 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
       <div className="min-h-screen bg-white">
         <Navbar sticky={false} hideUser />
         <div className="mx-auto max-w-5xl px-4 py-24 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF5470]/10">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
             <BedDouble className="h-8 w-8" style={{ color: PINK }} />
           </div>
           <h1 className="mt-6 font-display text-2xl font-bold" style={{ color: NAVY }}>
             Hotel tidak ditemukan
           </h1>
-          <p className="mt-2 text-sm text-[#8B889C]">
+          <p className="mt-2 text-sm text-muted-foreground/80">
             Penginapan yang kamu cari nggak ada. Yuk balik ke beranda buat lihat semua hotel.
           </p>
           <Link
@@ -73,7 +73,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
           <Link
             href="/"
             aria-label="Kembali ke beranda"
-            className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#1B1A3A] shadow-lg backdrop-blur transition-all hover:bg-white active:scale-95 sm:left-6 sm:top-6"
+            className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-foreground shadow-lg backdrop-blur transition-all hover:bg-white active:scale-95 sm:left-6 sm:top-6"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
@@ -109,13 +109,13 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                   {hotel.rooms.map((room, i) => (
                     <div
                       key={`${room.category}-${room.room}-${i}`}
-                      className="rounded-2xl border border-[#EDEBF2] bg-[#FAFAF8] p-4 transition-colors hover:border-[#FF5470]/40"
+                      className="rounded-2xl border border-border bg-surface p-4 transition-colors hover:border-primary/40"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <h3 className="text-sm font-bold" style={{ color: NAVY }}>
                           {room.room || "Standard"}
                         </h3>
-                        <span className="shrink-0 rounded-full bg-[#FF5470]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase text-[#FF5470]">
+                        <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase text-primary">
                           {room.category}
                         </span>
                       </div>
@@ -123,28 +123,28 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                   ))}
                 </div>
               ) : (
-                <p className="mt-4 text-sm text-[#8B889C]">Detail kamar belum tersedia.</p>
+                <p className="mt-4 text-sm text-muted-foreground/80">Detail kamar belum tersedia.</p>
               )}
 
-              <div className="mt-8 rounded-2xl border border-[#EDEBF2] bg-[#FAFAF8] p-5">
+              <div className="mt-8 rounded-2xl border border-border bg-surface p-5">
                 <h3 className="font-display text-base font-bold" style={{ color: NAVY }}>
                   Fasilitas & Informasi
                 </h3>
-                <ul className="mt-3 grid gap-2 text-sm text-[#4A4757] sm:grid-cols-2">
+                <ul className="mt-3 grid gap-2 text-sm text-foreground/80 sm:grid-cols-2">
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Cek-in mulai 14.00, cek-out sampai 12.00
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Sarapan tersedia di beberapa paket
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Berdekatan dengan lokasi venue & destinasi
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     Pemesanan hotel terintegrasi dengan Wavy
                   </li>
                 </ul>
@@ -152,16 +152,16 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
             </section>
 
             <aside className="lg:sticky lg:top-6 lg:self-start">
-              <div className="rounded-3xl border border-[#EDEBF2] bg-white p-5 shadow-[0_10px_40px_rgba(27,26,58,0.06)]">
-                <p className="flex items-center gap-1.5 text-xs font-medium text-[#8B889C]">
+              <div className="rounded-3xl border border-border bg-white p-5 shadow-[0_10px_40px_color-mix(in_oklab,var(--foreground)_6%,transparent)]">
+                <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground/80">
                   <CalendarCheck className="h-4 w-4" />
                   Harga per malam
                 </p>
                 <p className="mt-2 font-display text-2xl font-extrabold" style={{ color: NAVY }}>
                   Rp{Number(hotel.price).toLocaleString("id-ID")}
                 </p>
-                <p className="mt-1 flex items-center gap-1 text-xs text-[#6B6875]">
-                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                  <Star className="h-3.5 w-3.5 fill-[#FFB800] text-[#FFB800]" />
                   Rating {hotel.rating} · {hotel.location}
                 </p>
                 <button

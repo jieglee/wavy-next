@@ -21,13 +21,13 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="about" data-aos="fade-up" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
+    <section id="about" data-aos="fade-up" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-off-white sm:text-3xl">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             Cara Kerjanya
           </h2>
-          <p className="mt-2 text-sm text-lavender-gray">
+          <p className="mt-2 text-sm text-muted-foreground">
             Dari cari konser sampai masuk venue — cuma 3 langkah
           </p>
         </div>
@@ -38,21 +38,21 @@ export default function HowItWorks() {
               {i < steps.length - 1 && (
                 <div
                   aria-hidden
-                  className="absolute right-0 top-8 hidden h-px w-[calc(50%-2rem)] bg-gradient-to-r from-border-dark to-transparent sm:block"
+                  className="absolute right-0 top-8 hidden h-px w-[calc(50%-2rem)] bg-gradient-to-r from-border to-transparent sm:block"
                   style={{ left: "calc(50% + 2rem)" }}
                 />
               )}
               <span
                 className={`font-display text-4xl font-semibold ${
-                  i % 2 === 0 ? "text-coral-spotlight/30" : "text-azure/30"
+                  i % 2 === 0 ? "text-primary/30" : "text-primary-glow/30"
                 }`}
               >
                 {step.number}
               </span>
-              <h3 className="mt-4 font-display text-lg font-medium text-off-white">
+              <h3 className="mt-4 font-display text-lg font-medium text-foreground">
                 {step.title}
               </h3>
-              <p className="mt-2 max-w-xs text-sm leading-relaxed text-lavender-gray">
+              <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
                 {step.description}
               </p>
             </div>

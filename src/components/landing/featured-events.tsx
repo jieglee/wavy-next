@@ -23,8 +23,8 @@ const GRADIENTS = [
   "linear-gradient(135deg,#7DD3E8,#4A90D9)",
   "linear-gradient(135deg,#8B0000,#2B0000)",
   "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
-  "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
-  "linear-gradient(135deg,#FF5470,#211F2B)",
+  "linear-gradient(135deg,var(--foreground),#0D0C1F)",
+  "linear-gradient(135deg,var(--primary),#211F2B)",
   "linear-gradient(135deg,#C6395A,#14131C)",
 ];
 
@@ -128,7 +128,7 @@ export default function FeaturedEvents() {
             width="30"
             height="30"
             viewBox="0 0 24 24"
-            className="animate-megaphone text-[#FF5470]"
+            className="animate-megaphone text-primary"
           >
             <path d="M0 0h24v24H0z" fill="none" />
             <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
@@ -137,7 +137,7 @@ export default function FeaturedEvents() {
               <path d="m9.253 4.591l1.215-.706a1.395 1.395 0 0 1 1.917.517l5.607 9.774a1.42 1.42 0 0 1-.519 1.92l-1.215.707zM3.56 14.416l-.606.358a1.4 1.4 0 0 0-.658.86a1.4 1.4 0 0 0 .149 1.074a1.4 1.4 0 0 0 .854.662a1.38 1.38 0 0 0 1.068-.149l.567-.358m4.804-.203l1.701 2.97a1.44 1.44 0 0 1-.509 1.933a1.404 1.404 0 0 1-1.922-.522l-1.922-3.414m12.55-10.735l-2.498 1.45m4.612 3.531h-2.883M16.225 2.25l-1.442 2.515" />
             </g>
           </svg>
-          <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">
+          <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">
             {t("title")}
           </h2>
         </div>
@@ -146,9 +146,9 @@ export default function FeaturedEvents() {
           <div className="flex gap-3 overflow-hidden pb-2 pt-2 sm:gap-4" role="status" aria-label={t("loading")}>
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="w-[260px] shrink-0 animate-pulse sm:w-[280px] lg:w-[270px]">
-                <div className="aspect-16/7 w-full rounded-xl bg-wavy-surface" />
-                <div className="mt-3 h-3 w-1/2 rounded bg-wavy-surface" />
-                <div className="mt-2 h-4 w-3/4 rounded bg-wavy-surface" />
+                <div className="aspect-16/7 w-full rounded-xl bg-muted" />
+                <div className="mt-3 h-3 w-1/2 rounded bg-muted" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-muted" />
               </div>
             ))}
           </div>
@@ -162,7 +162,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label={t("prev")}
-              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
+              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -172,7 +172,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label={t("next")}
-              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"
+              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>

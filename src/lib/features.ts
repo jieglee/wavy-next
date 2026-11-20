@@ -14,3 +14,10 @@ export const SHOW_TRAVELER_MODE = false;
  * While false, nothing links to it and direct visits redirect to the concert detail page.
  */
 export const SHOW_QUEUE = false;
+
+/**
+ * "Pilihan Pembayaran" logo grid in the site footer.
+ * Hidden while payment runs through Midtrans sandbox only (PRD §4.6);
+ * the logos would promise methods we do not offer yet.
+ */
+export const SHOW_PAYMENT_LOGOS = false;

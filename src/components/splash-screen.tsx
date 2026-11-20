@@ -14,7 +14,7 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
             {isVisible && (
                 <motion.div
                     key="splash"
-                    className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-wavy-bg"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-background"
                     initial={{ y: 0 }}
                     animate={{ y: 0 }}
                     exit={{
@@ -38,11 +38,11 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                     >
                         <path
                             d="M0,32 C50,6 100,6 150,32 C200,58 250,58 300,32 C340,12 370,10 400,18"
-                            stroke="#FF5470"
+                            stroke="var(--primary)"
                             strokeWidth="3"
                             strokeLinecap="round"
                             fill="none"
-                            style={{ filter: "drop-shadow(0 0 8px rgba(255,84,112,0.45))" }}
+                            style={{ filter: "drop-shadow(0 0 8px color-mix(in oklab,var(--primary) 45%,transparent))" }}
                         />
                     </motion.svg>
 
@@ -54,9 +54,9 @@ export default function SplashScreen({ isVisible, onExitComplete }: SplashScreen
                     >
                         <div
                             aria-hidden
-                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-azure/20 blur-[80px]"
+                            className="pointer-events-none absolute inset-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-glow/20 blur-[80px]"
                         />
-                        <WavyIcon size={108} className="relative drop-shadow-[0_4px_16px_rgba(255,84,112,0.25)]" />
+                        <WavyIcon size={108} className="relative drop-shadow-[0_4px_16px_color-mix(in_oklab,var(--primary)_25%,transparent)]" />
                     </motion.div>
                 </motion.div>
             )}

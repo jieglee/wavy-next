@@ -2,33 +2,33 @@ import { Link } from "@/i18n/navigation";
 
 export default function CtaBanner() {
   return (
-    <section data-aos="zoom-in" className="border-t border-border-dark px-4 py-24 sm:px-6 lg:px-8">
+    <section data-aos="zoom-in" className="border-t border-border px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-2xl border border-border-dark bg-graphite-plum px-6 py-14 text-center shadow-[0_24px_80px_rgba(27,26,36,0.08)] sm:px-14">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-muted px-6 py-14 text-center shadow-[0_24px_80px_color-mix(in_oklab,var(--foreground)_8%,transparent)] sm:px-14">
           <div
             aria-hidden
-            className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-coral-spotlight/10 blur-[100px]"
+            className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary/10 blur-[100px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-azure/10 blur-[100px]"
+            className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-primary-glow/10 blur-[100px]"
           />
 
           <div className="relative">
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-off-white sm:text-3xl">
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Siap Jadi Bagian dari Wavy?
             </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-lavender-gray">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
               Baik kamu pencinta musik yang mau nonton konser favorit, atau Event
               Organizer yang mau jangkau lebih banyak penonton.
             </p>
-            <p className="mt-2 text-center text-xs font-medium text-coral-spotlight">
+            <p className="mt-2 text-center text-xs font-medium text-primary">
               Your favorite event is here BTS
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="#featured"
-                className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-coral-spotlight px-6 text-sm font-semibold text-plum-black transition-colors hover:brightness-110 sm:w-auto"
+                className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-sm font-semibold text-foreground transition-colors hover:brightness-110 sm:w-auto"
               >
                 Cari Konser Sekarang
               </Link>

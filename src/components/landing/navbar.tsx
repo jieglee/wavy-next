@@ -10,9 +10,9 @@ import CategoryDropdown from "@/components/nav/category-dropdown";
 import SearchDropdown from "@/components/nav/search-dropdown";
 import AnimatedSearchPlaceholder from "@/components/nav/animated-search-placeholder";
 
-const NAVY = "#1B1A3A";
-const PINK = "#FF5470";
-const WAVY_BLUE = "#FF5470";
+const NAVY = "var(--foreground)";
+const PINK = "var(--primary)";
+const WAVY_BLUE = "var(--primary)";
 
 export default function Navbar({ sticky = true, hideUser = false }: { sticky?: boolean; hideUser?: boolean } = {}) {
   const t = useTranslations("Navbar");
@@ -105,7 +105,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity"
         />
       )}
-      <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-[#EDEBF2] bg-white/95 backdrop-blur-md`}>
+      <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-border bg-white/95 backdrop-blur-md`}>
       <div className="mx-auto grid h-auto max-w-7xl grid-cols-[1fr_auto_auto] items-center gap-x-2 gap-y-2 px-3 py-2.5 sm:flex sm:h-[72px] sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-0 sm:gap-x-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <WavyIcon size={26} />
@@ -124,10 +124,10 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               setSearchOpen(false);
             }}
             aria-expanded={catOpen}
-            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-[#EFF6FF] ring-1 ring-[#DBEAFE]" : "hover:opacity-70"}`}
-            style={{ color: "#1B1A3A" }}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-info-subtle ring-1 ring-info/20" : "hover:opacity-70"}`}
+            style={{ color: "var(--foreground)" }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style={{ color: "#1B1A3A" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style={{ color: "var(--foreground)" }}>
               <path d="M0 0h24v24H0z" fill="none" />
               <path fill="currentColor" d="m12 2l-5.5 9h11zm0 3.84L13.93 9h-3.87zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5s4.5-2.01 4.5-4.5s-2.01-4.5-4.5-4.5m0 7a2.5 2.5 0 0 1 0-5a2.5 2.5 0 0 1 0 5M3 21.5h8v-8H3zm2-6h4v4H5z" />
             </svg>
@@ -143,9 +143,9 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
         <div ref={searchWrapRef} className="relative col-span-3 flex w-full max-w-none sm:col-span-1 sm:mx-auto sm:max-w-xl">
           <form
             onSubmit={handleSearch}
-            className="relative flex w-full items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-3 py-1.5 sm:px-4 sm:py-2 transition-colors focus-within:border-[#FF5470]/40 focus-within:bg-white"
+            className="relative flex w-full items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 sm:px-4 sm:py-2 transition-colors focus-within:border-primary/40 focus-within:bg-white"
           >
-            <Search className="relative z-10 h-4 w-4 shrink-0 text-[#8B889C]" />
+            <Search className="relative z-10 h-4 w-4 shrink-0 text-muted-foreground/80" />
             <input
               type="text"
               value={searchQuery}
@@ -173,9 +173,9 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
         <Link
           href="/organizer/login"
           className="hidden shrink-0 items-center gap-1.5 text-sm font-bold transition-colors hover:opacity-70 sm:flex lg:text-base"
-          style={{ color: "#1B1A3A" }}
+          style={{ color: "var(--foreground)" }}
         >
-          <Handshake className="h-4 w-4" style={{ color: "#1B1A3A" }} />
+          <Handshake className="h-4 w-4" style={{ color: "var(--foreground)" }} />
           {t("kerjasama")}
         </Link>
 
@@ -185,23 +185,23 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               setLangOpen(!langOpen);
               setUserOpen(false);
             }}
-            className="flex items-center gap-1 text-sm font-medium text-[#6B6875] transition-colors hover:text-[#1B1A3A]"
+            className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <Globe className="h-4 w-4" />
             {locale === "id" ? "ID" : "EN"}
             <ChevronDown className="h-3.5 w-3.5" />
           </button>
           {langOpen && (
-            <div className="absolute right-0 mt-2 w-32 overflow-hidden rounded-xl border border-[#EDEBF2] bg-white shadow-xl">
+            <div className="absolute right-0 mt-2 w-32 overflow-hidden rounded-xl border border-border bg-white shadow-xl">
               <button
                 onClick={() => switchLocale("id")}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "id" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
+                className={`block w-full px-3 py-2 text-left text-sm hover:bg-surface ${locale === "id" ? "font-medium text-foreground" : "text-muted-foreground"}`}
               >
                 Indonesia
               </button>
               <button
                 onClick={() => switchLocale("en")}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#FAFAF8] ${locale === "en" ? "font-medium text-[#1B1A3A]" : "text-[#6B6875]"}`}
+                className={`block w-full px-3 py-2 text-left text-sm hover:bg-surface ${locale === "en" ? "font-medium text-foreground" : "text-muted-foreground"}`}
               >
                 English
               </button>
@@ -218,13 +218,13 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 setUserOpen(!userOpen);
                 setLangOpen(false);
               }}
-              className="flex items-center gap-2 rounded-full border border-[#EDEBF2] bg-[#FAFAF8] px-3.5 py-1.5 text-sm font-semibold text-[#1B1A3A] transition-colors hover:border-[#FF5470]/40"
+              className="flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1B1A3A] text-xs text-white">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-xs text-white">
                 {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : "U"}
               </div>
               <span className="hidden max-w-[100px] truncate md:inline">{currentUser.name || currentUser.email}</span>
-              <ChevronDown className="h-3.5 w-3.5 text-[#6B6875]" />
+              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
           ) : (
             <Link
@@ -238,11 +238,11 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           )}
 
           {userOpen && (
-            <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-[#EDEBF2] bg-white py-1 shadow-2xl">
-              <div className="border-b border-[#EDEBF2] px-4 py-2.5">
-                <p className="text-xs text-[#8B889C]">Masuk sebagai</p>
-                <p className="truncate text-sm font-bold text-[#1B1A3A]">{currentUser?.email}</p>
-                <span className="mt-1 inline-block rounded-full bg-[#FF5470]/10 px-2 py-0.5 text-[10px] font-semibold text-[#FF5470] uppercase">
+            <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-border bg-white py-1 shadow-2xl">
+              <div className="border-b border-border px-4 py-2.5">
+                <p className="text-xs text-muted-foreground/80">Masuk sebagai</p>
+                <p className="truncate text-sm font-bold text-foreground">{currentUser?.email}</p>
+                <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase">
                   {currentRole}
                 </span>
               </div>
@@ -250,43 +250,43 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               <Link
                 href="/tickets"
                 onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
-                <Ticket className="h-4 w-4 text-[#FF5470]" />
+                <Ticket className="h-4 w-4 text-primary" />
                 Tiket Saya
               </Link>
 
               <Link
                 href="/me"
                 onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
-                <User className="h-4 w-4 text-[#1B1A3A]" />
+                <User className="h-4 w-4 text-foreground" />
                 Profil & Level
               </Link>
 
               <Link
                 href="/organizer/dashboard"
                 onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
-                <Calendar className="h-4 w-4 text-[#1B1A3A]" />
+                <Calendar className="h-4 w-4 text-foreground" />
                 Portal Organizer
               </Link>
 
               <Link
                 href="/admin/dashboard"
                 onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#1B1A3A] hover:bg-[#FAFAF8]"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
-                <Shield className="h-4 w-4 text-[#1B1A3A]" />
+                <Shield className="h-4 w-4 text-foreground" />
                 Portal Admin
               </Link>
 
-              <div className="border-t border-[#EDEBF2] mt-1 pt-1">
+              <div className="border-t border-border mt-1 pt-1">
                 <button
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+                  className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-destructive hover:bg-destructive/5"
                 >
                   <LogOut className="h-4 w-4" />
                   Keluar

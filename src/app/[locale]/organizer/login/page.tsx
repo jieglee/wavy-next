@@ -59,7 +59,7 @@ export default function OrganizerLoginPage() {
           <motion.div layout transition={{ duration: 0.6, ease: "easeOut" }}>
             <WavyIconAnimated
               size={48}
-              color="#fff"
+              color="var(--primary-foreground)"
               drawDuration={1.1}
               onFirstDrawComplete={() => setShowBrandName(true)}
             />
@@ -82,12 +82,12 @@ export default function OrganizerLoginPage() {
       </div>
 
       {/* Panel kanan: form */}
-      <div className="flex w-full flex-col bg-wavy-bg px-8 sm:px-16 md:w-[45%] md:px-20">
+      <div className="flex w-full flex-col bg-background px-8 sm:px-16 md:w-[45%] md:px-20">
         <div className="pt-6">
           <button
             type="button"
             onClick={() => router.push("/")}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-wavy-text-secondary hover:text-wavy-text-primary"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Kembali
@@ -98,26 +98,26 @@ export default function OrganizerLoginPage() {
           <div className="w-full max-w-sm pb-10">
             <div className="mb-8 flex items-center gap-2 md:hidden">
               <WavyIcon size={24} />
-              <span className="font-display text-lg font-bold tracking-tight text-wavy-text-primary">Wavy</span>
+              <span className="font-display text-lg font-bold tracking-tight text-foreground">Wavy</span>
             </div>
 
             <div className="mb-6 flex items-center gap-2">
               <WavyIcon size={28} />
-              <span className="font-display text-xl font-bold tracking-tight text-wavy-text-primary">Wavy</span>
+              <span className="font-display text-xl font-bold tracking-tight text-foreground">Wavy</span>
             </div>
-            <span className="mb-3 inline-block rounded-full border border-wavy-border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-wavy-text-secondary">
+            <span className="mb-3 inline-block rounded-full border border-border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Portal Mitra Penyelenggara
             </span>
-            <h1 className="font-display text-2xl font-bold text-wavy-text-primary">
+            <h1 className="font-display text-2xl font-bold text-foreground">
               Masuk Portal Organizer
             </h1>
-            <p className="mt-2 text-sm text-wavy-text-secondary">
+            <p className="mt-2 text-sm text-muted-foreground">
               Gunakan kredensial Event Organizer terdaftar Anda.
             </p>
 
             <form onSubmit={handleLogin} className="mt-8 flex flex-col gap-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-wavy-text-primary">Email Organizer</label>
+                <label className="mb-1.5 block text-sm font-medium text-foreground">Email Organizer</label>
                 <input
                   type="email"
                   autoFocus
@@ -128,12 +128,12 @@ export default function OrganizerLoginPage() {
                     setEmail(e.target.value);
                     setError("");
                   }}
-                  className="w-full rounded-lg bg-wavy-surface px-4 py-3 text-sm text-wavy-text-primary placeholder:text-wavy-text-secondary/60 outline-none focus:ring-2 focus:ring-wavy-accent"
+                  className="w-full rounded-lg bg-muted px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-wavy-text-primary">Kata Sandi</label>
+                <label className="mb-1.5 block text-sm font-medium text-foreground">Kata Sandi</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -144,12 +144,12 @@ export default function OrganizerLoginPage() {
                       setPassword(e.target.value);
                       setError("");
                     }}
-                    className="w-full rounded-lg bg-wavy-surface px-4 py-3 pr-11 text-sm text-wavy-text-primary placeholder:text-wavy-text-secondary/60 outline-none focus:ring-2 focus:ring-wavy-accent"
+                    className="w-full rounded-lg bg-muted px-4 py-3 pr-11 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-wavy-text-secondary hover:text-wavy-text-primary"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -158,7 +158,7 @@ export default function OrganizerLoginPage() {
               </div>
 
               {error && (
-                <p className={`text-xs ${error.includes("verifikasi") ? "rounded-lg bg-wavy-surface px-3 py-2 leading-relaxed text-wavy-text-secondary" : "text-red-400"}`}>
+                <p className={`text-xs ${error.includes("verifikasi") ? "rounded-lg bg-muted px-3 py-2 leading-relaxed text-muted-foreground" : "text-destructive"}`}>
                   {error}
                 </p>
               )}
@@ -166,16 +166,16 @@ export default function OrganizerLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-wavy-accent py-3.5 text-sm font-semibold text-wavy-bg transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
               >
                 <ArrowRight className="h-4 w-4" />
                 {loading ? "Memverifikasi..." : "Masuk ke Dashboard"}
               </button>
             </form>
 
-            <p className="mt-6 text-sm text-wavy-text-secondary">
+            <p className="mt-6 text-sm text-muted-foreground">
               Belum menjadi mitra?{" "}
-              <Link href="/organizer/register" className="font-semibold text-wavy-accent hover:underline">
+              <Link href="/organizer/register" className="font-semibold text-primary hover:underline">
                 Ajukan Kerja Sama
               </Link>
             </p>

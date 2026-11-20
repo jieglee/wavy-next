@@ -13,9 +13,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-dark bg-plum-black/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-foreground/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-off-white">
+        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-foreground">
           Wavy
         </Link>
 
@@ -24,7 +24,7 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-lavender-gray transition-colors hover:text-off-white"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
             </Link>
@@ -34,7 +34,7 @@ export default function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           <Link
             href="/auth/login"
-            className="rounded-lg border border-border-dark px-4 py-2 text-sm font-medium text-lavender-gray transition-colors hover:border-lavender-gray hover:text-off-white"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-muted-foreground hover:text-foreground"
           >
             Masuk
           </Link>
@@ -46,7 +46,7 @@ export default function Navbar() {
           aria-label="Toggle menu"
         >
           <svg
-            className="h-6 w-6 text-off-white"
+            className="h-6 w-6 text-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -61,14 +61,14 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-border-dark bg-graphite-plum px-4 pb-4 md:hidden">
+        <div className="border-t border-border bg-muted px-4 pb-4 md:hidden">
           <nav className="flex flex-col gap-3 pt-4">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium text-lavender-gray transition-colors hover:text-off-white"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -78,7 +78,7 @@ export default function Navbar() {
             <Link
               href="/auth/login"
               onClick={() => setMenuOpen(false)}
-              className="rounded-lg border border-border-dark px-4 py-2 text-center text-sm font-medium text-lavender-gray transition-colors hover:border-lavender-gray hover:text-off-white"
+              className="rounded-lg border border-border px-4 py-2 text-center text-sm font-medium text-muted-foreground transition-colors hover:border-muted-foreground hover:text-foreground"
             >
               Masuk
             </Link>

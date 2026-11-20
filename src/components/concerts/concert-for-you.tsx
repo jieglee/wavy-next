@@ -9,7 +9,7 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-
 import type { Concert } from "@/types/type";
 interface DisplayEvent { id: number; title: string; organizer: string; location: string; price: string | null; gradient: string; poster_url?: string; }
 // dekorasi kartu tanpa poster (bukan data)
-const GRADIENTS = ["linear-gradient(135deg,#7DD3E8,#4A90D9)", "linear-gradient(135deg,#8B0000,#2B0000)", "linear-gradient(135deg,#3D3D3D,#0A0A0A)", "linear-gradient(135deg,#1B1A3A,#0D0C1F)", "linear-gradient(135deg,#FF5470,#211F2B)", "linear-gradient(135deg,#C6395A,#14131C)"];
+const GRADIENTS = ["linear-gradient(135deg,#7DD3E8,#4A90D9)", "linear-gradient(135deg,#8B0000,#2B0000)", "linear-gradient(135deg,#3D3D3D,#0A0A0A)", "linear-gradient(135deg,var(--foreground),#0D0C1F)", "linear-gradient(135deg,var(--primary),#211F2B)", "linear-gradient(135deg,#C6395A,#14131C)"];
 const extractConcerts = (data: unknown): Concert[] => {
   if (Array.isArray(data)) return data as Concert[];
   if (data && typeof data === "object") { const d = data as Record<string, unknown>; if (Array.isArray(d.concerts)) return d.concerts as Concert[]; if (Array.isArray(d.data)) return d.data as Concert[]; if (Array.isArray(d.events)) return d.events as Concert[]; if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) return (d.concerts as Record<string, unknown>).data as Concert[]; }
@@ -38,26 +38,26 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
   return (
     <section data-aos="fade-up" data-aos-duration="700" className="mt-10">
       <div className="mb-6 flex items-center gap-2">
-        <Calendar className="h-6 w-6 shrink-0 text-[#FF5470]" strokeWidth={3} />
-        <h2 className="font-display text-xl font-bold text-[#1B1A3A] sm:text-2xl">Event Untuk Kamu</h2>
+        <Calendar className="h-6 w-6 shrink-0 text-primary" strokeWidth={3} />
+        <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">Event Untuk Kamu</h2>
       </div>
       {forYou.loading ? <LoadingState /> : forYou.error ? <ErrorState error={forYou.error} onRetry={forYou.reload} /> : events.length === 0 ? <EmptyState title={t("empty")} /> : (
       <div className="relative">
-        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowLeftIcon className="h-4 w-4" /></button>}
-        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#1B1A3A] shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowRightIcon className="h-4 w-4" /></button>}
+        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute left-0 sm:-left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowLeftIcon className="h-4 w-4" /></button>}
+        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute right-0 sm:-right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowRightIcon className="h-4 w-4" /></button>}
         <div ref={scrollerRef} className="scrollbar-hide -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-2 py-4">
           {events.slice(0, 8).map((event) => (
             <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
               <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-[#EDEBF2] shadow-[0_4px_14px_rgba(30,64,175,0.12)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_rgba(30,64,175,0.28)] group-hover:border-wavy-blue/30">
+                <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)] group-hover:border-primary/30">
                   {event.poster_url ? <img src={event.poster_url} alt={event.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy" /> : <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" style={{ background: event.gradient }} />}
                   <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                 </div>
               </div>
-              <p className="mt-3 text-xs text-[#8B889C]">{event.location}</p>
-              <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-[#1B1A3A] transition-all duration-300 group-hover:text-[#FF5470]">{event.title}</h3>
-              <p className="mt-0.5 truncate text-xs text-abu-ungu">{t("byOrganizer", { organizer: event.organizer })}</p>
-              <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">{event.price ? (<><p className="text-[0.65rem] text-[#8B889C]">{t("startingFrom")}</p><p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{event.price}</p></>) : (<p className="text-xs text-wavy-text-secondary">{t("priceUnavailable")}</p>)}</div>
+              <p className="mt-3 text-xs text-muted-foreground/80">{event.location}</p>
+              <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-foreground transition-all duration-300 group-hover:text-primary">{event.title}</h3>
+              <p className="mt-0.5 truncate text-xs text-muted-foreground">{t("byOrganizer", { organizer: event.organizer })}</p>
+              <div className="mt-3 border-t border-border pt-2.5">{event.price ? (<><p className="text-[0.65rem] text-muted-foreground/80">{t("startingFrom")}</p><p className="font-mono text-sm font-bold text-foreground">Rp{event.price}</p></>) : (<p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>)}</div>
             </Link>
           ))}
         </div>

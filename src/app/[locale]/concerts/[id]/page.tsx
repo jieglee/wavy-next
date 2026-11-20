@@ -153,19 +153,19 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
       <ConcertHero concert={concert} />
 
       {/* Tabs and purchase action share one row directly below the hero. */}
-      <div className="relative z-40 border-b border-[#E5E7EB] bg-white lg:sticky lg:top-0">
+      <div className="relative z-40 border-b border-border bg-white lg:sticky lg:top-0">
         <div className="mx-auto grid max-w-[1440px] items-center px-2 sm:px-4 lg:grid-cols-[minmax(0,1fr)_520px] lg:gap-4 lg:px-6">
           <div className="min-w-0">
             <ConcertTabs tabs={tabs} activeTab={activeTab} />
           </div>
           <div className="flex items-center justify-between gap-3 px-2 py-3 lg:px-3">
             <div className="leading-none">
-              <p className="text-[12px] text-[#6B7280]">Harga mulai dari</p>
-              <p className="mt-1 text-[20px] font-bold text-[#111827]">{formatIDR(minPrice)}</p>
+              <p className="text-[12px] text-muted-foreground">Harga mulai dari</p>
+              <p className="mt-1 text-[20px] font-bold text-foreground">{formatIDR(minPrice)}</p>
             </div>
             <button
               onClick={handleBuyTicket}
-              className="shrink-0 rounded-lg bg-[#2B5CFF] px-6 py-3 text-[15px] font-bold text-white transition hover:brightness-110"
+              className="shrink-0 rounded-lg bg-primary px-6 py-3 text-[15px] font-bold text-primary-foreground transition hover:brightness-110"
             >
               Beli Tiket
             </button>
@@ -252,26 +252,26 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                   }`}
                 >
                   <div>
-                    <h2 className="text-[17px] font-bold leading-tight text-[#1A2B4C]">
+                    <h2 className="text-[17px] font-bold leading-tight text-foreground">
                       {concert.title}
                     </h2>
 
                     <div className="mt-4 space-y-3">
 
-                      <div className="flex items-start gap-3 text-[14px] leading-snug text-[#1A2B4C]">
-                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                      <div className="flex items-start gap-3 text-[14px] leading-snug text-foreground">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-foreground" />
                         <span>{concert.venue}</span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-[14px] text-[#1A2B4C]">
-                        <Calendar className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                      <div className="flex items-center gap-3 text-[14px] text-foreground">
+                        <Calendar className="h-4 w-4 shrink-0 text-foreground" />
                         <span>
                           {dateStr}, {startHour} - {endHour} WIB
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-[14px] text-[#1A2B4C]">
-                        <Layers className="h-4 w-4 shrink-0 text-[#1E3A8A]" />
+                      <div className="flex items-center gap-3 text-[14px] text-foreground">
+                        <Layers className="h-4 w-4 shrink-0 text-foreground" />
                         <span>
                           {concert.category}
                           &nbsp;•&nbsp;
@@ -283,17 +283,17 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
                     </div>
 
-                    <div className="my-5 border-t border-[#EEEEF2]" />
+                    <div className="my-5 border-t border-border" />
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F56FF]/10 text-[16px] font-bold text-[#0F56FF]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[16px] font-bold text-primary">
                     {concert.organizer_name?.[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] text-[#6B7280]">Diselenggarakan oleh</p>
-                    <p className="truncate text-[14px] font-semibold text-[#111827]">{concert.organizer_name}</p>
+                    <p className="text-[11px] text-muted-foreground">Diselenggarakan oleh</p>
+                    <p className="truncate text-[14px] font-semibold text-foreground">{concert.organizer_name}</p>
                   </div>
                 </div>
 
