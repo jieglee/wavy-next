@@ -1,231 +1,253 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
-import {
-  ShoppingBag,
-  RotateCcw,
-  ArrowLeft,
-} from "lucide-react";
+import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import toast from "react-hot-toast";
-import { Link } from "@/i18n/navigation";
-import { WavyIcon } from "@/components/landing/wavy-icon";
-import { ErrorState } from "@/components/states/async-states";
-import { ApiError, apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { Check, RotateCcw, X } from "lucide-react";
+import { apiGet, apiPost } from "@/lib/api";
+import { cn } from "@/lib/utils";
+import { formatIDR } from "@/lib/price";
+import { formatWib, toNumber, type StudioOrder, type StudioOrderDetail } from "@/lib/organizer";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAuthToken } from "@/hooks/use-auth-session";
-import { isKnownErrorCode, useErrorMessage } from "@/lib/error-message";
-import type { Order } from "@/types/type";
+import { useStudioError } from "@/hooks/use-studio-error";
+import { AsyncContent, EmptyState } from "@/components/states/async-states";
+import { OrderStatusBadge } from "@/components/orders/order-status-badge";
+import { StudioPageHeader } from "@/components/studio/studio-shell";
+import { btn, labelCls } from "@/components/studio/studio-ui";
 
-export default function OrganizerOrdersPage() {
-  const router = useRouter();
+const FILTERS = ["pending_payment", "paid", "expired", "rejected", "refunded", "all"] as const;
+type Filter = (typeof FILTERS)[number];
 
-  const [selectedStatus, setSelectedStatus] = useState<string>("all");
-  const [actionLoading, setActionLoading] = useState<number | null>(null);
-  const errorMessage = useErrorMessage();
-
+/** Verifikasi pembayaran (DESIGN §4: Baseline) — antrian + panel detail (drawer di mobile). */
+export default function StudioOrdersPage() {
+  const t = useTranslations("Studio.orders");
+  const tStatus = useTranslations("OrderStatus");
+  const locale = useLocale();
   const authed = !!useAuthToken();
-  const ordersPath = selectedStatus === "all" ? "/organizer/orders" : `/organizer/orders?status=${selectedStatus}`;
-  const ordersRes = useApiResource(authed ? ordersPath : null, () => apiGet<Order[]>(ordersPath));
-  const orders = ordersRes.data ?? [];
-  const loading = ordersRes.loading;
-  const loadError = ordersRes.error;
+  const [filter, setFilter] = useState<Filter>("pending_payment");
+  const [selected, setSelected] = useState<number | null>(null);
+  const path = filter === "all" ? "/organizer/orders" : `/organizer/orders?status=${filter}`;
+  const orders = useApiResource(authed ? path : null, () => apiGet<StudioOrder[]>(path));
 
-  useEffect(() => {
-    if (!getAuthToken()) router.push("/organizer/login");
-  }, [router]);
+  return (
+    <>
+      <StudioPageHeader title={t("title")} description={t("subtitle")} />
 
-  // kode aturan bisnis (mis. ORDER_EXPIRED) pakai teks terjemahan; selain itu pesan backend
-  const actionError = (err: unknown, fallback: string) =>
-    err instanceof ApiError && isKnownErrorCode(err.code) ? errorMessage(err) : (err as Error).message || fallback;
+      <div role="tablist" aria-label={t("filterLabel")} className="-mx-4 mb-4 flex gap-1 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+        {FILTERS.map((f) => (
+          <button
+            key={f}
+            role="tab"
+            type="button"
+            aria-selected={filter === f}
+            onClick={() => {
+              setFilter(f);
+              setSelected(null);
+            }}
+            className={cn(
+              "shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors",
+              filter === f ? "border-foreground bg-foreground text-background" : "border-border bg-background text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {f === "all" ? t("all") : tStatus(f)}
+          </button>
+        ))}
+      </div>
 
-  async function handleVerify(id: number, approve: boolean) {
-    setActionLoading(id);
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className={cn("lg:col-span-7 xl:col-span-8", selected === null && "lg:col-span-12 xl:col-span-12")}>
+          <AsyncContent
+            resource={orders}
+            empty={<EmptyState title={t("emptyTitle")} description={filter === "pending_payment" ? t("emptyPending") : t("emptyText")} />}
+          >
+            {(list) => (
+              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-background">
+                {list.map((o) => (
+                  <li key={o.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelected(o.id)}
+                      aria-current={selected === o.id ? "true" : undefined}
+                      className={cn(
+                        "grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-1 px-4 py-3 text-left transition-colors hover:bg-surface",
+                        selected === o.id && "bg-surface"
+                      )}
+                    >
+                      <span className="min-w-0">
+                        <span className="block font-mono text-xs text-muted-foreground">
+                          #{o.id} · {formatWib(o.created_at, locale)}
+                        </span>
+                        <span className="mt-0.5 block truncate text-sm font-semibold text-foreground">
+                          {o.event_title ?? t("eventN", { id: o.event_id })}
+                        </span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {[o.category_name, `${o.quantity}×`, o.customer_name || o.customer_email].filter(Boolean).join(" · ")}
+                        </span>
+                      </span>
+                      <span className="flex flex-col items-end gap-1">
+                        <OrderStatusBadge status={o.status} />
+                        <span className="font-mono text-sm font-medium text-foreground">{formatIDR(toNumber(o.total_price))}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </AsyncContent>
+        </div>
+
+        {selected !== null && (
+          <OrderPanel
+            key={selected}
+            id={selected}
+            onClose={() => setSelected(null)}
+            onChanged={() => {
+              orders.reload();
+            }}
+          />
+        )}
+      </div>
+    </>
+  );
+}
+
+function OrderPanel({ id, onClose, onChanged }: { id: number; onClose: () => void; onChanged: () => void }) {
+  const t = useTranslations("Studio.orders");
+  const locale = useLocale();
+  const studioError = useStudioError();
+  const detail = useApiResource(`studio-order-${id}`, () => apiGet<StudioOrderDetail>(`/organizer/orders/${id}`));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function act(path: string, body: unknown, success: string, confirmText: string) {
+    if (!window.confirm(confirmText)) return;
+    setBusy(true);
+    setError(null);
     try {
-      await apiPost(`/organizer/orders/${id}/verify`, { approve });
-      toast.success(
-        approve
-          ? "Pembayaran disetujui! E-tiket QR telah diterbitkan untuk pembeli."
-          : "Pesanan ditolak. Kuota tiket otomatis ditawarkan ke Waiting List."
-      );
-      ordersRes.mutate((prev) => prev.map((o) => (o.id === id ? { ...o, status: approve ? "paid" : "rejected" } : o)));
-    } catch (err: unknown) {
-      toast.error(actionError(err, "Gagal memverifikasi pesanan"));
-      // order bisa sudah expired (lazy expiry di backend) -> segarkan status di tabel
-      if (err instanceof ApiError && err.code === "ORDER_EXPIRED") ordersRes.reload();
+      await apiPost(path, body);
+      toast.success(success);
+      detail.reload();
+      onChanged();
+    } catch (err) {
+      setError(studioError(err));
+      detail.reload();
     } finally {
-      setActionLoading(null);
-    }
-  }
-
-  async function handleRefund(id: number) {
-    if (!confirm("Yakin ingin merefund pesanan ini? Tiket pembeli akan dinonaktifkan.")) return;
-    setActionLoading(id);
-    try {
-      await apiPost(`/organizer/orders/${id}/refund`);
-      toast.success("Pesanan direfund. Slot tiket kembali tersedia & Waiting List ternotifikasi.");
-      ordersRes.mutate((prev) => prev.map((o) => (o.id === id ? { ...o, status: "refunded" } : o)));
-    } catch (err: unknown) {
-      toast.error(actionError(err, "Gagal merefund pesanan"));
-    } finally {
-      setActionLoading(null);
+      setBusy(false);
     }
   }
 
   return (
-    <div>
-      {/* Top Bar */}
-      <header className="border-b border-border bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/organizer/dashboard" className="flex items-center gap-2">
-              <WavyIcon size={26} />
-              <span className="font-display text-lg font-bold text-foreground">Wavy EO Portal</span>
-            </Link>
-            <span className="text-muted-foreground/40">/</span>
-            <span className="text-xs font-bold text-primary">Verifikasi Pesanan</span>
-          </div>
-
-          <Link
-            href="/organizer/dashboard"
-            className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/80 hover:text-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Kembali ke Dashboard
-          </Link>
-        </div>
-      </header>
-
-      <div className="space-y-6">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <h1 className="font-display text-2xl font-extrabold text-foreground">
-              Daftar Pesanan & Pembayaran
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Verifikasi transfer manual, terbitkan e-tiket QR, atau kelola refund pembeli.
-            </p>
-          </div>
-
-          {/* Status filter chips */}
-          <div className="flex gap-1.5 overflow-x-auto rounded-2xl bg-white p-1.5 border border-border">
-            {["all", "pending_payment", "paid", "rejected", "refunded"].map((st) => (
-              <button
-                key={st}
-                onClick={() => setSelectedStatus(st)}
-                className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
-                  selectedStatus === st
-                    ? "bg-foreground text-white"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {st === "all" ? "Semua" : st}
-              </button>
-            ))}
-          </div>
+    <>
+      {/* backdrop drawer mobile */}
+      <button type="button" aria-label={t("close")} onClick={onClose} className="fixed inset-0 z-40 bg-foreground/40 lg:hidden" />
+      <aside
+        aria-label={t("detailTitle", { id })}
+        className="fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-background p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] lg:sticky lg:top-6 lg:z-auto lg:col-span-5 lg:max-h-none lg:self-start lg:rounded-xl lg:border xl:col-span-4"
+      >
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h2 className="font-display text-lg font-bold tracking-tight text-foreground">{t("detailTitle", { id })}</h2>
+          <button type="button" onClick={onClose} className={btn.ghost} aria-label={t("close")}>
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
-        {/* Orders Table */}
-        {loading ? (
-          <div className="h-48 animate-pulse rounded-3xl bg-border" />
-        ) : loadError ? (
-          <ErrorState error={loadError} onRetry={ordersRes.reload} />
-        ) : orders.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border bg-white p-12 text-center space-y-3">
-            <ShoppingBag className="h-12 w-12 text-muted-foreground/80 mx-auto" />
-            <h3 className="text-base font-bold text-foreground">Tidak Ada Pesanan</h3>
-            <p className="text-xs text-muted-foreground">Belum ada data pesanan pada filter ini.</p>
-          </div>
-        ) : (
-          <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-border bg-surface text-muted-foreground/80">
-                  <tr>
-                    <th className="px-6 py-4 font-bold">No. Order</th>
-                    <th className="px-6 py-4 font-bold">Customer ID</th>
-                    <th className="px-6 py-4 font-bold">Jumlah & Total</th>
-                    <th className="px-6 py-4 font-bold">Status</th>
-                    <th className="px-6 py-4 font-bold">Waktu Pesan</th>
-                    <th className="px-6 py-4 font-bold text-right">Aksi Verifikasi</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {orders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-surface transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-sm text-foreground">
-                        #{ord.id}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-foreground">
-                        Customer #{ord.customer_id}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="font-bold text-foreground">{ord.quantity} Tiket</span>
-                        <p className="font-mono text-xs font-extrabold text-primary">
-                          Rp{Number(ord.total_price).toLocaleString("id-ID")}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold ${
-                            ord.status === "paid"
-                              ? "bg-success/10 text-success"
-                              : ord.status === "pending_payment"
-                              ? "bg-warning/10 text-warning"
-                              : ord.status === "rejected"
-                              ? "bg-destructive/10 text-destructive"
-                              : "bg-muted text-foreground/85"
-                          }`}
-                        >
-                          {ord.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-muted-foreground/80">
-                        {new Date(ord.created_at).toLocaleString("id-ID")}
-                      </td>
-                      <td className="px-6 py-4 text-right space-x-2">
-                        {ord.status === "pending_payment" && (
-                          <>
-                            <button
-                              onClick={() => handleVerify(ord.id, true)}
-                              disabled={actionLoading === ord.id}
-                              className="rounded-xl bg-success px-3.5 py-1.5 font-bold text-white shadow hover:bg-success/90 disabled:opacity-50"
-                            >
-                              Approve
-                            </button>
-                            <button
-                              onClick={() => handleVerify(ord.id, false)}
-                              disabled={actionLoading === ord.id}
-                              className="rounded-xl bg-destructive px-3.5 py-1.5 font-bold text-white shadow hover:bg-destructive/90 disabled:opacity-50"
-                            >
-                              Reject
-                            </button>
-                          </>
-                        )}
+        <AsyncContent resource={detail} isEmpty={() => false} loadingRows={2}>
+          {(o) => (
+            <div className="space-y-4">
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                <Row label={t("status")}>
+                  <OrderStatusBadge status={o.status} />
+                </Row>
+                <Row label={t("total")}>
+                  <span className="font-mono">{formatIDR(toNumber(o.total_price))}</span>
+                </Row>
+                <Row label={t("event")} wide>
+                  {o.event_title ?? `#${o.event_id}`}
+                </Row>
+                <Row label={t("category")}>{o.category_name ?? `#${o.ticket_category_id}`}</Row>
+                <Row label={t("quantity")}>
+                  <span className="font-mono">{o.quantity}</span>
+                </Row>
+                <Row label={t("customer")} wide>
+                  <span className="block truncate">{o.customer_name || "—"}</span>
+                  {o.customer_email && <span className="block truncate font-mono text-xs text-muted-foreground">{o.customer_email}</span>}
+                </Row>
+                <Row label={t("createdAt")}>
+                  <span className="font-mono text-xs">{formatWib(o.created_at, locale)}</span>
+                </Row>
+                {o.status === "pending_payment" ? (
+                  <Row label={t("expiresAt")}>
+                    <span className="font-mono text-xs">{formatWib(o.expires_at, locale)}</span>
+                  </Row>
+                ) : (
+                  <Row label={t("paidAt")}>
+                    <span className="font-mono text-xs">{formatWib(o.paid_at, locale)}</span>
+                  </Row>
+                )}
+                {o.tickets && o.tickets.length > 0 && (
+                  <Row label={t("tickets")} wide>
+                    <span className="font-mono text-xs">
+                      {t("ticketsSummary", { total: o.tickets.length, scanned: o.tickets.filter((x) => x.is_scanned).length })}
+                    </span>
+                  </Row>
+                )}
+              </dl>
 
-                        {ord.status === "paid" && (
-                          <button
-                            onClick={() => handleRefund(ord.id)}
-                            disabled={actionLoading === ord.id}
-                            className="rounded-xl border border-input px-3 py-1.5 font-bold text-foreground/85 hover:bg-muted disabled:opacity-50"
-                          >
-                            <RotateCcw className="inline h-3.5 w-3.5 mr-1" />
-                            Refund
-                          </button>
-                        )}
+              <p className="rounded-lg bg-surface px-3 py-2 text-xs text-muted-foreground">{t("manualNote")}</p>
 
-                        {ord.status !== "pending_payment" && ord.status !== "paid" && (
-                          <span className="text-muted-foreground/70 font-semibold text-[11px]">Selesai</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {error && (
+                <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </p>
+              )}
+
+              {o.status === "pending_payment" && (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    className={btn.danger}
+                    onClick={() => act(`/organizer/orders/${o.id}/verify`, { approve: false }, t("rejected"), t("confirmReject", { id: o.id }))}
+                  >
+                    <X className="h-4 w-4" />
+                    {t("reject")}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy}
+                    className={btn.primary}
+                    onClick={() => act(`/organizer/orders/${o.id}/verify`, { approve: true }, t("approved"), t("confirmApprove", { id: o.id }))}
+                  >
+                    <Check className="h-4 w-4" />
+                    {t("approve")}
+                  </button>
+                </div>
+              )}
+              {o.status === "paid" && (
+                <button
+                  type="button"
+                  disabled={busy}
+                  className={`${btn.danger} w-full`}
+                  onClick={() => act(`/organizer/orders/${o.id}/refund`, undefined, t("refunded"), t("confirmRefund", { id: o.id }))}
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  {t("refund")}
+                </button>
+              )}
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </AsyncContent>
+      </aside>
+    </>
+  );
+}
+
+function Row({ label, wide, children }: { label: string; wide?: boolean; children: React.ReactNode }) {
+  return (
+    <div className={cn("min-w-0", wide && "col-span-2")}>
+      <dt className={labelCls}>{label}</dt>
+      <dd className="text-foreground">{children}</dd>
     </div>
   );
 }

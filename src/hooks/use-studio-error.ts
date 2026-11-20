@@ -30,8 +30,10 @@ export function useStudioError() {
     (err: unknown): string => {
       if (err instanceof ApiError) {
         if (err.code && (STUDIO_CODES as readonly string[]).includes(err.code)) return t(err.code);
-        if (err.status >= 400 && err.status < 500 && err.status !== 401 && err.status !== 404 && !err.code && err.message)
-          return err.message;
+        // validasi backend: { code: "VALIDATION_ERROR", message: "<field>: <msg>" } atau error lama tanpa kode
+        const validation = err.code === "VALIDATION_ERROR" || !err.code;
+        if (validation && err.status >= 400 && err.status < 500 && err.status !== 401 && err.status !== 404 && err.message)
+          return t("validation", { message: err.message });
       }
       return base(err);
     },

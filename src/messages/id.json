@@ -341,7 +341,8 @@
             "TICKET_NOT_FOUND": "Tiket tidak ditemukan.",
             "WRONG_ORGANIZER": "Tiket ini bukan untuk event kamu.",
             "ALREADY_SCANNED": "Tiket ini sudah pernah dipindai.",
-            "EVENT_ENDED": "Event sudah selesai."
+            "EVENT_ENDED": "Event sudah selesai.",
+            "validation": "Data belum valid: {message}"
         },
         "events": {
             "title": "Event",
@@ -436,6 +437,39 @@
             "emptyText": "Event butuh minimal satu kategori tiket sebelum bisa dipublish.",
             "errPrice": "Isi nama dan harga (0 atau lebih).",
             "errQuota": "Kuota harus bilangan bulat minimal 1."
+        },
+        "orders": {
+            "title": "Verifikasi pembayaran",
+            "subtitle": "Cadangan saat pembayaran tidak lewat Midtrans. Order pending kedaluwarsa otomatis setelah 15 menit.",
+            "filterLabel": "Filter status order",
+            "all": "Semua",
+            "emptyTitle": "Tidak ada order",
+            "emptyPending": "Tidak ada order yang menunggu verifikasi.",
+            "emptyText": "Belum ada order dengan status ini.",
+            "eventN": "Event #{id}",
+            "close": "Tutup panel",
+            "detailTitle": "Order #{id}",
+            "status": "Status",
+            "total": "Total",
+            "event": "Event",
+            "category": "Kategori",
+            "quantity": "Jumlah",
+            "customer": "Pembeli",
+            "createdAt": "Dibuat",
+            "expiresAt": "Kedaluwarsa",
+            "paidAt": "Dibayar",
+            "tickets": "Tiket",
+            "ticketsSummary": "{total} tiket · {scanned} sudah check-in",
+            "manualNote": "Approve hanya jika dana sudah kamu terima. Approve menerbitkan tiket + QR; reject melepas kuota.",
+            "approve": "Approve",
+            "reject": "Tolak",
+            "refund": "Refund",
+            "approved": "Order di-approve. Tiket diterbitkan.",
+            "rejected": "Order ditolak. Kuota dilepas.",
+            "refunded": "Order direfund. Tiket dibatalkan.",
+            "confirmApprove": "Approve order #{id}? Tiket + QR akan diterbitkan ke pembeli.",
+            "confirmReject": "Tolak order #{id}?",
+            "confirmRefund": "Refund order #{id}? Tiketnya akan dibatalkan."
         }
     }
 }
