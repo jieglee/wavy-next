@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
-import { Award, Bell, Heart, History, LogOut, Sparkles, Ticket } from "lucide-react";
+import { Bell, Heart, History, LogOut, Ticket } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link, useRouter } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
-import { OrderStatusBadge } from "@/components/orders/order-status-badge";
+import { OrderHistoryList } from "@/components/orders/order-history-list";
+import { RingChart } from "@/components/charts/ring-chart";
+import { Ring } from "@/components/charts/ring";
+import { RingCenter } from "@/components/charts/ring-center";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAuthToken, useAuthUser } from "@/hooks/use-auth-session";
 import { useErrorMessage } from "@/lib/error-message";
-import { formatIDR } from "@/lib/price";
 import { cn } from "@/lib/utils";
 import { apiGet, apiPost, clearAuthSession, getAuthToken } from "@/lib/api";
 import type { CustomerLevel, FavoritesResponse, NotificationItem, Order } from "@/types/type";
@@ -21,12 +23,12 @@ import type { CustomerLevel, FavoritesResponse, NotificationItem, Order } from "
 // Harus sama dengan customerService.level di wavy-backend.
 const LEVEL_THRESHOLDS = [0, 1, 3, 5, 10];
 
-type Tab = "level" | "orders" | "favorites" | "notifications";
+type Tab = "orders" | "favorites" | "notifications";
 
 const tabCls = (active: boolean) =>
   cn(
     "flex shrink-0 items-center gap-1.5 rounded-lg px-4 py-2.5 transition-colors",
-    active ? "bg-foreground text-white" : "text-muted-foreground hover:text-foreground"
+    active ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
   );
 const panelCls = "rounded-2xl border border-border bg-background p-4 sm:p-8 space-y-4";
 
@@ -35,7 +37,7 @@ export default function CustomerProfilePage() {
   const format = useFormatter();
   const router = useRouter();
   const errorMessage = useErrorMessage();
-  const [activeTab, setActiveTab] = useState<Tab>("level");
+  const [activeTab, setActiveTab] = useState<Tab>("orders");
 
   // token null (server / render hidrasi pertama) -> semua resource dianggap loading
   const authed = !!useAuthToken();
@@ -75,40 +77,40 @@ export default function CustomerProfilePage() {
       <Navbar />
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:space-y-8 sm:px-6 sm:py-10 lg:px-8">
-        {/* Kartu user */}
-        <div className="relative overflow-hidden rounded-2xl bg-foreground p-5 text-white sm:p-8">
-          <div className="relative z-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
-            <div className="flex min-w-0 items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary text-2xl font-bold sm:h-16 sm:w-16">
+        {/* Profil (DESIGN §4 Radial): ring level di tengah, statistik mengelilingi */}
+        <section className="rounded-2xl border border-border bg-background p-4 sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-xl font-bold text-primary-foreground">
                 {(currentUser?.name || currentUser?.email || "W").charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <h1 className="truncate font-display text-xl font-bold sm:text-2xl">{currentUser?.name || t("defaultName")}</h1>
-                {currentUser?.email && <p className="truncate text-xs text-white/70">{currentUser.email}</p>}
-                {level.data && (
-                  <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-0.5 text-xs font-bold">
-                    <Award className="h-3.5 w-3.5" />
-                    {t("levelBadge", { level: level.data.level, label: level.data.level_label })}
-                  </span>
-                )}
+                <h1 className="truncate font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">{currentUser?.name || t("defaultName")}</h1>
+                {currentUser?.email && <p className="truncate font-mono text-xs text-muted-foreground">{currentUser.email}</p>}
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold text-white/80 hover:bg-white/20"
+              className="flex items-center gap-1.5 rounded-lg border border-destructive/30 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive/10"
             >
               <LogOut className="h-3.5 w-3.5" />
               {t("logout")}
             </button>
           </div>
-        </div>
+
+          <div className="mt-6">
+            {level.loading ? (
+              <LoadingState />
+            ) : level.error || !level.data ? (
+              <ErrorState error={level.error} onRetry={level.reload} />
+            ) : (
+              <LevelRadial data={level.data} orders={orders.data?.length} />
+            )}
+          </div>
+        </section>
 
         {/* Tab */}
         <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto border-b border-border px-4 pb-2 text-xs font-bold sm:mx-0 sm:px-0">
-          <button onClick={() => setActiveTab("level")} className={tabCls(activeTab === "level")}>
-            <Sparkles className="h-4 w-4" />
-            {t("tabs.level")}
-          </button>
           <button onClick={() => setActiveTab("orders")} className={tabCls(activeTab === "orders")}>
             <History className="h-4 w-4" />
             {t("tabs.orders")}
@@ -125,23 +127,6 @@ export default function CustomerProfilePage() {
           </button>
         </div>
 
-        {/* Level */}
-        {activeTab === "level" && (
-          <section className={panelCls}>
-            <div>
-              <h2 className="font-display text-xl font-bold text-foreground">{t("level.title")}</h2>
-              <p className="text-xs text-muted-foreground">{t("level.subtitle")}</p>
-            </div>
-            {level.loading ? (
-              <LoadingState />
-            ) : level.error || !level.data ? (
-              <ErrorState error={level.error} onRetry={level.reload} />
-            ) : (
-              <LevelProgress data={level.data} />
-            )}
-          </section>
-        )}
-
         {/* Riwayat order */}
         {activeTab === "orders" && (
           <section className={panelCls}>
@@ -156,37 +141,20 @@ export default function CustomerProfilePage() {
                 title={t("orders.emptyTitle")}
                 description={t("orders.emptyDescription")}
                 action={
-                  <Link href="/concerts" className="rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:brightness-110">
+                  <Link href="/concerts" className="rounded-lg bg-primary px-5 py-2 text-xs font-bold text-primary-foreground hover:brightness-110">
                     {t("orders.browse")}
                   </Link>
                 }
               />
             ) : (
-              <ul className="divide-y divide-border">
-                {orders.data.map((ord) => (
-                  <li key={ord.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0">
-                      <span className="font-mono text-xs font-bold text-foreground">{t("orders.orderNumber", { id: ord.id })}</span>
-                      <p className="mt-0.5 font-mono text-xs text-muted-foreground">
-                        {format.dateTime(new Date(ord.created_at), { dateStyle: "medium", timeStyle: "short" })}
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {t("orders.summary", { quantity: ord.quantity })} &bull;{" "}
-                        <span className="font-mono">{formatIDR(Number(ord.total_price))}</span>
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between gap-3 sm:justify-end">
-                      <OrderStatusBadge status={ord.status} />
-                      <Link
-                        href={`/orders/${ord.id}`}
-                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-bold text-foreground hover:bg-muted"
-                      >
-                        {t("orders.detail")}
-                      </Link>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-3">
+                <OrderHistoryList orders={orders.data.slice(0, 5)} />
+                {orders.data.length > 5 && (
+                  <Link href="/orders" className="inline-flex text-xs font-bold text-primary hover:underline">
+                    {t("orders.all")}
+                  </Link>
+                )}
+              </div>
             )}
           </section>
         )}
@@ -257,49 +225,58 @@ export default function CustomerProfilePage() {
   );
 }
 
-function LevelProgress({ data }: { data: CustomerLevel }) {
+function LevelRadial({ data, orders }: { data: CustomerLevel; orders?: number }) {
   const t = useTranslations("Profile.level");
   const next = LEVEL_THRESHOLDS[data.level]; // threshold level berikutnya (index = level saat ini)
-  // sama dengan teks "{count} dari {target} konser"
-  const pct = next === undefined ? 100 : Math.min(100, Math.round((data.attended_concerts / next) * 100));
+  const max = next ?? Math.max(data.attended_concerts, 1);
+  const ring = [{ label: t("ringLabel"), value: Math.min(data.attended_concerts, max), maxValue: max, color: "var(--chart-1)" }];
+  const stats = [
+    { key: "level", label: t("statLevel"), value: data.level_label },
+    { key: "attended", label: t("statAttended"), value: String(data.attended_concerts) },
+    { key: "next", label: t("statNext"), value: next === undefined ? t("max") : t("remaining", { count: Math.max(0, next - data.attended_concerts) }) },
+    { key: "orders", label: t("statOrders"), value: orders === undefined ? "-" : String(orders) },
+  ];
+  const tile = (s: (typeof stats)[number]) => (
+    <div key={s.key} className="min-w-0 rounded-xl border border-border bg-surface p-4 text-center lg:text-left">
+      <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{s.label}</p>
+      <p className="mt-1 truncate font-display text-xl font-bold tracking-tight text-foreground">{s.value}</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2 rounded-xl border border-border bg-muted p-4 sm:p-5">
-        <div className="flex flex-wrap justify-between gap-2 text-xs font-bold text-foreground">
-          <span>{t("current", { level: data.level, label: data.level_label })}</span>
-          <span>{next === undefined ? t("max") : t("toNext", { level: data.level + 1 })}</span>
+      <div className="grid grid-cols-1 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] lg:gap-8">
+        <div className="flex flex-col items-center lg:order-2">
+          <RingChart data={ring} size={220} strokeWidth={16} baseInnerRadius={80}>
+            <Ring index={0} />
+            <RingCenter>
+              {() => (
+                <div className="flex flex-col items-center">
+                  <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{t("center")}</span>
+                  <span className="font-display text-5xl font-bold tracking-tight text-foreground">{data.level}</span>
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {next === undefined ? t("attended", { count: data.attended_concerts }) : t("progress", { count: data.attended_concerts, target: next })}
+                  </span>
+                </div>
+              )}
+            </RingCenter>
+          </RingChart>
         </div>
-        <div
-          className="h-3 w-full overflow-hidden rounded-full bg-border"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={pct}
-        >
-          <div className="h-full bg-primary transition-all duration-500" style={{ width: `${pct}%` }} />
-        </div>
-        <p className="font-mono text-[11px] text-muted-foreground">
-          {next === undefined
-            ? t("attended", { count: data.attended_concerts })
-            : t("progress", { count: data.attended_concerts, target: next })}
-        </p>
+        <div className="grid grid-cols-2 gap-3 lg:order-1 lg:grid-cols-1">{stats.slice(0, 2).map(tile)}</div>
+        <div className="grid grid-cols-2 gap-3 lg:order-3 lg:grid-cols-1">{stats.slice(2).map(tile)}</div>
       </div>
 
-      <ol className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-5">
+      <ol className="grid grid-cols-5 gap-1.5 sm:gap-3" aria-label={t("tiersLabel")}>
         {LEVEL_THRESHOLDS.map((min, i) => {
           const lvl = i + 1;
           const reached = data.level >= lvl;
           return (
             <li
               key={lvl}
-              className={cn(
-                "rounded-xl border p-3",
-                reached ? "border-primary bg-primary/5" : "border-border opacity-60"
-              )}
+              className={cn("rounded-lg border px-1 py-2 text-center sm:p-3", reached ? "border-primary bg-primary/5" : "border-border opacity-60")}
             >
-              <p className="font-bold text-foreground">{t("tier", { level: lvl })}</p>
-              <p className="font-mono text-[10px] font-semibold text-primary">{t("tierRequirement", { count: min })}</p>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground">{t("tierShort", { level: lvl })}</p>
+              <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">{t("tierMin", { count: min })}</p>
             </li>
           );
         })}
