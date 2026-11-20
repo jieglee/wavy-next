@@ -5,10 +5,8 @@ import type { ConcertDetail } from "@/types/type";
 import { categoryLabels } from "@/lib/concert-labels";
 
 export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
-  const banner =
-    concert.poster_url ||
-    concert.photo_url ||
-    "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
+  // tanpa gambar: latar polos bg-stage, bukan banner situs lain
+  const banner = concert.poster_url || concert.photo_url || "";
 
   const dateObj = new Date(concert.date);
 
@@ -41,13 +39,15 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
     >
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(${banner})`,
-            filter: "blur(40px) brightness(0.4)",
-          }}
-        />
+        {banner && (
+          <div
+            className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${banner})`,
+              filter: "blur(40px) brightness(0.4)",
+            }}
+          />
+        )}
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/25 to-black/40" />
       </div>
@@ -91,6 +91,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
           </div>
           </div>
 
+          {banner && (
           <div className="relative z-10 hidden h-[460px] w-[520px] translate-y-[-160px] items-end justify-end justify-self-end self-end overflow-hidden rounded-t-xl pr-2 lg:flex">
             <img
               src={banner}
@@ -98,6 +99,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
               className="block h-full w-full object-contain object-right-bottom"
             />
           </div>
+          )}
         </div>
       </div>
     </section>
