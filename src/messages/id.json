@@ -826,5 +826,198 @@
             "confirmActivateTitle": "Aktifkan {name}?",
             "confirmActivateBody": "Organizer bisa masuk dan mengelola event lagi."
         }
+    },
+    "InfoPages": {
+        "eyebrow": "Informasi Wavy",
+        "updated": "Diperbarui {date}",
+        "howToBuy": {
+            "title": "Cara beli tiket",
+            "updated": "20 November 2026",
+            "intro": "Beli tiket konser di Wavy dalam beberapa langkah. Semua tiket bersifat digital dan masuk ke akunmu.",
+            "ctaText": "Siap mencari konser?",
+            "ctaLabel": "Jelajahi konser",
+            "sections": [
+                {
+                    "title": "Masuk dengan email",
+                    "body": [
+                        "Masukkan email, lalu ketik kode OTP 6 digit yang kami kirim. Tidak perlu kata sandi."
+                    ]
+                },
+                {
+                    "title": "Pilih konser dan kategori tiket",
+                    "body": [
+                        "Buka halaman konser, cek jadwal dan status penjualan. Tombol pesan hanya aktif saat penjualan sedang dibuka dan kuota masih ada.",
+                        "Satu pesanan berisi satu kategori tiket, maksimal 4 tiket."
+                    ]
+                },
+                {
+                    "title": "Isi data pemesan",
+                    "body": [
+                        "Isi nama, email, nomor HP, nomor identitas, dan tanggal lahir sesuai identitas, lalu buat pesanan."
+                    ]
+                },
+                {
+                    "title": "Bayar dalam 15 menit",
+                    "body": [
+                        "Kuota tiket ditahan selama 15 menit. Di halaman pesanan, klik Bayar sekarang untuk membayar lewat Midtrans (mode sandbox, tanpa uang sungguhan). Jika waktu habis, pesanan kedaluwarsa dan kuota dilepas.",
+                        "Bila pembayaran online belum aktif, penyelenggara memverifikasi pembayaranmu secara manual."
+                    ]
+                },
+                {
+                    "title": "Tunjukkan QR di gate",
+                    "body": [
+                        "Setelah lunas, tiket dan QR muncul di Tiket saya. Setiap QR hanya bisa dipindai sekali saat masuk venue."
+                    ]
+                }
+            ]
+        },
+        "terms": {
+            "title": "Syarat & ketentuan",
+            "updated": "20 November 2026",
+            "intro": "Wavy adalah proyek Uji Kompetensi Keahlian (UKK) untuk sistem penjualan tiket konser. Dengan memakai Wavy, kamu menyetujui ketentuan berikut.",
+            "sections": [
+                {
+                    "title": "Status layanan",
+                    "body": [
+                        "Wavy dibuat untuk keperluan pembelajaran dan demonstrasi. Event, harga, dan transaksi di dalamnya tidak mewakili penjualan tiket sungguhan.",
+                        "Pembayaran berjalan di Midtrans mode sandbox, sehingga tidak ada dana yang benar-benar ditarik."
+                    ]
+                },
+                {
+                    "title": "Akun",
+                    "body": [
+                        "Kamu bertanggung jawab atas email yang dipakai untuk masuk. Jangan bagikan kode OTP ke siapa pun."
+                    ]
+                },
+                {
+                    "title": "Pemesanan",
+                    "body": [
+                        "Satu pesanan berisi satu kategori tiket, maksimal 4 tiket. Pesanan yang belum dibayar dalam 15 menit otomatis kedaluwarsa.",
+                        "Pesanan ditolak bila penjualan belum dibuka, sudah ditutup, atau kuota tidak cukup."
+                    ]
+                },
+                {
+                    "title": "Tiket",
+                    "body": [
+                        "Tiket berlaku untuk satu kali masuk. QR yang sudah dipindai tidak bisa dipakai lagi. Tiket yang dipindahkan ke akun lain membuat QR lama tidak berlaku."
+                    ]
+                },
+                {
+                    "title": "Penyelenggara",
+                    "body": [
+                        "Isi event, jadwal, dan kuota dikelola oleh penyelenggara (EO). Admin Wavy dapat menangguhkan penyelenggara yang melanggar aturan."
+                    ]
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Kebijakan privasi",
+            "updated": "20 November 2026",
+            "intro": "Halaman ini menjelaskan data apa yang disimpan Wavy dan untuk apa. Wavy adalah proyek UKK, bukan layanan komersial.",
+            "sections": [
+                {
+                    "title": "Data yang kami simpan",
+                    "body": [
+                        "Email untuk masuk, serta data pemesan yang kamu isi saat checkout: nama, nomor HP, nomor identitas, tanggal lahir, dan jenis kelamin."
+                    ]
+                },
+                {
+                    "title": "Untuk apa data dipakai",
+                    "body": [
+                        "Data dipakai untuk membuat pesanan, menerbitkan tiket, dan ditampilkan ke penyelenggara event yang kamu beli tiketnya untuk verifikasi."
+                    ]
+                },
+                {
+                    "title": "Pembayaran",
+                    "body": [
+                        "Pembayaran diproses oleh Midtrans (sandbox). Wavy tidak menyimpan nomor kartu atau data rekening; kami hanya menyimpan kode transaksi dan metode bayar."
+                    ]
+                },
+                {
+                    "title": "Kode OTP",
+                    "body": [
+                        "Kode OTP dikirim ke email dan hanya berlaku sebentar. Kami tidak pernah meminta kode OTP lewat chat atau telepon."
+                    ]
+                },
+                {
+                    "title": "Catatan",
+                    "body": [
+                        "Karena ini proyek sekolah, hindari memasukkan data identitas asli saat mencoba aplikasi."
+                    ]
+                }
+            ]
+        },
+        "about": {
+            "title": "Tentang Wavy",
+            "updated": "20 November 2026",
+            "intro": "Wavy adalah platform tiket konser yang dibuat sebagai proyek Uji Kompetensi Keahlian (UKK).",
+            "ctaText": "Lihat konser yang sedang dijual.",
+            "ctaLabel": "Jelajahi konser",
+            "sections": [
+                {
+                    "title": "Apa yang bisa dilakukan",
+                    "body": [
+                        "Customer membeli tiket dan menyimpan e-tiket ber-QR. Penyelenggara (EO) membuat event, mengatur kategori tiket dan kuota, memverifikasi pembayaran, dan memindai tiket di gate. Admin mengelola akun penyelenggara."
+                    ]
+                },
+                {
+                    "title": "Aturan yang dijaga sistem",
+                    "body": [
+                        "Penjualan hanya terbuka di dalam tenggat yang diatur EO, kuota tidak bisa terjual melebihi batas, dan pesanan yang tidak dibayar dalam 15 menit dilepas kembali."
+                    ]
+                },
+                {
+                    "title": "Jujur soal batasan",
+                    "body": [
+                        "Pembayaran memakai Midtrans mode sandbox, jadi tidak ada uang sungguhan. Sebagian data event berasal dari data contoh untuk demo."
+                    ]
+                }
+            ]
+        },
+        "organizerGuide": {
+            "title": "Panduan organizer",
+            "updated": "20 November 2026",
+            "intro": "Langkah singkat menjual tiket konser lewat Creator Studio Wavy.",
+            "ctaText": "Belum punya akun organizer?",
+            "ctaLabel": "Daftar jadi organizer",
+            "sections": [
+                {
+                    "title": "Daftar dan verifikasi",
+                    "body": [
+                        "Daftar dengan nama, email, dan kata sandi, lalu verifikasi email. Setelah aktif, kamu bisa masuk ke Creator Studio."
+                    ]
+                },
+                {
+                    "title": "Buat event",
+                    "body": [
+                        "Isi judul, artis, venue, tanggal konser, serta tenggat penjualan (mulai dan berakhir). Event tersimpan sebagai draft dulu."
+                    ]
+                },
+                {
+                    "title": "Tambah kategori tiket",
+                    "body": [
+                        "Tambahkan minimal satu kategori dengan harga dan kuota. Event tanpa kategori tiket tidak bisa dipublikasikan."
+                    ]
+                },
+                {
+                    "title": "Publikasikan dan pantau",
+                    "body": [
+                        "Setelah dipublikasikan, penjualan terbuka sesuai tenggat. Kamu bisa menutup dan membuka lagi penjualan kapan saja, dan memantau penjualan di dashboard."
+                    ]
+                },
+                {
+                    "title": "Verifikasi pembayaran",
+                    "body": [
+                        "Pembayaran Midtrans yang berhasil membuat pesanan lunas otomatis. Sebagai cadangan, kamu bisa menyetujui atau menolak pesanan secara manual di menu Pembayaran."
+                    ]
+                },
+                {
+                    "title": "Scan tiket di gate",
+                    "body": [
+                        "Buka menu Scan, arahkan kamera ke QR atau ketik kodenya. Tiket yang sudah dipindai atau milik event lain akan ditolak."
+                    ]
+                }
+            ]
+        }
     }
 }
