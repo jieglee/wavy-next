@@ -12,15 +12,6 @@ import { useApiResource } from "@/hooks/use-api-resource";
 import { ErrorState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
 
-const GRADIENTS = [
-  "linear-gradient(135deg,#7DD3E8,#4A90D9)",
-  "linear-gradient(135deg,#8B0000,#2B0000)",
-  "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
-  "linear-gradient(135deg,var(--foreground),#0D0C1F)",
-  "linear-gradient(135deg,var(--primary),#211F2B)",
-  "linear-gradient(135deg,#C6395A,#14131C)",
-];
-
 function extractConcerts(data: unknown): Concert[] {
   if (Array.isArray(data)) return data as Concert[];
   if (data && typeof data === "object") {
@@ -199,8 +190,7 @@ function ConcertsPageInner() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {concerts.map((concert, idx) => {
-              const gradient = GRADIENTS[idx % GRADIENTS.length];
+            {concerts.map((concert) => {
               const priceStr = concert.min_price ? Number(concert.min_price).toLocaleString("id-ID") : null;
               return (
                 <ConcertCard
@@ -210,7 +200,6 @@ function ConcertsPageInner() {
                   location={concert.venue || "Indonesia"}
                   organizer={concert.organizer_name || concert.artist_name || "Event Organizer"}
                   price={priceStr}
-                  gradient={gradient}
                   poster_url={concert.poster_url || undefined}
                 />
               );

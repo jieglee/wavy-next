@@ -197,7 +197,6 @@ export function EventForm({ event }: { event?: StudioEvent }) {
               location={form.venue || t("previewVenue")}
               organizer={artistName || "—"}
               price={null}
-              gradient="var(--stage)"
               poster_url={form.poster_url || undefined}
             />
           </div>

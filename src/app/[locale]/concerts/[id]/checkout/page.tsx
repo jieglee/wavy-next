@@ -16,6 +16,7 @@ import type { ConcertDetail, TicketCategory } from "@/types/type";
 import Footer from "@/components/landing/footer";
 import ConcertSeatmap from "@/components/concerts/concert-seatmap";
 import { useSalesText } from "@/hooks/use-sales-text";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 const STEP_KEYS = ["category", "personal", "confirm", "pay"] as const;
 const MAX_TICKETS = 4;
@@ -395,9 +396,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       <main className="mx-auto max-w-[1280px] px-4 pb-40 pt-4 sm:px-6 lg:pb-12">
         {/* Banner + judul */}
         <div className="overflow-hidden rounded-xl border border-border bg-background">
-          <div className="relative h-[120px] w-full overflow-hidden bg-primary/15 sm:h-[180px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {banner && <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />}
+          <div className="relative h-[120px] w-full overflow-hidden sm:h-[180px]">
+            <EventPoster src={banner} title={concert.title} size="lg" loading="eager" className="h-full w-full object-cover object-center" />
           </div>
         </div>
         <h1 className="mt-4 font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">{concert.title}</h1>

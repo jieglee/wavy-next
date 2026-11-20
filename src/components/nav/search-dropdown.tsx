@@ -7,6 +7,7 @@ import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useErrorMessage } from "@/lib/error-message";
 import type { Concert } from "@/types/type";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 const TRENDING = [
   "ENHYPEN JAKARTA 2027",
@@ -27,18 +28,9 @@ interface Popular {
   title: string;
   venue: string;
   poster_url?: string;
-  gradient: string;
 }
 
 // dekorasi thumbnail tanpa poster (bukan data)
-const GRADIENTS = [
-  "linear-gradient(135deg,var(--foreground),#2a2a4a)",
-  "linear-gradient(135deg,#111,#444)",
-  "linear-gradient(135deg,#222,#666)",
-  "linear-gradient(135deg,var(--primary-glow),var(--primary))",
-  "linear-gradient(135deg,var(--primary-glow),#c084fc)",
-];
-
 function extractConcerts(data: unknown): Concert[] {
   if (Array.isArray(data)) return data as Concert[];
   if (data && typeof data === "object") {
@@ -69,7 +61,6 @@ export default function SearchDropdown({
         title: c.title,
         venue: c.venue || "",
         poster_url: c.poster_url || undefined,
-        gradient: GRADIENTS[i % GRADIENTS.length],
       }))
   );
   const popular = popularRes.data ?? [];
@@ -125,11 +116,7 @@ export default function SearchDropdown({
                 className="flex items-center gap-3 px-3 py-3 transition-colors hover:bg-surface sm:px-4"
               >
                 <div className="relative h-12 w-20 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
-                  {ev.poster_url ? (
-                    <img src={ev.poster_url} alt={ev.title} className="h-full w-full object-cover" loading="lazy" />
-                  ) : (
-                    <div className="h-full w-full" style={{ background: ev.gradient }} />
-                  )}
+                  <EventPoster src={ev.poster_url} title={ev.title} size="sm" className="h-full w-full object-cover" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="line-clamp-2 text-xs font-semibold leading-snug text-foreground">{ev.title}</p>

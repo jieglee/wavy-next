@@ -17,13 +17,14 @@ interface PromoSlide {
   pillCTA?: string;
 }
 
+// latar slide tanpa gambar: hanya token (DESIGN §2.5), tidak ada hex
 const slideGradients = [
-  "linear-gradient(135deg, var(--primary) 0%, #211F2B 100%)",
-  "linear-gradient(135deg, #211F2B 0%, #14131C 100%)",
-  "linear-gradient(135deg, var(--primary) 0%, #14131C 100%)",
-  "linear-gradient(135deg, #14131C 0%, #C6395A 100%)",
-  "linear-gradient(135deg, #211F2B 0%, var(--primary) 100%)",
-  "linear-gradient(135deg, var(--primary) 0%, #211F2B 60%, #14131C 100%)",
+  "linear-gradient(135deg, var(--primary) 0%, var(--stage) 100%)",
+  "linear-gradient(135deg, var(--stage) 0%, var(--primary-glow) 100%)",
+  "linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%)",
+  "linear-gradient(135deg, var(--stage) 0%, var(--primary) 100%)",
+  "linear-gradient(135deg, var(--primary-glow) 0%, var(--primary) 100%)",
+  "linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 60%, var(--stage) 100%)",
 ];
 
 const AUTO_PLAY_MS = 5000;

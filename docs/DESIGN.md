@@ -139,19 +139,18 @@ Di inline style, konstanta JS, atribut SVG, dan stop gradient, hex yang nilainya
 | `#FFB800` | Bintang rating (termasuk bekas `amber-400` di review & hotel) | `concert-reviews`, `concert-review-modal`, `hotels/[id]`, `landing/traveler-mode` |
 | `#FF8A65` `#FF3B30` `#FF7A7A` `#7AA8FF` `#7FC4A0` | Aksen bar per negara | `landing/discover-countries` (section "Jelajahi Event di Kotamu") |
 
-Di luar daftar ini dan §2.5, hex di halaman dilarang.
+Di luar daftar ini, hex di halaman dilarang.
 
-### 2.5 Ditunda ke fase 3: gradient placeholder
+### 2.5 Poster tanpa gambar
 
-Gradient untuk poster/hasil pencarian yang tidak punya gambar masih memakai hex dekoratif. Stop yang nilainya sama dengan token sudah memakai `var()`.
+Semua poster/banner event yang kosong (atau gagal dimuat) memakai satu komponen: `EventPoster` / `PosterFallback` di `src/components/concerts/event-poster.tsx`.
 
-| Lokasi | Hex |
-|---|---|
-| `concerts/page`, `concert-for-you`, `featured-events` | `#7DD3E8` `#4A90D9` `#8B0000` `#2B0000` `#3D3D3D` `#0A0A0A` `#0D0C1F` `#211F2B` `#C6395A` `#14131C` |
-| `landing/promo-carousel` | `#211F2B` `#14131C` `#C6395A` |
-| `nav/search-dropdown` | `#2A2A4A` `#111` `#444` `#222` `#666` `#C084FC` |
+- Latar: `bg-linear-to-br from-stage to-primary-glow` (token, tanpa hex).
+- Isi: judul event (`font-display`, `text-primary-foreground`) rata kiri-bawah; ukuran `sm` (thumbnail kecil) hanya memuat inisial.
+- Dipakai di: kartu konser, "Event untuk kamu", featured events, lineup landing, hasil pencarian, featured picks, hero & banner checkout, daftar event Creator Studio, detail order.
+- Slide promo tanpa gambar (`landing/promo-carousel`) memakai gradient dari `stage`, `primary`, `primary-glow`.
 
-Rencana fase 3: ganti dengan beberapa varian dari `stage`, `primary`, `primary-glow`, dan `surface` (`.dark`). Sekalian putuskan apakah `--stage` jadi maroon (lihat catatan §2.1).
+Gradient placeholder hex lama (`#7DD3E8`, `#8B0000`, `#211F2B`, `#C084FC`, dst.) sudah dihapus. Keputusan `--stage` maroon atau tidak (catatan §2.1) masih terbuka.
 
 Komponen vendor Bklit (`src/components/charts/gradients.tsx`) berisi preset gradient hex dari registry. Preset ini tidak dipakai dan sengaja dibiarkan.
 

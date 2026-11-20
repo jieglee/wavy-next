@@ -4,9 +4,10 @@ import { MapPin, Calendar, Layers } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import type { ConcertDetail } from "@/types/type";
 import { categoryLabels } from "@/lib/concert-labels";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
-  // tanpa gambar: latar polos bg-stage, bukan banner situs lain
+  // tanpa gambar: latar polos bg-stage + poster pengganti (EventPoster), bukan banner situs lain
   const banner = concert.poster_url || concert.photo_url || "";
 
   const t = useTranslations("ConcertDetail");
@@ -79,15 +80,18 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
           </div>
           </div>
 
-          {banner && (
           <div className="relative z-10 hidden h-[460px] w-[520px] translate-y-[-160px] items-end justify-end justify-self-end self-end overflow-hidden rounded-t-xl pr-2 lg:flex">
-            <img
+            <EventPoster
               src={banner}
-              alt={concert.title}
+              title={concert.title}
+              size="lg"
+              loading="eager"
               className="block h-full w-full object-contain object-right-bottom"
+              // "block" untuk img menimpa flex milik fallback; kembalikan supaya judul di bawah (bagian
+              // atas kotak ini tergeser ke luar layar oleh translate-y)
+              fallbackClassName="flex"
             />
           </div>
-          )}
         </div>
       </div>
     </section>

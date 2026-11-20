@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 interface ConcertCardProps {
   id: number;
@@ -10,7 +11,6 @@ interface ConcertCardProps {
   organizer: string;
   /** null = backend belum punya harga; jangan diisi angka karangan */
   price: string | null;
-  gradient: string;
   poster_url?: string;
   className?: string;
 }
@@ -21,7 +21,6 @@ export default function ConcertCard({
   location,
   organizer,
   price,
-  gradient,
   poster_url,
   className,
 }: ConcertCardProps) {
@@ -30,19 +29,11 @@ export default function ConcertCard({
     <Link href={`/concerts/${id}`} className={`group block ${className ?? ""}`}>
       <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
         <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)]">
-          {poster_url ? (
-            <img
-              src={poster_url}
-              alt={title}
-              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-              loading="lazy"
-            />
-          ) : (
-            <div
-              className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
-              style={{ background: gradient }}
-            />
-          )}
+          <EventPoster
+            src={poster_url}
+            title={title}
+            className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+          />
           <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
         </div>
       </div>

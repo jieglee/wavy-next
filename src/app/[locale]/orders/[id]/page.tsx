@@ -24,6 +24,7 @@ import { ErrorState, LoadingState } from "@/components/states/async-states";
 import { OrderStatusBadge } from "@/components/orders/order-status-badge";
 import { formatCountdown, useNow } from "@/hooks/use-now";
 import type { Order } from "@/types/type";
+import { EventPoster } from "@/components/concerts/event-poster";
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -144,10 +145,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <h2 className="font-display text-sm font-bold text-foreground">{tOrder("summary")}</h2>
               <div className="rounded-2xl bg-surface p-4 border border-border space-y-2">
                 <div className="flex gap-3 border-b border-border pb-3">
-                  {order.poster_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={order.poster_url} alt="" className="h-16 w-12 shrink-0 rounded-md object-cover" loading="lazy" />
-                  )}
+                  <EventPoster src={order.poster_url} title={order.event_title || tOrder("eventUnavailable")} alt="" size="sm" className="h-16 w-12 shrink-0 rounded-md object-cover" />
                   <div className="min-w-0 space-y-0.5">
                     {order.event_title ? (
                       <Link href={`/concerts/${order.event_id}`} className="block font-display text-sm font-bold text-foreground hover:text-primary">
