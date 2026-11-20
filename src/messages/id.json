@@ -197,11 +197,12 @@
         }
     },
     "Checkout": {
+        "oneCategoryHint": "Satu transaksi untuk satu kategori tiket, maksimal 4 tiket.",
+        "oneCategorySwitched": "Kategori tiket diganti. Satu transaksi hanya untuk satu kategori.",
+        "paymentNotice": "Pembayaran online segera hadir. Saat ini pembayaran diverifikasi oleh penyelenggara.",
         "created": "{count, plural, =1 {Pesanan dibuat, lanjut ke pembayaran} other {# pesanan dibuat, lanjut ke pembayaran}}",
         "orderError": {
             "title": "Pesanan gagal dibuat",
-            "partial": "{count} pesanan sudah terbuat sebelum error terjadi. Cek pesanan itu sebelum memesan lagi.",
-            "viewCreated": "Lihat pesanan yang sudah dibuat",
             "backToConcert": "Kembali ke detail konser",
             "reselect": "Pilih ulang tiket"
         },
@@ -212,6 +213,7 @@
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",
+        "paymentNotice": "Pembayaran online segera hadir. Saat ini pembayaran diverifikasi oleh penyelenggara.",
         "payBefore": "Selesaikan pembayaran sebelum waktu habis",
         "timeLeft": "Sisa waktu pembayaran",
         "expiredTitle": "Pesanan kedaluwarsa",

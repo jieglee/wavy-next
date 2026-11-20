@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
-import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
+import { Ticket, ChevronDown, Clock, AlertTriangle, Check, Info } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
@@ -70,22 +70,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [agreeData, setAgreeData] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState(600);
-  const [payGroup, setPayGroup] = useState("cc");
-  const [payMethod, setPayMethod] = useState("cc-card");
-  const [proteksiOn, setProteksiOn] = useState(true);
   const [orderError, setOrderError] = useState<OrderSubmitError | null>(null);
   const [loadError, setLoadError] = useState<unknown>(null);
   const [loadNonce, setLoadNonce] = useState(0);
   const tCheckout = useTranslations("Checkout");
 
-  const PAY_GROUPS = [
-    { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card", info: "Bayar dengan kartu kredit atau debit berlogo Visa, Mastercard, atau JCB. Transaksi diproses aman dengan otentikasi 3D Secure dari bank penerbit kartumu." }] },
-    { id: "va", label: "Virtual Account", icon: Landmark, children: [{ id: "va-bca", label: "BCA Virtual Account", info: "Transfer ke nomor BCA Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-bri", label: "BRI Virtual Account", info: "Transfer ke nomor BRI Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-mandiri", label: "Mandiri Virtual Account", info: "Transfer ke nomor Mandiri Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }, { id: "va-bni", label: "BNI Virtual Account", info: "Transfer ke nomor BNI Virtual Account yang tertera sebelum batas waktu berakhir. Pembayaran terverifikasi otomatis setelah transfer berhasil." }] },
-    { id: "wallet", label: "Wallet", icon: Wallet, promo: true, children: [{ id: "w-gopay", label: "GoPay", info: "Bayar praktis dengan saldo GoPay. Pastikan saldo GoPay-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-ovo", label: "OVO", info: "Bayar praktis dengan saldo OVO. Pastikan saldo OVO-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-dana", label: "DANA", info: "Bayar praktis dengan saldo DANA. Pastikan saldo DANA-mu cukup sebelum melanjutkan pembayaran." }, { id: "w-shopee", label: "ShopeePay", info: "Bayar praktis dengan saldo ShopeePay. Pastikan saldo ShopeePay-mu cukup sebelum melanjutkan pembayaran." }] },
-    { id: "paylater", label: "PayLater", icon: BadgePercent, promo: true, children: [{ id: "pl-kredivo", label: "Kredivo", info: "Bayar dengan Kredivo dan pilih tenor yang tersedia. Pastikan akun Kredivo-mu aktif dan limit mencukupi." }, { id: "pl-indodana", label: "Indodana", info: "Bayar dengan Indodana dan pilih tenor yang tersedia. Pastikan akun Indodana-mu aktif dan limit mencukupi." }] },
-    { id: "qr", label: "QR", icon: QrCode, children: [{ id: "qr-qris", label: "QRIS", info: "Quick Response Code Indonesian Standard atau biasa disingkat QRIS (dibaca KRIS) adalah penyatuan berbagai macam QR dari berbagai Penyelenggara Jasa Sistem Pembayaran (PJSP) menggunakan QR Code. QRIS dikembangkan oleh industri sistem pembayaran bersama dengan Bank Indonesia agar proses transaksi dengan QR Code dapat lebih mudah, cepat, dan terjaga." }] },
-    { id: "inst", label: "Installment", icon: Layers, children: [{ id: "in-3", label: "Cicilan 3x", info: "Bagi pembayaran menjadi cicilan 3x dengan kartu kredit yang mendukung program cicilan bank." }, { id: "in-6", label: "Cicilan 6x", info: "Bagi pembayaran menjadi cicilan 6x dengan kartu kredit yang mendukung program cicilan bank." }, { id: "in-12", label: "Cicilan 12x", info: "Bagi pembayaran menjadi cicilan 12x dengan kartu kredit yang mendukung program cicilan bank." }] },
-  ];
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -110,13 +99,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         if (raw) {
           const s = JSON.parse(raw) as { qtyMap?: Record<string, number>; step?: number; form?: Record<string, string> };
           const cats = data.ticket_categories ?? [];
+          // satu kategori per checkout: pulihkan kategori valid pertama saja
           const validQty: Record<number, number> = {};
           let total = 0;
           for (const c of cats) {
             const q = Number(s.qtyMap?.[c.id] ?? 0);
             if (q > 0) {
               const v = Math.min(q, 4, c.remaining ?? 4);
-              if (v > 0) { validQty[c.id] = v; total += v; }
+              if (v > 0) { validQty[c.id] = v; total += v; break; }
             }
           }
           if (total > 0 && total <= 4) {
@@ -236,20 +226,6 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleKonfirmasi() {
-    if (!payMethod) {
-      toast.error("Pilih metode pembayaran dulu");
-      return;
-    }
-    handlePesan();
-  }
-
-  const feeTax = Math.round(totalPrice * 0.1);
-  const feeAdmin = Math.round(totalPrice * 0.05);
-  const feeProteksi = proteksiOn ? 10000 * totalTickets : 0;
-  const feePlatform = 600;
-  const grandTotal = totalPrice + feeTax + feeAdmin + feeProteksi + feePlatform;
-  const selectedPay = PAY_GROUPS.flatMap((g) => g.children).find((c) => c.id === payMethod);
 
   function setQty(catId: number, v: number) {
     if (v <= 0) {
@@ -260,15 +236,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       });
       return;
     }
-    const totalOther = Object.entries(qtyMap)
-      .filter(([k]) => Number(k) !== catId)
-      .reduce((s, [, q]) => s + q, 0);
-    if (v + totalOther > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
-      v = Math.max(0, 4 - totalOther);
-      if (v <= 0) return;
-    }
-    setQtyMap((prev) => ({ ...prev, [catId]: Math.min(v, 4) }));
+    // Satu kategori per checkout -> satu order -> total di detail order = total di sini.
+    // Memilih kategori lain mengganti pilihan sebelumnya.
+    const switching = Object.entries(qtyMap).some(([k, q]) => Number(k) !== catId && q > 0);
+    if (switching) toast(tCheckout("oneCategorySwitched"));
+    setQtyMap({ [catId]: Math.min(v, 4) });
   }
 
   function buildOrderPayload(catId: number, qty: number) {
@@ -295,20 +267,17 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       toast.error("Maksimal 4 tiket per pesanan");
       return;
     }
+    // satu kategori per checkout = satu order (backend: total_price = harga x jumlah)
+    const [entry] = entries;
     setSubmitting(true);
     setOrderError(null);
-    // satu order per kategori; kalau gagal di tengah, order yang sudah dibuat tetap dilaporkan
-    const created: number[] = [];
     try {
-      for (const e of entries) {
-        const order = await apiPost<{ id: number }>("/orders", buildOrderPayload(e.cat.id, e.qty));
-        created.push(order.id);
-      }
+      const order = await apiPost<{ id: number }>("/orders", buildOrderPayload(entry.cat.id, entry.qty));
       dropStored();
-      toast.success(tCheckout("created", { count: created.length }));
-      router.push(`/orders/${created[0]}`);
+      toast.success(tCheckout("created", { count: 1 }));
+      router.push(`/orders/${order.id}`);
     } catch (err: unknown) {
-      setOrderError({ error: err, createdOrderIds: created });
+      setOrderError({ error: err });
     } finally {
       setSubmitting(false);
     }
@@ -329,7 +298,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         return next;
       });
     } catch (err: unknown) {
-      setOrderError({ error: err, createdOrderIds: [] });
+      setOrderError({ error: err });
       return;
     }
     setStep(1);
@@ -407,6 +376,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
+            <p className="mt-1 text-xs text-[#6B7280]">{tCheckout("oneCategoryHint")}</p>
 
             {soldOutCount > 0 && (
               <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
@@ -685,42 +655,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             </div>
             <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_290px]">
               <div>
-                <div className="rounded-lg bg-gradient-to-r from-orange-50 to-rose-50 px-4 py-3 ring-1 ring-orange-100">
-                  <p className="text-[13px] font-bold text-[#111827]">Promo Pembayaran</p>
+                <div className="flex items-start gap-2.5 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#6B7280]" />
+                  <p className="text-[13px] leading-relaxed text-[#374151]">{tCheckout("paymentNotice")}</p>
                 </div>
-                <p className="mt-4 text-[13px] font-bold text-[#111827]">Metode Pembayaran</p>
-                <div className="mt-2 space-y-2">
-                  {PAY_GROUPS.map((g) => {
-                    const open = payGroup === g.id;
-                    const Icon = g.icon;
-                    return (
-                      <div key={g.id} className="overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
-                        <button type="button" onClick={() => setPayGroup(open ? "" : g.id)} className="flex w-full items-center gap-2.5 px-4 py-3 text-left">
-                          <Icon className="h-4 w-4 shrink-0 text-[#6B7280]" />
-                          <span className="flex-1 text-[13px] font-bold text-[#111827]">{g.label}</span>
-                          {g.promo && <span className="rounded bg-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold text-white">Promo</span>}
-                          <ChevronDown className={`h-4 w-4 shrink-0 text-[#9CA3AF] transition-transform ${open ? "rotate-180" : ""}`} />
-                        </button>
-                        {open && (
-                          <div className="border-t border-[#F0F0F4] px-4 py-1">
-                            {g.children.map((c) => (
-                              <label key={c.id} className="flex cursor-pointer items-center gap-2.5 py-2 text-[13px] text-[#374151]">
-                                <input type="radio" name="paymethod" checked={payMethod === c.id} onChange={() => { setPayMethod(c.id); setPayGroup(g.id); }} className="h-4 w-4 shrink-0 accent-[#FF5470]" />
-                                {c.label}
-                              </label>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-                {selectedPay && (
-                  <div className="mt-2 overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
-                    <p className="border-b border-[#F0F0F4] px-4 py-3 text-[13px] font-bold text-[#111827]">Informasi Pembayaran</p>
-                    <p className="px-4 py-3 text-justify text-[13px] leading-relaxed text-[#374151]">{selectedPay.info}</p>
-                  </div>
-                )}
               </div>
               <aside className="h-fit rounded-xl border border-[#F0F0F4] bg-[#FCFCFD] p-4 lg:sticky lg:top-[68px]">
                 <p className="text-[13px] font-bold leading-snug text-[#111827]">{concert.title}</p>
@@ -744,12 +682,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   ))}
                 </div>
                 <div className="my-3 h-px bg-[#E5E7EB]" />
-                <button type="button" onClick={() => toast("Belum ada promo tersedia")} className="flex w-full items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2.5 text-left transition hover:border-[#FF5470]">
-                  <BadgePercent className="h-5 w-5 shrink-0 text-[#FF5470]" />
-                  <span className="flex-1 text-xs font-bold text-[#111827]">Makin hemat pakai promo</span>
-                  <span className="text-base text-[#9CA3AF]">&gt;</span>
-                </button>
-                <p className="mt-3 text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
+                <p className="text-[13px] font-bold text-[#111827]">Detail Pembayaran</p>
                 <div className="mt-2 space-y-1.5">
                   {entries.map(({ cat, qty }) => (
                     <div key={cat.id} className="flex items-center justify-between text-xs text-[#374151]">
@@ -757,50 +690,12 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                       <span className="font-semibold">{formatIDR(Number(cat.price) * qty)}</span>
                     </div>
                   ))}
-                  <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Local Tax</span>
-                    <span className="font-semibold">{formatIDR(feeTax)}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-[#374151]">
-                    <span>Biaya Admin</span>
-                    <span className="font-semibold">{formatIDR(feeAdmin)}</span>
-                  </div>
-                  {proteksiOn && (
-                    <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                      <span>Proteksi Pembeli Tiket <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan) (x{totalTickets})</span></span>
-                      <span className="shrink-0 font-semibold">{formatIDR(feeProteksi)}</span>
-                    </div>
-                  )}
-                  <div className="flex items-start justify-between gap-2 text-xs text-[#374151]">
-                    <span>Biaya Platform <span className="block text-[10px] text-[#9CA3AF]">(Tidak dapat dikembalikan)</span></span>
-                    <span className="shrink-0 font-semibold">{formatIDR(feePlatform)}</span>
-                  </div>
                 </div>
                 <div className="my-3 border-t border-dashed border-[#E5E7EB]" />
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] font-bold text-[#111827]">Total Keseluruhan</span>
-                  <span className="text-sm font-extrabold text-[#111827]">{formatIDR(grandTotal)}</span>
+                  <span className="text-sm font-extrabold text-[#111827]">{formatIDR(totalPrice)}</span>
                 </div>
-                {proteksiOn ? (
-                  <div className="mt-3 rounded-lg bg-[#FFF1F3] p-3 ring-1 ring-[#FFD9E0]">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="h-5 w-5 shrink-0 text-[#F97316]" />
-                      <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                      <button type="button" onClick={() => setProteksiOn(false)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Ubah</button>
-                    </div>
-                    <p className="mt-1 text-xs text-[#6B7280]">Rp. 10.000/orang</p>
-                    <p className="text-[11px] font-semibold text-[#FF5470]">Syarat Ketentuan</p>
-                    <p className="mt-2 flex items-center gap-1.5 rounded bg-[#16A34A] px-2 py-1.5 text-[11px] font-bold text-white">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> Yeay, tiket kamu terlindungi!
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mt-3 flex items-center gap-2 rounded-lg border border-dashed border-[#E5E7EB] bg-white p-3">
-                    <ShieldCheck className="h-5 w-5 shrink-0 text-[#9CA3AF]" />
-                    <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
-                    <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
-                  </div>
-                )}
                 {orderError && (
                   <OrderErrorAlert
                     value={orderError}
@@ -820,8 +715,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                   </button>
                   <button
                     type="button"
-                    onClick={handleKonfirmasi}
-                    disabled={!payMethod || submitting}
+                    onClick={handlePesan}
+                    disabled={submitting}
                     className="flex-1 rounded-lg bg-[#FF5470] py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#9CA3AF]"
                   >
                     {submitting ? "Memproses..." : "Lanjut"}

@@ -197,11 +197,12 @@
         }
     },
     "Checkout": {
+        "oneCategoryHint": "One ticket category per transaction, up to 4 tickets.",
+        "oneCategorySwitched": "Ticket category changed. Each transaction covers one category only.",
+        "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
         "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
         "orderError": {
             "title": "Couldn't create your order",
-            "partial": "{count, plural, =1 {1 order was} other {# orders were}} created before the error. Check them before ordering again.",
-            "viewCreated": "View created order",
             "backToConcert": "Back to concert details",
             "reselect": "Choose tickets again"
         },
@@ -212,6 +213,7 @@
     },
     "OrderDetail": {
         "loading": "Loading order details...",
+        "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
         "payBefore": "Complete your payment before time runs out",
         "timeLeft": "Payment time left",
         "expiredTitle": "Order expired",
