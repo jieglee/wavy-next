@@ -1,101 +1,100 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "@/i18n/navigation";
-import { ArrowLeft, Lock, Mail, Shield } from "lucide-react";
-import toast from "react-hot-toast";
-import { Link } from "@/i18n/navigation";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { ArrowLeft, Shield } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
-import { apiPost, setAuthToken } from "@/lib/api";
+import { ApiError, apiPost, setAuthToken } from "@/lib/api";
+import { useErrorMessage } from "@/lib/error-message";
+import { inputCls, labelCls } from "@/components/studio/studio-ui";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
+  return (
+    <Suspense>
+      <AdminLoginForm />
+    </Suspense>
+  );
+}
 
+function AdminLoginForm() {
+  const t = useTranslations("Admin.login");
+  const router = useRouter();
+  const expired = useSearchParams().get("reason") === "expired";
+  const errorMessage = useErrorMessage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     try {
-      const res = await apiPost<{
-        access_token: string;
-        admin: { id: number; name: string; email: string };
-      }>("/admin/login", { email, password });
-
+      const res = await apiPost<{ access_token: string; admin: { id: number; name: string; email: string } }>("/admin/login", {
+        email,
+        password,
+      });
       setAuthToken(res.access_token, "admin", res.admin);
-      toast.success(`Selamat datang, Super Admin ${res.admin.name}!`);
-      router.push("/admin/dashboard");
+      router.replace("/admin/dashboard");
     } catch (err) {
-      toast.error((err instanceof Error && err.message) || "Email atau password admin salah.");
+      setError(err instanceof ApiError && err.status === 401 ? t("invalid") : errorMessage(err));
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="dark flex min-h-screen bg-background text-white">
-      <div className="mx-auto flex w-full max-w-md flex-col justify-center px-6 py-12">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl space-y-6">
-          <div className="text-center space-y-2">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <WavyIcon size={32} />
-              <span className="font-display text-2xl font-bold tracking-tight">Wavy Admin</span>
-            </Link>
-            <div className="mx-auto mt-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
-              <Shield className="h-6 w-6" />
-            </div>
-            <h1 className="font-display text-2xl font-extrabold">Login Super Admin</h1>
-            <p className="text-xs text-white/60">Akses panel kontrol sistem & manajemen platform Wavy.</p>
+    <div className="flex min-h-dvh items-center justify-center bg-surface px-4 py-12">
+      <div className="w-full max-w-sm space-y-6 rounded-xl border border-border bg-background p-6 sm:p-8">
+        <div className="space-y-2 text-center">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <WavyIcon size={28} />
+            <span className="font-display text-xl font-bold tracking-tight text-foreground">Wavy</span>
+          </Link>
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Shield className="h-5 w-5" />
           </div>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+        </div>
 
-          <form onSubmit={handleLogin} className="space-y-4 text-xs">
-            <div>
-              <label className="font-bold text-white/90">Email Admin</label>
-              <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 focus-within:border-primary">
-                <Mail className="h-4 w-4 text-white/50" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@wavy.test"
-                  className="w-full bg-transparent text-white outline-none"
-                />
-              </div>
-            </div>
+        {expired && !error && (
+          <p role="status" className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-xs text-warning">
+            {t("expired")}
+          </p>
+        )}
 
-            <div>
-              <label className="font-bold text-white/90">Kata Sandi</label>
-              <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 focus-within:border-primary">
-                <Lock className="h-4 w-4 text-white/50" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-                  className="w-full bg-transparent text-white outline-none"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-2xl bg-primary py-3.5 text-xs font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-98 disabled:opacity-50"
-            >
-              {loading ? "Memverifikasi..." : "Masuk ke Panel Admin"}
-            </button>
-          </form>
-
-          <div className="text-center pt-2">
-            <Link href="/" className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Kembali ke Beranda
-            </Link>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label htmlFor="admin-email" className={labelCls}>{t("email")}</label>
+            <input id="admin-email" type="email" required autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
           </div>
+          <div>
+            <label htmlFor="admin-password" className={labelCls}>{t("password")}</label>
+            <input id="admin-password" type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputCls} />
+          </div>
+          {error && (
+            <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-primary py-2.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 disabled:opacity-50"
+          >
+            {loading ? t("submitting") : t("submit")}
+          </button>
+        </form>
+
+        <div className="text-center">
+          <Link href="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-3.5 w-3.5" />
+            {t("backHome")}
+          </Link>
         </div>
       </div>
     </div>

@@ -745,5 +745,74 @@
         "emptyTitle": "Belum ada pesanan",
         "emptyDescription": "Pesanan tiket kamu akan muncul di sini.",
         "browse": "Jelajahi konser"
+    },
+    "Admin": {
+        "brand": "Wavy Admin",
+        "role": "Admin",
+        "navLabel": "Menu admin",
+        "logout": "Keluar",
+        "nav": {
+            "dashboard": "Dashboard",
+            "organizers": "Organizer"
+        },
+        "status": {
+            "active": "Aktif",
+            "suspended": "Disuspend",
+            "pending_verification": "Belum verifikasi"
+        },
+        "login": {
+            "title": "Masuk admin",
+            "subtitle": "Panel pengelolaan platform Wavy.",
+            "email": "Email",
+            "password": "Kata sandi",
+            "submit": "Masuk",
+            "submitting": "Memverifikasi...",
+            "invalid": "Email atau kata sandi salah.",
+            "expired": "Sesi admin berakhir. Silakan masuk lagi.",
+            "backHome": "Kembali ke beranda"
+        },
+        "dashboard": {
+            "title": "Dashboard platform",
+            "subtitle": "Ringkasan seluruh organizer, event, dan transaksi.",
+            "manageOrganizers": "Kelola organizer",
+            "revenue": "Pendapatan",
+            "revenueNote": "Order lunas",
+            "orders": "Order",
+            "ticketsNote": "{n} tiket terjual",
+            "events": "Event",
+            "users": "Pengguna",
+            "usersNote": "{organizers} EO · {customers} customer",
+            "statusTitle": "Status organizer",
+            "statusCaption": "Distribusi akun",
+            "statusCenter": "{n} organizer",
+            "organizersEmpty": "Belum ada organizer terdaftar.",
+            "revenueTitle": "Pendapatan per organizer",
+            "revenueCaption": "6 teratas, order lunas",
+            "revenueEmpty": "Belum ada pendapatan",
+            "revenueEmptyText": "Grafik muncul setelah ada order yang lunas."
+        },
+        "organizers": {
+            "title": "Kelola organizer",
+            "subtitle": "Suspend berlaku langsung: organizer tidak bisa membuka Creator Studio.",
+            "empty": "Belum ada organizer terdaftar.",
+            "col": {
+                "organizer": "Organizer",
+                "joined": "Bergabung",
+                "events": "Event",
+                "revenue": "Pendapatan",
+                "status": "Status",
+                "action": "Aksi"
+            },
+            "suspend": "Suspend",
+            "activate": "Aktifkan",
+            "cancel": "Batal",
+            "saving": "Menyimpan...",
+            "suspended": "{name} disuspend",
+            "activated": "{name} diaktifkan",
+            "confirmSuspendTitle": "Suspend {name}?",
+            "confirmSuspendBody": "Organizer langsung kehilangan akses ke Creator Studio. Event dan order yang ada tidak dihapus.",
+            "confirmActivateTitle": "Aktifkan {name}?",
+            "confirmActivateBody": "Organizer bisa masuk dan mengelola event lagi."
+        }
     }
 }
