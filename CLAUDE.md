@@ -18,6 +18,7 @@
 - Commit kecil dan rutin dengan pesan jelas.
 - **Tanpa atribusi AI apa pun** di commit & PR: tidak ada `Co-Authored-By`, tidak ada "Generated with Claude Code", tidak ada link sesi.
 - Jangan merge ke `main` dan jangan push kecuali diminta. Review & merge dilakukan Kalsah lewat PR.
+- Jangan mengubah, me-reset, atau memindahkan branch `main` (termasuk `git branch -f`, reset, rebase `main`) tanpa diminta. Untuk update, cukup `git fetch` dan buat branch dari `origin/main`.
 - Satu branch = satu topik. Jangan menyelipkan perubahan di luar topik.
 
 ## Aturan kode
