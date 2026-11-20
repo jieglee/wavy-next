@@ -138,9 +138,9 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
   const dateObj = new Date(concert.date);
   const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000);
-  const hourFmt = { hour: "2-digit", minute: "2-digit", hour12: false } as const;
+  const hourFmt = { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Jakarta" } as const;
   const schedule = tDetail("schedule", {
-    date: format.dateTime(dateObj, { day: "numeric", month: "short", year: "numeric" }),
+    date: format.dateTime(dateObj, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }),
     start: format.dateTime(dateObj, hourFmt),
     end: format.dateTime(endDate, hourFmt),
   });

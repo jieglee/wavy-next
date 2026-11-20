@@ -13,9 +13,9 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
   const format = useFormatter();
   const dateObj = new Date(concert.date);
   const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000);
-  const time = { hour: "2-digit", minute: "2-digit", hour12: false } as const;
+  const time = { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Jakarta" } as const;
   const schedule = t("schedule", {
-    date: format.dateTime(dateObj, { day: "numeric", month: "short", year: "numeric" }),
+    date: format.dateTime(dateObj, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }),
     start: format.dateTime(dateObj, time),
     end: format.dateTime(endDate, time),
   });
