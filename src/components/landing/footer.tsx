@@ -81,21 +81,21 @@ const smCols: Record<number, string> = { 1: "sm:grid-cols-1", 2: "sm:grid-cols-2
 export default function Footer() {
   const t = useTranslations("Footer");
   const menuLinks = withTarget([
-    { label: t("aboutUs"), href: null },
+    { label: t("aboutUs"), href: "/about" },
     { label: t("becomeOrganizer"), href: "/organizer/register" },
     { label: t("costSimulation"), href: null },
     { label: t("help"), href: null },
   ]);
 
   const panduanLinks = withTarget([
-    { label: t("howToBuy"), href: null },
+    { label: t("howToBuy"), href: "/how-to-buy" },
     { label: t("ticketProtection"), href: null },
-    { label: t("organizerGuide"), href: null },
+    { label: t("organizerGuide"), href: "/organizer-guide" },
   ]);
 
   const legalLinks = withTarget([
-    { label: t("privacy"), href: null },
-    { label: t("terms"), href: null },
+    { label: t("privacy"), href: "/privacy" },
+    { label: t("terms"), href: "/terms" },
   ]);
 
   const visibleSocials = SHOW_SOCIAL_LINKS ? socials.filter((s) => s.href !== null) : [];
