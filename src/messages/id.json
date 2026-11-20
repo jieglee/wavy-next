@@ -42,7 +42,9 @@
         "next": "Berikutnya",
         "byOrganizer": "Oleh {organizer}",
         "startingFrom": "Mulai dari",
-        "priceUnavailable": "Harga belum tersedia"
+        "priceUnavailable": "Harga belum tersedia",
+        "loading": "Memuat event...",
+        "empty": "Belum ada event yang tersedia."
     },
     "AppNav": {
         "browse": "Jelajah Konser",
@@ -213,5 +215,15 @@
     },
     "Tickets": {
         "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy."
+    },
+    "FeaturedPicks": {
+        "loading": "Memuat event...",
+        "empty": "Belum ada event yang tersedia.",
+        "emptyThisWeek": "Tidak ada event dalam 7 hari ke depan."
+    },
+    "Search": {
+        "loading": "Memuat event populer...",
+        "retry": "Coba lagi",
+        "noEvents": "Belum ada event."
     }
 }

@@ -4,6 +4,8 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import ConcertCard from "@/components/concerts/concert-card";
 import { apiGet } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { EmptyState, ErrorState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
 
 interface DisplayEvent {
@@ -11,33 +13,52 @@ interface DisplayEvent {
   title: string;
   organizer: string;
   location: string;
-  price: string;
+  price: string | null;
   gradient: string;
   poster_url?: string;
 }
 
-const fallbackEvents: DisplayEvent[] = [
-  { id: 1, title: "The Legends Infinity", organizer: "TRUST Orchestra", location: "Jakarta Selatan", price: "300.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
-  { id: 2, title: "Tiffany Young: Edge of Calm", organizer: "Flabbergast Productions", location: "Jakarta Pusat", price: "2.000.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
-  { id: 3, title: "YE Jakarta 2026", organizer: "Raw Vision Collective", location: "Jakarta Pusat", price: "1.875.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
-  { id: 4, title: "Whisnu Santika by Bengkel", organizer: "Bengkel Space", location: "Jakarta Selatan", price: "150.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
-  { id: 5, title: "NIKI: Nicole Live", organizer: "Ismaya Live", location: "Tangerang", price: "850.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
-  { id: 6, title: "Jazz Under The Stars", organizer: "Java Festival Production", location: "Bandung", price: "425.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
-  { id: 7, title: "Sunset Symphony Orchestra", organizer: "Aditya Music Collective", location: "Jakarta Barat", price: "600.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
-  { id: 8, title: "Indie Pop Extravaganza", organizer: "LocalFest Indonesia", location: "Yogyakarta", price: "250.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
-  { id: 9, title: "Metal Mayhem 2026", organizer: "HellStage Production", location: "Bandung", price: "500.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
-  { id: 10, title: "K-Pop Dreamscape Live", organizer: "StarWave Entertainment", location: "Jakarta Pusat", price: "1.200.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
-  { id: 11, title: "Acoustic Night Serenade", organizer: "SoulSpace Collective", location: "Bali", price: "300.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
-  { id: 12, title: "Electronic Pulse Festival", organizer: "Neon Collective", location: "Surabaya", price: "750.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
-  { id: 13, title: "Classical Harmony Gala", organizer: "Jakarta Philharmonic", location: "Jakarta Selatan", price: "400.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
-  { id: 14, title: "Rock Revival Hits", organizer: "Nostalgia Records", location: "Semarang", price: "350.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
-  { id: 15, title: "Dangdut Karnaval Akbar", organizer: "Pantura Production", location: "Bekasi", price: "100.000", gradient: "linear-gradient(135deg,#3D3D3D,#0A0A0A)" },
-  { id: 16, title: "Hip Hop Block Party", organizer: "Urban Beats ID", location: "Jakarta Utara", price: "275.000", gradient: "linear-gradient(135deg,#1B1A3A,#0D0C1F)" },
-  { id: 17, title: "Folk & Roots Gathering", organizer: "Nusantara Folk", location: "Ubud", price: "200.000", gradient: "linear-gradient(135deg,#FF5470,#211F2B)" },
-  { id: 18, title: "Starlight Orchestra Gala", organizer: "Grand Symphony", location: "Jakarta Pusat", price: "900.000", gradient: "linear-gradient(135deg,#C6395A,#14131C)" },
-  { id: 19, title: "Summer Groove Fest", organizer: "Beachside EO", location: "Bali", price: "550.000", gradient: "linear-gradient(135deg,#7DD3E8,#4A90D9)" },
-  { id: 20, title: "Midnight Jazz Sessions", organizer: "Blue Note Jakarta", location: "Jakarta Selatan", price: "475.000", gradient: "linear-gradient(135deg,#8B0000,#2B0000)" },
+// dekorasi kartu tanpa poster (bukan data)
+const GRADIENTS = [
+  "linear-gradient(135deg,#7DD3E8,#4A90D9)",
+  "linear-gradient(135deg,#8B0000,#2B0000)",
+  "linear-gradient(135deg,#3D3D3D,#0A0A0A)",
+  "linear-gradient(135deg,#1B1A3A,#0D0C1F)",
+  "linear-gradient(135deg,#FF5470,#211F2B)",
+  "linear-gradient(135deg,#C6395A,#14131C)",
 ];
+
+const extractConcerts = (data: unknown): Concert[] => {
+  if (Array.isArray(data)) return data as Concert[];
+  if (data && typeof data === "object") {
+    const d = data as Record<string, unknown>;
+    if (Array.isArray(d.concerts)) return d.concerts as Concert[];
+    if (Array.isArray(d.data)) return d.data as Concert[];
+    if (Array.isArray(d.featured_events)) return d.featured_events as Concert[];
+    if (Array.isArray(d.events)) return d.events as Concert[];
+    if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) {
+      return (d.concerts as Record<string, unknown>).data as Concert[];
+    }
+  }
+  return [];
+};
+
+const toDisplay = (c: Concert, idx: number): DisplayEvent => ({
+  id: c.id,
+  title: c.title,
+  organizer: c.organizer_name || c.artist_name || "",
+  location: c.venue || "",
+  price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null,
+  gradient: GRADIENTS[idx % GRADIENTS.length],
+  poster_url: c.poster_url,
+});
+
+// /concerts dulu; kalau kosong pakai featured di /homepage. Tanpa data karangan.
+async function loadFeatured(): Promise<DisplayEvent[]> {
+  const concerts = extractConcerts(await apiGet<unknown>("/concerts"));
+  const list = concerts.length > 0 ? concerts : extractConcerts(await apiGet<unknown>("/homepage"));
+  return list.slice(0, 20).map(toDisplay);
+}
 
 function ArrowLeftIcon({ className }: { className?: string }) {
   return (
@@ -66,86 +87,8 @@ export default function FeaturedEvents() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [events, setEvents] = useState<DisplayEvent[]>(fallbackEvents);
-
-  useEffect(() => {
-    async function fetchFeatured() {
-      const toDisplay = (c: Concert, idx: number): DisplayEvent => ({
-        id: c.id,
-        title: c.title,
-        organizer: c.organizer_name || "Event Organizer",
-        location: c.venue || "Indonesia",
-        price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : "150.000",
-        gradient: fallbackEvents[idx % fallbackEvents.length].gradient,
-        poster_url: c.poster_url,
-      });
-
-      const padTo20 = (mapped: DisplayEvent[]) => {
-        if (mapped.length >= 20) return mapped.slice(0, 20);
-        const existingIds = new Set(mapped.map((m) => m.id));
-        const extras = fallbackEvents
-          .filter((f) => !existingIds.has(f.id))
-          .slice(0, 20 - mapped.length);
-        let padded = [...mapped, ...extras];
-        if (padded.length < 20) {
-          const remaining = 20 - padded.length;
-          const more = fallbackEvents.slice(0, remaining).map((f, i) => ({
-            ...f,
-            id: 10000 + i,
-          }));
-          padded = [...padded, ...more];
-        }
-        return padded.slice(0, 20);
-      };
-
-      const extractConcerts = (data: unknown): Concert[] => {
-        if (Array.isArray(data)) return data as Concert[];
-        if (data && typeof data === "object") {
-          const d = data as Record<string, unknown>;
-          if (Array.isArray(d.concerts)) return d.concerts as Concert[];
-          if (Array.isArray(d.data)) return d.data as Concert[];
-          if (Array.isArray(d.featured_events)) return d.featured_events as Concert[];
-          if (Array.isArray(d.events)) return d.events as Concert[];
-          // some APIs wrap in { concerts: { data: [] } }
-          if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) {
-            return (d.concerts as Record<string, unknown>).data as Concert[];
-          }
-        }
-        return [];
-      };
-
-      try {
-        // Primary: same fetch as Jelajahi Semua Konser (/concerts)
-        const data = await apiGet<unknown>("/concerts");
-        const concerts = extractConcerts(data);
-        if (concerts.length > 0) {
-          const mapped = concerts.map(toDisplay);
-          setEvents(padTo20(mapped));
-          return;
-        }
-        // Fallback: homepage featured_events if /concerts empty
-        const home = await apiGet<unknown>("/homepage");
-        const homeConcerts = extractConcerts(home);
-        if (homeConcerts.length > 0) {
-          const mapped = homeConcerts.map(toDisplay);
-          setEvents(padTo20(mapped));
-        }
-      } catch {
-        // Last fallback: try homepage if /concerts failed
-        try {
-          const home = await apiGet<unknown>("/homepage");
-          const homeConcerts = extractConcerts(home);
-          if (homeConcerts.length > 0) {
-            const mapped = homeConcerts.map(toDisplay);
-            setEvents(padTo20(mapped));
-          }
-        } catch {
-          // keep 20 fallbackEvents
-        }
-      }
-    }
-    fetchFeatured();
-  }, []);
+  const featured = useApiResource("featured-events", loadFeatured);
+  const events = featured.data ?? [];
 
   const updateArrows = useCallback(() => {
     const el = scrollerRef.current;
@@ -164,7 +107,7 @@ export default function FeaturedEvents() {
       el.removeEventListener("scroll", updateArrows);
       window.removeEventListener("resize", updateArrows);
     };
-  }, [updateArrows]);
+  }, [updateArrows, events.length]);
 
   const scrollByCard = (dir: number) => {
     const el = scrollerRef.current;
@@ -199,6 +142,21 @@ export default function FeaturedEvents() {
           </h2>
         </div>
 
+        {featured.loading ? (
+          <div className="flex gap-3 overflow-hidden pb-2 pt-2 sm:gap-4" role="status" aria-label={t("loading")}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="w-[260px] shrink-0 animate-pulse sm:w-[280px] lg:w-[270px]">
+                <div className="aspect-16/7 w-full rounded-xl bg-wavy-surface" />
+                <div className="mt-3 h-3 w-1/2 rounded bg-wavy-surface" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-wavy-surface" />
+              </div>
+            ))}
+          </div>
+        ) : featured.error ? (
+          <ErrorState error={featured.error} onRetry={featured.reload} />
+        ) : events.length === 0 ? (
+          <EmptyState title={t("empty")} />
+        ) : (
         <div className="relative">
           {canScrollLeft && (
             <button
@@ -236,6 +194,7 @@ export default function FeaturedEvents() {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );

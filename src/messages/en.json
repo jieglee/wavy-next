@@ -42,7 +42,9 @@
         "next": "Next",
         "byOrganizer": "By {organizer}",
         "startingFrom": "Starting from",
-        "priceUnavailable": "Price not available yet"
+        "priceUnavailable": "Price not available yet",
+        "loading": "Loading events...",
+        "empty": "No events available yet."
     },
     "AppNav": {
         "browse": "Browse Concerts",
@@ -213,5 +215,15 @@
     },
     "Tickets": {
         "transferRecipientNotFound": "The recipient's email isn't registered on Wavy."
+    },
+    "FeaturedPicks": {
+        "loading": "Loading events...",
+        "empty": "No events available yet.",
+        "emptyThisWeek": "No events in the next 7 days."
+    },
+    "Search": {
+        "loading": "Loading popular events...",
+        "retry": "Try again",
+        "noEvents": "No events yet."
     }
 }

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { TrendingUp } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { apiGet } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useErrorMessage } from "@/lib/error-message";
 import type { Concert } from "@/types/type";
 
 const TRENDING = [
@@ -28,12 +30,13 @@ interface Popular {
   gradient: string;
 }
 
-const FALLBACK_POPULAR: Popular[] = [
-  { id: 101, title: "2026 GONG YOO FAN MEETING <THE LONG TAKE> in Jakarta", venue: "Jakarta Pusat", gradient: "linear-gradient(135deg,#1B1A3A,#2a2a4a)" },
-  { id: 102, title: "T.O.P PRE-STUDIO 2026 in Jakarta", venue: "Jakarta Pusat", gradient: "linear-gradient(135deg,#111,#444)" },
-  { id: 103, title: "BIGBANG 2026-2027 WORLD TOUR < XX : COSMOS > IN JAKARTA", venue: "Jakarta Utara", gradient: "linear-gradient(135deg,#222,#666)" },
-  { id: 104, title: "2026 ByeonWooSeok Asia Fanmeeting Tour <The Secret Library> in Jakarta", venue: "Jakarta Utara", gradient: "linear-gradient(135deg,#1e3a8a,#3b82f6)" },
-  { id: 105, title: "Snada Indonesia 2026", venue: "Jakarta Pusat", gradient: "linear-gradient(135deg,#7c3aed,#c084fc)" },
+// dekorasi thumbnail tanpa poster (bukan data)
+const GRADIENTS = [
+  "linear-gradient(135deg,#1B1A3A,#2a2a4a)",
+  "linear-gradient(135deg,#111,#444)",
+  "linear-gradient(135deg,#222,#666)",
+  "linear-gradient(135deg,#1e3a8a,#3b82f6)",
+  "linear-gradient(135deg,#7c3aed,#c084fc)",
 ];
 
 function extractConcerts(data: unknown): Concert[] {
@@ -56,35 +59,23 @@ export default function SearchDropdown({
   query: string;
   onSelect: () => void;
 }) {
-  const [popular, setPopular] = useState<Popular[]>(FALLBACK_POPULAR);
-
-  useEffect(() => {
-    let alive = true;
-    async function load() {
-      try {
-        const data = await apiGet<unknown>("/concerts");
-        const list = extractConcerts(data);
-        if (!alive || list.length === 0) return;
-        const mapped: Popular[] = list.slice(0, 5).map((c, i) => ({
-          id: c.id,
-          title: c.title,
-          venue: c.venue || "Indonesia",
-          poster_url: c.poster_url || undefined,
-          gradient: FALLBACK_POPULAR[i % FALLBACK_POPULAR.length].gradient,
-        }));
-        setPopular(mapped);
-      } catch {
-        // keep fallback
-      }
-    }
-    load();
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const t = useTranslations("Search");
+  const errorMessage = useErrorMessage();
+  const popularRes = useApiResource("search-popular", async () =>
+    extractConcerts(await apiGet<unknown>("/concerts"))
+      .slice(0, 5)
+      .map<Popular>((c, i) => ({
+        id: c.id,
+        title: c.title,
+        venue: c.venue || "",
+        poster_url: c.poster_url || undefined,
+        gradient: GRADIENTS[i % GRADIENTS.length],
+      }))
+  );
+  const popular = popularRes.data ?? [];
 
   const q = query.trim().toLowerCase();
-  const filteredTrending = q ? TRENDING.filter((t) => t.toLowerCase().includes(q)) : TRENDING;
+  const filteredTrending = q ? TRENDING.filter((term) => term.toLowerCase().includes(q)) : TRENDING;
   const filteredPopular = q
     ? popular.filter((p) => p.title.toLowerCase().includes(q) || p.venue.toLowerCase().includes(q))
     : popular;
@@ -97,15 +88,15 @@ export default function SearchDropdown({
           {filteredTrending.length === 0 ? (
             <p className="text-xs text-[#8B889C]">Tidak ada hasil untuk &quot;{query}&quot;</p>
           ) : (
-            filteredTrending.map((t) => (
+            filteredTrending.map((term) => (
               <Link
-                key={t}
-                href={`/concerts?q=${encodeURIComponent(t)}`}
+                key={term}
+                href={`/concerts?q=${encodeURIComponent(term)}`}
                 onClick={onSelect}
                 className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1.5 text-xs font-medium text-[#1B1A3A] transition-colors hover:bg-[#DBEAFE]"
               >
                 <TrendingUp className="h-3.5 w-3.5 shrink-0 text-[#1E40AF]" />
-                {t}
+                {term}
               </Link>
             ))
           )}
@@ -113,6 +104,18 @@ export default function SearchDropdown({
 
         <div className="rounded-xl border border-[#EDEBF2] bg-white">
           <p className="px-3 pt-3 text-[13px] font-bold text-[#1B1A3A] sm:px-4">Event Populer</p>
+          {popularRes.loading && <p className="px-3 py-3 text-xs text-wavy-text-secondary sm:px-4">{t("loading")}</p>}
+          {popularRes.error !== undefined && (
+            <div className="flex flex-wrap items-center gap-2 px-3 py-3 text-xs text-wavy-text-secondary sm:px-4" role="alert">
+              <span>{errorMessage(popularRes.error)}</span>
+              <button type="button" onClick={popularRes.reload} className="font-bold text-wavy-accent">
+                {t("retry")}
+              </button>
+            </div>
+          )}
+          {popularRes.data && popular.length === 0 && (
+            <p className="px-3 py-3 text-xs text-wavy-text-secondary sm:px-4">{t("noEvents")}</p>
+          )}
           <div className="mt-2 divide-y divide-[#F0EFF7]">
             {(filteredPopular.length ? filteredPopular : popular).slice(0, 5).map((ev) => (
               <Link
