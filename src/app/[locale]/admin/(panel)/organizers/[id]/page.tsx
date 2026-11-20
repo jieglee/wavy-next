@@ -32,10 +32,14 @@ export default function AdminOrganizerDetailPage({ params }: { params: Promise<{
     </Link>
   );
 
+  // link kembali tetap tampil saat loading / error (mis. 404)
   return (
-    <AsyncContent resource={detail} loadingRows={5} isEmpty={() => false}>
-      {(d) => <Detail data={d} back={back} />}
-    </AsyncContent>
+    <>
+      {!detail.data && <div>{back}</div>}
+      <AsyncContent resource={detail} loadingRows={5} isEmpty={() => false}>
+        {(d) => <Detail data={d} back={back} />}
+      </AsyncContent>
+    </>
   );
 }
 
