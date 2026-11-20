@@ -32,10 +32,13 @@ export function OrderHistoryList({ orders }: { orders: Order[] }) {
             <div className="col-start-2 row-start-1 justify-self-end md:hidden">
               <OrderStatusBadge status={o.status} />
             </div>
-            <p className="min-w-0 truncate text-sm text-muted-foreground">
-              {o.event_title ?? t("event", { id: o.event_id })}
-              <span className="font-mono"> · {t("quantity", { count: o.quantity })}</span>
-            </p>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground">{o.event_title || t("eventUnavailable")}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {o.category_name && <>{o.category_name} · </>}
+                <span className="font-mono">{t("quantity", { count: o.quantity })}</span>
+              </p>
+            </div>
             <div className="hidden justify-self-end md:block">
               <OrderStatusBadge status={o.status} />
             </div>

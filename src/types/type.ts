@@ -69,8 +69,12 @@ export interface Order {
   status: OrderStatus;
   expires_at: string | null;
   created_at: string;
-  event_title?: string;
-  category_name?: string;
+  // join dari backend (LEFT JOIN: null jika event/kategori sudah dihapus)
+  event_title?: string | null;
+  category_name?: string | null;
+  poster_url?: string | null;
+  event_date?: string | null;
+  venue?: string | null;
   full_name?: string;
   email?: string;
   phone?: string;

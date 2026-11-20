@@ -16,7 +16,7 @@ import { apiGet, getAuthToken } from "@/lib/api";
 import { MIDTRANS_ENABLED } from "@/lib/midtrans";
 import { PayNowButton } from "@/components/orders/pay-now-button";
 import { useErrorMessage } from "@/lib/error-message";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import { formatIDR } from "@/lib/price";
 import { useApiResource } from "@/hooks/use-api-resource";
@@ -29,6 +29,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const { id } = use(params);
   const router = useRouter();
   const tOrder = useTranslations("OrderDetail");
+  const format = useFormatter();
 
   const orderRes = useApiResource(`order-${id}`, () => apiGet<Order>(`/orders/${id}`));
   const order = orderRes.data ?? null;
@@ -142,6 +143,35 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <div className="mt-6 space-y-3">
               <h2 className="font-display text-sm font-bold text-foreground">{tOrder("summary")}</h2>
               <div className="rounded-2xl bg-surface p-4 border border-border space-y-2">
+                <div className="flex gap-3 border-b border-border pb-3">
+                  {order.poster_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={order.poster_url} alt="" className="h-16 w-12 shrink-0 rounded-md object-cover" loading="lazy" />
+                  )}
+                  <div className="min-w-0 space-y-0.5">
+                    {order.event_title ? (
+                      <Link href={`/concerts/${order.event_id}`} className="block font-display text-sm font-bold text-foreground hover:text-primary">
+                        {order.event_title}
+                      </Link>
+                    ) : (
+                      <p className="text-sm font-semibold text-muted-foreground">{tOrder("eventUnavailable")}</p>
+                    )}
+                    {(order.event_date || order.venue) && (
+                      <p className="text-xs text-muted-foreground">
+                        {order.event_date &&
+                          format.dateTime(new Date(order.event_date), { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" })}
+                        {order.event_date && order.venue && " · "}
+                        {order.venue}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {order.category_name && (
+                  <div className="flex justify-between gap-4 text-sm">
+                    <span className="font-bold text-foreground">{tOrder("category")}</span>
+                    <span className="min-w-0 truncate text-right text-foreground">{order.category_name}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="font-bold text-foreground">{tOrder("quantity")}</span>
                   <span className="font-mono font-bold text-foreground">{tOrder("tickets", { count: order.quantity })}</span>
