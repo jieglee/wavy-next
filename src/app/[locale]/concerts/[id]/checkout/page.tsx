@@ -4,6 +4,8 @@ import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
 import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
+import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
 import { formatIDR } from "@/lib/price";
@@ -108,6 +110,8 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [payGroup, setPayGroup] = useState("cc");
   const [payMethod, setPayMethod] = useState("cc-card");
   const [proteksiOn, setProteksiOn] = useState(true);
+  const [orderError, setOrderError] = useState<OrderSubmitError | null>(null);
+  const tCheckout = useTranslations("Checkout");
 
   const PAY_GROUPS = [
     { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card", info: "Bayar dengan kartu kredit atau debit berlogo Visa, Mastercard, atau JCB. Transaksi diproses aman dengan otentikasi 3D Secure dari bank penerbit kartumu." }] },
@@ -319,49 +323,44 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       return;
     }
     setSubmitting(true);
+    setOrderError(null);
+    // satu order per kategori; kalau gagal di tengah, order yang sudah dibuat tetap dilaporkan
+    const created: number[] = [];
     try {
-      if (entries.length === 1) {
-        const first = entries[0];
-        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", buildOrderPayload(first.cat.id, first.qty));
-        const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
-        if (orderId) {
-          toast.success("Pesanan dibuat, lanjut ke pembayaran");
-          dropStored();
-          router.push(`/orders/${orderId}`);
-          return;
-        }
-        dropStored();
-        router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
-        return;
-      }
-      const orderIds: number[] = [];
       for (const e of entries) {
-        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", buildOrderPayload(e.cat.id, e.qty));
-        const oid = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
-        if (oid) orderIds.push(Number(oid));
-      }
-      if (orderIds.length) {
-        toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
-        dropStored();
-        router.push(`/orders/${orderIds[0]}`);
-        return;
+        const order = await apiPost<{ id: number }>("/orders", buildOrderPayload(e.cat.id, e.qty));
+        created.push(order.id);
       }
       dropStored();
-      router.push(`/concerts/${id}/queue?catId=${entries[0].cat.id}&qty=${entries[0].qty}`);
+      toast.success(tCheckout("created", { count: created.length }));
+      router.push(`/orders/${created[0]}`);
     } catch (err: unknown) {
-      const msg = (err as Error).message ?? "";
-      if (msg.toLowerCase().includes("stok") || msg.toLowerCase().includes("not enough") || msg.toLowerCase().includes("sold out")) {
-        toast.error("Stok tiket tidak cukup");
-      } else {
-        // eslint-disable-next-line react-hooks/purity
-        const fallbackId = Math.floor(1000 + Math.random() * 9000);
-        toast.success("Masuk ke pembayaran");
-        dropStored();
-        router.push(`/orders/${fallbackId}`);
-      }
+      setOrderError({ error: err, createdOrderIds: created });
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // QUOTA_EXCEEDED / ORDER_EXPIRED: ambil sisa kuota terbaru lalu kembali ke pilihan tiket
+  async function handleReselect() {
+    setOrderError(null);
+    try {
+      const fresh = await apiGet<ConcertDetail>(`/concerts/${id}`);
+      setConcert(fresh);
+      setQtyMap((prev) => {
+        const next: Record<number, number> = {};
+        for (const c of fresh.ticket_categories ?? []) {
+          const q = Math.min(prev[c.id] ?? 0, c.remaining ?? 0);
+          if (q > 0) next[c.id] = q;
+        }
+        return next;
+      });
+    } catch (err: unknown) {
+      setOrderError({ error: err, createdOrderIds: [] });
+      return;
+    }
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (loading || !concert) {
@@ -825,6 +824,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
                     <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
                   </div>
+                )}
+                {orderError && (
+                  <OrderErrorAlert
+                    value={orderError}
+                    concertId={id}
+                    onRetry={handlePesan}
+                    onReselect={handleReselect}
+                  />
                 )}
                 <div className="mt-3 flex gap-2">
                   <button
