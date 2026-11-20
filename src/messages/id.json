@@ -376,6 +376,43 @@
             "copy": "Salin kode tiket",
             "copied": "Kode tiket disalin",
             "copyFailed": "Gagal menyalin kode tiket"
+        },
+        "eyebrow": "Dompet tiket",
+        "title": "Tiket saya",
+        "subtitle": "Semua e-tiket resmi kamu, lengkap dengan QR untuk masuk gate.",
+        "emptyTitle": "Belum ada tiket",
+        "emptyDescription": "Tiket muncul di sini setelah pesanan kamu lunas.",
+        "browse": "Jelajahi konser",
+        "status": {
+            "active": "Aktif",
+            "used": "Sudah dipakai"
+        },
+        "code": "Tiket #{id}",
+        "showQr": "Lihat QR",
+        "back": "Kembali ke tiket saya",
+        "gatePass": "Akses gate",
+        "gateHint": "Tunjukkan QR ini ke petugas di gate saat check-in. Satu QR hanya bisa dipindai sekali.",
+        "detail": {
+            "date": "Tanggal",
+            "time": "Jam",
+            "venue": "Lokasi",
+            "ticket": "Kode tiket",
+            "order": "Pesanan"
+        },
+        "transfer": {
+            "action": "Transfer tiket",
+            "title": "Transfer kepemilikan tiket",
+            "description": "Pindahkan tiket {title} ke akun customer Wavy lain.",
+            "email": "Email penerima",
+            "emailPlaceholder": "contoh: kawan@gmail.com",
+            "warningTitle": "Perhatian",
+            "warningBody": "Setelah ditransfer, tiket langsung pindah ke akun penerima dan QR lama kamu tidak berlaku lagi.",
+            "cancel": "Batal",
+            "submit": "Kirim tiket",
+            "sending": "Mengirim...",
+            "success": "Tiket berhasil ditransfer ke {email}",
+            "recipientNotFound": "Email penerima belum terdaftar di Wavy.",
+            "close": "Tutup"
         }
     },
     "FeaturedPicks": {

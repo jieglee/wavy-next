@@ -376,6 +376,43 @@
             "copy": "Copy ticket code",
             "copied": "Ticket code copied",
             "copyFailed": "Couldn't copy the ticket code"
+        },
+        "eyebrow": "Ticket wallet",
+        "title": "My tickets",
+        "subtitle": "All your official e-tickets, each with a QR code for gate entry.",
+        "emptyTitle": "No tickets yet",
+        "emptyDescription": "Tickets appear here once your order is paid.",
+        "browse": "Browse concerts",
+        "status": {
+            "active": "Active",
+            "used": "Used"
+        },
+        "code": "Ticket #{id}",
+        "showQr": "Show QR",
+        "back": "Back to my tickets",
+        "gatePass": "Gate access",
+        "gateHint": "Show this QR to the gate staff at check-in. Each QR can only be scanned once.",
+        "detail": {
+            "date": "Date",
+            "time": "Time",
+            "venue": "Venue",
+            "ticket": "Ticket code",
+            "order": "Order"
+        },
+        "transfer": {
+            "action": "Transfer ticket",
+            "title": "Transfer ticket ownership",
+            "description": "Move the {title} ticket to another Wavy customer account.",
+            "email": "Recipient email",
+            "emailPlaceholder": "e.g. friend@gmail.com",
+            "warningTitle": "Heads up",
+            "warningBody": "Once transferred, the ticket moves to the recipient's account right away and your old QR stops working.",
+            "cancel": "Cancel",
+            "submit": "Send ticket",
+            "sending": "Sending...",
+            "success": "Ticket transferred to {email}",
+            "recipientNotFound": "The recipient email is not registered on Wavy.",
+            "close": "Close"
         }
     },
     "FeaturedPicks": {
