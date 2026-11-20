@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { MapPin, Calendar, Layers } from "lucide-react";
 import toast from "react-hot-toast";
 import Navbar from "@/components/landing/navbar";
@@ -17,31 +18,19 @@ import ConcertStickyBar from "@/components/concerts/concert-sticky-bar";
 import ConcertReviewModal from "@/components/concerts/concert-review-modal";
 import ConcertTicketSidebar from "@/components/concerts/concert-ticket-sidebar";
 import { apiGet, apiPost, getAuthToken } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { ErrorState, LoadingState } from "@/components/states/async-states";
 import { getMinPrice, formatIDR } from "@/lib/price";
 import type { ConcertDetail } from "@/types/type";
 import ConcertTabs from "@/components/concerts/concert-tabs";
 
-async function loadConcert(id: string): Promise<ConcertDetail> {
-  try {
-    const data = await apiGet<ConcertDetail>(`/concerts/${id}`);
-    return data;
-  } catch {
-    return {
-      id: Number(id), organizer_id: 1, artist_id: 1, title: "Konser", category: "Konser",
-      venue: "-", date: new Date().toISOString(), poster_url: "", status: "published",
-      artist_name: "-", organizer_name: "-", min_price: 0, remaining: 0,
-      description: "Informasi konser sedang tidak tersedia.", genre: "-", photo_url: "",
-      bio: "-", countdown_seconds: 0, ticket_categories: [], reviews: [],
-      avg_rating: 0, review_count: 0,
-    };
-  }
-}
 
 export default function ConcertDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const [concert, setConcert] = useState<ConcertDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const tDetail = useTranslations("ConcertDetail");
+  const concertRes = useApiResource(`concert-${id}`, () => apiGet<ConcertDetail>(`/concerts/${id}`));
+  const concert = concertRes.data ?? null;
   const [isFollowingArtist, setIsFollowingArtist] = useState(false);
   const [reviewModal, setReviewModal] = useState(false);
   const [ratingInput, setRatingInput] = useState(5);
@@ -53,16 +42,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
   const galleryRef = useRef<HTMLDivElement>(null);
   const ticketRef = useRef<HTMLDivElement>(null);
   const termsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    async function loadDetail() {
-      setLoading(true);
-      const data = await loadConcert(id);
-      setConcert(data);
-      setLoading(false);
-    }
-    loadDetail();
-  }, [id]);
 
   useEffect(() => {
     function onScroll() {
@@ -129,13 +108,16 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
     finally { setSubmittingReview(false); }
   }
 
-  if (loading || !concert) {
+  if (!concert) {
     return (
       <div className="min-h-screen bg-white">
-<Navbar sticky={false} hideUser />
-        <div className="mx-auto max-w-[1440px] px-2 py-16 text-center sm:px-4 lg:px-6">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0F56FF] border-t-transparent mx-auto" />
-          <p className="mt-4 text-sm text-[#6B7280]">Memuat informasi konser...</p>
+        <Navbar sticky={false} hideUser />
+        <div className="mx-auto max-w-[1440px] px-4 py-12 lg:px-6">
+          {concertRes.loading ? (
+            <LoadingState label={tDetail("loading")} />
+          ) : (
+            <ErrorState error={concertRes.error} onRetry={concertRes.reload} />
+          )}
         </div>
       </div>
     );

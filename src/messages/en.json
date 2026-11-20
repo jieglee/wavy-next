@@ -41,7 +41,10 @@
         "prev": "Previous",
         "next": "Next",
         "byOrganizer": "By {organizer}",
-        "startingFrom": "Starting from"
+        "startingFrom": "Starting from",
+        "priceUnavailable": "Price not available yet",
+        "loading": "Loading events...",
+        "empty": "No events available yet."
     },
     "AppNav": {
         "browse": "Browse Concerts",
@@ -122,5 +125,125 @@
         "privacy": "Privacy Policy",
         "terms": "Terms & Conditions",
         "rights": "All rights reserved."
+    },
+    "States": {
+        "loading": "Loading...",
+        "errorTitle": "Couldn't load data",
+        "retry": "Try again",
+        "login": "Sign in"
+    },
+    "Errors": {
+        "generic": "Something went wrong. Please try again.",
+        "network": "Can't reach the server. Check your connection and try again.",
+        "unauthorized": "Your session has ended. Please sign in again.",
+        "notFound": "Data not found.",
+        "codes": {
+            "SALES_CLOSED": "Ticket sales for this concert are closed.",
+            "SALES_NOT_STARTED": "Ticket sales haven't opened yet. Try again once sales start.",
+            "SALES_ENDED": "The ticket sales period for this concert has ended.",
+            "QUOTA_EXCEEDED": "Not enough tickets left for the quantity you selected.",
+            "ORDER_EXPIRED": "This order has expired. Please place a new order.",
+            "ORGANIZER_SUSPENDED": "This organizer account is suspended."
+        }
+    },
+    "OrderStatus": {
+        "pending_payment": "Awaiting payment",
+        "paid": "Paid",
+        "expired": "Expired",
+        "rejected": "Rejected",
+        "refunded": "Refunded"
+    },
+    "Profile": {
+        "defaultName": "Wavy Customer",
+        "levelBadge": "Level {level}: {label}",
+        "logout": "Sign out",
+        "loggedOut": "Signed out.",
+        "tabs": {
+            "level": "Level",
+            "orders": "Order history",
+            "favorites": "Favorites",
+            "notifications": "Notifications"
+        },
+        "level": {
+            "title": "Wavy Fan Level",
+            "subtitle": "Level up by attending more concerts through Wavy.",
+            "current": "Level {level} ({label})",
+            "toNext": "Towards level {level}",
+            "max": "Highest level",
+            "progress": "{count} of {target} concerts",
+            "attended": "{count} concerts attended",
+            "tier": "Level {level}",
+            "tierRequirement": "{count, plural, =0 {No requirement} one {Min. # concert} other {Min. # concerts}}"
+        },
+        "orders": {
+            "title": "Ticket purchase history",
+            "orderNumber": "Order #{id}",
+            "summary": "{quantity, plural, one {# ticket} other {# tickets}}",
+            "detail": "Order details",
+            "emptyTitle": "No orders yet",
+            "emptyDescription": "Your ticket orders will show up here.",
+            "browse": "Browse concerts"
+        },
+        "favorites": {
+            "artists": "Favorite artists",
+            "artistsEmpty": "You don't follow any artists yet.",
+            "organizers": "Favorite organizers",
+            "organizersEmpty": "You don't follow any organizers yet."
+        },
+        "notifications": {
+            "title": "Notifications",
+            "empty": "No notifications.",
+            "unread": "Unread"
+        }
+    },
+    "Checkout": {
+        "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
+        "orderError": {
+            "title": "Couldn't create your order",
+            "partial": "{count, plural, =1 {1 order was} other {# orders were}} created before the error. Check them before ordering again.",
+            "viewCreated": "View created order",
+            "backToConcert": "Back to concert details",
+            "reselect": "Choose tickets again"
+        },
+        "loading": "Loading tickets..."
+    },
+    "ConcertDetail": {
+        "loading": "Loading concert info..."
+    },
+    "OrderDetail": {
+        "loading": "Loading order details...",
+        "payBefore": "Complete your payment before time runs out",
+        "timeLeft": "Payment time left",
+        "expiredTitle": "Order expired",
+        "expiredBody": "The 15-minute payment window has passed, so the tickets were released back to the quota. Order again if they're still available.",
+        "orderAgain": "Order again"
+    },
+    "Tickets": {
+        "transferRecipientNotFound": "The recipient's email isn't registered on Wavy.",
+        "qr": {
+            "label": "Ticket QR code",
+            "used": "Already used",
+            "copy": "Copy ticket code",
+            "copied": "Ticket code copied",
+            "copyFailed": "Couldn't copy the ticket code"
+        }
+    },
+    "FeaturedPicks": {
+        "loading": "Loading events...",
+        "empty": "No events available yet.",
+        "emptyThisWeek": "No events in the next 7 days."
+    },
+    "Search": {
+        "loading": "Loading popular events...",
+        "retry": "Try again",
+        "noEvents": "No events yet."
+    },
+    "AdminDashboard": {
+        "emptyOrganizers": "No organizers registered yet.",
+        "emptyEvents": "No events yet.",
+        "emptyCustomers": "No customers yet."
+    },
+    "OrganizerDashboard": {
+        "noData": "No data yet"
     }
 }

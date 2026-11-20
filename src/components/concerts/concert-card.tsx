@@ -8,7 +8,8 @@ interface ConcertCardProps {
   title: string;
   location: string;
   organizer: string;
-  price: string;
+  /** null = backend belum punya harga; jangan diisi angka karangan */
+  price: string | null;
   gradient: string;
   poster_url?: string;
   className?: string;
@@ -53,8 +54,14 @@ export default function ConcertCard({
         {t("byOrganizer", { organizer })}
       </p>
       <div className="mt-3 border-t border-[#EDEBF2] pt-2.5">
-        <p className="text-[0.65rem] text-[#8B889C]">{t("startingFrom")}</p>
-        <p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{price}</p>
+        {price ? (
+          <>
+            <p className="text-[0.65rem] text-[#8B889C]">{t("startingFrom")}</p>
+            <p className="font-mono text-sm font-bold text-[#1B1A3A]">Rp{price}</p>
+          </>
+        ) : (
+          <p className="text-xs text-wavy-text-secondary">{t("priceUnavailable")}</p>
+        )}
       </div>
     </Link>
   );

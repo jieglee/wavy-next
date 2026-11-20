@@ -1,12 +1,35 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1420/api/v1";
 
+// status 0 = request tidak sampai ke server (backend mati / jaringan putus)
 export class ApiError extends Error {
   status: number;
+  code?: string;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, code?: string) {
     super(message);
+    this.name = "ApiError";
     this.status = status;
+    this.code = code;
   }
+}
+
+// Backend mengirim dua bentuk error:
+//   { error: "pesan" }                       -> error lama
+//   { error: { code: "SALES_CLOSED", message } } -> aturan bisnis (PRD §4)
+// Selalu hasilkan message berupa string, jangan pernah "[object Object]".
+export function parseApiError(status: number, body: unknown): ApiError {
+  const fallback = `Request failed (${status})`;
+  const err = body && typeof body === "object" ? (body as { error?: unknown }).error : undefined;
+  if (typeof err === "string" && err.trim()) return new ApiError(status, err);
+  if (err && typeof err === "object") {
+    const { code, message } = err as { code?: unknown; message?: unknown };
+    return new ApiError(
+      status,
+      typeof message === "string" && message.trim() ? message : fallback,
+      typeof code === "string" ? code : undefined
+    );
+  }
+  return new ApiError(status, fallback);
 }
 
 export function getAuthToken(): string | null {
@@ -52,14 +75,19 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     ...((init?.headers as Record<string, string>) ?? {}),
   };
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers,
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      ...init,
+      headers,
+      cache: "no-store",
+    });
+  } catch (cause) {
+    throw new ApiError(0, cause instanceof Error ? cause.message : "Network error", "NETWORK_ERROR");
+  }
 
-  const body = (await res.json().catch(() => ({}))) as { error?: string };
-  if (!res.ok) throw new ApiError(res.status, body.error ?? `Request failed (${res.status})`);
+  const body: unknown = await res.json().catch(() => ({}));
+  if (!res.ok) throw parseApiError(res.status, body);
   return body as T;
 }
 

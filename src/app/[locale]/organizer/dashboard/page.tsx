@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   TrendingUp,
@@ -17,43 +17,27 @@ import {
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
-import { apiGet, getAuthToken, getAuthUser, clearAuthSession } from "@/lib/api";
+import { apiGet, getAuthToken, clearAuthSession } from "@/lib/api";
+import { useTranslations } from "next-intl";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { useAuthToken, useAuthUser } from "@/hooks/use-auth-session";
+import { AsyncContent } from "@/components/states/async-states";
 import type { OrganizerDashboardStats } from "@/types/type";
 
 export default function OrganizerDashboardPage() {
   const router = useRouter();
 
-  const [stats, setStats] = useState<OrganizerDashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const tDash = useTranslations("OrganizerDashboard");
+  const authed = !!useAuthToken();
+  const statsRes = useApiResource(authed ? "organizer-dashboard" : null, () =>
+    apiGet<OrganizerDashboardStats>("/organizer/dashboard")
+  );
 
-  const currentOrg = getAuthUser<{ id?: number; name?: string; email?: string }>();
+  // dibaca via useSyncExternalStore -> tidak ada hydration mismatch
+  const currentOrg = useAuthUser<{ id?: number; name?: string; email?: string }>();
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/organizer/login");
-      return;
-    }
-
-    async function loadStats() {
-      setLoading(true);
-      try {
-        const data = await apiGet<OrganizerDashboardStats>("/organizer/dashboard");
-        setStats(data);
-      } catch {
-        // Fallback simulation
-        setStats({
-          revenue: 45000000,
-          ticket_sold: 140,
-          remaining_ticket: 260,
-          popular_category: "Festival",
-          peak_purchase_hour: 20,
-        });
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadStats();
+    if (!getAuthToken()) router.push("/organizer/login");
   }, [router]);
 
   function handleLogout() {
@@ -168,7 +152,9 @@ export default function OrganizerDashboardPage() {
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid — angka asli saja; gagal -> error + coba lagi */}
+        <AsyncContent resource={statsRes} loadingRows={2}>
+          {(stats) => (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {/* Revenue */}
           <div className="rounded-3xl border border-[#EDEBF2] bg-white p-6 shadow-sm space-y-2">
@@ -179,7 +165,7 @@ export default function OrganizerDashboardPage() {
               </div>
             </div>
             <p className="font-mono text-2xl font-extrabold text-[#1B1A3A]">
-              Rp{stats ? stats.revenue.toLocaleString("id-ID") : "..."}
+              Rp{stats.revenue.toLocaleString("id-ID")}
             </p>
             <p className="text-[10px] text-emerald-600 font-bold">100% Bebas Biaya Admin Tersembunyi</p>
           </div>
@@ -193,7 +179,7 @@ export default function OrganizerDashboardPage() {
               </div>
             </div>
             <p className="font-mono text-2xl font-extrabold text-[#1B1A3A]">
-              {stats ? stats.ticket_sold : "..."} Tiket
+              {stats.ticket_sold} Tiket
             </p>
             <p className="text-[10px] text-[#8B889C]">Status: Paid / Terverifikasi</p>
           </div>
@@ -207,7 +193,7 @@ export default function OrganizerDashboardPage() {
               </div>
             </div>
             <p className="font-mono text-2xl font-extrabold text-[#1B1A3A]">
-              {stats ? stats.remaining_ticket : "..."} Tiket
+              {stats.remaining_ticket} Tiket
             </p>
             <p className="text-[10px] text-[#8B889C]">Tersedia di Semua Kategori</p>
           </div>
@@ -221,11 +207,13 @@ export default function OrganizerDashboardPage() {
               </div>
             </div>
             <p className="font-mono text-2xl font-extrabold text-[#1B1A3A]">
-              {stats ? `${String(stats.peak_purchase_hour).padStart(2, "0")}:00 WIB` : "..."}
+              {`${String(stats.peak_purchase_hour).padStart(2, "0")}:00 WIB`}
             </p>
-            <p className="text-[10px] text-purple-600 font-bold">Kategori Terpopuler: {stats?.popular_category || "Festival"}</p>
+            <p className="text-[10px] text-purple-600 font-bold">Kategori Terpopuler: {stats.popular_category || tDash("noData")}</p>
           </div>
         </div>
+          )}
+        </AsyncContent>
 
         {/* Quick Management Links Banner */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

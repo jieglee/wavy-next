@@ -41,7 +41,10 @@
         "prev": "Sebelumnya",
         "next": "Berikutnya",
         "byOrganizer": "Oleh {organizer}",
-        "startingFrom": "Mulai dari"
+        "startingFrom": "Mulai dari",
+        "priceUnavailable": "Harga belum tersedia",
+        "loading": "Memuat event...",
+        "empty": "Belum ada event yang tersedia."
     },
     "AppNav": {
         "browse": "Jelajah Konser",
@@ -122,5 +125,125 @@
         "privacy": "Kebijakan Privasi",
         "terms": "Syarat & Ketentuan",
         "rights": "All rights reserved."
+    },
+    "States": {
+        "loading": "Memuat...",
+        "errorTitle": "Gagal memuat data",
+        "retry": "Coba lagi",
+        "login": "Masuk"
+    },
+    "Errors": {
+        "generic": "Terjadi kesalahan. Silakan coba lagi.",
+        "network": "Tidak bisa terhubung ke server. Periksa koneksi lalu coba lagi.",
+        "unauthorized": "Sesi kamu sudah berakhir. Silakan masuk lagi.",
+        "notFound": "Data tidak ditemukan.",
+        "codes": {
+            "SALES_CLOSED": "Penjualan tiket untuk konser ini sudah ditutup.",
+            "SALES_NOT_STARTED": "Penjualan tiket belum dibuka. Coba lagi saat penjualan dimulai.",
+            "SALES_ENDED": "Masa penjualan tiket untuk konser ini sudah berakhir.",
+            "QUOTA_EXCEEDED": "Sisa tiket tidak cukup untuk jumlah yang kamu pilih.",
+            "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
+            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan."
+        }
+    },
+    "OrderStatus": {
+        "pending_payment": "Menunggu bayar",
+        "paid": "Lunas",
+        "expired": "Kedaluwarsa",
+        "rejected": "Ditolak",
+        "refunded": "Refund"
+    },
+    "Profile": {
+        "defaultName": "Customer Wavy",
+        "levelBadge": "Level {level}: {label}",
+        "logout": "Keluar akun",
+        "loggedOut": "Berhasil keluar.",
+        "tabs": {
+            "level": "Level",
+            "orders": "Riwayat pesanan",
+            "favorites": "Favorit",
+            "notifications": "Notifikasi"
+        },
+        "level": {
+            "title": "Wavy Fan Level",
+            "subtitle": "Naik level dengan menonton lebih banyak konser lewat Wavy.",
+            "current": "Level {level} ({label})",
+            "toNext": "Menuju level {level}",
+            "max": "Level tertinggi",
+            "progress": "{count} dari {target} konser",
+            "attended": "{count} konser ditonton",
+            "tier": "Level {level}",
+            "tierRequirement": "{count, plural, =0 {Tanpa syarat} other {Min. # konser}}"
+        },
+        "orders": {
+            "title": "Riwayat pembelian tiket",
+            "orderNumber": "Order #{id}",
+            "summary": "{quantity} tiket",
+            "detail": "Detail order",
+            "emptyTitle": "Belum ada pesanan",
+            "emptyDescription": "Pesanan tiket kamu akan muncul di sini.",
+            "browse": "Jelajahi konser"
+        },
+        "favorites": {
+            "artists": "Musisi favorit",
+            "artistsEmpty": "Belum ada musisi yang diikuti.",
+            "organizers": "Organizer favorit",
+            "organizersEmpty": "Belum ada organizer yang diikuti."
+        },
+        "notifications": {
+            "title": "Kotak notifikasi",
+            "empty": "Tidak ada notifikasi.",
+            "unread": "Belum dibaca"
+        }
+    },
+    "Checkout": {
+        "created": "{count, plural, =1 {Pesanan dibuat, lanjut ke pembayaran} other {# pesanan dibuat, lanjut ke pembayaran}}",
+        "orderError": {
+            "title": "Pesanan gagal dibuat",
+            "partial": "{count} pesanan sudah terbuat sebelum error terjadi. Cek pesanan itu sebelum memesan lagi.",
+            "viewCreated": "Lihat pesanan yang sudah dibuat",
+            "backToConcert": "Kembali ke detail konser",
+            "reselect": "Pilih ulang tiket"
+        },
+        "loading": "Memuat tiket..."
+    },
+    "ConcertDetail": {
+        "loading": "Memuat informasi konser..."
+    },
+    "OrderDetail": {
+        "loading": "Memuat detail pesanan...",
+        "payBefore": "Selesaikan pembayaran sebelum waktu habis",
+        "timeLeft": "Sisa waktu pembayaran",
+        "expiredTitle": "Pesanan kedaluwarsa",
+        "expiredBody": "Batas waktu pembayaran 15 menit sudah lewat, jadi tiket dilepas kembali ke kuota. Silakan pesan ulang jika masih tersedia.",
+        "orderAgain": "Pesan ulang"
+    },
+    "Tickets": {
+        "transferRecipientNotFound": "Email penerima belum terdaftar di Wavy.",
+        "qr": {
+            "label": "QR code tiket",
+            "used": "Sudah digunakan",
+            "copy": "Salin kode tiket",
+            "copied": "Kode tiket disalin",
+            "copyFailed": "Gagal menyalin kode tiket"
+        }
+    },
+    "FeaturedPicks": {
+        "loading": "Memuat event...",
+        "empty": "Belum ada event yang tersedia.",
+        "emptyThisWeek": "Tidak ada event dalam 7 hari ke depan."
+    },
+    "Search": {
+        "loading": "Memuat event populer...",
+        "retry": "Coba lagi",
+        "noEvents": "Belum ada event."
+    },
+    "AdminDashboard": {
+        "emptyOrganizers": "Belum ada organizer terdaftar.",
+        "emptyEvents": "Belum ada event.",
+        "emptyCustomers": "Belum ada customer."
+    },
+    "OrganizerDashboard": {
+        "noData": "Belum ada data"
     }
 }

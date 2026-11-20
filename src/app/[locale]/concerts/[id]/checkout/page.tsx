@@ -4,50 +4,15 @@ import { useEffect, useState, use } from "react";
 import { useRouter, Link } from "@/i18n/navigation";
 import { Ticket, ChevronDown, Clock, AlertTriangle, Check, CreditCard, Landmark, Wallet, QrCode, BadgePercent, Layers, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
+import { OrderErrorAlert, type OrderSubmitError } from "@/components/checkout/order-error-alert";
+import { ErrorState, LoadingState } from "@/components/states/async-states";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { apiGet, apiPost, getAuthToken, getAuthUser } from "@/lib/api";
 import { formatIDR } from "@/lib/price";
 import type { ConcertDetail, TicketCategory } from "@/types/type";
 import Footer from "@/components/landing/footer";
 import ConcertSeatmap from "@/components/concerts/concert-seatmap";
-
-async function loadConcert(id: string): Promise<ConcertDetail> {
-  try {
-    const data = await apiGet<ConcertDetail>(`/concerts/${id}`);
-    return data;
-  } catch {
-    return {
-      id: Number(id),
-      organizer_id: 1,
-      artist_id: 1,
-      title: "Pestapora 2026",
-      category: "Festival",
-      venue: "Gambir Expo & Hall D2 JIExpo Jakarta",
-      date: "2026-09-25T19:00:00+07:00",
-      poster_url: "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg",
-      banner_url: "",
-      status: "published",
-      artist_name: "Pestapora",
-      organizer_name: "Boss Creator",
-      min_price: 300000,
-      remaining: 500,
-      description: "",
-      genre: "Festival",
-      photo_url: "",
-      bio: "",
-      countdown_seconds: 0,
-      ticket_categories: [
-        { id: 1, event_id: Number(id), name: "Regular - 3 Days Pass", price: 650000, quota: 500, sold: 500, remaining: 0 },
-        { id: 2, event_id: Number(id), name: "Daily Pass - Day 1", price: 300000, quota: 500, sold: 120, remaining: 380 },
-        { id: 3, event_id: Number(id), name: "Daily Pass - Day 2", price: 300000, quota: 500, sold: 500, remaining: 0 },
-        { id: 4, event_id: Number(id), name: "Daily Pass - Day 3", price: 300000, quota: 500, sold: 200, remaining: 300 },
-      ],
-      reviews: [],
-      avg_rating: 0,
-      review_count: 0,
-    } as ConcertDetail;
-  }
-}
 
 function CheckoutStepper({ step = 1 }: { step?: number }) {
   const steps = ["Pilih Kategori", "Informasi Personal", "Konfirmasi", "Bayar"];
@@ -108,6 +73,10 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
   const [payGroup, setPayGroup] = useState("cc");
   const [payMethod, setPayMethod] = useState("cc-card");
   const [proteksiOn, setProteksiOn] = useState(true);
+  const [orderError, setOrderError] = useState<OrderSubmitError | null>(null);
+  const [loadError, setLoadError] = useState<unknown>(null);
+  const [loadNonce, setLoadNonce] = useState(0);
+  const tCheckout = useTranslations("Checkout");
 
   const PAY_GROUPS = [
     { id: "cc", label: "Credit Card", icon: CreditCard, children: [{ id: "cc-card", label: "Credit / Debit Card", info: "Bayar dengan kartu kredit atau debit berlogo Visa, Mastercard, atau JCB. Transaksi diproses aman dengan otentikasi 3D Secure dari bank penerbit kartumu." }] },
@@ -126,7 +95,15 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
     }
     (async () => {
       setLoading(true);
-      const data = await loadConcert(id);
+      setLoadError(null);
+      let data: ConcertDetail;
+      try {
+        data = await apiGet<ConcertDetail>(`/concerts/${id}`);
+      } catch (err: unknown) {
+        setLoadError(err);
+        setLoading(false);
+        return;
+      }
       setConcert(data);
       try {
         const raw = sessionStorage.getItem(`wavy-checkout-${id}`);
@@ -161,7 +138,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       } catch { /* abaikan storage rusak */ }
       setLoading(false);
     })();
-  }, [id, router]);
+  }, [id, router, loadNonce]);
 
   useEffect(() => {
     if (step !== 2 && step !== 3) return;
@@ -319,49 +296,44 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       return;
     }
     setSubmitting(true);
+    setOrderError(null);
+    // satu order per kategori; kalau gagal di tengah, order yang sudah dibuat tetap dilaporkan
+    const created: number[] = [];
     try {
-      if (entries.length === 1) {
-        const first = entries[0];
-        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", buildOrderPayload(first.cat.id, first.qty));
-        const orderId = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
-        if (orderId) {
-          toast.success("Pesanan dibuat, lanjut ke pembayaran");
-          dropStored();
-          router.push(`/orders/${orderId}`);
-          return;
-        }
-        dropStored();
-        router.push(`/concerts/${id}/queue?catId=${first.cat.id}&qty=${first.qty}`);
-        return;
-      }
-      const orderIds: number[] = [];
       for (const e of entries) {
-        const order = await apiPost<{ id: number } | { order_id: number } | { id: string }>("/orders", buildOrderPayload(e.cat.id, e.qty));
-        const oid = (order as { id?: number; order_id?: number }).id ?? (order as { order_id?: number }).order_id;
-        if (oid) orderIds.push(Number(oid));
-      }
-      if (orderIds.length) {
-        toast.success(`${orderIds.length} pesanan dibuat — lanjut ke pembayaran`);
-        dropStored();
-        router.push(`/orders/${orderIds[0]}`);
-        return;
+        const order = await apiPost<{ id: number }>("/orders", buildOrderPayload(e.cat.id, e.qty));
+        created.push(order.id);
       }
       dropStored();
-      router.push(`/concerts/${id}/queue?catId=${entries[0].cat.id}&qty=${entries[0].qty}`);
+      toast.success(tCheckout("created", { count: created.length }));
+      router.push(`/orders/${created[0]}`);
     } catch (err: unknown) {
-      const msg = (err as Error).message ?? "";
-      if (msg.toLowerCase().includes("stok") || msg.toLowerCase().includes("not enough") || msg.toLowerCase().includes("sold out")) {
-        toast.error("Stok tiket tidak cukup");
-      } else {
-        // eslint-disable-next-line react-hooks/purity
-        const fallbackId = Math.floor(1000 + Math.random() * 9000);
-        toast.success("Masuk ke pembayaran");
-        dropStored();
-        router.push(`/orders/${fallbackId}`);
-      }
+      setOrderError({ error: err, createdOrderIds: created });
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // QUOTA_EXCEEDED / ORDER_EXPIRED: ambil sisa kuota terbaru lalu kembali ke pilihan tiket
+  async function handleReselect() {
+    setOrderError(null);
+    try {
+      const fresh = await apiGet<ConcertDetail>(`/concerts/${id}`);
+      setConcert(fresh);
+      setQtyMap((prev) => {
+        const next: Record<number, number> = {};
+        for (const c of fresh.ticket_categories ?? []) {
+          const q = Math.min(prev[c.id] ?? 0, c.remaining ?? 0);
+          if (q > 0) next[c.id] = q;
+        }
+        return next;
+      });
+    } catch (err: unknown) {
+      setOrderError({ error: err, createdOrderIds: [] });
+      return;
+    }
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (loading || !concert) {
@@ -376,15 +348,18 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
             <CheckoutStepper step={step} />
           </div>
         </header>
-        <div className="mx-auto max-w-[1280px] px-4 py-16 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent" />
-          <p className="mt-3 text-sm text-[#6B7280]">Memuat tiket...</p>
+        <div className="mx-auto max-w-[1280px] px-4 py-12">
+          {loadError && !loading ? (
+            <ErrorState error={loadError} onRetry={() => setLoadNonce((n) => n + 1)} />
+          ) : (
+            <LoadingState label={tCheckout("loading")} />
+          )}
         </div>
       </div>
     );
   }
 
-  const banner = concert.banner_url || concert.poster_url || "https://assets.loket.com/neo/production/images/banner/20260722120040_6a604e781ffbd.jpg";
+  const banner = concert.banner_url || concert.poster_url || null;
   const eventDateObj = new Date(concert.date);
   const eventDateStr = eventDateObj.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
   const eventTimeStr = eventDateObj.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -412,7 +387,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       <main className="mx-auto max-w-[1280px] px-3 py-3 sm:px-4 sm:py-4">
         <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
           <div className="relative h-[132px] w-full overflow-hidden bg-[#FFE4EA] sm:h-[190px]">
-            <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />
+            {banner && <img src={banner} alt={concert.title} className="h-full w-full object-cover object-center" />}
           </div>
         </div>
 
@@ -825,6 +800,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
                     <p className="flex-1 text-xs font-bold text-[#111827]">Paket Proteksi Aman</p>
                     <button type="button" onClick={() => setProteksiOn(true)} className="rounded border border-[#FF5470] bg-white px-2 py-0.5 text-[11px] font-bold text-[#FF5470]">Tambah</button>
                   </div>
+                )}
+                {orderError && (
+                  <OrderErrorAlert
+                    value={orderError}
+                    concertId={id}
+                    onRetry={handlePesan}
+                    onReselect={handleReselect}
+                  />
                 )}
                 <div className="mt-3 flex gap-2">
                   <button

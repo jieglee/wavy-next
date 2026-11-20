@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { apiGet } from "@/lib/api";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
 
 export interface PickEvent {
@@ -10,8 +13,13 @@ export interface PickEvent {
     month: string;
     title: string;
     meta: string;
+    /** "" = konser belum punya poster (tidak diisi gambar acak) */
     image: string;
     href: string;
+    /** nama hari dari tanggal konser yang sebenarnya */
+    weekday: string;
+    /** epoch ms tanggal konser; NaN kalau tidak valid */
+    ts: number;
 }
 
 interface FeaturedPicksProps {
@@ -35,28 +43,25 @@ function toPick(c: Concert): PickEvent {
         month,
         title: c.title,
         meta: `${dateStr} • ${c.venue}`,
-        image: c.poster_url || `https://picsum.photos/seed/${c.id}/400/200`,
+        image: c.poster_url || "",
         href: `/concerts/${c.id}`,
+        weekday: valid ? d.toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "") : "",
+        ts: d.getTime(),
     };
 }
 
-function fallbackPicks(): { pop: PickEvent[]; week: PickEvent[] } {
-    return {
-        pop: [
-            { id: "1", day: "11", month: "SEP", title: 'Hillsong Worship Nights Asia Tour Surabaya', meta: "11 Sep 2026 • Graha Unesa Surabaya, Kota Surabaya", image: "https://picsum.photos/seed/hillsong/400/200", href: "/concerts/1" },
-            { id: "2", day: "11", month: "SEP", title: 'Drama Musikal "Mutiara Dari Timur: Nyala Perjuangan Martha Christina Tiahahu."', meta: "11 Sep 2026 • Istora Senayan, Jakarta Pusat", image: "https://picsum.photos/seed/mutiara/400/200", href: "/concerts/2" },
-            { id: "3", day: "11", month: "SEP", title: "FAM - Fan And Makers Vol. 2", meta: "11-13 Sep 2026 • The Brickhall, Fatmawati, Jakarta Selatan", image: "https://picsum.photos/seed/fam/400/200", href: "/concerts/3" },
-            { id: "4", day: "12", month: "SEP", title: "U-KNOW PROJECT 26 : SCENE#1 in JAKARTA", meta: "12 Sep 2026 • JAKARTA CONCERT HALL, Lt 14 & 15 iNews Tower, Jakarta Pusat", image: "https://picsum.photos/seed/uknow/400/200", href: "/concerts/4" },
-            { id: "5", day: "12", month: "SEP", title: "RUANG RAYA - KARAWANG", meta: "12 Sep 2026 • KAWASAN 3 BISNIS, KARAWANG, Kab. Karawang", image: "https://picsum.photos/seed/ruangraya/400/200", href: "/concerts/5" },
-        ],
-        week: [
-            { id: "6", day: "13", month: "SEP", title: "NIKI: Nicole Live in Jakarta", meta: "13 Sep 2026 • ICE BSD, Tangerang", image: "https://picsum.photos/seed/niki/400/200", href: "/concerts/6" },
-            { id: "7", day: "14", month: "SEP", title: "Tulus: Tur Manusia 2026", meta: "14 Sep 2026 • Tennis Indoor Senayan, Jakarta", image: "https://picsum.photos/seed/tulus/400/200", href: "/concerts/7" },
-            { id: "8", day: "14", month: "SEP", title: "Coldplay: Music of the Spheres", meta: "14 Sep 2026 • GBK Main Stadium, Jakarta", image: "https://picsum.photos/seed/coldplay/400/200", href: "/concerts/8" },
-            { id: "9", day: "15", month: "SEP", title: "Sheila On 7: Tunggu Aku Di Jakarta", meta: "15 Sep 2026 • JIExpo Kemayoran, Jakarta", image: "https://picsum.photos/seed/sheila/400/200", href: "/concerts/9" },
-            { id: "10", day: "15", month: "SEP", title: "Festival Musik Indie Bandung", meta: "15 Sep 2026 • Lapangan Gasibu, Bandung", image: "https://picsum.photos/seed/indiefest/400/200", href: "/concerts/10" },
-        ],
-    };
+async function loadPicks(): Promise<PickEvent[]> {
+    const data = await apiGet<unknown>("/concerts");
+    const list: Concert[] = Array.isArray(data)
+        ? (data as Concert[])
+        : ((data as Record<string, unknown>)?.concerts as Concert[]) ?? ((data as Record<string, unknown>)?.data as Concert[]) ?? [];
+    return list.map(toPick);
+}
+
+const WEEK_MS = 7 * 24 * 3600 * 1000;
+
+function PickThumb({ src, className }: { src: string; className: string }) {
+    return src ? <img src={src} alt="" className={className} /> : <div className={`${className} bg-wavy-surface`} aria-hidden />;
 }
 
 export default function FeaturedPicks({
@@ -65,53 +70,21 @@ export default function FeaturedPicks({
     viewAllHref = "#",
     className = "",
 }: FeaturedPicksProps) {
-    const fb = useMemo(() => fallbackPicks(), []);
-    const [popular, setPopular] = useState<PickEvent[]>(popularProp ?? fb.pop);
-    const [thisWeek, setThisWeek] = useState<PickEvent[]>(thisWeekProp ?? fb.week);
-
-    useEffect(() => {
-        if (popularProp && thisWeekProp) return;
-        let cancelled = false;
-        (async () => {
-            try {
-                const data = await apiGet<unknown>("/concerts");
-                const list: Concert[] = Array.isArray(data)
-                    ? (data as Concert[])
-                    : (data as Record<string, unknown>)?.concerts as Concert[] ??
-                    (data as Record<string, unknown>)?.data as Concert[] ??
-                    [];
-                if (!list?.length || cancelled) return;
-                const picks = list.slice(0, 10).map(toPick);
-                if (picks.length < 10) return;
-                setPopular(picks.slice(0, 5));
-                setThisWeek(picks.slice(5, 10));
-            } catch { /* keep fallback */ }
-        })();
-        return () => { cancelled = true; };
-    }, [popularProp, thisWeekProp]);
+    const t = useTranslations("FeaturedPicks");
+    const fromProps = !!(popularProp && thisWeekProp);
+    // data asli saja; kalau sedikit ya tampil sedikit (tanpa mengisi dengan event karangan)
+    const picksRes = useApiResource(fromProps ? "featured-picks-props" : "featured-picks", () =>
+        fromProps ? Promise.resolve([...(popularProp ?? []), ...(thisWeekProp ?? [])]) : loadPicks()
+    );
+    const all = useMemo(() => picksRes.data ?? [], [picksRes.data]);
+    const [now] = useState(() => Date.now());
+    const popular = popularProp ?? all.slice(0, 5);
+    const thisWeek = thisWeekProp ?? all.filter((e) => e.ts >= now && e.ts < now + WEEK_MS).slice(0, 5);
 
     const [tab, setTab] = useState<"popular" | "thisWeek">("popular");
     const [showAll, setShowAll] = useState(false);
     const items = tab === "popular" ? popular : thisWeek;
-    const [allConcerts, setAllConcerts] = useState<PickEvent[] | null>(null);
-
-    useEffect(() => {
-        if (!showAll || allConcerts) return;
-        (async () => {
-            try {
-                const data = await apiGet<unknown>("/concerts");
-                const list: Concert[] = Array.isArray(data)
-                    ? (data as Concert[])
-                    : (data as Record<string, unknown>)?.concerts as Concert[] ??
-                    (data as Record<string, unknown>)?.data as Concert[] ??
-                    [];
-                if (list.length) setAllConcerts(list.map(toPick));
-            } catch { /* fallback to 10 */ }
-        })();
-    }, [showAll, allConcerts]);
-
-    const combined = useMemo(() => [...popular, ...thisWeek], [popular, thisWeek]);
-    const allItems = allConcerts ?? combined;
+    const allItems = all;
 
     useEffect(() => {
         if (!showAll) return;
@@ -182,14 +155,13 @@ export default function FeaturedPicks({
                 </div>
 
                 <div className="mt-1">
-                    {(() => {
-                        const weekday = (m: string, d: string) => {
-                            try {
-                                const monthMap: Record<string, number> = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MEI: 4, MAY: 4, JUN: 5, JUL: 6, AGU: 7, AUG: 7, SEP: 8, OKT: 9, OCT: 9, NOV: 10, DES: 11, DEC: 11 };
-                                const date = new Date(2026, monthMap[m] ?? 0, parseInt(d, 10));
-                                return date.toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
-                            } catch { return ""; }
-                        };
+                    {picksRes.loading ? (
+                        <LoadingState rows={3} label={t("loading")} />
+                    ) : picksRes.error ? (
+                        <ErrorState error={picksRes.error} onRetry={picksRes.reload} />
+                    ) : items.length === 0 ? (
+                        <EmptyState title={tab === "thisWeek" ? t("emptyThisWeek") : t("empty")} />
+                    ) : (() => {
                         let lastKey = "";
                         const sliced = items.slice(0, 5);
                         return sliced.map((ev, idx) => {
@@ -209,7 +181,7 @@ export default function FeaturedPicks({
                                             <div className="relative z-[1] flex w-[52px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-1 py-[10px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:w-[56px]">
                                                 <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9CA3AF]">{ev.month}</span>
                                                 <span className="mt-[2px] text-[20px] font-extrabold leading-none text-[#111827]">{ev.day}</span>
-                                                <span className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[#9CA3AF]">{weekday(ev.month, ev.day)}</span>
+                                                <span className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[#9CA3AF]">{ev.weekday}</span>
                                             </div>
                                         ) : (
                                             <div className="w-[52px] sm:w-[56px]" aria-hidden />
@@ -232,9 +204,8 @@ export default function FeaturedPicks({
                                         <p className="mt-[6px] truncate text-[12.5px] leading-none text-[#9CA3AF]">{ev.meta}</p>
                                     </div>
                                     <div className="flex justify-end pt-1">
-                                        <img
+                                        <PickThumb
                                             src={ev.image}
-                                            alt=""
                                             className="h-[56px] w-[116px] rounded-[10px] object-cover shadow-sm ring-1 ring-black/5 sm:h-[60px] sm:w-[132px]"
                                         />
                                     </div>
@@ -288,12 +259,6 @@ export default function FeaturedPicks({
                         </div>
                         <div className="overflow-y-auto px-6 py-2">
                             {(() => {
-                                const weekday = (m: string, d: string) => {
-                                    try {
-                                        const map: Record<string, number> = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MEI: 4, MAY: 4, JUN: 5, JUL: 6, AGU: 7, AUG: 7, SEP: 8, OKT: 9, OCT: 9, NOV: 10, DES: 11, DEC: 11 };
-                                        return new Date(2026, map[m] ?? 0, parseInt(d, 10)).toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "");
-                                    } catch { return ""; }
-                                };
                                 let last = "";
                                 return allItems.map((ev, idx) => {
                                     const key = `${ev.month}-${ev.day}`;
@@ -307,7 +272,7 @@ export default function FeaturedPicks({
                                                     <div className="relative z-[1] flex w-[48px] flex-col items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] px-1 py-2 text-center shadow-sm">
                                                         <span className="text-[9px] font-semibold uppercase tracking-wide text-[#9CA3AF]">{ev.month}</span>
                                                         <span className="text-base font-extrabold leading-none text-[#111827]">{ev.day}</span>
-                                                        <span className="mt-0.5 text-[9px] font-medium uppercase text-[#9CA3AF]">{weekday(ev.month, ev.day)}</span>
+                                                        <span className="mt-0.5 text-[9px] font-medium uppercase text-[#9CA3AF]">{ev.weekday}</span>
                                                     </div>
                                                 ) : (
                                                     <div className="w-[48px]" aria-hidden />
@@ -322,7 +287,7 @@ export default function FeaturedPicks({
                                                 <p className="line-clamp-2 text-sm font-bold leading-tight text-[#111827] group-hover:text-[#1A4BDE]">{ev.title}</p>
                                                 <p className="mt-1 truncate text-xs text-[#9CA3AF]">{ev.meta}</p>
                                             </div>
-                                            <img src={ev.image} alt="" className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />
+                                            <PickThumb src={ev.image} className="h-14 w-24 shrink-0 self-center rounded-lg object-cover ring-1 ring-black/5" />
                                             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{ marginLeft: 52, backgroundImage: "repeating-linear-gradient(to right, #E5E7EB 0 4px, transparent 4px 8px)" }} aria-hidden />
                                         </a>
                                     );

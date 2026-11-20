@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useEffect, use } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   Clock,
-  CheckCircle2,
   AlertCircle,
   Copy,
   Ticket,
@@ -15,100 +14,58 @@ import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import { apiGet, getAuthToken } from "@/lib/api";
+import { useTranslations } from "next-intl";
+import { useApiResource } from "@/hooks/use-api-resource";
+import { ErrorState, LoadingState } from "@/components/states/async-states";
+import { OrderStatusBadge } from "@/components/orders/order-status-badge";
+import { formatCountdown, useNow } from "@/hooks/use-now";
 import type { Order } from "@/types/type";
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const tOrder = useTranslations("OrderDetail");
 
-  const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState({ minutes: 14, seconds: 59 });
+  const orderRes = useApiResource(`order-${id}`, () => apiGet<Order>(`/orders/${id}`));
+  const order = orderRes.data ?? null;
+
+  // Countdown ke expires_at (bukan angka tetap). Lewat batas -> tampil expired, sama dengan
+  // aturan lazy expiry backend (pending & expires_at <= now dianggap expired).
+  const expiresAtMs = order?.expires_at ? Date.parse(order.expires_at) : NaN;
+  const ticking = order?.status === "pending_payment" && Number.isFinite(expiresAtMs);
+  const now = useNow(1000, ticking);
+  const remainingMs = ticking ? Math.max(0, expiresAtMs - now) : 0;
+  const status = ticking && remainingMs <= 0 ? "expired" : order?.status;
 
   useEffect(() => {
-    if (!getAuthToken()) {
-      router.push("/auth/login");
-      return;
-    }
-
-    async function loadOrder() {
-      setLoading(true);
-      try {
-        const data = await apiGet<Order>(`/orders/${id}`);
-        setOrder(data);
-      } catch {
-        const mock: Order = {
-          id: Number(id),
-          customer_id: 1,
-          event_id: 1,
-          ticket_category_id: 1,
-          quantity: 2,
-          total_price: 600000,
-          status: "pending_payment",
-          expires_at: new Date(Date.now() + 15 * 60000).toISOString(),
-          created_at: new Date().toISOString(),
-          event_title: "The Legends Infinity World Tour",
-          category_name: "Festival Standing",
-        };
-        setOrder(mock);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadOrder();
-  }, [id, router]);
-
-  // Payment timer
-  useEffect(() => {
-    if (!order?.expires_at) return;
-    const target = new Date(order.expires_at).getTime();
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const diff = Math.max(0, target - now);
-      const m = Math.floor(diff / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      setTimeLeft({ minutes: m, seconds: s });
-      if (diff <= 0) clearInterval(interval);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [order?.expires_at]);
+    if (!getAuthToken()) router.push("/auth/login");
+  }, [router]);
 
   function copyToClipboard(text: string, label: string) {
     navigator.clipboard.writeText(text);
     toast.success(`${label} berhasil disalin!`);
   }
 
-  async function handleRefresh() {
-    setLoading(true);
-    try {
-      const data = await apiGet<Order>(`/orders/${id}`);
-      setOrder(data);
-      toast.success("Status pesanan diperbarui");
-    } catch {
-      toast("Status pesanan: Menunggu verifikasi organizer");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handleRefresh = orderRes.reload;
 
-  if (loading || !order) {
+  if (!order) {
     return (
-      <div className="min-h-screen bg-[#FDFCFB]">
+      <div className="min-h-screen bg-wavy-bg">
         <Navbar />
-        <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#FF5470] border-t-transparent mx-auto" />
-          <p className="mt-4 text-sm text-[#8B889C]">Memuat detail pesanan...</p>
+        <div className="mx-auto max-w-3xl px-4 py-12">
+          {orderRes.loading ? (
+            <LoadingState label={tOrder("loading")} />
+          ) : (
+            <ErrorState error={orderRes.error} onRetry={orderRes.reload} />
+          )}
         </div>
       </div>
     );
   }
 
-  const isPaid = order.status === "paid";
-  const isRejected = order.status === "rejected";
-  const isRefunded = order.status === "refunded";
+  const isPaid = status === "paid";
+  const isPending = status === "pending_payment";
+  const isExpired = status === "expired";
 
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
@@ -125,40 +82,40 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               {/* Status Badge */}
-              <div>
-                {isPaid ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-bold text-emerald-700">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Pembayaran Berhasil
-                  </span>
-                ) : isRejected ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-4 py-1.5 text-xs font-bold text-red-700">
-                    <AlertCircle className="h-4 w-4" />
-                    Pesanan Ditolak
-                  </span>
-                ) : isRefunded ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold text-gray-700">
-                    Pesanan Di-refund
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-4 py-1.5 text-xs font-bold text-amber-700">
-                    <Clock className="h-4 w-4" />
-                    Menunggu Pembayaran
-                  </span>
-                )}
-              </div>
+              <OrderStatusBadge status={status ?? order.status} className="px-4 py-1.5 text-xs" />
             </div>
 
-            {/* Countdown notice if pending */}
-            {!isPaid && !isRejected && !isRefunded && (
-              <div className="mt-6 flex items-center justify-between rounded-2xl bg-amber-50 p-4 border border-amber-200">
-                <div className="flex items-center gap-2 text-amber-800 text-xs font-semibold">
-                  <Clock className="h-4 w-4 text-amber-600 shrink-0" />
-                  <span>Selesaikan pembayaran sebelum batas waktu berakhir</span>
+            {/* Countdown ke batas bayar (order pending) */}
+            {isPending && ticking && (
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <div className="flex items-center gap-2 text-xs font-semibold text-amber-800">
+                  <Clock className="h-4 w-4 shrink-0 text-amber-600" />
+                  <span>{tOrder("payBefore")}</span>
                 </div>
-                <div className="font-mono text-sm font-extrabold text-amber-800">
-                  {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+                <div
+                  role="timer"
+                  aria-label={tOrder("timeLeft")}
+                  className={`font-mono text-lg font-extrabold ${remainingMs < 60_000 ? "text-coral-gelap" : "text-amber-800"}`}
+                >
+                  {formatCountdown(remainingMs)}
                 </div>
+              </div>
+            )}
+
+            {/* Lewat batas waktu */}
+            {isExpired && (
+              <div role="status" className="mt-6 space-y-2 rounded-2xl border border-wavy-border bg-wavy-surface p-4">
+                <div className="flex items-center gap-2 text-sm font-bold text-wavy-text-primary">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-wavy-text-secondary" />
+                  {tOrder("expiredTitle")}
+                </div>
+                <p className="text-xs text-wavy-text-secondary">{tOrder("expiredBody")}</p>
+                <Link
+                  href={`/concerts/${order.event_id}`}
+                  className="inline-flex rounded-lg bg-wavy-accent px-4 py-2 text-xs font-bold text-white hover:brightness-110"
+                >
+                  {tOrder("orderAgain")}
+                </Link>
               </div>
             )}
 
@@ -184,7 +141,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             {/* Payment Method / Instructions if pending */}
-            {!isPaid && !isRejected && !isRefunded && (
+            {isPending && (
               <div className="mt-8 space-y-4">
                 <h2 className="font-display text-sm font-bold text-[#1B1A3A]">Instruksi Pembayaran</h2>
                 
