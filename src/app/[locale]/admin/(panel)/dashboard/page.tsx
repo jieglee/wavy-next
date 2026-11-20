@@ -1,351 +1,161 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
-import {
-  Shield,
-  Users,
-  Building2,
-  Calendar,
-  LogOut,
-} from "lucide-react";
-import toast from "react-hot-toast";
-import { Link } from "@/i18n/navigation";
-import { WavyIcon } from "@/components/landing/wavy-icon";
-import { apiGet, apiPatch, getAuthToken, clearAuthSession } from "@/lib/api";
 import { useTranslations } from "next-intl";
-import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken } from "@/hooks/use-auth-session";
-import { AsyncContent, EmptyState } from "@/components/states/async-states";
-import type { AdminStats, AdminOrganizer, AdminCustomer, Concert } from "@/types/type";
+import { Building2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { apiGet } from "@/lib/api";
+import { cn } from "@/lib/utils";
+import { formatIDR } from "@/lib/price";
+import { useApiResource, type ApiResource } from "@/hooks/use-api-resource";
+import { useAdminSession, useAdminUnauthorized } from "@/hooks/use-admin-session";
+import { EmptyState, ErrorState } from "@/components/states/async-states";
+import { StudioPageHeader } from "@/components/studio/studio-shell";
+import { btn } from "@/components/studio/studio-ui";
+import { BarChart } from "@/components/charts/bar-chart";
+import { Bar } from "@/components/charts/bar";
+import { BarXAxis } from "@/components/charts/bar-x-axis";
+import { Grid } from "@/components/charts/grid";
+import { ChartTooltip } from "@/components/charts/tooltip";
+import { RingChart } from "@/components/charts/ring-chart";
+import { Ring } from "@/components/charts/ring";
+import { RingCenter } from "@/components/charts/ring-center";
+import type { AdminOrganizer, AdminStats } from "@/types/type";
 
+const STATUS_ORDER = ["active", "suspended", "pending_verification"] as const;
+const STATUS_COLORS: Record<string, string> = {
+  active: "var(--chart-1)",
+  suspended: "var(--chart-2)",
+  pending_verification: "var(--chart-4)",
+};
+
+/** Dashboard admin (DESIGN §4 Modular): KPI platform → distribusi organizer (4) + pendapatan per organizer (8). */
 export default function AdminDashboardPage() {
-  const router = useRouter();
+  const t = useTranslations("Admin.dashboard");
+  const session = useAdminSession();
+  const stats = useApiResource(session.ready ? "admin-stats" : null, () => apiGet<AdminStats>("/admin/stats"));
+  const organizers = useApiResource(session.ready ? "admin-organizers" : null, () => apiGet<AdminOrganizer[]>("/admin/organizers"));
+  useAdminUnauthorized(stats.error, organizers.error);
 
-  const [activeTab, setActiveTab] = useState<"overview" | "organizers" | "events" | "customers">("overview");
-  const tAdmin = useTranslations("AdminDashboard");
-  const authed = !!useAuthToken();
-  // tanpa angka/daftar karangan: tiap dataset punya loading / error / kosong sendiri
-  const statsRes = useApiResource(authed ? "admin-stats" : null, () => apiGet<AdminStats>("/admin/stats"));
-  const organizersRes = useApiResource(authed ? "admin-organizers" : null, () => apiGet<AdminOrganizer[]>("/admin/organizers"));
-  const eventsRes = useApiResource(authed ? "admin-events" : null, () => apiGet<Concert[]>("/admin/events"));
-  const customersRes = useApiResource(authed ? "admin-customers" : null, () => apiGet<AdminCustomer[]>("/admin/customers"));
-  const [togglingId, setTogglingId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!getAuthToken()) router.push("/admin/login");
-  }, [router]);
-
-  async function handleToggleOrganizerStatus(org: AdminOrganizer) {
-    const nextStatus = org.status === "active" ? "suspended" : "active";
-    setTogglingId(org.id);
-    try {
-      await apiPatch(`/admin/organizers/${org.id}`, { status: nextStatus });
-      toast.success(`Status ${org.name} diubah menjadi ${nextStatus}`);
-      organizersRes.mutate((prev) => prev.map((o) => (o.id === org.id ? { ...o, status: nextStatus } : o)));
-    } catch (err: unknown) {
-      toast.error((err as Error).message || "Gagal mengubah status organizer");
-    } finally {
-      setTogglingId(null);
-    }
-  }
-
-  function handleLogout() {
-    clearAuthSession();
-    router.push("/admin/login");
-  }
+  const manage = (
+    <Link href="/admin/organizers" className={btn.outline}>
+      <Building2 className="h-4 w-4" />
+      {t("manageOrganizers")}
+    </Link>
+  );
 
   return (
-    <div className="dark flex min-h-screen bg-background text-white">
-      {/* Sidebar */}
-      <aside className="hidden w-64 flex-col justify-between border-r border-white/10 bg-black/40 p-6 md:flex">
-        <div className="space-y-6">
-          <Link href="/" className="flex items-center gap-2">
-            <WavyIcon size={28} />
-            <span className="font-display text-xl font-bold tracking-tight text-white">
-              Super Admin
-            </span>
-          </Link>
+    <>
+      <StudioPageHeader title={t("title")} description={t("subtitle")} actions={manage} />
 
-          <nav className="space-y-1 text-xs">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "overview" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
-              }`}
-            >
-              <Shield className="h-4 w-4" />
-              Ringkasan Sistem
-            </button>
-            <button
-              onClick={() => setActiveTab("organizers")}
-              className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "organizers" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
-              }`}
-            >
-              <Building2 className="h-4 w-4" />
-              Manajemen Organizer
-            </button>
-            <button
-              onClick={() => setActiveTab("events")}
-              className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "events" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
-              }`}
-            >
-              <Calendar className="h-4 w-4" />
-              Monitoring Event
-            </button>
-            <button
-              onClick={() => setActiveTab("customers")}
-              className={`flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 font-bold transition-all ${
-                activeTab === "customers" ? "bg-primary text-white shadow-lg" : "text-white/60 hover:bg-white/5"
-              }`}
-            >
-              <Users className="h-4 w-4" />
-              Pengguna (Customer)
-            </button>
-          </nav>
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+        <KpiRow stats={stats} />
 
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 rounded-2xl border border-destructive/30 px-4 py-2.5 text-xs font-bold text-destructive hover:bg-destructive/10"
-        >
-          <LogOut className="h-4 w-4" />
-          Keluar Admin
-        </button>
-      </aside>
+        <Panel className="md:col-span-4" title={t("statusTitle")} caption={t("statusCaption")}>
+          <ChartState resource={organizers} isEmpty={(d) => d.length === 0} empty={<EmptyState title={t("organizersEmpty")} />}>
+            {(d) => <StatusRing organizers={d} />}
+          </ChartState>
+        </Panel>
 
-      {/* Main Panel */}
-      <main className="flex-1 p-6 md:p-10 space-y-8 overflow-y-auto">
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <div>
-            <h1 className="font-display text-2xl font-extrabold sm:text-3xl">
-              Panel Kontrol Platform Wavy
-            </h1>
-            <p className="text-xs text-white/60">
-              Monitoring ekosistem transaksi, akun organizer, dan kesehatan platform.
-            </p>
-          </div>
+        <Panel className="md:col-span-8" title={t("revenueTitle")} caption={t("revenueCaption")}>
+          <ChartState
+            resource={organizers}
+            isEmpty={(d) => !d.some((o) => Number(o.revenue) > 0)}
+            empty={<EmptyState title={t("revenueEmpty")} description={t("revenueEmptyText")} />}
+          >
+            {(d) => {
+              const rows = [...d]
+                .filter((o) => Number(o.revenue) > 0)
+                .sort((a, b) => Number(b.revenue) - Number(a.revenue))
+                .slice(0, 6)
+                .map((o) => ({ organizer: o.name, revenue: Number(o.revenue) }));
+              return (
+                <BarChart data={rows} xDataKey="organizer" aspectRatio="2 / 1">
+                  <Grid horizontal />
+                  <Bar dataKey="revenue" fill="var(--chart-line-primary)" lineCap="round" />
+                  <BarXAxis />
+                  <ChartTooltip />
+                </BarChart>
+              );
+            }}
+          </ChartState>
+        </Panel>
+      </div>
+    </>
+  );
+}
 
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-success/20 border border-success/40 px-3 py-1 text-xs font-bold text-success">
-              ● API Server Online
-            </span>
-          </div>
-        </div>
+function Panel({ title, caption, className, children }: { title: string; caption?: string; className?: string; children: React.ReactNode }) {
+  return (
+    <section className={cn("min-w-0 rounded-xl border border-border bg-card p-4 sm:p-6", className)}>
+      <div className="mb-4">
+        <h2 className="font-display text-base font-bold tracking-tight text-foreground">{title}</h2>
+        {caption && <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{caption}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
 
-        {/* Tab Overview */}
-        {activeTab === "overview" && (
-          <AsyncContent resource={statsRes} loadingRows={2}>
-            {(stats) => (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Total Revenue */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
-                <span className="text-xs text-white/50">Total GMV Transaksi</span>
-                <p className="font-mono text-3xl font-extrabold text-primary">
-                  Rp{stats.revenue.toLocaleString("id-ID")}
-                </p>
-                <p className="text-[10px] text-success">Dari pesanan paid</p>
-              </div>
+/** loading (skeleton) / kosong / error (coba lagi) — DESIGN §5. */
+function ChartState<T>({ resource, isEmpty, empty, children }: { resource: ApiResource<T>; isEmpty: (d: T) => boolean; empty: React.ReactNode; children: (d: T) => React.ReactNode }) {
+  if (resource.loading) return <div className="aspect-2/1 w-full animate-pulse rounded-lg bg-muted" role="status" aria-busy />;
+  if (resource.error !== undefined || resource.data === undefined) return <ErrorState error={resource.error} onRetry={resource.reload} className="border-0 py-6" />;
+  if (isEmpty(resource.data)) return <>{empty}</>;
+  return <>{children(resource.data)}</>;
+}
 
-              {/* Total Ticket Sold */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
-                <span className="text-xs text-white/50">Total Tiket Terjual</span>
-                <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats.ticket_sold}
-                </p>
-                <p className="text-[10px] text-white/40">Seluruh kategori konser</p>
-              </div>
+function KpiRow({ stats }: { stats: ApiResource<AdminStats> }) {
+  const t = useTranslations("Admin.dashboard");
+  if (stats.loading)
+    return (
+      <div className="grid grid-cols-2 gap-4 md:col-span-12 lg:grid-cols-4" role="status" aria-busy>
+        {Array.from({ length: 4 }, (_, i) => <div key={i} className="h-28 animate-pulse rounded-xl bg-muted" />)}
+      </div>
+    );
+  if (stats.error !== undefined || !stats.data) return <ErrorState className="md:col-span-12" error={stats.error} onRetry={stats.reload} />;
+  const d = stats.data;
+  return (
+    <div className="grid grid-cols-2 gap-4 md:col-span-12 lg:grid-cols-4">
+      <Kpi label={t("revenue")} value={formatIDR(Number(d.revenue))} note={t("revenueNote")} />
+      <Kpi label={t("orders")} value={String(d.order_count)} note={t("ticketsNote", { n: d.ticket_sold })} />
+      <Kpi label={t("events")} value={String(d.event_count)} />
+      <Kpi label={t("users")} value={String(d.organizer_count + d.customer_count)} note={t("usersNote", { organizers: d.organizer_count, customers: d.customer_count })} />
+    </div>
+  );
+}
 
-              {/* Total Orders */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
-                <span className="text-xs text-white/50">Total Pesanan Dibuat</span>
-                <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats.order_count}
-                </p>
-                <p className="text-[10px] text-white/40">Order terdaftar di DB</p>
-              </div>
+function Kpi({ label, value, note }: { label: string; value: string; note?: string }) {
+  return (
+    <div className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+      <p className="truncate font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground sm:text-[11px]">{label}</p>
+      <p className="mt-2 truncate font-display text-xl font-bold tracking-tight text-foreground sm:text-3xl">{value}</p>
+      {note && <p className="mt-1 truncate font-mono text-[11px] text-muted-foreground">{note}</p>}
+    </div>
+  );
+}
 
-              {/* Total Organizers */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
-                <span className="text-xs text-white/50">Event Organizer Terdaftar</span>
-                <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats.organizer_count}
-                </p>
-                <p className="text-[10px] text-white/40">Mitra EO aktif & suspended</p>
-              </div>
-
-              {/* Total Customers */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
-                <span className="text-xs text-white/50">Pengguna / Pembeli</span>
-                <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats.customer_count}
-                </p>
-                <p className="text-[10px] text-white/40">Akun customer aktif</p>
-              </div>
-
-              {/* Total Events */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-2">
-                <span className="text-xs text-white/50">Total Event Konser</span>
-                <p className="font-mono text-3xl font-extrabold text-white">
-                  {stats.event_count}
-                </p>
-                <p className="text-[10px] text-white/40">Draft, published, & closed</p>
-              </div>
-            </div>
-          </div>
-            )}
-          </AsyncContent>
-        )}
-
-        {/* Tab Organizers */}
-        {activeTab === "organizers" && (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-4">
-            <h2 className="font-display text-lg font-bold">Daftar Event Organizer</h2>
-            <AsyncContent
-              resource={organizersRes}
-              empty={<EmptyState title={tAdmin("emptyOrganizers")} />}
-            >
-              {(organizers) => (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-white/10 text-white/50">
-                  <tr>
-                    <th className="py-3 px-4">Nama EO</th>
-                    <th className="py-3 px-4">Email</th>
-                    <th className="py-3 px-4">Total Event</th>
-                    <th className="py-3 px-4">Revenue</th>
-                    <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4 text-right">Aksi Kontrol</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {organizers.map((org) => (
-                    <tr key={org.id} className="hover:bg-white/5 transition-colors">
-                      <td className="py-3 px-4 font-bold text-white">{org.name}</td>
-                      <td className="py-3 px-4 text-white/70">{org.email}</td>
-                      <td className="py-3 px-4">{org.event_count || 0} Event</td>
-                      <td className="py-3 px-4 font-mono font-bold text-primary">
-                        Rp{Number(org.revenue || 0).toLocaleString("id-ID")}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                            org.status === "active"
-                              ? "bg-success/20 text-success"
-                              : "bg-destructive/20 text-destructive"
-                          }`}
-                        >
-                          {org.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => handleToggleOrganizerStatus(org)}
-                          disabled={togglingId === org.id}
-                          className={`rounded-xl px-3 py-1 text-xs font-bold transition-all ${
-                            org.status === "active"
-                              ? "bg-destructive hover:bg-destructive/90 text-background"
-                              : "bg-success hover:bg-success/90 text-background"
-                          }`}
-                        >
-                          {org.status === "active" ? "Suspend EO" : "Aktifkan EO"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-              )}
-            </AsyncContent>
-          </div>
-        )}
-
-        {/* Tab Events */}
-        {activeTab === "events" && (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-4">
-            <h2 className="font-display text-lg font-bold">Monitoring Seluruh Event</h2>
-            <AsyncContent
-              resource={eventsRes}
-              empty={<EmptyState title={tAdmin("emptyEvents")} />}
-            >
-              {(events) => (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-white/10 text-white/50">
-                  <tr>
-                    <th className="py-3 px-4">Judul Konser</th>
-                    <th className="py-3 px-4">Musisi</th>
-                    <th className="py-3 px-4">Organizer</th>
-                    <th className="py-3 px-4">Kategori</th>
-                    <th className="py-3 px-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {events.map((ev, i) => (
-                    <tr key={ev.id || i} className="hover:bg-white/5 transition-colors">
-                      <td className="py-3 px-4 font-bold text-white">{ev.title}</td>
-                      <td className="py-3 px-4 text-white/70">{ev.artist_name || "-"}</td>
-                      <td className="py-3 px-4 text-white/70">{ev.organizer_name || "-"}</td>
-                      <td className="py-3 px-4">{ev.category}</td>
-                      <td className="py-3 px-4">
-                        <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-bold">
-                          {ev.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-              )}
-            </AsyncContent>
-          </div>
-        )}
-
-        {/* Tab Customers */}
-        {activeTab === "customers" && (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md space-y-4">
-            <h2 className="font-display text-lg font-bold">Daftar Pengguna / Pembeli</h2>
-            <AsyncContent
-              resource={customersRes}
-              empty={<EmptyState title={tAdmin("emptyCustomers")} />}
-            >
-              {(customers) => (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-white/10 text-white/50">
-                  <tr>
-                    <th className="py-3 px-4">Customer ID</th>
-                    <th className="py-3 px-4">Nama</th>
-                    <th className="py-3 px-4">Email</th>
-                    <th className="py-3 px-4">Jumlah Order</th>
-                    <th className="py-3 px-4">Total Belanja</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {customers.map((c, i) => (
-                    <tr key={c.id || i} className="hover:bg-white/5 transition-colors">
-                      <td className="py-3 px-4 font-mono font-bold">#{c.id}</td>
-                      <td className="py-3 px-4 text-white">{c.name || "Customer"}</td>
-                      <td className="py-3 px-4 text-white/70">{c.email}</td>
-                      <td className="py-3 px-4 font-bold">{c.order_count || 0} Order</td>
-                      <td className="py-3 px-4 font-mono font-bold text-success">
-                        Rp{Number(c.spend || 0).toLocaleString("id-ID")}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-              )}
-            </AsyncContent>
-          </div>
-        )}
-      </main>
+function StatusRing({ organizers }: { organizers: AdminOrganizer[] }) {
+  const t = useTranslations("Admin");
+  const counts = STATUS_ORDER.map((s) => ({ status: s, n: organizers.filter((o) => o.status === s).length })).filter((c) => c.n > 0);
+  const total = organizers.length;
+  const data = counts.map((c) => ({ label: t(`status.${c.status}`), value: c.n, maxValue: Math.max(total, 1), color: STATUS_COLORS[c.status] }));
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <RingChart data={data} size={220}>
+        {data.map((item, index) => (
+          <Ring key={item.label} index={index} />
+        ))}
+        <RingCenter defaultLabel={t("dashboard.statusCenter", { n: total })} />
+      </RingChart>
+      <ul className="w-full space-y-1.5">
+        {counts.map((c) => (
+          <li key={c.status} className="flex items-center gap-2 text-xs">
+            <i className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: STATUS_COLORS[c.status] }} aria-hidden />
+            <span className="min-w-0 flex-1 truncate text-foreground">{t(`status.${c.status}`)}</span>
+            <span className="font-mono text-muted-foreground">{c.n}/{total}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
