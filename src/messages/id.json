@@ -218,7 +218,63 @@
             "organizerFallback": "Penyelenggara"
         },
         "priceFrom": "Harga mulai dari",
-        "priceFromShort": "Mulai dari"
+        "priceFromShort": "Mulai dari",
+        "schedule": "{date}, {start} - {end} WIB",
+        "organizedBy": "Diselenggarakan oleh",
+        "seatmap": "Denah tempat duduk",
+        "defaultTerms": "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- Anak di bawah 7 tahun tidak diperbolehkan masuk.",
+        "tabs": {
+            "label": "Bagian halaman konser",
+            "desc": "Deskripsi",
+            "gallery": "Galeri",
+            "ticket": "Tiket",
+            "terms": "Syarat dan Ketentuan"
+        },
+        "toast": {
+            "loginFirst": "Silakan masuk terlebih dahulu",
+            "loginToBuy": "Silakan masuk untuk melanjutkan pembelian",
+            "unfollowed": "Berhasil membatalkan follow",
+            "followed": "Berhasil mengikuti {name}",
+            "followFailed": "Gagal mengikuti artis",
+            "reviewSent": "Ulasan berhasil dikirim",
+            "reviewFailed": "Gagal mengirim ulasan"
+        },
+        "gallery": {
+            "title": "Galeri",
+            "close": "Tutup galeri",
+            "previous": "Sebelumnya",
+            "next": "Berikutnya"
+        },
+        "artist": {
+            "title": "Tentang penampil",
+            "follow": "Ikuti",
+            "following": "Mengikuti",
+            "followers": "{formatted} penggemar"
+        },
+        "terms": {
+            "title": "Syarat & Ketentuan",
+            "expand": "Lihat selengkapnya",
+            "collapse": "Tutup"
+        },
+        "share": {
+            "title": "Bagikan event",
+            "fallbackTitle": "Event di Wavy",
+            "copy": "Salin link",
+            "copied": "Link event disalin",
+            "copyFailed": "Gagal menyalin link"
+        },
+        "review": {
+            "title": "Tulis ulasan konser",
+            "subtitle": "Bagikan pengalaman menonton konser ini kepada pengguna lain.",
+            "rating": "Rating (1 - 5 bintang)",
+            "star": "{n} bintang",
+            "comment": "Komentar",
+            "commentPlaceholder": "Ceritakan keseruan konser...",
+            "cancel": "Batal",
+            "submit": "Kirim ulasan",
+            "submitting": "Mengirim..."
+        },
+        "forYou": "Event untuk kamu"
     },
     "OrderDetail": {
         "loading": "Memuat detail pesanan...",

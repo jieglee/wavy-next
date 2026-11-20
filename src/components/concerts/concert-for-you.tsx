@@ -27,6 +27,7 @@ function ArrowLeftIcon({ className }: { className?: string }) { return <svg xmln
 function ArrowRightIcon({ className }: { className?: string }) { return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className={className} style={{ transform: "scaleX(-1)" }}><path fill="currentColor" d="M685.2 104.7a64 64 0 0 1 0 90.5L368.4 512l316.8 316.8a64 64 0 0 1-90.4 90.5l-362.1-362a64 64 0 0 1 0-90.5l362-362.1a64 64 0 0 1 90.5 0" /></svg>; }
 export default function ConcertForYou({ excludeId }: { excludeId: string | number }) {
   const t = useTranslations("FeaturedEvents");
+  const tDetail = useTranslations("ConcertDetail");
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -39,7 +40,7 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
     <section data-aos="fade-up" data-aos-duration="700" className="mt-10">
       <div className="mb-6 flex items-center gap-2">
         <Calendar className="h-6 w-6 shrink-0 text-primary" strokeWidth={3} />
-        <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">Event Untuk Kamu</h2>
+        <h2 className="font-display text-xl font-bold text-foreground sm:text-2xl">{tDetail("forYou")}</h2>
       </div>
       {forYou.loading ? <LoadingState /> : forYou.error ? <ErrorState error={forYou.error} onRetry={forYou.reload} /> : events.length === 0 ? <EmptyState title={t("empty")} /> : (
       <div className="relative">

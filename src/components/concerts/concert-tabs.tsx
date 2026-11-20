@@ -1,14 +1,16 @@
 type Tab = { id: string; label: string; onClick: () => void };
 
-export default function ConcertTabs({ tabs, activeTab }: { tabs: Tab[]; activeTab: string }) {
+export default function ConcertTabs({ tabs, activeTab, label }: { tabs: Tab[]; activeTab: string; label?: string }) {
   return (
-    <nav className="scrollbar-hide -mx-2 flex items-center gap-0 overflow-x-auto px-2 sm:mx-0 sm:px-0">
+    <nav aria-label={label} className="scrollbar-hide -mx-2 flex items-center gap-0 overflow-x-auto px-2 sm:mx-0 sm:px-0">
       {tabs.map((tab) => {
         const active = activeTab === tab.id;
         return (
           <button
             key={tab.id}
+            type="button"
             onClick={tab.onClick}
+            aria-current={active ? "true" : undefined}
             className={`relative whitespace-nowrap px-6 py-3 text-[14px] font-semibold transition-colors sm:px-7 ${
               active ? "text-primary" : "text-muted-foreground/70 hover:text-foreground/80"
             }`}

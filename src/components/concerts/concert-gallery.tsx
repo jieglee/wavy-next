@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Seatmap = { images: string[]; name: string } | null;
 
@@ -60,6 +61,7 @@ export default function ConcertGallery({
   posterUrl?: string;
   title: string;
 }) {
+  const t = useTranslations("ConcertDetail.gallery");
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
   const [revealed, setRevealed] = useState(false);
@@ -139,7 +141,7 @@ export default function ConcertGallery({
     <section id="sec-gallery" className="scroll-mt-[72px]" ref={sectionRef}>
       <div className="flex items-center gap-2">
         <ImageIcon className="h-5 w-5 text-foreground stroke-[2.5]" />
-        <h2 className="font-sans text-[24px] font-bold text-foreground">Galeri</h2>
+        <h2 className="font-sans text-[24px] font-bold text-foreground">{t("title")}</h2>
       </div>
 
       <div className="mt-6 flex flex-col gap-5">
@@ -182,7 +184,7 @@ export default function ConcertGallery({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="Tutup galeri"
+              aria-label={t("close")}
               className="rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
             >
               <X className="h-5 w-5" />
@@ -194,7 +196,7 @@ export default function ConcertGallery({
               <>
                 <button
                   type="button"
-                  aria-label="Sebelumnya"
+                  aria-label={t("previous")}
                   onClick={(e) => {
                     e.stopPropagation();
                     setIndex((i) => (i - 1 + total) % total);
@@ -205,7 +207,7 @@ export default function ConcertGallery({
                 </button>
                 <button
                   type="button"
-                  aria-label="Berikutnya"
+                  aria-label={t("next")}
                   onClick={(e) => {
                     e.stopPropagation();
                     setIndex((i) => (i + 1) % total);

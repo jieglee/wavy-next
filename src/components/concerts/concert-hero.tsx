@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin, Calendar, Layers } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 import type { ConcertDetail } from "@/types/type";
 import { categoryLabels } from "@/lib/concert-labels";
 
@@ -8,26 +9,15 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
   // tanpa gambar: latar polos bg-stage, bukan banner situs lain
   const banner = concert.poster_url || concert.photo_url || "";
 
+  const t = useTranslations("ConcertDetail");
+  const format = useFormatter();
   const dateObj = new Date(concert.date);
-
-  const dateStr = dateObj.toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-
-  const startHour = dateObj.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
   const endDate = new Date(dateObj.getTime() + 2 * 60 * 60 * 1000);
-
-  const endHour = endDate.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
+  const time = { hour: "2-digit", minute: "2-digit", hour12: false } as const;
+  const schedule = t("schedule", {
+    date: format.dateTime(dateObj, { day: "numeric", month: "short", year: "numeric" }),
+    start: format.dateTime(dateObj, time),
+    end: format.dateTime(endDate, time),
   });
 
   return (
@@ -74,7 +64,7 @@ export default function ConcertHero({ concert }: { concert: ConcertDetail }) {
                 strokeWidth={1.8}
               />
               <span className="font-medium">
-                {dateStr}, {startHour} - {endHour} WIB
+                {schedule}
               </span>
             </div>
 

@@ -1,12 +1,17 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 export default function ConcertSeatmap({
   seatmap,
 }: {
   seatmap: { name: string; images: string[] } | null | undefined;
 }) {
+  const t = useTranslations("ConcertDetail");
   if (!seatmap || !seatmap.images?.length) return null;
   return (
     <section className="scroll-mt-[72px]">
-      <h2 className="text-[16px] font-bold text-foreground">Denah Tempat Duduk</h2>
+      <h2 className="text-[16px] font-bold text-foreground">{t("seatmap")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{seatmap.name}</p>
       <div className="mt-4 grid gap-4">
         {seatmap.images.map((img, i) => (

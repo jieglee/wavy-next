@@ -218,7 +218,63 @@
             "organizerFallback": "Organizer"
         },
         "priceFrom": "Price starting from",
-        "priceFromShort": "From"
+        "priceFromShort": "From",
+        "schedule": "{date}, {start} - {end} WIB",
+        "organizedBy": "Organized by",
+        "seatmap": "Seat map",
+        "defaultTerms": "- Purchased tickets cannot be exchanged or refunded.\n- The promoter is not responsible for tickets bought outside the official platform.\n- Fan benefits apply only to certain ticket categories.\n- Professional cameras & livestreaming are not allowed without permission.\n- No admission for infants & children below 7 years old.",
+        "tabs": {
+            "label": "Concert page sections",
+            "desc": "Description",
+            "gallery": "Gallery",
+            "ticket": "Tickets",
+            "terms": "Terms & Conditions"
+        },
+        "toast": {
+            "loginFirst": "Please sign in first",
+            "loginToBuy": "Please sign in to continue your purchase",
+            "unfollowed": "Unfollowed",
+            "followed": "You are now following {name}",
+            "followFailed": "Couldn't follow the artist",
+            "reviewSent": "Review sent",
+            "reviewFailed": "Couldn't send your review"
+        },
+        "gallery": {
+            "title": "Gallery",
+            "close": "Close gallery",
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "artist": {
+            "title": "About the performer",
+            "follow": "Follow",
+            "following": "Following",
+            "followers": "{formatted} fans"
+        },
+        "terms": {
+            "title": "Terms & Conditions",
+            "expand": "Show more",
+            "collapse": "Show less"
+        },
+        "share": {
+            "title": "Share event",
+            "fallbackTitle": "Event on Wavy",
+            "copy": "Copy link",
+            "copied": "Event link copied",
+            "copyFailed": "Couldn't copy the link"
+        },
+        "review": {
+            "title": "Write a concert review",
+            "subtitle": "Share your concert experience with other fans.",
+            "rating": "Rating (1 - 5 stars)",
+            "star": "{n} stars",
+            "comment": "Comment",
+            "commentPlaceholder": "Tell us how the concert was...",
+            "cancel": "Cancel",
+            "submit": "Send review",
+            "submitting": "Sending..."
+        },
+        "forYou": "Events for you"
     },
     "OrderDetail": {
         "loading": "Loading order details...",
