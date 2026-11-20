@@ -197,6 +197,8 @@
         }
     },
     "Checkout": {
+        "oneCategoryHint": "One ticket category per transaction, up to 4 tickets.",
+        "oneCategorySwitched": "Ticket category changed. Each transaction covers one category only.",
         "paymentNotice": "Online payment is coming soon. For now, payments are verified by the organizer.",
         "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
         "orderError": {

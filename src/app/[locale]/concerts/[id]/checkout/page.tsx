@@ -99,13 +99,14 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         if (raw) {
           const s = JSON.parse(raw) as { qtyMap?: Record<string, number>; step?: number; form?: Record<string, string> };
           const cats = data.ticket_categories ?? [];
+          // satu kategori per checkout: pulihkan kategori valid pertama saja
           const validQty: Record<number, number> = {};
           let total = 0;
           for (const c of cats) {
             const q = Number(s.qtyMap?.[c.id] ?? 0);
             if (q > 0) {
               const v = Math.min(q, 4, c.remaining ?? 4);
-              if (v > 0) { validQty[c.id] = v; total += v; }
+              if (v > 0) { validQty[c.id] = v; total += v; break; }
             }
           }
           if (total > 0 && total <= 4) {
@@ -235,15 +236,11 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       });
       return;
     }
-    const totalOther = Object.entries(qtyMap)
-      .filter(([k]) => Number(k) !== catId)
-      .reduce((s, [, q]) => s + q, 0);
-    if (v + totalOther > 4) {
-      toast.error("Maksimal 4 tiket per pesanan");
-      v = Math.max(0, 4 - totalOther);
-      if (v <= 0) return;
-    }
-    setQtyMap((prev) => ({ ...prev, [catId]: Math.min(v, 4) }));
+    // Satu kategori per checkout -> satu order -> total di detail order = total di sini.
+    // Memilih kategori lain mengganti pilihan sebelumnya.
+    const switching = Object.entries(qtyMap).some(([k, q]) => Number(k) !== catId && q > 0);
+    if (switching) toast(tCheckout("oneCategorySwitched"));
+    setQtyMap({ [catId]: Math.min(v, 4) });
   }
 
   function buildOrderPayload(catId: number, qty: number) {
@@ -270,20 +267,17 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
       toast.error("Maksimal 4 tiket per pesanan");
       return;
     }
+    // satu kategori per checkout = satu order (backend: total_price = harga x jumlah)
+    const [entry] = entries;
     setSubmitting(true);
     setOrderError(null);
-    // satu order per kategori; kalau gagal di tengah, order yang sudah dibuat tetap dilaporkan
-    const created: number[] = [];
     try {
-      for (const e of entries) {
-        const order = await apiPost<{ id: number }>("/orders", buildOrderPayload(e.cat.id, e.qty));
-        created.push(order.id);
-      }
+      const order = await apiPost<{ id: number }>("/orders", buildOrderPayload(entry.cat.id, entry.qty));
       dropStored();
-      toast.success(tCheckout("created", { count: created.length }));
-      router.push(`/orders/${created[0]}`);
+      toast.success(tCheckout("created", { count: 1 }));
+      router.push(`/orders/${order.id}`);
     } catch (err: unknown) {
-      setOrderError({ error: err, createdOrderIds: created });
+      setOrderError({ error: err, createdOrderIds: [] });
     } finally {
       setSubmitting(false);
     }
@@ -382,6 +376,7 @@ export default function ConcertCheckoutPage({ params }: { params: Promise<{ id: 
         <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
             <h2 className="text-[13px] font-extrabold tracking-wide text-[#1F2937]">{groupLabel}</h2>
+            <p className="mt-1 text-xs text-[#6B7280]">{tCheckout("oneCategoryHint")}</p>
 
             {soldOutCount > 0 && (
               <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
