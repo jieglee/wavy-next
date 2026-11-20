@@ -341,7 +341,8 @@
             "TICKET_NOT_FOUND": "Ticket not found.",
             "WRONG_ORGANIZER": "This ticket is not for your event.",
             "ALREADY_SCANNED": "This ticket has already been scanned.",
-            "EVENT_ENDED": "The event has already ended."
+            "EVENT_ENDED": "The event has already ended.",
+            "validation": "Invalid data: {message}"
         },
         "events": {
             "title": "Events",
@@ -436,6 +437,39 @@
             "emptyText": "An event needs at least one ticket category before it can be published.",
             "errPrice": "Fill in a name and a price (0 or more).",
             "errQuota": "Quota must be a whole number of at least 1."
+        },
+        "orders": {
+            "title": "Payment verification",
+            "subtitle": "Fallback for payments that don't go through Midtrans. Pending orders expire automatically after 15 minutes.",
+            "filterLabel": "Filter by order status",
+            "all": "All",
+            "emptyTitle": "No orders",
+            "emptyPending": "No orders are waiting for verification.",
+            "emptyText": "No orders with this status yet.",
+            "eventN": "Event #{id}",
+            "close": "Close panel",
+            "detailTitle": "Order #{id}",
+            "status": "Status",
+            "total": "Total",
+            "event": "Event",
+            "category": "Category",
+            "quantity": "Quantity",
+            "customer": "Buyer",
+            "createdAt": "Created",
+            "expiresAt": "Expires",
+            "paidAt": "Paid",
+            "tickets": "Tickets",
+            "ticketsSummary": "{total} tickets · {scanned} checked in",
+            "manualNote": "Only approve once you've received the money. Approving issues tickets + QR; rejecting releases the quota.",
+            "approve": "Approve",
+            "reject": "Reject",
+            "refund": "Refund",
+            "approved": "Order approved. Tickets issued.",
+            "rejected": "Order rejected. Quota released.",
+            "refunded": "Order refunded. Tickets cancelled.",
+            "confirmApprove": "Approve order #{id}? Tickets + QR will be issued to the buyer.",
+            "confirmReject": "Reject order #{id}?",
+            "confirmRefund": "Refund order #{id}? Its tickets will be cancelled."
         }
     }
 }
