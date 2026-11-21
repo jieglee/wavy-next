@@ -13,7 +13,7 @@ export const SHOW_TRAVELER_MODE = false;
  * Waiting room / waiting list at /concerts/[id]/queue.
  * While false, nothing links to it and direct visits redirect to the concert detail page.
  */
-export const SHOW_QUEUE = false;
+export const SHOW_QUEUE = true;
 
 /**
  * "Pilihan Pembayaran" logo grid in the site footer.
@@ -26,4 +26,4 @@ export const SHOW_PAYMENT_LOGOS = true;
  * Social media icons in the site footer.
  * Hidden until Wavy has real accounts; every icon currently points nowhere.
  */
-export const SHOW_SOCIAL_LINKS = false;
+export const SHOW_SOCIAL_LINKS = true;
