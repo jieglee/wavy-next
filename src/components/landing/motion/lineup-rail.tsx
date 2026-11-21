@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
@@ -20,7 +21,7 @@ function RailCard({ c }: { c: Concert }) {
       poster_url={c.poster_url || undefined}
       date={c.date}
       salesStatus={c.sales_status}
-      className="w-[240px] shrink-0 sm:w-[280px]"
+      className="w-[300px] shrink-0 sm:w-[280px]"
     />
   );
 }
@@ -71,7 +72,7 @@ function ScrollRail({ items }: { items: Concert[] }) {
 export function LineupRail() {
   const t = useTranslations("Landing.lineup");
   const concerts = useLandingConcerts();
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
 
   return (
     <section aria-labelledby="lineup-title" className="relative overflow-x-clip bg-background">

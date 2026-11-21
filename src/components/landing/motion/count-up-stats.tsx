@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, useInView, useReducedMotion } from "motion/react";
+import { animate, useInView } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { useFormatter, useTranslations } from "next-intl";
 import { ErrorState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
@@ -10,7 +11,7 @@ import { useLandingConcerts } from "./landing-data";
 function CountUp({ value }: { value: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   const format = useFormatter();
   const [shown, setShown] = useState(0);
 

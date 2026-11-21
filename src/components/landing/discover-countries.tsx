@@ -2,7 +2,8 @@
 
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { motion, type Variants } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { TiltCard } from "@/components/landing/motion/tilt-card";
 
 // kartu muncul berurutan saat grid masuk viewport
@@ -146,7 +147,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
 
 export default function DiscoverCountries() {
     const t = useTranslations("DiscoverCountries");
-    const reduce = useReducedMotion();
+    const reduce = useReducedMotionSafe();
     return (
         <section className="px-4 py-10 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">

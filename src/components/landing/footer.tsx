@@ -5,11 +5,10 @@ import { WavyIcon } from "@/components/landing/wavy-icon"
 import { SHOW_PAYMENT_LOGOS, SHOW_SOCIAL_LINKS } from "@/lib/features"
 import { FooterColumn, FooterColumns } from "@/components/landing/footer-motion"
 
-const paymentMethods = [
-  "QRIS", "BCA", "BRI", "BNI", "Mandiri", "BSI",
-  "GoPay", "OVO", "DANA", "ShopeePay",
-  "Visa", "Mastercard", "Alfamart", "Indomaret",
-]
+// Hanya metode yang dipakai di Midtrans Snap sandbox (docs/MIDTRANS.md §4):
+// BCA Virtual Account, QRIS, GoPay, kartu kredit (Visa/Mastercard).
+// Logo lain di paymentLogos disimpan untuk saat metodenya diaktifkan.
+const paymentMethods = ["QRIS", "BCA", "GoPay", "Visa", "Mastercard"]
 
 const paymentLogos: Record<string, { src: string; width: number; height: number }> = {
   QRIS: { src: "/images/footer/Logo_QRIS.svg.webp", width: 3840, height: 1456 },

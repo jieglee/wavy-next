@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { motion, type Variants } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 
 const container: Variants = {
   hidden: {},
@@ -29,7 +30,7 @@ export function FooterColumns({ className, children }: { className?: string; chi
 
 /** Satu kolom footer. prefers-reduced-motion → langsung tampil tanpa gerak. */
 export function FooterColumn({ className, children }: { className?: string; children: React.ReactNode }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   return (
     <motion.div
       className={className}

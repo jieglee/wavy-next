@@ -1,7 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { motion, useReducedMotion, useSpring } from "motion/react";
+import { motion, useSpring } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 
 const FINE_POINTER = "(hover: hover) and (pointer: fine)";
 
@@ -35,7 +36,7 @@ export function TiltCard({
   className?: string;
   max?: number;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   const finePointer = useFinePointer();
   const enabled = finePointer && !reduce;
   const rotateX = useSpring(0, spring);

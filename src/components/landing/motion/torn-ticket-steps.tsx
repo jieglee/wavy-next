@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -12,23 +13,21 @@ type Step = { title: string; body: string[] };
  * Saat masuk viewport, potongan stub "tersobek" bergeser & miring dari badan tiket.
  */
 function TicketCard({ step, index, big }: { step: Step; index: number; big: boolean }) {
-  const reduce = useReducedMotion();
-  const tear = reduce
-    ? {}
-    : {
-        initial: { x: 0, rotate: 0 },
-        whileInView: { x: 16, y: 6, rotate: 9 },
-        viewport: { once: true, amount: 0.6 },
-        transition: { duration: 0.5, delay: 0.15 + index * 0.08, ease: [0.22, 1, 0.36, 1] as const },
-      };
-  const enter = reduce
-    ? {}
-    : {
-        initial: { opacity: 0, y: 24 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, amount: 0.3 },
-        transition: { duration: 0.4, delay: index * 0.06 },
-      };
+  const reduce = useReducedMotionSafe();
+  // Props animasi selalu sama di server & client (hydration aman); reduced-motion hanya
+  // membuat transisi instan, jadi kartu langsung di posisi akhir tanpa gerak.
+  const tear = {
+    initial: { x: 0, y: 0, rotate: 0 },
+    whileInView: { x: 16, y: 6, rotate: 9 },
+    viewport: { once: true, amount: 0.6 },
+    transition: reduce ? { duration: 0 } : { duration: 0.5, delay: 0.15 + index * 0.08, ease: [0.22, 1, 0.36, 1] as const },
+  };
+  const enter = {
+    initial: { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.3 },
+    transition: reduce ? { duration: 0 } : { duration: 0.4, delay: index * 0.06 },
+  };
 
   return (
     <motion.li {...enter} className={cn("flex min-w-0", big && "sm:col-span-2 lg:row-span-2")}>

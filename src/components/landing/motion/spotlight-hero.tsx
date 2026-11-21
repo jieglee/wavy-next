@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { useTranslations } from "next-intl";
 import { ArrowDown } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -13,7 +14,7 @@ import { Link } from "@/i18n/navigation";
 export function SpotlightHero() {
   const t = useTranslations("Landing.hero");
   const ref = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
 
   const beam = useTransform(scrollYProgress, [0, 0.7], [1, 0.28]);
