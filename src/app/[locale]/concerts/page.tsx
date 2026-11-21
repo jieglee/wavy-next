@@ -158,7 +158,7 @@ function ConcertsPageInner() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-16/7 w-full rounded-xl bg-border" />
+                <div className="aspect-4/5 w-full rounded-xl bg-border" />
                 <div className="mt-3 h-3 w-1/2 rounded bg-border" />
                 <div className="mt-2 h-4 w-3/4 rounded bg-border" />
                 <div className="mt-1 h-3 w-2/3 rounded bg-border" />
@@ -201,6 +201,8 @@ function ConcertsPageInner() {
                   organizer={concert.organizer_name || concert.artist_name || "Event Organizer"}
                   price={priceStr}
                   poster_url={concert.poster_url || undefined}
+                  date={concert.date}
+                  salesStatus={concert.sales_status}
                 />
               );
             })}

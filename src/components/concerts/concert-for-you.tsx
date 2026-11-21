@@ -1,21 +1,20 @@
 "use client";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Calendar } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
-import type { Concert } from "@/types/type";
-import { EventPoster } from "@/components/concerts/event-poster";
-interface DisplayEvent { id: number; title: string; organizer: string; location: string; price: string | null; poster_url?: string; }
+import type { Concert, SalesStatus } from "@/types/type";
+import ConcertCard from "@/components/concerts/concert-card";
+interface DisplayEvent { id: number; title: string; organizer: string; location: string; price: string | null; poster_url?: string; date: string; salesStatus?: SalesStatus; }
 // dekorasi kartu tanpa poster (bukan data)
 const extractConcerts = (data: unknown): Concert[] => {
   if (Array.isArray(data)) return data as Concert[];
   if (data && typeof data === "object") { const d = data as Record<string, unknown>; if (Array.isArray(d.concerts)) return d.concerts as Concert[]; if (Array.isArray(d.data)) return d.data as Concert[]; if (Array.isArray(d.events)) return d.events as Concert[]; if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) return (d.concerts as Record<string, unknown>).data as Concert[]; }
   return [];
 };
-const toDisplay = (c: Concert): DisplayEvent => ({ id: c.id, title: c.title, organizer: c.organizer_name || c.artist_name || "", location: c.venue || "", price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null, poster_url: c.poster_url });
+const toDisplay = (c: Concert): DisplayEvent => ({ id: c.id, title: c.title, organizer: c.organizer_name || c.artist_name || "", location: c.venue || "", price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null, poster_url: c.poster_url, date: c.date, salesStatus: c.sales_status });
 // /concerts dulu; kalau kosong pakai /homepage. Tanpa data karangan.
 async function loadForYou(excludeId: string | number): Promise<DisplayEvent[]> {
   const notSelf = (c: Concert) => String(c.id) !== String(excludeId);
@@ -44,22 +43,22 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
       </div>
       {forYou.loading ? <LoadingState /> : forYou.error ? <ErrorState error={forYou.error} onRetry={forYou.reload} /> : events.length === 0 ? <EmptyState title={t("empty")} /> : (
       <div className="relative">
-        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute left-0 sm:-left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowLeftIcon className="h-4 w-4" /></button>}
-        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute right-0 sm:-right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"><ArrowRightIcon className="h-4 w-4" /></button>}
+        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute left-0 sm:-left-4 top-49 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-54"><ArrowLeftIcon className="h-4 w-4" /></button>}
+        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute right-0 sm:-right-4 top-49 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-54"><ArrowRightIcon className="h-4 w-4" /></button>}
         <div ref={scrollerRef} className="scrollbar-hide -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-2 py-4">
           {events.slice(0, 8).map((event) => (
-            <Link key={event.id} href={`/concerts/${event.id}`} className="group w-72.5 shrink-0 snap-start sm:w-80">
-              <div className="transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)] group-hover:border-primary/30">
-                  <EventPoster src={event.poster_url} title={event.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" />
-                  <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-                </div>
-              </div>
-              <p className="mt-3 text-xs text-muted-foreground/80">{event.location}</p>
-              <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-foreground transition-all duration-300 group-hover:text-primary">{event.title}</h3>
-              <p className="mt-0.5 truncate text-xs text-muted-foreground">{t("byOrganizer", { organizer: event.organizer })}</p>
-              <div className="mt-3 border-t border-border pt-2.5">{event.price ? (<><p className="text-[0.65rem] text-muted-foreground/80">{t("startingFrom")}</p><p className="font-mono text-sm font-bold text-foreground">Rp{event.price}</p></>) : (<p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>)}</div>
-            </Link>
+            <ConcertCard
+              key={event.id}
+              id={event.id}
+              title={event.title}
+              location={event.location}
+              organizer={event.organizer}
+              price={event.price}
+              poster_url={event.poster_url}
+              date={event.date}
+              salesStatus={event.salesStatus}
+              className="w-72.5 shrink-0 snap-start sm:w-80"
+            />
           ))}
         </div>
       </div>

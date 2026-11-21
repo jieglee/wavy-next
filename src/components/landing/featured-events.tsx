@@ -6,7 +6,7 @@ import ConcertCard from "@/components/concerts/concert-card";
 import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { EmptyState, ErrorState } from "@/components/states/async-states";
-import type { Concert } from "@/types/type";
+import type { Concert, SalesStatus } from "@/types/type";
 
 interface DisplayEvent {
   id: number;
@@ -15,6 +15,8 @@ interface DisplayEvent {
   location: string;
   price: string | null;
   poster_url?: string;
+  date: string;
+  salesStatus?: SalesStatus;
 }
 
 // dekorasi kartu tanpa poster (bukan data)
@@ -40,6 +42,8 @@ const toDisplay = (c: Concert): DisplayEvent => ({
   location: c.venue || "",
   price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null,
   poster_url: c.poster_url,
+  date: c.date,
+  salesStatus: c.sales_status,
 });
 
 // /concerts dulu; kalau kosong pakai featured di /homepage. Tanpa data karangan.
@@ -135,7 +139,7 @@ export default function FeaturedEvents() {
           <div className="flex gap-3 overflow-hidden pb-2 pt-2 sm:gap-4" role="status" aria-label={t("loading")}>
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="w-[260px] shrink-0 animate-pulse sm:w-[280px] lg:w-[270px]">
-                <div className="aspect-16/7 w-full rounded-xl bg-muted" />
+                <div className="aspect-4/5 w-full rounded-xl bg-muted" />
                 <div className="mt-3 h-3 w-1/2 rounded bg-muted" />
                 <div className="mt-2 h-4 w-3/4 rounded bg-muted" />
               </div>
@@ -151,7 +155,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label={t("prev")}
-              className="absolute -left-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"
+              className="absolute -left-4 top-40 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-44"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -161,7 +165,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label={t("next")}
-              className="absolute -right-4 top-15.75 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-17.5"
+              className="absolute -right-4 top-40 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-44"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>
@@ -177,6 +181,8 @@ export default function FeaturedEvents() {
                 organizer={event.organizer}
                 price={event.price}
                 poster_url={event.poster_url}
+                date={event.date}
+                salesStatus={event.salesStatus}
                 className="w-[260px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]"
               />
             ))}
