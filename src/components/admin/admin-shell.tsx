@@ -6,7 +6,7 @@ import { Building2, LayoutDashboard, LogOut } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { cn } from "@/lib/utils";
-import { apiGet } from "@/lib/api";
+import { adminGet } from "@/lib/admin-session";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAdminSession, useAdminUnauthorized } from "@/hooks/use-admin-session";
 
@@ -20,8 +20,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const t = useTranslations("Admin");
   const pathname = usePathname();
   const session = useAdminSession();
-  // profil dari GET /admin/me (bukan hanya data login di localStorage); 401 -> ke login admin
-  const me = useApiResource(session.ready ? "admin-me" : null, () => apiGet<{ id: number; name: string; email: string }>("/admin/me"));
+  // profil dari GET /admin/me (bukan hanya data login yang tersimpan); 401 -> ke login admin
+  const me = useApiResource(session.ready ? "admin-me" : null, () => adminGet<{ id: number; name: string; email: string }>("/admin/me"));
   useAdminUnauthorized(me.error);
   const adminName = me.data?.name || me.data?.email || session.name || session.email;
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);

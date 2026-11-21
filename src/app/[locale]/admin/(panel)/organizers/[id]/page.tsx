@@ -4,7 +4,7 @@ import { use } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, CalendarX } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { apiGet } from "@/lib/api";
+import { adminGet } from "@/lib/admin-session";
 import { formatIDR } from "@/lib/price";
 import { formatWib } from "@/lib/organizer";
 import { useApiResource } from "@/hooks/use-api-resource";
@@ -21,7 +21,7 @@ export default function AdminOrganizerDetailPage({ params }: { params: Promise<{
   const t = useTranslations("Admin.organizerDetail");
   const session = useAdminSession();
   const detail = useApiResource(session.ready ? `admin-organizer-${id}` : null, () =>
-    apiGet<AdminOrganizerDetail>(`/admin/organizers/${id}`)
+    adminGet<AdminOrganizerDetail>(`/admin/organizers/${id}`)
   );
   useAdminUnauthorized(detail.error);
 

@@ -34,6 +34,12 @@ export function parseApiError(status: number, body: unknown): ApiError {
 
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
+  // sisa build lama: token admin dulu disimpan di slot ini. Admin kini punya sesi sendiri
+  // (lib/admin-session), jadi token admin di sini tidak boleh dianggap sesi customer/EO.
+  if (localStorage.getItem("wavy_auth_role") === "admin") {
+    clearAuthSession();
+    return null;
+  }
   return localStorage.getItem("wavy_auth_token");
 }
 

@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, Shield } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
-import { ApiError, apiPost, setAuthToken } from "@/lib/api";
+import { ApiError, apiPost } from "@/lib/api";
+import { setAdminSession } from "@/lib/admin-session";
 import { useErrorMessage } from "@/lib/error-message";
 import { inputCls, labelCls } from "@/components/studio/studio-ui";
 
@@ -37,7 +38,7 @@ function AdminLoginForm() {
         email,
         password,
       });
-      setAuthToken(res.access_token, "admin", res.admin);
+      setAdminSession(res.access_token, res.admin);
       router.replace("/admin/dashboard");
     } catch (err) {
       setError(err instanceof ApiError && err.status === 401 ? t("invalid") : errorMessage(err));

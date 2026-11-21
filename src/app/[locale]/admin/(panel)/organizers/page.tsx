@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Building2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import toast from "react-hot-toast";
-import { apiGet, apiPatch } from "@/lib/api";
+import { adminGet, adminPatch } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/price";
 import { formatWib } from "@/lib/organizer";
@@ -26,7 +26,7 @@ export default function AdminOrganizersPage() {
   const locale = useLocale();
   const errorMessage = useErrorMessage();
   const session = useAdminSession();
-  const list = useApiResource(session.ready ? "admin-organizers" : null, () => apiGet<AdminOrganizer[]>("/admin/organizers"));
+  const list = useApiResource(session.ready ? "admin-organizers" : null, () => adminGet<AdminOrganizer[]>("/admin/organizers"));
   useAdminUnauthorized(list.error);
 
   const [confirm, setConfirm] = useState<Pending | null>(null);
@@ -39,7 +39,7 @@ export default function AdminOrganizersPage() {
     setBusy(true);
     setRowError(null);
     try {
-      await apiPatch(`/admin/organizers/${org.id}`, { status: next });
+      await adminPatch(`/admin/organizers/${org.id}`, { status: next });
       list.mutate((prev) => prev.map((o) => (o.id === org.id ? { ...o, status: next } : o)));
       toast.success(next === "suspended" ? t("suspended", { name: org.name }) : t("activated", { name: org.name }));
       setConfirm(null);
