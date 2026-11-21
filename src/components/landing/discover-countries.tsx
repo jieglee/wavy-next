@@ -2,6 +2,18 @@
 
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { motion, useReducedMotion, type Variants } from "motion/react";
+import { TiltCard } from "@/components/landing/motion/tilt-card";
+
+// kartu muncul berurutan saat grid masuk viewport
+const gridVariants: Variants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+};
+const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 18 },
+    show: { opacity: 1, y: 0 },
+};
 
 function AnimatedOffIcon({
   size = 26,
@@ -104,7 +116,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
     const tiltClass = "group-hover:-rotate-[6deg]";
 
   return (
-    <div className="relative z-10 h-16 w-16 shrink-0 overflow-visible min-[420px]:h-[88px] min-[420px]:w-[88px] sm:h-[96px] sm:w-[96px]">
+    <div className="relative z-10 h-16 w-16 shrink-0 overflow-visible transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:-translate-y-1.5 min-[420px]:h-[88px] min-[420px]:w-[88px] sm:h-[96px] sm:w-[96px]">
       {/* Glow shadow menyeluruh di belakang gambar - pink/biru Wavy, baru keliatan pas hover */}
       <div
         className="pointer-events-none absolute inset-0 rounded-[18px] blur-[18px] opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
@@ -134,6 +146,7 @@ function CityIllustration({ city, idx }: { city: City; idx: number }) {
 
 export default function DiscoverCountries() {
     const t = useTranslations("DiscoverCountries");
+    const reduce = useReducedMotion();
     return (
         <section className="px-4 py-10 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
@@ -145,10 +158,22 @@ export default function DiscoverCountries() {
                     </h2>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                <motion.div
+                    className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
+                    variants={gridVariants}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.25 }}
+                >
                     {cities.map((city, idx) => (
-                        <Link
+                        <motion.div
                             key={city.id}
+                            variants={cardVariants}
+                            transition={reduce ? { duration: 0 } : { duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                            className="relative hover:z-10"
+                        >
+                        <TiltCard>
+                        <Link
                             href={city.href}
                             className="group relative flex h-[112px] w-full items-center justify-between overflow-visible rounded-2xl border border-border bg-white px-4 py-3 shadow-sm min-[420px]:px-5 transition-all duration-200 hover:border-input hover:shadow-md sm:h-[118px]"
                         >
@@ -173,8 +198,10 @@ export default function DiscoverCountries() {
                                 style={{ background: city.accent }}
                             />
                         </Link>
+                        </TiltCard>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );
