@@ -5,6 +5,7 @@ import { SHOW_TRAVELER_MODE } from "@/lib/features";
 import Footer from "@/components/landing/footer";
 import ScrollToTop from "@/components/scroll-to-top";
 import SplashWrapper from "@/components/splash-wrapper";
+import DiscoverCountries from "@/components/landing/discover-countries";
 import { SmoothScroll } from "@/components/landing/motion/smooth-scroll";
 import { SpotlightHero } from "@/components/landing/motion/spotlight-hero";
 import { LineupRail } from "@/components/landing/motion/lineup-rail";
@@ -12,7 +13,7 @@ import { CountUpStats } from "@/components/landing/motion/count-up-stats";
 import { TornTicketSteps } from "@/components/landing/motion/torn-ticket-steps";
 
 // Landing scroll-driven (DESIGN §7): hero di-pin dengan sorot lampu → lineup horizontal →
-// angka naik → cara beli sebagai tiket tersobek → pilihan konser.
+// angka naik → cara beli sebagai tiket tersobek → pilihan konser → event per kota.
 export default function Home() {
   return (
     <SplashWrapper>
@@ -29,6 +30,7 @@ export default function Home() {
             </div>
           </section>
           {SHOW_TRAVELER_MODE && <TravelerMode />}
+          <DiscoverCountries />
         </main>
         <Footer />
         <ScrollToTop />
