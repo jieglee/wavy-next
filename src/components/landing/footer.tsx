@@ -3,6 +3,7 @@ import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { WavyIcon } from "@/components/landing/wavy-icon"
 import { SHOW_PAYMENT_LOGOS, SHOW_SOCIAL_LINKS } from "@/lib/features"
+import { FooterColumn, FooterColumns } from "@/components/landing/footer-motion"
 
 const paymentMethods = [
   "QRIS", "BCA", "BRI", "BNI", "Mandiri", "BSI",
@@ -104,9 +105,9 @@ export default function Footer() {
   return (
     <footer className="border-t border-border px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className={`grid grid-cols-2 gap-10 ${smCols[columns]}`}>
+        <FooterColumns className={`grid grid-cols-2 gap-10 ${smCols[columns]}`}>
           {/* Brand + Social */}
-          <div className="col-span-2 sm:col-span-1">
+          <FooterColumn className="col-span-2 sm:col-span-1">
             <p className="font-display text-xs font-bold uppercase tracking-wide bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
               {t("everyConcert")}
             </p>
@@ -134,47 +135,47 @@ export default function Footer() {
                 </div>
               </>
             )}
-          </div>
+          </FooterColumn>
 
           {/* Menu */}
           {menuLinks.length > 0 && (
-          <div>
+          <FooterColumn>
             <p className="font-display text-sm font-semibold text-foreground">{t("menu")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               {menuLinks.map((l) => (
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-sm text-muted-foreground transition-[color,translate] duration-200 ease-out hover:text-foreground motion-safe:hover:translate-x-1"
                 >
                   {l.label}
                 </Link>
               ))}
             </nav>
-          </div>
+          </FooterColumn>
           )}
 
           {/* Panduan */}
           {panduanLinks.length > 0 && (
-          <div>
+          <FooterColumn>
             <p className="font-display text-sm font-semibold text-foreground">{t("guide")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               {panduanLinks.map((l) => (
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-sm text-muted-foreground transition-[color,translate] duration-200 ease-out hover:text-foreground motion-safe:hover:translate-x-1"
                 >
                   {l.label}
                 </Link>
               ))}
             </nav>
-          </div>
+          </FooterColumn>
           )}
 
           {/* Pilihan Pembayaran */}
           {SHOW_PAYMENT_LOGOS && (
-          <div className="col-span-2 sm:col-span-1">
+          <FooterColumn className="col-span-2 sm:col-span-1">
             <p className="font-display text-sm font-semibold text-foreground">
               {t("paymentOptions")}
             </p>
@@ -202,9 +203,9 @@ export default function Footer() {
                 </span>
               ))}
             </div>
-          </div>
+          </FooterColumn>
           )}
-        </div>
+        </FooterColumns>
 
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:flex-row">
@@ -214,7 +215,7 @@ export default function Footer() {
           {legalLinks.length > 0 && (
             <div className="flex items-center gap-6">
               {legalLinks.map((l) => (
-                <Link key={l.label} href={l.href} className="text-xs text-muted-foreground transition-colors hover:text-foreground">
+                <Link key={l.label} href={l.href} className="text-xs text-muted-foreground transition-[color,translate] duration-200 ease-out hover:text-foreground motion-safe:hover:-translate-y-0.5">
                   {l.label}
                 </Link>
               ))}
