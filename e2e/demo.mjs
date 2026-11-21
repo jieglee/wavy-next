@@ -291,12 +291,27 @@ async function main() {
   });
 
   const admin = await newPage(browser, "admin");
+  await step("6a. /admin/* wajib sesi admin; sesi customer tidak membuka admin", async () => {
+    for (const p of ["/id/admin", "/id/admin/dashboard", "/id/admin/organizers"]) {
+      await admin.goto(`${WEB}${p}`);
+      await admin.waitForURL(/\/id\/admin\/login$/, { timeout: 15000 });
+    }
+    // buyerA sedang login sebagai customer
+    expect(await buyerA.evaluate(() => !!localStorage.getItem("wavy_auth_token")), "buyerA tidak punya sesi customer");
+    await buyerA.goto(`${WEB}/id/admin/dashboard`);
+    await buyerA.waitForURL(/\/id\/admin\/login$/, { timeout: 15000 });
+  });
+
   await step("6. admin suspend EO -> EO langsung keluar dari dashboard", async () => {
     await admin.goto(`${WEB}/id/admin/login`);
     await admin.locator('input[type="email"]').fill(ADMIN.email);
     await admin.locator('input[type="password"]').fill(ADMIN.password);
     await admin.locator('button[type="submit"]').click();
     await admin.waitForURL(/\/admin\/dashboard/, { timeout: 20000 });
+    // sesi admin terpisah: login admin tidak mengisi slot sesi customer/EO
+    expect(await admin.evaluate(() => localStorage.getItem("wavy_auth_token")) === null, "login admin mengisi sesi customer");
+    await admin.goto(`${WEB}/id/admin/login`);
+    await admin.waitForURL(/\/admin\/dashboard/, { timeout: 15000 });
     const ao = msg.Admin.organizers;
     await admin.goto(`${WEB}/id/admin/organizers`);
     const row = admin.locator("tr", { hasText: EO.email });
