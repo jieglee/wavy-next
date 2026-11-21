@@ -17,10 +17,10 @@ export const SHOW_QUEUE = false;
 
 /**
  * "Pilihan Pembayaran" logo grid in the site footer.
- * Hidden while payment runs through Midtrans sandbox only (PRD §4.6);
- * the logos would promise methods we do not offer yet.
+ * Shows only the methods tested in Midtrans Snap sandbox (docs/MIDTRANS.md §4);
+ * the list lives in footer.tsx (paymentMethods).
  */
-export const SHOW_PAYMENT_LOGOS = false;
+export const SHOW_PAYMENT_LOGOS = true;
 
 /**
  * Social media icons in the site footer.
