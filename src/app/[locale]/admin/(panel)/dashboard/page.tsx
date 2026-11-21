@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Building2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { apiGet } from "@/lib/api";
+import { adminGet } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/price";
 import { useApiResource, type ApiResource } from "@/hooks/use-api-resource";
@@ -32,8 +32,8 @@ const STATUS_COLORS: Record<string, string> = {
 export default function AdminDashboardPage() {
   const t = useTranslations("Admin.dashboard");
   const session = useAdminSession();
-  const stats = useApiResource(session.ready ? "admin-stats" : null, () => apiGet<AdminStats>("/admin/stats"));
-  const organizers = useApiResource(session.ready ? "admin-organizers" : null, () => apiGet<AdminOrganizer[]>("/admin/organizers"));
+  const stats = useApiResource(session.ready ? "admin-stats" : null, () => adminGet<AdminStats>("/admin/stats"));
+  const organizers = useApiResource(session.ready ? "admin-organizers" : null, () => adminGet<AdminOrganizer[]>("/admin/organizers"));
   useAdminUnauthorized(stats.error, organizers.error);
 
   const manage = (
