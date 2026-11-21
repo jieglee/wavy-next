@@ -198,6 +198,7 @@ export function EventForm({ event }: { event?: StudioEvent }) {
               organizer={artistName || "—"}
               price={null}
               poster_url={form.poster_url || undefined}
+              date={form.date ? fromWibInput(form.date) : null}
             />
           </div>
         </div>

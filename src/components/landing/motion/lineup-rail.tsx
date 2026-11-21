@@ -1,50 +1,66 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
-import { formatIDR } from "@/lib/price";
 import type { Concert } from "@/types/type";
 import { useLandingConcerts } from "./landing-data";
-import { EventPoster } from "@/components/concerts/event-poster";
+import ConcertCard from "@/components/concerts/concert-card";
 
-function PosterCard({ c }: { c: Concert }) {
-  const t = useTranslations("Landing.lineup");
-  const format = useFormatter();
+function RailCard({ c }: { c: Concert }) {
   return (
-    <Link
-      href={`/concerts/${c.id}`}
-      className="group block w-[240px] shrink-0 sm:w-[280px]"
-      aria-label={c.title}
-    >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-border">
-        <EventPoster src={c.poster_url} title={c.title} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
-      </div>
-      <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-        {c.date ? format.dateTime(new Date(c.date), { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }) : ""}
-      </p>
-      <h3 className="mt-1 line-clamp-2 font-display text-base font-bold leading-snug text-foreground">{c.title}</h3>
-      <p className="mt-1 font-mono text-xs text-muted-foreground">
-        {c.min_price ? t("from", { price: formatIDR(Number(c.min_price)) }) : t("noPrice")}
-      </p>
-    </Link>
+    <ConcertCard
+      id={c.id}
+      title={c.title}
+      location={c.venue}
+      organizer={c.organizer_name || c.artist_name || ""}
+      price={c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null}
+      poster_url={c.poster_url || undefined}
+      date={c.date}
+      salesStatus={c.sales_status}
+      className="w-[240px] shrink-0 sm:w-[280px]"
+    />
   );
 }
 
-/** Rel horizontal: scroll vertikal menggeser poster ke kiri (desktop & mobile). */
+/**
+ * Rel horizontal yang di-pin: scroll vertikal menggeser kartu ke kiri.
+ * Jarak geser = lebar track − lebar viewport (diukur dengan ResizeObserver), jadi kartu terakhir
+ * berhenti tepat di padding kanan yang sama dengan padding kiri, tanpa ruang kosong di ujung.
+ * Tinggi section = 1 layar + jarak geser, sehingga geser horizontal sebanding 1:1 dengan scroll.
+ */
 function ScrollRail({ items }: { items: Concert[] }) {
   const ref = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [distance, setDistance] = useState(0);
+  const distanceMv = useMotionValue(0);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const track = trackRef.current;
+    if (!viewport || !track) return;
+    const ro = new ResizeObserver(() => {
+      const d = Math.max(0, Math.ceil(track.scrollWidth - viewport.clientWidth));
+      distanceMv.set(d);
+      setDistance(d);
+    });
+    ro.observe(viewport);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, [distanceMv]);
+
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  // geser sejauh lebar rel dikurangi satu layar; dihitung dari jumlah kartu agar tanpa pengukuran DOM
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${Math.max(0, items.length - 1) * (100 / items.length)}%`]);
+  const x = useTransform(() => -scrollYProgress.get() * distanceMv.get());
+
   return (
-    <div ref={ref} style={{ height: `${Math.min(items.length, 12) * 38 + 60}vh` }} className="relative">
-      <div className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
-        <motion.div style={{ x }} className="flex w-max -rotate-2 gap-6 px-4 sm:px-8">
+    <div ref={ref} style={{ height: `calc(100svh + ${distance}px)` }} className="relative" data-rail>
+      <div ref={viewportRef} className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
+        <motion.div ref={trackRef} style={{ x }} className="flex w-max -rotate-2 gap-6 px-4 sm:px-8" data-rail-track>
           {items.map((c) => (
-            <PosterCard key={c.id} c={c} />
+            <RailCard key={c.id} c={c} />
           ))}
         </motion.div>
       </div>
@@ -81,7 +97,7 @@ export function LineupRail() {
             return reduce ? (
               <div className="flex gap-6 overflow-x-auto px-4 pb-4 sm:px-8">
                 {items.map((c) => (
-                  <PosterCard key={c.id} c={c} />
+                  <RailCard key={c.id} c={c} />
                 ))}
               </div>
             ) : (
