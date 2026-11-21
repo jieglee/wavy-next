@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Shield, Calendar } from "lucide-react";
+import { Search, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Calendar } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
@@ -272,15 +272,6 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               >
                 <Calendar className="h-4 w-4 text-foreground" />
                 Portal Organizer
-              </Link>
-
-              <Link
-                href="/admin/dashboard"
-                onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
-              >
-                <Shield className="h-4 w-4 text-foreground" />
-                Portal Admin
               </Link>
 
               <div className="border-t border-border mt-1 pt-1">

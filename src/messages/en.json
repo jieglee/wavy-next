@@ -10,7 +10,6 @@
         "akun": "Account",
         "tickets": "My Tickets",
         "organizer": "EO Portal",
-        "admin": "Admin",
         "logout": "Logout"
     },
     "Auth": {
