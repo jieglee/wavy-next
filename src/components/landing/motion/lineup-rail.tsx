@@ -20,7 +20,7 @@ function RailCard({ c }: { c: Concert }) {
       poster_url={c.poster_url || undefined}
       date={c.date}
       salesStatus={c.sales_status}
-      className="w-[240px] shrink-0 sm:w-[280px]"
+      className="w-[300px] shrink-0 sm:w-[280px]"
     />
   );
 }

@@ -43,8 +43,8 @@ export default function ConcertForYou({ excludeId }: { excludeId: string | numbe
       </div>
       {forYou.loading ? <LoadingState /> : forYou.error ? <ErrorState error={forYou.error} onRetry={forYou.reload} /> : events.length === 0 ? <EmptyState title={t("empty")} /> : (
       <div className="relative">
-        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute left-0 sm:-left-4 top-49 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-54"><ArrowLeftIcon className="h-4 w-4" /></button>}
-        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute right-0 sm:-right-4 top-49 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-54"><ArrowRightIcon className="h-4 w-4" /></button>}
+        {canScrollLeft && <button onClick={() => scrollByCard(-1)} aria-label={t("prev")} className="absolute left-0 sm:-left-4 top-21.5 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-54"><ArrowLeftIcon className="h-4 w-4" /></button>}
+        {canScrollRight && <button onClick={() => scrollByCard(1)} aria-label={t("next")} className="absolute right-0 sm:-right-4 top-21.5 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-54"><ArrowRightIcon className="h-4 w-4" /></button>}
         <div ref={scrollerRef} className="scrollbar-hide -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-2 py-4">
           {events.slice(0, 8).map((event) => (
             <ConcertCard

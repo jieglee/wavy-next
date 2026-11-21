@@ -155,7 +155,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label={t("prev")}
-              className="absolute -left-4 top-40 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-44"
+              className="absolute -left-4 top-17.5 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-44"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </button>
@@ -165,7 +165,7 @@ export default function FeaturedEvents() {
             <button
               onClick={() => scrollByCard(1)}
               aria-label={t("next")}
-              className="absolute -right-4 top-40 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-44"
+              className="absolute -right-4 top-17.5 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-lg transition-transform hover:scale-105 sm:top-44"
             >
               <ArrowRightIcon className="h-4 w-4" />
             </button>
@@ -183,7 +183,7 @@ export default function FeaturedEvents() {
                 poster_url={event.poster_url}
                 date={event.date}
                 salesStatus={event.salesStatus}
-                className="w-[260px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]"
+                className="w-[300px] shrink-0 snap-start sm:w-[280px] lg:w-[270px] xl:w-[calc((100%-48px)/4)]"
               />
             ))}
           </div>

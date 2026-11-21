@@ -25,6 +25,7 @@ interface ConcertCardProps {
 /**
  * Kartu konser. Poster tidak dipotong: gambar utuh (object-contain) di atas latar blur dari
  * poster yang sama, jadi poster portrait, persegi, maupun landscape tampil lengkap.
+ * Di bawah 640px kartu horizontal (poster kecil kiri, info kanan) supaya tidak terlalu tinggi.
  */
 export default function ConcertCard({
   id,
@@ -44,8 +45,8 @@ export default function ConcertCard({
     : null;
 
   return (
-    <Link href={`/concerts/${id}`} className={`group flex flex-col ${className ?? ""}`}>
-      <div className="transition-transform duration-300 ease-out motion-safe:group-hover:-translate-y-1.5">
+    <Link href={`/concerts/${id}`} className={`group flex gap-3 sm:flex-col sm:gap-0 ${className ?? ""}`}>
+      <div className="w-28 shrink-0 self-start transition-transform duration-300 ease-out motion-safe:group-hover:-translate-y-1.5 sm:w-auto sm:self-auto">
         <div className="relative aspect-4/5 overflow-hidden rounded-xl border border-border bg-stage shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)]">
           {poster_url && (
             <EventPoster
@@ -64,7 +65,8 @@ export default function ConcertCard({
         </div>
       </div>
 
-      <div className="mt-3 flex min-h-6 items-center justify-between gap-2">
+      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-6 flex-wrap items-center justify-between gap-x-2 gap-y-1 sm:mt-3 sm:flex-nowrap">
         <p className="truncate font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{when}</p>
         {salesStatus && <SalesBadge status={salesStatus} />}
       </div>
@@ -80,7 +82,7 @@ export default function ConcertCard({
       {organizer && (
         <p className="mt-0.5 truncate text-xs text-muted-foreground/80">{t("byOrganizer", { organizer })}</p>
       )}
-      <div className="mt-auto pt-3">
+      <div className="mt-auto pt-2 sm:pt-3">
         <div className="border-t border-border pt-2.5">
           {price ? (
             <>
@@ -91,6 +93,7 @@ export default function ConcertCard({
             <p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>
           )}
         </div>
+      </div>
       </div>
     </Link>
   );
