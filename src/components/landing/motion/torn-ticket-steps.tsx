@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -12,7 +13,7 @@ type Step = { title: string; body: string[] };
  * Saat masuk viewport, potongan stub "tersobek" bergeser & miring dari badan tiket.
  */
 function TicketCard({ step, index, big }: { step: Step; index: number; big: boolean }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   // Props animasi selalu sama di server & client (hydration aman); reduced-motion hanya
   // membuat transisi instan, jadi kartu langsung di posisi akhir tanpa gerak.
   const tear = {

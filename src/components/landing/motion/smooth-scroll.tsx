@@ -2,11 +2,11 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { useReducedMotion } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 
 /** Smooth scroll (Lenis) khusus landing. Mati total saat prefers-reduced-motion. */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
 
   useEffect(() => {
     if (reduce) return;
