@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, Ban, Clock, Eye, EyeOff, XCircle } from "lucide-
 import toast from "react-hot-toast";
 import { useRouter, Link } from "@/i18n/navigation";
 import { apiPost, ApiError, setAuthToken } from "@/lib/api";
+import { LoginRoleSwitch } from "@/components/auth/login-role-switch";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "@/components/landing/wavy-icon-animated";
 
@@ -135,6 +136,7 @@ function OrganizerLoginForm() {
               <WavyIcon size={28} />
               <span className="font-display text-xl font-bold tracking-tight text-foreground">Wavy</span>
             </div>
+            <LoginRoleSwitch current="organizer" className="mb-6" />
             <span className="mb-3 inline-block rounded-full border border-border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Portal Mitra Penyelenggara
             </span>
