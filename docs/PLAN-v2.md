@@ -1,6 +1,6 @@
 # Wavy v2 — Rencana Tahap 1
 
-> Status: **draf, menunggu persetujuan Kalsah.** Belum ada kode yang ditulis.
+> Status: **disetujui Kalsah 2026-11-27** (keputusan di §6, langkah reset Neon di §7).
 > Tanggal: 2026-11-27. Dasar: `docs/PRD.md`, `docs/DESIGN.md`, `docs/AUDIT.md`, kode di `origin/main` ketiga repo.
 > Setelah disetujui, PRD/DESIGN/AUDIT diperbarui di branch tersendiri (`docs/prd-v2`).
 
@@ -82,12 +82,12 @@ erDiagram
 | `events` | `CHECK status IN ('draft','published','closed')`, `CHECK sales_end_at > sales_start_at` (sudah ada), `sales_end_at <= event_date` | Aturan PRD §4.1 (juga divalidasi Zod) |
 | `ticket_categories` | `UNIQUE (event_id, name)`, `UNIQUE (id, event_id)`, `price >= 0`, `quota > 0`, `sold >= 0` | `UNIQUE (id, event_id)` dipakai FK komposit di bawah |
 | `category_sections` | PK `(ticket_category_id, venue_section_id)`; FK komposit `(ticket_category_id, event_id) → ticket_categories(id, event_id)`; `UNIQUE (event_id, venue_section_id)` | Satu section hanya milik satu kategori per event. Bahwa section memang milik venue event dicek di service (Postgres tidak bisa FK lintas dua hop tanpa trigger) |
-| `orders` | FK komposit `(ticket_category_id, venue_section_id) → category_sections`; `CHECK quantity BETWEEN 1 AND 4`; `CHECK status IN ('pending_payment','paid','expired','rejected','refunded','cancelled')`; index `(ticket_category_id, status)`, `(payment_ref)`, `(paid_at) WHERE status='paid'` | DB menolak section yang tidak dipetakan ke kategori itu. `venue_section_id` nullable hanya untuk event tanpa venue (lihat keputusan §6) |
+| `orders` | FK komposit `(ticket_category_id, venue_section_id) → category_sections`; `CHECK quantity BETWEEN 1 AND 4`; `CHECK status IN ('pending_payment','paid','expired','rejected','refunded','cancelled')`; index `(ticket_category_id, status)`, `(payment_ref)`, `(paid_at) WHERE status='paid'` | DB menolak section yang tidak dipetakan ke kategori itu. `venue_section_id` `NOT NULL` (keputusan §6.4) |
 | `tickets` | `UNIQUE code`, `scanned_at` menggantikan `is_scanned` | Waktu scan tercatat; anti-duplikat tetap `UPDATE ... WHERE scanned_at IS NULL` |
 | `reviews` | `UNIQUE (customer_id, event_id)`, `rating BETWEEN 1 AND 5` | Sama seperti sekarang |
 | `otp_codes` | `code_hash` (bukan kode polos), `attempts` | Hardening kecil; sekarang kode disimpan polos |
 
-Kuota tetap **per kategori**: rumus `quota - sold - pending aktif` di `utils/quota.ts` tidak berubah. Section hanya pilihan posisi; kapasitas section dipakai untuk tampilan (lihat keputusan §6.3).
+Kuota tetap **per kategori**: rumus `quota - sold - pending aktif` di `utils/quota.ts` tidak berubah. Section hanya pilihan posisi; kapasitas section hanya informasi (keputusan §6.3).
 
 ### 1.4 Tabel yang dihapus / diubah
 
@@ -190,7 +190,7 @@ Middleware `organizerAuth` dan klaim JWT `organizer_id` dihapus.
 | GET/POST `/events` | GET/POST `/admin/events` | GET mengganti `/admin/events` read-only yang sekarang; filter `?status=&q=` |
 | GET/PUT/DELETE `/events/:id` | GET/PUT/DELETE `/admin/events/:id` | Body: `artist_id`, `venue_id`, `event_date`, ... Hapus ditolak bila sudah ada order paid |
 | POST `/events/:id/publish` | POST `/admin/events/:id/publish` | Publish ditolak bila belum ada kategori, atau venue punya section tapi ada kategori tanpa section |
-| POST `/events/:id/close-sales` | POST `/admin/events/:id/close-sales` | |
+| POST `/events/:id/close-sales` | POST `/admin/events/:id/close-sales` | Pasangannya baru: `POST /admin/events/:id/reopen-sales` (§6.9) |
 | GET/POST `/events/:id/ticket-categories` | GET/POST `/admin/events/:id/ticket-categories` | |
 | PUT/DELETE `/ticket-categories/:id` | PUT/DELETE `/admin/ticket-categories/:id` | Kuota tidak boleh < terpakai (paid + pending aktif) |
 | GET/POST/PUT/DELETE `/artists` | `/admin/artists` (sama) | Hapus ditolak bila artis dipakai event |
@@ -240,6 +240,7 @@ Respons `GET /orders/:id`, `/orders/history`, `/tickets`, `/tickets/:id` ditamba
 | `components/admin/organizer-review.tsx`, `organizer-status-badge.tsx` | |
 | `components/concerts/concert-organizer-share.tsx`, `concert-seatmap.tsx` | Diganti pemilih section |
 | `lib/organizer.ts`, `components/studio/studio-shell.tsx` | Shell digabung ke `admin-shell` |
+| `/dev/charts` | Halaman uji chart (§6.14) |
 | Link "Jadi EO"/organizer di navbar, footer, about, i18n key `organizer*` | |
 
 **Dipindah ke `/admin/(panel)`** (pakai `admin-shell`, token admin)
@@ -300,7 +301,7 @@ Isi (TypeScript murni + komponen r3f tanpa `<Canvas>`):
 
 ## 4. Rencana branch berurutan
 
-Ukuran: **S** ≤ 0,5 hari (≲ 300 baris), **M** 1–2 hari, **L** 2–4 hari. Semua dari `origin/main` repo masing-masing. Catatan: `main` lokal `wavy-next` tertinggal 4 commit dan `wavy-mobile` lokal masih di `fix/font-poppins`; branch dibuat dari `origin/main`, `main` lokal tidak disentuh.
+Ukuran: **S** ≤ 0,5 hari (≲ 300 baris), **M** 1–2 hari, **L** 2–4 hari. Branch ditumpuk: yang pertama di tiap repo dibuat dari `origin/main`, berikutnya dari branch sebelumnya. Catatan: `main` lokal `wavy-next` tertinggal 4 commit dan `wavy-mobile` lokal masih di `fix/font-poppins`; branch dibuat dari `origin/main`, `main` lokal tidak disentuh.
 
 ### 4.1 Urutan global
 
@@ -389,19 +390,55 @@ Expo Go di 1 Android menengah + 1 iPhone: render < 2 dtk, ≥ 30 fps saat rotasi
 
 ---
 
-## 6. Hal yang perlu keputusan Kalsah
+## 6. Keputusan Kalsah (final, 2026-11-27)
 
-1. **Lokasi data posisi section.** Rekomendasi: posisi dibangkitkan backend dari template dan **disimpan di `venue_sections`** (memenuhi "semua data di database", backend butuh daftar section juga). `venue-kit` hanya berisi kamera, warna, geometri render. Alternatif: posisi hanya di modul bersama, DB menyimpan kode section saja (backend lalu juga harus mengimpor modul).
-2. **Cara berbagi `venue-kit` antar repo terpisah.** Pilihan: (a) **salinan di tiap repo + script sinkron dari `wavy-next` + test checksum** (rekomendasi, paling sederhana untuk Metro & Next), (b) repo git ketiga dipasang sebagai dependency `github:...#tag`, (c) monorepo (mengubah struktur, tidak disarankan sekarang).
-3. **Kapasitas section**: hanya informasi (kuota tetap per kategori, section bisa "terisi" melebihi kapasitasnya) — konfirmasi. Alternatif: kapasitas section juga dibatasi (lebih rumit, dua row lock).
-4. **Section wajib?** Rekomendasi: event wajib punya venue; bila venue punya section, setiap kategori wajib dipetakan ke ≥ 1 section sebelum publish, dan order wajib memilih section. Alternatif: venue opsional (tanpa pemilih).
-5. **Satu section → satu kategori per event** (rekomendasi, `UNIQUE (event_id, venue_section_id)`). Satu kategori boleh banyak section.
-6. **Kustomisasi template**: rekomendasi hanya nama & kapasitas section yang bisa diubah; jumlah/posisi section tetap per template. Konfirmasi tiga template: stadion (tribun 4 sisi + festival), arena (bowl + floor), teater (orchestra/balcony).
-7. **Scan QR & refund**: bukan bagian soal UKK, tapi fitur EO yang sudah ada. Rekomendasi: tetap, pindah ke admin.
-8. **Artis per event**: tetap satu artis utama (`artist_id`) atau lineup M:N (`event_artists`)? Rekomendasi: tetap satu untuk v2.
-9. **Buka kembali penjualan** setelah ditutup: perlu tombol "Buka lagi" atau close bersifat final?
-10. **Riwayat git**: data scrape tetap di riwayat. Rekomendasi: biarkan (rewrite memaksa force-push `main`). Aset gambar scrape di Cloudinary dihapus atau dibiarkan?
-11. **Data demo**: DB kosong total berarti admin mengisi semua lewat UI sebelum demo. Perlu script seed data fiktif untuk dev lokal saja (tidak dijalankan ke Neon)?
-12. **Backup Neon**: siapa yang membuat branch `backup-pre-v2` dan menjalankan reset (butuh akses console/`neonctl`)? Kapan jadwal resetnya (rekomendasi setelah BE-3 merge)?
-13. **Pemilih web**: halaman terpisah `/concerts/[id]/seats` (rekomendasi, three hanya dimuat di sana) atau tertanam di halaman detail?
-14. **Halaman `/dev/charts`**: hapus atau biarkan?
+| # | Topik | Keputusan |
+|---|---|---|
+| 1 | Posisi section | Dibangkitkan backend dari template, **disimpan di `venue_sections`**. `venue-kit` hanya kamera, warna, geometri render |
+| 2 | Berbagi `venue-kit` | **Salinan di tiap repo** + script sinkron dari `wavy-next` + test checksum |
+| 3 | Kapasitas section | **Hanya informasi**; kuota tetap per kategori |
+| 4 | Venue & section | **Wajib**: event wajib punya venue; publish ditolak bila ada kategori tanpa section; `POST /orders` wajib `venue_section_id` (kolom `orders.venue_section_id` `NOT NULL`) |
+| 5 | Section ↔ kategori | `UNIQUE (event_id, venue_section_id)`: satu section satu kategori per event; satu kategori boleh banyak section |
+| 6 | Template | Tiga template (stadion, arena, teater); admin hanya bisa ubah **nama & kapasitas** section |
+| 7 | Scan QR & refund | Tetap, pindah ke admin (`/admin/scan`, `/admin/orders/:id/refund`) |
+| 8 | Artis per event | Satu artis (`events.artist_id`) |
+| 9 | Buka lagi penjualan | Ada tombol **"Buka lagi"** setelah close: `POST /admin/events/:id/reopen-sales` (status `closed` → `published`; status penjualan tetap dihitung dari tenggat & kuota, PRD §4.1) — masuk BE-3 & FE-2 |
+| 10 | Riwayat git & Cloudinary | Dibiarkan |
+| 11 | Data demo | `scripts/seed-demo-v2.ts` berisi data **fiktif** (konser, artis, venue rekaan), dilindungi `--confirm=<nama-db>`, tidak pernah dijalankan otomatis (tidak dari test, tidak dari `migrate`/`db-reset`) — branch BE-8 |
+| 12 | Backup & reset Neon | Dilakukan **Kalsah** setelah BE-3 di-merge, mengikuti §7 |
+| 13 | Pemilih section web | Halaman terpisah `/concerts/[id]/seats` |
+| 14 | `/dev/charts` | Dihapus (masuk FE-2) |
+
+Tambahan branch dari keputusan:
+
+| # | Repo | Branch | Isi | Ukuran | Bergantung |
+|---|---|---|---|---|---|
+| BE-8 | wavy-backend | `chore/seed-demo-v2` | `scripts/seed-demo-v2.ts` data fiktif: 3 venue (satu per template), ±5 artis rekaan, ±4 konser dengan kategori & pemetaan section, beragam status penjualan (open, upcoming, sold out, closed) | S | BE-6 |
+
+Branch ditumpuk: tiap branch dibuat dari branch sebelumnya di urutan §4 (bukan dari `main`), di-push, tanpa PR/merge oleh agen.
+
+---
+
+## 7. Langkah backup & reset Neon (dijalankan Kalsah)
+
+Waktu: setelah `refactor/remove-organizer-role` (BE-3) di-merge ke `main`. Sebelum itu kode di `main` masih memakai tabel `organizers`.
+
+**Persiapan**
+1. Pastikan tidak ada server backend yang sedang jalan ke Neon (dev lokal, deploy).
+2. `git switch main && git pull` di `wavy-backend`, lalu `bun install`.
+3. Cek `.env`: `DATABASE_URL` menunjuk database Neon yang benar. Catat nama database (bagian path URL, mis. `neondb`).
+
+**Backup**
+4. Neon console → project Wavy → **Branches** → **Create branch** dari branch utama, nama `backup-pre-v2`, "current point in time". (Alternatif CLI: `neonctl branches create --name backup-pre-v2`.) Branch ini salinan penuh; bisa dihapus setelah v2 stabil.
+5. Jalankan dry-run: `bun scripts/db-reset.ts` (tanpa `--confirm`). Script hanya mencetak host, nama DB, jumlah baris per tabel, dan daftar email admin yang akan dipertahankan, lalu berhenti. Simpan output ini.
+
+**Reset**
+6. `bun scripts/db-reset.ts --confirm=<nama-db>`. Dalam satu transaksi: simpan admin → `DROP SCHEMA public CASCADE` → jalankan semua `db/migrations/*.sql` yang sudah ada di `main` → kembalikan admin. Juga menulis `backup/admins-<timestamp>.json` (di-`.gitignore`). Bila ada error, transaksi di-rollback dan DB tidak berubah.
+7. Verifikasi (dicetak otomatis): semua tabel 0 baris kecuali `admins` dan `schema_migrations`.
+
+**Setelah reset**
+8. `bun run dev` → login admin di web `/admin/login`. Bila gagal login: `bun scripts/create-admin.ts` (upsert).
+9. Saat BE-5/BE-6 di-merge kemudian: `bun scripts/migrate.ts` (menerapkan `002_venues.sql` dst.; idempotent lewat `schema_migrations`).
+10. Opsional untuk latihan demo: `bun scripts/seed-demo-v2.ts --confirm=<nama-db>` (data fiktif). Untuk demo UKK, data diisi admin lewat UI.
+
+**Rollback** (bila v2 bermasalah): Neon console → branch `backup-pre-v2` → **Restore** ke branch utama, atau arahkan `DATABASE_URL` sementara ke connection string `backup-pre-v2` dan checkout commit `main` sebelum BE-3.
