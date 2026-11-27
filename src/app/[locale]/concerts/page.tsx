@@ -1,9 +1,18 @@
 "use client";
 
-import { useMemo, useState, Suspense } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Ticket, ArrowLeft } from "lucide-react";
+import { Ticket, ArrowLeft, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import {
+  EVENT_CATEGORIES,
+  countByCategory,
+  getEventCategory,
+  matchesCategory,
+  resolveCategorySlug,
+  type EventCategorySlug,
+} from "@/lib/event-categories";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import EventCard from "@/components/concerts/event-card";
@@ -24,20 +33,6 @@ function extractConcerts(data: unknown): Concert[] {
     }
   }
   return [];
-}
-
-function uniqueCategories(concerts: Concert[]): string[] {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const c of concerts) {
-    const cat = (c.category || "").trim();
-    if (!cat) continue;
-    const key = cat.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(cat);
-  }
-  return out;
 }
 
 const COUNTRY_LABELS: Record<string, string> = {
@@ -64,35 +59,47 @@ function byCountry(c: Concert, country: string): boolean {
 }
 
 function ConcertsPageInner() {
+  const t = useTranslations("ConcertsExplore");
+  const tc = useTranslations("EventCategories");
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
-  const initialCat = searchParams.get("category") || "Semua";
 
-  const filteredInitialQuery = initialCat !== "Semua" && initialQuery.toLowerCase() === initialCat.toLowerCase() ? "" : initialQuery;
+  // URL = satu-satunya sumber state filter, jadi modal Category / search di navbar langsung
+  // mengubah daftar walau halaman ini sudah terbuka.
+  const rawCat = searchParams.get("category");
+  const selectedCat = resolveCategorySlug(rawCat);
+  const query = (searchParams.get("q") || "").trim();
+  const country = searchParams.get("country") || "";
 
-  const [query, setQuery] = useState(filteredInitialQuery);
-  const [selectedCat, setSelectedCat] = useState(initialCat);
-  const [country, setCountry] = useState(searchParams.get("country") || "");
-  // kategori diturunkan dari data asli (tanpa daftar cadangan statis)
-  const allRes = useApiResource("concerts-all", () => apiGet<unknown>("/concerts").then(extractConcerts));
-  const categories = useMemo(() => {
-    const next = ["Semua", ...uniqueCategories(allRes.data ?? [])];
-    if (initialCat !== "Semua" && !next.some((c) => c.toLowerCase() === initialCat.toLowerCase())) {
-      next.splice(1, 0, initialCat);
-    }
-    return next;
-  }, [allRes.data, initialCat]);
+  const setFilters = (next: { category?: EventCategorySlug | null; q?: string; country?: string }) => {
+    const params = new URLSearchParams();
+    const cat = next.category === undefined ? selectedCat : next.category;
+    const q = next.q === undefined ? query : next.q;
+    const ctry = next.country === undefined ? country : next.country;
+    if (cat) params.set("category", cat);
+    if (q) params.set("q", q);
+    if (ctry) params.set("country", ctry);
+    const qs = params.toString();
+    // History API asli: langsung sinkron dengan useSearchParams tanpa render ulang di server,
+    // jadi filter terasa instan; tombol Back tetap kembali ke filter sebelumnya.
+    window.history.pushState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
+  };
 
-  const catParam = selectedCat !== "Semua" ? `category=${encodeURIComponent(selectedCat)}` : "";
-  const qParam = query.trim() ? `q=${encodeURIComponent(query.trim())}` : "";
-  const qs = [catParam, qParam].filter(Boolean).join("&");
-  const listPath = `/concerts${qs ? `?${qs}` : ""}`;
+  // Backend mencari teks (judul/artis); kategori dicocokkan di sini dengan aturan
+  // src/lib/event-categories.ts karena kolom category di database terlalu kasar.
+  const listPath = `/concerts${query ? `?q=${encodeURIComponent(query)}` : ""}`;
   const listRes = useApiResource(listPath, () => apiGet<unknown>(listPath).then(extractConcerts));
   const loading = listRes.loading;
-  const concerts = useMemo(
-    () => (country ? (listRes.data ?? []).filter((c) => byCountry(c, country)) : listRes.data ?? []),
-    [listRes.data, country]
+  // tanpa useMemo manual: React Compiler sudah memoize perhitungan ini
+  const all = listRes.data ?? [];
+  const base = country ? all.filter((c) => byCountry(c, country)) : all;
+  const counts = countByCategory(base);
+  const concerts = selectedCat ? base.filter((c) => matchesCategory(c, selectedCat)) : base;
+  // chip: kategori yang punya event untuk pencarian/negara saat ini, plus yang sedang dipilih
+  const chips = EVENT_CATEGORIES.filter((c) => counts[c.slug] > 0 || c.slug === selectedCat).sort(
+    (a, b) => counts[b.slug] - counts[a.slug]
   );
+  const selectedLabel = selectedCat ? tc(`names.${selectedCat}`) : "";
+  const SelectedIcon = selectedCat ? getEventCategory(selectedCat).icon : Ticket;
 
   return (
     <div className="min-h-screen bg-surface">
@@ -118,38 +125,62 @@ function ConcertsPageInner() {
           </div>
         </div>
 
-        {/* Category Filters — derived from real data */}
-        <div className="scrollbar-hide mb-8 flex gap-2 overflow-x-auto pb-2">
-          {categories.map((cat) => {
-            const active = selectedCat === cat;
+        {/* Category chips — kategori yang sama dengan modal Category di navbar */}
+        <div className="scrollbar-hide mb-6 flex gap-2 overflow-x-auto pb-2">
+          {[null, ...chips].map((cat) => {
+            const active = selectedCat === (cat?.slug ?? null);
+            const Icon = cat?.icon;
             return (
               <button
-                key={cat}
-                onClick={() => setSelectedCat(cat)}
-                className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                key={cat?.slug ?? "all"}
+                type="button"
+                onClick={() => setFilters({ category: cat?.slug ?? null })}
+                aria-pressed={active}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-colors ${
                   active
-                    ? "bg-foreground text-white shadow-md"
-                    : "border border-border bg-white text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "border border-border bg-white text-muted-foreground hover:border-primary/30 hover:text-foreground"
                 }`}
               >
-                {cat}
+                {Icon && <Icon className="size-3.5" aria-hidden />}
+                {cat ? tc(`names.${cat.slug}`) : t("all")}
+                {cat && !listRes.loading && (
+                  <span className={active ? "text-primary-foreground/80" : "text-muted-foreground/70"}>{counts[cat.slug]}</span>
+                )}
               </button>
             );
           })}
         </div>
 
-        {/* Country filter chip (from DiscoverCountries section) */}
-        {country && (
+        {/* Filter aktif: pencarian & negara */}
+        {(query || country) && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary">
-              Explore: {COUNTRY_LABELS[country] ?? country}
-            </span>
-            <button
-              onClick={() => setCountry("")}
-              className="rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground hover:border-foreground/20 hover:text-foreground"
-            >
-              Hapus filter negara
-            </button>
+            {query && (
+              <span className="inline-flex items-center gap-2 rounded-full bg-info-subtle py-1.5 pl-4 pr-1.5 text-xs font-bold text-info">
+                {t("searchResult", { q: query })}
+                <button
+                  type="button"
+                  onClick={() => setFilters({ q: "" })}
+                  aria-label={t("clearSearch")}
+                  className="flex size-5 items-center justify-center rounded-full hover:bg-info/15"
+                >
+                  <X className="size-3" aria-hidden />
+                </button>
+              </span>
+            )}
+            {country && (
+              <>
+                <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary">
+                  Explore: {COUNTRY_LABELS[country] ?? country}
+                </span>
+                <button
+                  onClick={() => setFilters({ country: "" })}
+                  className="rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                >
+                  Hapus filter negara
+                </button>
+              </>
+            )}
           </div>
         )}
 
@@ -172,20 +203,32 @@ function ConcertsPageInner() {
         ) : listRes.error ? (
           <ErrorState error={listRes.error} onRetry={listRes.reload} />
         ) : concerts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-white py-16 text-center">
-            <Ticket className="h-12 w-12 text-muted-foreground/80" />
-            <h3 className="mt-3 text-lg font-bold text-foreground">Tidak ada konser ditemukan</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {country ? `Belum ada konser di ${COUNTRY_LABELS[country] ?? "negara ini"}.` : "Coba ubah kata kunci pencarian atau kategori filter kamu."}
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-white px-6 py-16 text-center">
+            <span className="flex size-14 items-center justify-center rounded-2xl bg-info-subtle text-info">
+              <SelectedIcon className="size-7" aria-hidden />
+            </span>
+            <h3 className="mt-4 text-lg font-bold text-foreground">
+              {query && selectedCat
+                ? t("emptySearchTitle")
+                : selectedCat
+                  ? t("emptyCategoryTitle", { category: selectedLabel })
+                  : t("emptyTitle")}
+            </h3>
+            <p className="mt-1 max-w-md text-sm text-muted-foreground">
+              {query && selectedCat
+                ? t("emptySearchBody", { q: query })
+                : selectedCat
+                  ? t("emptyCategoryBody")
+                  : country
+                    ? t("emptyCountry", { country: COUNTRY_LABELS[country] ?? country })
+                    : t("emptyBody")}
             </p>
             <button
-              onClick={() => {
-                setQuery("");
-                setSelectedCat("Semua");
-              }}
-              className="mt-4 rounded-full bg-foreground px-5 py-2 text-xs font-bold text-white hover:bg-black"
+              type="button"
+              onClick={() => setFilters({ category: null, q: "", country: "" })}
+              className="mt-5 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground transition-[filter] hover:brightness-110"
             >
-              Reset Filter
+              {t("seeAll")}
             </button>
           </div>
         ) : (
