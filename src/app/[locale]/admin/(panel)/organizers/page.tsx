@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Building2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import toast from "react-hot-toast";
-import { adminGet, adminPatch } from "@/lib/admin-session";
+import { adminGet, adminPatch, notifyOrganizersChanged } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/price";
 import { formatWib } from "@/lib/organizer";
@@ -41,6 +41,7 @@ export default function AdminOrganizersPage() {
     try {
       await adminPatch(`/admin/organizers/${org.id}`, { status: next });
       list.mutate((prev) => prev.map((o) => (o.id === org.id ? { ...o, status: next } : o)));
+      notifyOrganizersChanged();
       toast.success(next === "suspended" ? t("suspended", { name: org.name }) : t("activated", { name: org.name }));
       setConfirm(null);
     } catch (err) {
@@ -52,6 +53,14 @@ export default function AdminOrganizersPage() {
   }
 
   const action = (org: AdminOrganizer) => {
+    // pengajuan baru ditinjau di halaman detail (Setujui / Tolak); yang ditolak tidak punya aksi di sini
+    if (org.status === "pending_verification")
+      return (
+        <Link href={`/admin/organizers/${org.id}`} className={cn(btn.primary, "px-3 py-1.5 text-xs")}>
+          {t("review")}
+        </Link>
+      );
+    if (org.status === "rejected") return null;
     const next = org.status === "suspended" ? "active" : "suspended";
     return (
       <button
