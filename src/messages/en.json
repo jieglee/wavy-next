@@ -1185,11 +1185,16 @@
             "from": "From {price}",
             "noPrice": "Price not available"
         },
-        "stats": {
-            "label": "Wavy in numbers",
-            "concerts": "Concerts listed",
-            "venues": "Venues",
-            "remaining": "Tickets left"
+        "discover": {
+            "label": "Promos and event categories",
+            "bannersLabel": "Promo banners",
+            "goTo": "Go to banner {num}",
+            "banner": {
+                "on-sale": "Concert tickets are on sale, browse all concerts",
+                "bts": "BTS concerts on Wavy, find tickets",
+                "eventmu": "Got a great event? Showcase it on Wavy"
+            },
+            "categoriesTitle": "Explore categories"
         },
         "steps": {
             "eyebrow": "How to buy",
