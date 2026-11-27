@@ -24,8 +24,8 @@ export default function Home() {
           <LineupRail />
           <CountUpStats />
           <TornTicketSteps />
-          <section className="bg-surface px-4 py-12 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-7xl">
+          <section className="px-4 sm:px-6 lg:px-8" style={{ backgroundImage: "url(/images/banner/event4u2.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+            <div className="mx-auto max-w-7xl py-8">
               <FeaturedPicks viewAllHref="/concerts" />
             </div>
           </section>
