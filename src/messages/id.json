@@ -1105,11 +1105,16 @@
             "from": "Mulai {price}",
             "noPrice": "Harga belum tersedia"
         },
-        "stats": {
-            "label": "Wavy dalam angka",
-            "concerts": "Konser tayang",
-            "venues": "Venue",
-            "remaining": "Tiket tersisa"
+        "discover": {
+            "label": "Promo dan kategori event",
+            "bannersLabel": "Banner promo",
+            "goTo": "Ke banner {num}",
+            "banner": {
+                "on-sale": "Tiket konser sudah dibuka, lihat semua konser",
+                "bts": "Konser BTS di Wavy, cari tiketnya",
+                "eventmu": "Punya event keren? Tampilkan eventmu di Wavy"
+            },
+            "categoriesTitle": "Jelajahi kategori"
         },
         "steps": {
             "eyebrow": "Cara beli",
