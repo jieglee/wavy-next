@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Search, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Calendar } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -78,10 +79,22 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     setSearchOpen(false);
-    if (searchQuery.trim()) {
-      router.push(`/concerts?q=${encodeURIComponent(searchQuery.trim())}`);
+    // di /concerts, kategori & negara yang sedang aktif tetap dipakai bersama kata kunci baru
+    const params = new URLSearchParams();
+    if (pathname === "/concerts") {
+      const current = new URLSearchParams(window.location.search);
+      for (const k of ["category", "country"]) {
+        const v = current.get(k);
+        if (v) params.set(k, v);
+      }
+    }
+    if (searchQuery.trim()) params.set("q", searchQuery.trim());
+    const qs = params.toString();
+    if (pathname === "/concerts") {
+      // halaman /concerts mengambil data sendiri dari URL; History API cukup dan langsung terasa
+      window.history.pushState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
     } else {
-      router.push("/concerts");
+      router.push(`/concerts${qs ? `?${qs}` : ""}`);
     }
   }
 
@@ -98,13 +111,20 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
 
   return (
     <>
-      {showBackdrop && (
-        <button
-          aria-label="Close dropdown"
-          onClick={() => { setCatOpen(false); setSearchOpen(false); }}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity"
-        />
-      )}
+      <AnimatePresence>
+        {showBackdrop && (
+          <motion.button
+            key="nav-backdrop"
+            aria-label="Close dropdown"
+            onClick={() => { setCatOpen(false); setSearchOpen(false); }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed inset-0 z-40 cursor-default bg-foreground/25 backdrop-blur-[2px]"
+          />
+        )}
+      </AnimatePresence>
       <header className={`${sticky ? "sticky top-0 z-50" : "relative z-50"} border-b border-border bg-white/95 backdrop-blur-md`}>
       <div className="mx-auto grid h-auto max-w-7xl grid-cols-[1fr_auto_auto] items-center gap-x-2 gap-y-2 px-3 py-2.5 sm:flex sm:h-[72px] sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-0 sm:gap-x-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
@@ -114,7 +134,9 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           </span>
         </Link>
 
-        <div ref={catRef} className="relative hidden shrink-0 sm:block">
+        {/* Di bawah lg panel diposisikan terhadap header (lebar penuh) supaya tidak keluar layar;
+            mulai lg menempel di bawah tombol. */}
+        <div ref={catRef} className="shrink-0 max-sm:col-start-3 max-sm:row-start-1 max-sm:justify-self-end lg:relative">
           <button
             type="button"
             onClick={() => {
@@ -124,6 +146,8 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               setSearchOpen(false);
             }}
             aria-expanded={catOpen}
+            aria-haspopup="dialog"
+            aria-label={t("kategori")}
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-base font-bold transition-colors ${catOpen ? "bg-info-subtle ring-1 ring-info/20" : "hover:opacity-70"}`}
             style={{ color: "var(--foreground)" }}
           >
@@ -131,13 +155,22 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               <path d="M0 0h24v24H0z" fill="none" />
               <path fill="currentColor" d="m12 2l-5.5 9h11zm0 3.84L13.93 9h-3.87zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5s4.5-2.01 4.5-4.5s-2.01-4.5-4.5-4.5m0 7a2.5 2.5 0 0 1 0-5a2.5 2.5 0 0 1 0 5M3 21.5h8v-8H3zm2-6h4v4H5z" />
             </svg>
-            {t("kategori")}
+            <span className="hidden sm:inline">{t("kategori")}</span>
           </button>
-          {catOpen && (
-            <div className="absolute left-0 top-full z-50 mt-3">
-              <CategoryDropdown onSelect={() => setCatOpen(false)} />
-            </div>
-          )}
+          <AnimatePresence>
+            {catOpen && (
+              <motion.div
+                key="category-panel"
+                initial={{ opacity: 0, y: -6, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -6, scale: 0.985 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="absolute inset-x-3 top-full z-50 mt-2 origin-top sm:inset-x-6 lg:inset-x-auto lg:left-0 lg:mt-3 lg:w-[880px] lg:origin-top-left"
+              >
+                <CategoryDropdown onSelect={() => setCatOpen(false)} onClose={() => setCatOpen(false)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div ref={searchWrapRef} className="relative col-span-3 flex w-full max-w-none sm:col-span-1 sm:mx-auto sm:max-w-xl">
