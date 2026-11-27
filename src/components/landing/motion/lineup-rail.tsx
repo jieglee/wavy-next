@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
-import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
@@ -20,10 +19,10 @@ function RailCard({ c }: { c: Concert }) {
   const organizer = c.organizer_name || c.artist_name || "";
   const price = c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null;
   return (
-    <Link href={`/concerts/${c.id}`} className="group block w-[260px] shrink-0 sm:w-[300px]">
+    <Link href={`/concerts/${c.id}`} className="group block h-full">
       <div className="flex flex-col gap-3">
         <div className="relative rounded-lg transition-[transform,box-shadow] duration-300 motion-safe:group-hover:-translate-y-1 group-hover:shadow-[0_18px_30px_-18px_color-mix(in_oklab,var(--primary)_65%,transparent)]">
-          <div className="relative aspect-[2.26/1] overflow-hidden rounded-lg bg-muted transition-[filter] duration-300 group-hover:brightness-110 group-hover:saturate-110">
+          <div data-banner className="relative aspect-[2.26/1] overflow-hidden rounded-lg bg-muted transition-[filter] duration-300 group-hover:brightness-110 group-hover:saturate-110">
             <EventPoster
               src={c.poster_url || undefined}
               title={c.title}
@@ -55,44 +54,82 @@ function RailCard({ c }: { c: Concert }) {
 }
 
 /**
- * Rel horizontal yang di-pin: scroll vertikal menggeser kartu ke kiri.
- * Jarak geser = lebar track − lebar viewport (diukur dengan ResizeObserver), jadi kartu terakhir
- * berhenti tepat di padding kanan yang sama dengan padding kiri, tanpa ruang kosong di ujung.
- * Tinggi section = 1 layar + jarak geser, sehingga geser horizontal sebanding 1:1 dengan scroll.
+ * Carousel biasa: 4 kartu per layar di desktop, ~1,25 kartu di HP (geser dengan jari).
+ * Tombol kiri/kanan hanya di md ke atas, muncul saat carousel di-hover, dan hilang di ujung.
+ * Posisi vertikal tombol = tengah banner (diukur, karena tinggi banner ikut lebar kartu).
  */
-function ScrollRail({ items }: { items: Concert[] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [distance, setDistance] = useState(0);
-  const distanceMv = useMotionValue(0);
+function Carousel({ items }: { items: Concert[] }) {
+  const t = useTranslations("FeaturedEvents");
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+  const [arrowTop, setArrowTop] = useState<number | null>(null);
+
+  const update = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    const banner = el.querySelector<HTMLElement>("[data-banner]");
+    if (banner) setArrowTop(banner.offsetTop + banner.offsetHeight / 2);
+  }, []);
 
   useEffect(() => {
-    const viewport = viewportRef.current;
-    const track = trackRef.current;
-    if (!viewport || !track) return;
-    const ro = new ResizeObserver(() => {
-      const d = Math.max(0, Math.ceil(track.scrollWidth - viewport.clientWidth));
-      distanceMv.set(d);
-      setDistance(d);
-    });
-    ro.observe(viewport);
-    ro.observe(track);
-    return () => ro.disconnect();
-  }, [distanceMv]);
+    const el = scrollerRef.current;
+    if (!el) return;
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    el.addEventListener("scroll", update, { passive: true });
+    return () => {
+      ro.disconnect();
+      el.removeEventListener("scroll", update);
+    };
+  }, [update, items.length]);
 
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const x = useTransform(() => -scrollYProgress.get() * distanceMv.get());
+  const scrollByPage = (dir: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth, behavior: "smooth" });
+  };
+
+  const arrowClass =
+    "absolute z-10 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background text-primary opacity-0 shadow-[0_4px_8px_color-mix(in_oklab,var(--foreground)_10%,transparent)] transition-opacity hover:opacity-100 focus-visible:opacity-100 group-hover/carousel:opacity-100 md:flex";
 
   return (
-    <div ref={ref} style={{ height: `calc(100svh + ${distance}px)` }} className="relative" data-rail>
-      <div ref={viewportRef} className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
-        <motion.div ref={trackRef} style={{ x }} className="flex w-max gap-6 px-4 sm:px-8" data-rail-track>
-          {items.map((c) => (
-            <RailCard key={c.id} c={c} />
-          ))}
-        </motion.div>
+    <div className="group/carousel relative">
+      <div
+        ref={scrollerRef}
+        className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2 pl-2 max-md:-mr-4"
+      >
+        {items.map((c) => (
+          <div key={c.id} className="min-w-0 shrink-0 grow-0 basis-[calc(80%-4px)] snap-start md:basis-[calc((100%-48px)/4)]">
+            <RailCard c={c} />
+          </div>
+        ))}
       </div>
+      {canPrev && (
+        <button
+          type="button"
+          onClick={() => scrollByPage(-1)}
+          aria-label={t("prev")}
+          className={`${arrowClass} -left-4`}
+          style={{ top: arrowTop ?? "35%" }}
+        >
+          <ChevronLeft className="size-5" aria-hidden />
+        </button>
+      )}
+      {canNext && (
+        <button
+          type="button"
+          onClick={() => scrollByPage(1)}
+          aria-label={t("next")}
+          className={`${arrowClass} -right-4`}
+          style={{ top: arrowTop ?? "35%" }}
+        >
+          <ChevronRight className="size-5" aria-hidden />
+        </button>
+      )}
     </div>
   );
 }
@@ -100,11 +137,10 @@ function ScrollRail({ items }: { items: Concert[] }) {
 export function LineupRail() {
   const t = useTranslations("Landing.lineup");
   const concerts = useLandingConcerts();
-  const reduce = useReducedMotionSafe();
 
   return (
     <section aria-labelledby="lineup-title" className="relative overflow-x-clip bg-background">
-      <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 sm:px-6 lg:px-8">
         <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-primary">{t("eyebrow")}</p>
         <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
           <h2 id="lineup-title" className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
@@ -114,26 +150,15 @@ export function LineupRail() {
             {t("all")}
           </Link>
         </div>
-      </div>
-      <div className="pb-8 pt-6">
-        <AsyncContent
-          resource={concerts}
-          loadingRows={2}
-          empty={<EmptyState title={t("empty")} />}
-        >
-          {(list) => {
-            const items = list.slice(0, 10);
-            return reduce ? (
-              <div className="flex gap-6 overflow-x-auto px-4 pb-4 sm:px-8">
-                {items.map((c) => (
-                  <RailCard key={c.id} c={c} />
-                ))}
-              </div>
-            ) : (
-              <ScrollRail items={items} />
-            );
-          }}
-        </AsyncContent>
+        <div className="mt-6">
+          <AsyncContent
+            resource={concerts}
+            loadingRows={2}
+            empty={<EmptyState title={t("empty")} />}
+          >
+            {(list) => <Carousel items={list.slice(0, 10)} />}
+          </AsyncContent>
+        </div>
       </div>
     </section>
   );
