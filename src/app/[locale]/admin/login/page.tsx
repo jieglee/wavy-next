@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, Shield } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
+import { LoginRoleSwitch } from "@/components/auth/login-role-switch";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { ApiError, apiPost } from "@/lib/api";
 import { setAdminSession } from "@/lib/admin-session";
@@ -61,6 +62,8 @@ function AdminLoginForm() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
+
+        <LoginRoleSwitch current="admin" />
 
         {expired && !error && (
           <p role="status" className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-xs text-warning">

@@ -33,7 +33,13 @@
         "resendButton": "Resend code",
         "verifying": "Verifying...",
         "signIn": "Sign In",
-        "loginSuccess": "Signed in! Welcome back."
+        "loginSuccess": "Signed in! Welcome back.",
+        "roleSwitch": {
+            "label": "Sign in as",
+            "customer": "Customer",
+            "organizer": "Organizer",
+            "admin": "Admin"
+        }
     },
     "FeaturedEvents": {
         "title": "Exciting Events For You",
@@ -123,7 +129,8 @@
         "organizerGuide": "Organizer Guide",
         "privacy": "Privacy Policy",
         "terms": "Terms & Conditions",
-        "rights": "All rights reserved."
+        "rights": "All rights reserved.",
+        "adminPortal": "Admin portal"
     },
     "States": {
         "loading": "Loading...",

@@ -96,6 +96,7 @@ export default function Footer() {
   const legalLinks = withTarget([
     { label: t("privacy"), href: "/privacy" },
     { label: t("terms"), href: "/terms" },
+    { label: t("adminPortal"), href: "/admin/login" },
   ]);
 
   const visibleSocials = SHOW_SOCIAL_LINKS ? socials.filter((s) => s.href !== null) : [];
@@ -212,9 +213,9 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Wavy. {t("rights")}
           </p>
           {legalLinks.length > 0 && (
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               {legalLinks.map((l) => (
-                <Link key={l.label} href={l.href} className="text-xs text-muted-foreground transition-[color,translate] duration-200 ease-out hover:text-foreground motion-safe:hover:-translate-y-0.5">
+                <Link key={l.label} href={l.href} className="whitespace-nowrap text-xs text-muted-foreground transition-[color,translate] duration-200 ease-out hover:text-foreground motion-safe:hover:-translate-y-0.5">
                   {l.label}
                 </Link>
               ))}

@@ -33,7 +33,13 @@
         "resendButton": "Kirim ulang kode",
         "verifying": "Memverifikasi...",
         "signIn": "Masuk",
-        "loginSuccess": "Berhasil masuk! Selamat datang kembali."
+        "loginSuccess": "Berhasil masuk! Selamat datang kembali.",
+        "roleSwitch": {
+            "label": "Masuk sebagai",
+            "customer": "Pelanggan",
+            "organizer": "Organizer",
+            "admin": "Admin"
+        }
     },
     "FeaturedEvents": {
         "title": "Event Seru Untukmu",
@@ -123,7 +129,8 @@
         "organizerGuide": "Panduan Organizer",
         "privacy": "Kebijakan Privasi",
         "terms": "Syarat & Ketentuan",
-        "rights": "All rights reserved."
+        "rights": "All rights reserved.",
+        "adminPortal": "Portal Admin"
     },
     "States": {
         "loading": "Memuat...",
