@@ -4,13 +4,24 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, ArrowRight, Ban, Clock, Eye, EyeOff, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter, Link } from "@/i18n/navigation";
 import { apiPost, ApiError, setAuthToken } from "@/lib/api";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "@/components/landing/wavy-icon-animated";
-import { redirect } from "next/dist/server/api-utils";
+
+type AccountState = { kind: "pending" | "rejected" | "suspended"; reason?: string };
+
+// 403 dari POST /auth/organizer/login membawa code per status akun (backend: auth.service)
+function accountStateOf(err: unknown): AccountState | null {
+  if (!(err instanceof ApiError) || err.status !== 403) return null;
+  if (err.code === "ORGANIZER_PENDING") return { kind: "pending" };
+  if (err.code === "ORGANIZER_SUSPENDED") return { kind: "suspended" };
+  if (err.code === "ORGANIZER_REJECTED")
+    return { kind: "rejected", reason: typeof err.details.reason === "string" ? err.details.reason : undefined };
+  return null;
+}
 
 interface LoginResult {
   access_token: string;
@@ -29,6 +40,7 @@ function OrganizerLoginForm() {
   const router = useRouter();
   const reason = useSearchParams().get("reason");
   const tStudio = useTranslations("Studio.session");
+  const [account, setAccount] = useState<AccountState | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -45,6 +57,7 @@ function OrganizerLoginForm() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setAccount(null);
     setLoading(true);
     try {
       const res = await apiPost<LoginResult>("/auth/organizer/login", { email, password });
@@ -52,6 +65,11 @@ function OrganizerLoginForm() {
       toast.success(`Selamat datang, ${res.organizer.name}!`);
       router.push("/organizer/dashboard");
     } catch (err) {
+      const state = accountStateOf(err);
+      if (state) {
+        setAccount(state);
+        return;
+      }
       const message =
         err instanceof ApiError ? err.message : "Terjadi kesalahan. Coba lagi nanti.";
       setError(message);
@@ -139,6 +157,7 @@ function OrganizerLoginForm() {
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setError("");
+                    setAccount(null);
                   }}
                   className="w-full rounded-lg bg-muted px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
                 />
@@ -169,13 +188,14 @@ function OrganizerLoginForm() {
                 </div>
               </div>
 
-              {!error && (reason === "suspended" || reason === "expired") && (
+              {account && <AccountNotice state={account} />}
+              {!error && !account && (reason === "suspended" || reason === "expired") && (
                 <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-relaxed text-destructive">
                   {tStudio(reason)}
                 </p>
               )}
               {error && (
-                <p className={`text-xs ${error.includes("verifikasi") ? "rounded-lg bg-muted px-3 py-2 leading-relaxed text-muted-foreground" : "text-destructive"}`}>
+                <p role="alert" className="text-xs text-destructive">
                   {error}
                 </p>
               )}
@@ -198,6 +218,38 @@ function OrganizerLoginForm() {
             </p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+const NOTICE = {
+  pending: { icon: Clock, tone: "border-warning/30 bg-warning/5 text-warning" },
+  rejected: { icon: XCircle, tone: "border-destructive/30 bg-destructive/5 text-destructive" },
+  suspended: { icon: Ban, tone: "border-destructive/30 bg-destructive/5 text-destructive" },
+} as const;
+
+/** Penjelasan status akun EO yang belum bisa masuk (menunggu verifikasi / ditolak / ditangguhkan). */
+function AccountNotice({ state }: { state: AccountState }) {
+  const t = useTranslations("OrganizerLogin");
+  const { icon: Icon, tone } = NOTICE[state.kind];
+  return (
+    <div role="alert" className={`flex gap-3 rounded-lg border p-3 ${tone}`}>
+      <Icon className="mt-0.5 h-4 w-4 shrink-0" />
+      <div className="min-w-0 space-y-1.5 text-xs leading-relaxed">
+        <p className="font-semibold">{t(`${state.kind}Title`)}</p>
+        <p className="text-foreground/80">{t(`${state.kind}Body`)}</p>
+        {state.kind === "rejected" && state.reason && (
+          <div className="rounded-md bg-background/70 p-2 text-foreground">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{t("reasonLabel")}</p>
+            <p className="mt-0.5 whitespace-pre-line break-words">{state.reason}</p>
+          </div>
+        )}
+        {state.kind === "rejected" && (
+          <Link href="/organizer/register" className="inline-block font-semibold underline underline-offset-2">
+            {t("reapply")}
+          </Link>
+        )}
       </div>
     </div>
   );
