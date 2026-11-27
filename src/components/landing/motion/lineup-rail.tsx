@@ -21,7 +21,7 @@ function RailCard({ c }: { c: Concert }) {
   return (
     <Link href={`/concerts/${c.id}`} className="group block h-full">
       <div className="flex flex-col gap-3">
-        <div className="relative rounded-lg transition-[transform,box-shadow] duration-300 motion-safe:group-hover:-translate-y-1 group-hover:shadow-[0_18px_30px_-18px_color-mix(in_oklab,var(--primary)_65%,transparent)]">
+        <div className="relative rounded-lg transition-[translate,box-shadow] duration-300 ease-out motion-safe:group-hover:-translate-y-1 group-hover:shadow-[0_18px_30px_-18px_color-mix(in_oklab,var(--primary)_65%,transparent)]">
           <div data-banner className="relative aspect-[2.26/1] overflow-hidden rounded-lg bg-muted transition-[filter] duration-300 group-hover:brightness-110 group-hover:saturate-110">
             <EventPoster
               src={c.poster_url || undefined}
@@ -31,7 +31,7 @@ function RailCard({ c }: { c: Concert }) {
           </div>
           {/* efek kaca: kilau miring lewat dari kiri ke kanan saat di-hover */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-lg">
-            <div className="absolute inset-0 -translate-x-full bg-[linear-gradient(115deg,transparent_30%,color-mix(in_oklab,white_26%,transparent)_50%,transparent_72%)] opacity-0 transition-[transform,opacity] duration-500 ease-out group-hover:translate-x-full group-hover:opacity-100" />
+            <div className="absolute inset-0 -translate-x-full bg-[linear-gradient(115deg,transparent_30%,color-mix(in_oklab,white_26%,transparent)_50%,transparent_72%)] opacity-0 transition-[translate,opacity] duration-700 ease-out group-hover:translate-x-full group-hover:opacity-100" />
           </div>
         </div>
         <div className="flex flex-col gap-1">
@@ -72,7 +72,11 @@ function Carousel({ items }: { items: Concert[] }) {
   const update = useCallback(() => {
     const el = scrollerRef.current;
     if (!el) return;
-    setCanPrev(el.scrollLeft > 4);
+    // posisi awal bukan 0: snap-start menarik kartu pertama ke tepi, melewati padding kiri scroller.
+    // Tombol kiri baru muncul kalau sudah digeser melewati posisi awal itu.
+    const first = el.firstElementChild as HTMLElement | null;
+    const start = first ? first.offsetLeft - el.offsetLeft : 0;
+    setCanPrev(el.scrollLeft > start + 4);
     setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
     const banner = el.querySelector<HTMLElement>("[data-banner]");
     if (banner) setArrowTop(banner.offsetTop + banner.offsetHeight / 2);
