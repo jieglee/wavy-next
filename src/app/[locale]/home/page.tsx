@@ -2,8 +2,6 @@ import Navbar from "@/components/landing/navbar";
 import PromoCarousel from "@/components/landing/promo-carousel";
 import FeaturedEvents from "@/components/landing/featured-events";
 import FeaturedPicks from "@/components/landing/featured-picks";
-import TravelerMode from "@/components/landing/traveler-mode";
-import { SHOW_TRAVELER_MODE } from "@/lib/features";
 import DiscoverCountries from "@/components/landing/discover-countries";
 import Footer from "@/components/landing/footer";
 import ScrollToTop from "@/components/scroll-to-top";
@@ -20,7 +18,6 @@ export default function LoggedInHomePage() {
             <FeaturedPicks viewAllHref="/concerts" />
           </div>
         </section>
-        {SHOW_TRAVELER_MODE && <TravelerMode />}
         <DiscoverCountries />
       </main>
       <Footer />
