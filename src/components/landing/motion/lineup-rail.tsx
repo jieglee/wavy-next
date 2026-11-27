@@ -11,7 +11,8 @@ import { useLandingConcerts } from "./landing-data";
 import { EventPoster } from "@/components/concerts/event-poster";
 
 /**
- * Kartu rel "Now showing": tampilan awal (poster lebar 16:7, lokasi, judul, organizer, harga).
+ * Kartu rel "Now showing": banner lebar 2.26:1 tanpa border, lalu lokasi, judul, organizer,
+ * garis putus-putus, dan harga "Mulai dari".
  * Sengaja terpisah dari ConcertCard supaya kartu di halaman lain tidak ikut berubah.
  */
 function RailCard({ c }: { c: Concert }) {
@@ -19,31 +20,35 @@ function RailCard({ c }: { c: Concert }) {
   const organizer = c.organizer_name || c.artist_name || "";
   const price = c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null;
   return (
-    <Link href={`/concerts/${c.id}`} className="group block w-[240px] shrink-0 sm:w-[280px]">
-      <div className="transition-transform duration-300 ease-out motion-safe:group-hover:-translate-y-2">
-        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)]">
-          <EventPoster
-            src={c.poster_url || undefined}
-            title={c.title}
-            className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out motion-safe:group-hover:scale-105"
-          />
-          <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out motion-safe:group-hover:translate-x-full" />
+    <Link href={`/concerts/${c.id}`} className="group block w-[260px] shrink-0 sm:w-[300px]">
+      <div className="flex flex-col gap-3">
+        <div className="relative rounded-lg transition-[transform,box-shadow] duration-300 motion-safe:group-hover:-translate-y-1 group-hover:shadow-[0_18px_30px_-18px_color-mix(in_oklab,var(--primary)_65%,transparent)]">
+          <div className="relative aspect-[2.26/1] overflow-hidden rounded-lg bg-muted transition-[filter] duration-300 group-hover:brightness-110 group-hover:saturate-110">
+            <EventPoster
+              src={c.poster_url || undefined}
+              title={c.title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+          <div className="pointer-events-none absolute inset-0 -translate-x-full rounded-lg bg-[linear-gradient(115deg,transparent_30%,color-mix(in_oklab,var(--background)_26%,transparent)_50%,transparent_72%)] opacity-0 transition-[transform,opacity] duration-500 ease-out motion-safe:group-hover:translate-x-full group-hover:opacity-100" />
         </div>
-      </div>
-      <p className="mt-3 truncate text-xs text-muted-foreground/80">{c.venue}</p>
-      <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-foreground transition-all duration-300 group-hover:text-primary">
-        {c.title}
-      </h3>
-      <p className="mt-0.5 truncate text-xs text-muted-foreground">{t("byOrganizer", { organizer })}</p>
-      <div className="mt-3 border-t border-border pt-2.5">
-        {price ? (
-          <>
-            <p className="text-[0.65rem] text-muted-foreground/80">{t("startingFrom")}</p>
-            <p className="font-mono text-sm font-bold text-foreground">Rp{price}</p>
-          </>
-        ) : (
-          <p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>
-        )}
+        <div className="flex flex-col gap-1">
+          <p className="line-clamp-1 min-h-6 text-sm text-muted-foreground">{c.venue}</p>
+          <h3 className="line-clamp-1 text-[18px] font-semibold leading-7 text-foreground transition-colors duration-300 group-hover:text-primary">
+            {c.title}
+          </h3>
+          {organizer && <p className="line-clamp-1 text-sm text-muted-foreground">{t("byOrganizer", { organizer })}</p>}
+          <div className="mt-1 border-t border-dashed border-border pt-3">
+            {price ? (
+              <>
+                <p className="text-sm text-muted-foreground/80">{t("startingFrom")}</p>
+                <p className="mt-1 text-base font-semibold leading-6 text-foreground">Rp{price}</p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("priceUnavailable")}</p>
+            )}
+          </div>
+        </div>
       </div>
     </Link>
   );
@@ -82,7 +87,7 @@ function ScrollRail({ items }: { items: Concert[] }) {
   return (
     <div ref={ref} style={{ height: `calc(100svh + ${distance}px)` }} className="relative" data-rail>
       <div ref={viewportRef} className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
-        <motion.div ref={trackRef} style={{ x }} className="flex w-max -rotate-2 gap-6 px-4 sm:px-8" data-rail-track>
+        <motion.div ref={trackRef} style={{ x }} className="flex w-max gap-6 px-4 sm:px-8" data-rail-track>
           {items.map((c) => (
             <RailCard key={c.id} c={c} />
           ))}
