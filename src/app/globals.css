@@ -386,3 +386,80 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* ── Hero landing: sorot lampu panggung (spotlight-hero.tsx) ──
+ * Tiap berkas = cone meruncing (clip-path) yang berputar dari sumbernya di atas.
+ * Gerak hanya lewat `rotate` + `opacity` (tanpa layout shift), durasi berbeda per berkas,
+ * `alternate` supaya loop mulus tanpa lompatan. Reduced-motion: diam.
+ */
+.hero-beam {
+  position: absolute;
+  top: -6%;
+  height: 132%;
+  translate: -50% 0;
+  transform-origin: 50% 0;
+  rotate: var(--from);
+  clip-path: polygon(48.5% 0, 51.5% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--beam) 62%, transparent) 0%,
+    color-mix(in oklab, var(--beam) 30%, transparent) 38%,
+    color-mix(in oklab, var(--beam) 10%, transparent) 70%,
+    transparent 92%
+  );
+  filter: blur(1.5px);
+  will-change: rotate, opacity;
+  animation:
+    hero-sweep var(--dur) ease-in-out var(--delay) infinite alternate,
+    hero-breathe calc(var(--dur) * 0.6) ease-in-out var(--delay) infinite alternate;
+}
+/* inti putih yang lebih sempit di tengah berkas */
+.hero-beam::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(49.6% 0, 50.4% 0, 66% 100%, 34% 100%);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--background) 85%, transparent) 0%,
+    color-mix(in oklab, var(--background) 35%, transparent) 45%,
+    transparent 80%
+  );
+}
+@keyframes hero-sweep {
+  from { rotate: var(--from); }
+  to { rotate: var(--to); }
+}
+@keyframes hero-breathe {
+  from { opacity: var(--op, 1); }
+  to { opacity: calc(var(--op, 1) * 0.6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-beam { animation: none; }
+}
+
+/* Polish hero: glow "bernapas", pantulan lampu di crowd, partikel cahaya. Hanya opacity/transform. */
+.hero-breathe {
+  animation: hero-glow var(--dur, 10s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+@keyframes hero-glow {
+  from { opacity: var(--lo, 0.55); }
+  to { opacity: var(--hi, 1); }
+}
+.hero-particle {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--background) 0%, color-mix(in oklab, var(--p) 70%, transparent) 45%, transparent 72%);
+  opacity: 0;
+  animation: hero-float var(--dur) linear var(--delay) infinite;
+}
+@keyframes hero-float {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { opacity: 0; transform: translate3d(var(--dx), -90px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-breathe { animation: none; opacity: var(--hi, 1); }
+  .hero-particle { animation: none; opacity: 0.4; }
+}
