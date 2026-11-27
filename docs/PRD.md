@@ -6,10 +6,14 @@
 ## 1. Ringkasan
 
 Wavy adalah marketplace tiket konser yang mempertemukan **Event Organizer (EO)** dengan **customer**.
-Proyek UKK Rekayasa Perangkat Lunak. Format aplikasi: **satu web app responsif** (tidak ada app mobile terpisah).
+Proyek UKK Rekayasa Perangkat Lunak. Format aplikasi: **web app responsif** untuk semua role, ditambah **app mobile khusus customer** (`wavy-mobile`).
 
 - Frontend: `wavy-next` — Next.js 16, React 19, Tailwind v4, next-intl (id/en)
 - Backend: `wavy-backend` — Bun + Hono + raw SQL (postgres-js), NeonDB, base path `/api/v1`, port 1420
+- Mobile: `wavy-mobile` — Expo SDK 58 + expo-router + TypeScript + NativeWind, jalan di Expo Go. **Hanya role customer**; EO & admin tetap di web. Memakai endpoint backend yang sama dengan web, tanpa endpoint khusus mobile.
+  - Scope mobile: login OTP, beranda, jelajah (search + filter kategori), detail konser, checkout (1 kategori, maks 4 tiket), detail order + bayar Midtrans Snap (WebView), tiket saya + QR + transfer, riwayat order, profil & level, notifikasi.
+  - Tidak di mobile: favorit/follow, review, waiting room/list.
+  - Aturan desain sama dengan web (token `docs/DESIGN.md` §2, tipografi §3, badge §6); layout disesuaikan untuk HP.
 
 ## 2. Role
 
@@ -88,4 +92,4 @@ Setiap fase/fitur = branch baru dari `main`, commit rutin, review lewat PR.
 
 ## 8. Di luar scope
 
-App mobile native, refund otomatis, multi-currency, upload bukti transfer (kecuali Midtrans batal dipakai).
+App mobile untuk EO/admin, dev build/rilis store app mobile (cukup Expo Go untuk demo), refund otomatis, multi-currency, upload bukti transfer (kecuali Midtrans batal dipakai).
