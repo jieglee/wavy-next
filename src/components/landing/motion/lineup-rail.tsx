@@ -8,21 +8,44 @@ import { Link } from "@/i18n/navigation";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import type { Concert } from "@/types/type";
 import { useLandingConcerts } from "./landing-data";
-import ConcertCard from "@/components/concerts/concert-card";
+import { EventPoster } from "@/components/concerts/event-poster";
 
+/**
+ * Kartu rel "Now showing": tampilan awal (poster lebar 16:7, lokasi, judul, organizer, harga).
+ * Sengaja terpisah dari ConcertCard supaya kartu di halaman lain tidak ikut berubah.
+ */
 function RailCard({ c }: { c: Concert }) {
+  const t = useTranslations("FeaturedEvents");
+  const organizer = c.organizer_name || c.artist_name || "";
+  const price = c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null;
   return (
-    <ConcertCard
-      id={c.id}
-      title={c.title}
-      location={c.venue}
-      organizer={c.organizer_name || c.artist_name || ""}
-      price={c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null}
-      poster_url={c.poster_url || undefined}
-      date={c.date}
-      salesStatus={c.sales_status}
-      className="w-[300px] shrink-0 sm:w-[280px]"
-    />
+    <Link href={`/concerts/${c.id}`} className="group block w-[240px] shrink-0 sm:w-[280px]">
+      <div className="transition-transform duration-300 ease-out motion-safe:group-hover:-translate-y-2">
+        <div className="relative aspect-16/7 overflow-hidden rounded-xl border border-border shadow-[0_4px_14px_color-mix(in_oklab,var(--foreground)_12%,transparent)] transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_16px_32px_-8px_color-mix(in_oklab,var(--foreground)_28%,transparent)]">
+          <EventPoster
+            src={c.poster_url || undefined}
+            title={c.title}
+            className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out motion-safe:group-hover:scale-105"
+          />
+          <div className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out motion-safe:group-hover:translate-x-full" />
+        </div>
+      </div>
+      <p className="mt-3 truncate text-xs text-muted-foreground/80">{c.venue}</p>
+      <h3 className="mt-1 block w-full truncate font-display text-sm font-bold text-foreground transition-all duration-300 group-hover:text-primary">
+        {c.title}
+      </h3>
+      <p className="mt-0.5 truncate text-xs text-muted-foreground">{t("byOrganizer", { organizer })}</p>
+      <div className="mt-3 border-t border-border pt-2.5">
+        {price ? (
+          <>
+            <p className="text-[0.65rem] text-muted-foreground/80">{t("startingFrom")}</p>
+            <p className="font-mono text-sm font-bold text-foreground">Rp{price}</p>
+          </>
+        ) : (
+          <p className="text-xs text-muted-foreground">{t("priceUnavailable")}</p>
+        )}
+      </div>
+    </Link>
   );
 }
 
