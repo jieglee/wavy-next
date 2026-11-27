@@ -29,11 +29,14 @@ function RailCard({ c }: { c: Concert }) {
               className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
-          <div className="pointer-events-none absolute inset-0 -translate-x-full rounded-lg bg-[linear-gradient(115deg,transparent_30%,color-mix(in_oklab,var(--background)_26%,transparent)_50%,transparent_72%)] opacity-0 transition-[transform,opacity] duration-500 ease-out motion-safe:group-hover:translate-x-full group-hover:opacity-100" />
+          {/* efek kaca: kilau miring lewat dari kiri ke kanan saat di-hover */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-lg">
+            <div className="absolute inset-0 -translate-x-full bg-[linear-gradient(115deg,transparent_30%,color-mix(in_oklab,white_26%,transparent)_50%,transparent_72%)] opacity-0 transition-[transform,opacity] duration-500 ease-out group-hover:translate-x-full group-hover:opacity-100" />
+          </div>
         </div>
         <div className="flex flex-col gap-1">
           <p className="line-clamp-1 min-h-6 text-sm text-muted-foreground">{c.venue}</p>
-          <h3 className="line-clamp-1 text-[18px] font-semibold leading-7 text-foreground transition-colors duration-300 group-hover:text-primary">
+          <h3 className="line-clamp-1 transform-gpu text-[18px] font-semibold leading-7 text-foreground transition-[transform,text-shadow,color] duration-300 ease-out group-hover:text-primary group-hover:[text-shadow:0_8px_18px_color-mix(in_oklab,var(--primary)_26%,transparent)] group-hover:[transform:perspective(900px)_translateZ(12px)_rotateX(4deg)]">
             {c.title}
           </h3>
           {organizer && <p className="line-clamp-1 text-sm text-muted-foreground">{t("byOrganizer", { organizer })}</p>}
@@ -55,7 +58,8 @@ function RailCard({ c }: { c: Concert }) {
 
 /**
  * Carousel biasa: 4 kartu per layar di desktop, ~1,25 kartu di HP (geser dengan jari).
- * Tombol kiri/kanan hanya di md ke atas, muncul saat carousel di-hover, dan hilang di ujung.
+ * Tombol bulat hanya di md ke atas: awalnya cuma tombol kanan; tombol kiri muncul setelah digeser.
+ * Sekali klik = geser satu kartu. Tombol kanan hilang di ujung.
  * Posisi vertikal tombol = tengah banner (diukur, karena tinggi banner ikut lebar kartu).
  */
 function Carousel({ items }: { items: Concert[] }) {
@@ -87,14 +91,16 @@ function Carousel({ items }: { items: Concert[] }) {
     };
   }, [update, items.length]);
 
-  const scrollByPage = (dir: 1 | -1) => {
+  // satu klik = geser satu kartu (lebar kartu + gap 16px)
+  const scrollByCard = (dir: 1 | -1) => {
     const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth, behavior: "smooth" });
+    const slide = el?.firstElementChild as HTMLElement | null;
+    if (!el || !slide) return;
+    el.scrollBy({ left: dir * (slide.offsetWidth + 16), behavior: "smooth" });
   };
 
   const arrowClass =
-    "absolute z-10 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background text-primary opacity-0 shadow-[0_4px_8px_color-mix(in_oklab,var(--foreground)_10%,transparent)] transition-opacity hover:opacity-100 focus-visible:opacity-100 group-hover/carousel:opacity-100 md:flex";
+    "absolute z-10 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background text-primary shadow-[0_4px_8px_color-mix(in_oklab,var(--foreground)_10%,transparent)] transition-transform hover:scale-105 md:flex";
 
   return (
     <div className="group/carousel relative">
@@ -111,7 +117,7 @@ function Carousel({ items }: { items: Concert[] }) {
       {canPrev && (
         <button
           type="button"
-          onClick={() => scrollByPage(-1)}
+          onClick={() => scrollByCard(-1)}
           aria-label={t("prev")}
           className={`${arrowClass} -left-4`}
           style={{ top: arrowTop ?? "35%" }}
@@ -122,7 +128,7 @@ function Carousel({ items }: { items: Concert[] }) {
       {canNext && (
         <button
           type="button"
-          onClick={() => scrollByPage(1)}
+          onClick={() => scrollByCard(1)}
           aria-label={t("next")}
           className={`${arrowClass} -right-4`}
           style={{ top: arrowTop ?? "35%" }}
