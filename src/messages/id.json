@@ -837,7 +837,9 @@
             "submitting": "Memverifikasi...",
             "invalid": "Email atau kata sandi salah.",
             "expired": "Sesi admin berakhir. Silakan masuk lagi.",
-            "backHome": "Kembali ke beranda"
+            "backHome": "Kembali ke beranda",
+            "showPassword": "Tampilkan kata sandi",
+            "hidePassword": "Sembunyikan kata sandi"
         },
         "dashboard": {
             "title": "Dashboard platform",
