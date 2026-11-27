@@ -837,7 +837,9 @@
             "submitting": "Verifying...",
             "invalid": "Wrong email or password.",
             "expired": "Your admin session has ended. Please sign in again.",
-            "backHome": "Back to home"
+            "backHome": "Back to home",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password"
         },
         "dashboard": {
             "title": "Platform dashboard",
