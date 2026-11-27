@@ -153,8 +153,8 @@ export function LineupRail() {
       <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 id="lineup-title" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-foreground md:text-2xl">
-            {t("title")}
             <Ticket className="size-6 shrink-0 -rotate-12 text-primary md:size-7" aria-hidden />
+            {t("title")}
           </h2>
           <Link href="/concerts" className="text-sm font-semibold text-primary hover:underline">
             {t("all")}
