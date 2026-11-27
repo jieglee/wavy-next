@@ -152,14 +152,53 @@ export interface OrganizerDashboardStats {
   peak_purchase_hour: number;
 }
 
+// GET /admin/stats
 export interface AdminStats {
   organizer_count: number;
+  active_organizer_count: number;
   pending_organizer_count: number;
+  suspended_organizer_count: number;
+  rejected_organizer_count: number;
   customer_count: number;
   event_count: number;
+  published_event_count: number;
   order_count: number;
+  paid_order_count: number;
   revenue: number;
   ticket_sold: number;
+  orders_by_status: Record<"pending_payment" | "paid" | "expired" | "rejected" | "refunded", number>;
+}
+
+// GET /admin/stats/daily?days=
+export interface AdminDailyPoint {
+  date: string; // YYYY-MM-DD (WIB)
+  orders: number;
+  tickets: number;
+  revenue: number;
+}
+
+// GET /admin/stats/top-events
+export interface AdminTopEvent {
+  id: number;
+  title: string;
+  status: string;
+  organizer_name: string;
+  tickets_sold: number;
+  revenue: number;
+}
+
+// GET /admin/orders/recent
+export interface AdminRecentOrder {
+  id: number;
+  status: string;
+  quantity: number;
+  total_price: number;
+  created_at: string;
+  paid_at: string | null;
+  event_id: number;
+  event_title: string;
+  organizer_name: string;
+  customer_name: string;
 }
 
 export interface AdminCustomer {
