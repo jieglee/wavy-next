@@ -1,11 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Building2 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight, Building2, UserCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { adminGet } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/price";
+import { formatWib } from "@/lib/organizer";
+import { EmailVerifiedChip } from "@/components/admin/organizer-review";
 import { useApiResource, type ApiResource } from "@/hooks/use-api-resource";
 import { useAdminSession, useAdminUnauthorized } from "@/hooks/use-admin-session";
 import { EmptyState, ErrorState } from "@/components/states/async-states";
@@ -21,11 +23,12 @@ import { Ring } from "@/components/charts/ring";
 import { RingCenter } from "@/components/charts/ring-center";
 import type { AdminOrganizer, AdminStats } from "@/types/type";
 
-const STATUS_ORDER = ["active", "suspended", "pending_verification"] as const;
+const STATUS_ORDER = ["active", "suspended", "pending_verification", "rejected"] as const;
 const STATUS_COLORS: Record<string, string> = {
   active: "var(--chart-1)",
   suspended: "var(--chart-2)",
   pending_verification: "var(--chart-4)",
+  rejected: "var(--chart-5)",
 };
 
 /** Dashboard admin (DESIGN §4 Modular): KPI platform → distribusi organizer (4) + pendapatan per organizer (8). */
@@ -49,6 +52,8 @@ export default function AdminDashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
         <KpiRow stats={stats} />
+
+        <VerificationQueue organizers={organizers} />
 
         <Panel className="md:col-span-4" title={t("statusTitle")} caption={t("statusCaption")}>
           <ChartState resource={organizers} isEmpty={(d) => d.length === 0} empty={<EmptyState title={t("organizersEmpty")} />}>
@@ -157,5 +162,53 @@ function StatusRing({ organizers }: { organizers: AdminOrganizer[] }) {
         ))}
       </ul>
     </div>
+  );
+}
+
+/** Kartu antrean verifikasi: 5 pengajuan terlama + tautan ke antrean penuh. */
+function VerificationQueue({ organizers }: { organizers: ApiResource<AdminOrganizer[]> }) {
+  const t = useTranslations("Admin.dashboard");
+  const tv = useTranslations("Admin.verification");
+  const locale = useLocale();
+  const pending = (organizers.data ?? [])
+    .filter((o) => o.status === "pending_verification")
+    .sort((a, b) => (Date.parse(a.created_at ?? "") || 0) - (Date.parse(b.created_at ?? "") || 0) || a.id - b.id);
+  return (
+    <Panel className="md:col-span-12" title={t("queueTitle")} caption={organizers.data ? t("queueCaption", { n: pending.length }) : undefined}>
+      <ChartState
+        resource={organizers}
+        isEmpty={(d) => !d.some((o) => o.status === "pending_verification")}
+        empty={<EmptyState className="border-0 py-6" icon={<UserCheck className="h-8 w-8" />} title={t("queueEmpty")} />}
+      >
+        {() => (
+          <div className="space-y-3">
+            <ul className="divide-y divide-border">
+              {pending.slice(0, 5).map((o) => (
+                <li key={o.id} className="flex flex-col gap-2 py-3 first:pt-0 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <Link href={`/admin/organizers/${o.id}`} className="block truncate font-semibold text-foreground hover:text-primary">
+                      {o.name}
+                    </Link>
+                    <p className="truncate font-mono text-xs text-muted-foreground">
+                      {o.email} · {tv("submitted", { date: formatWib(o.created_at, locale) })}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <EmailVerifiedChip verifiedAt={o.email_verified_at} />
+                    <Link href={`/admin/organizers/${o.id}`} className={cn(btn.primary, "px-3 py-1.5 text-xs")}>
+                      {tv("review")}
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <Link href="/admin/verification" className={cn(btn.ghost, "w-full sm:w-auto")}>
+              {t("queueAll")}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        )}
+      </ChartState>
+    </Panel>
   );
 }

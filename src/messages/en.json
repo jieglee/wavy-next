@@ -147,7 +147,10 @@
             "VALIDATION_ERROR": "The data you sent is not valid. Please check your input.",
             "ORDER_NOT_PENDING": "This order is no longer waiting for payment.",
             "PAYMENT_NOT_CONFIGURED": "Online payment isn't active yet. Please wait for the organizer to verify.",
-            "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly."
+            "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly.",
+            "ORGANIZER_PENDING": "This organizer account is still waiting for admin verification.",
+            "ORGANIZER_REJECTED": "This organizer application was not approved.",
+            "INVALID_STATUS_TRANSITION": "The organizer status has already changed. Reload the page and try again."
         }
     },
     "OrderStatus": {
@@ -766,12 +769,14 @@
         "logout": "Log out",
         "nav": {
             "dashboard": "Dashboard",
-            "organizers": "Organizers"
+            "organizers": "Organizers",
+            "verification": "Verification"
         },
         "status": {
             "active": "Active",
             "suspended": "Suspended",
-            "pending_verification": "Unverified"
+            "pending_verification": "Pending review",
+            "rejected": "Rejected"
         },
         "login": {
             "title": "Admin sign in",
@@ -802,7 +807,11 @@
             "revenueTitle": "Revenue per organizer",
             "revenueCaption": "Top 6, paid orders",
             "revenueEmpty": "No revenue yet",
-            "revenueEmptyText": "The chart appears once there are paid orders."
+            "revenueEmptyText": "The chart appears once there are paid orders.",
+            "queueTitle": "Verification queue",
+            "queueCaption": "{n} waiting for approval",
+            "queueEmpty": "No applications waiting.",
+            "queueAll": "Open queue"
         },
         "organizers": {
             "title": "Manage organizers",
@@ -825,7 +834,8 @@
             "confirmSuspendTitle": "Suspend {name}?",
             "confirmSuspendBody": "The organizer immediately loses access to Creator Studio. Existing events and orders are kept.",
             "confirmActivateTitle": "Activate {name}?",
-            "confirmActivateBody": "The organizer can sign in and manage events again."
+            "confirmActivateBody": "The organizer can sign in and manage events again.",
+            "review": "Review"
         },
         "organizerDetail": {
             "back": "All organizers",
@@ -851,6 +861,42 @@
                 "sold": "Sold",
                 "revenue": "Revenue"
             }
+        },
+        "verification": {
+            "title": "Verification queue",
+            "subtitle": "New organizers waiting for approval. Oldest first.",
+            "empty": "No applications waiting",
+            "emptyText": "New organizer applications will show up here.",
+            "badge": "{n} waiting for verification",
+            "submitted": "Submitted {date}",
+            "emailVerified": "Email verified",
+            "emailUnverified": "Email not verified",
+            "review": "Review"
+        },
+        "review": {
+            "title": "Application details",
+            "caption": "Check before approving",
+            "submitted": "Submitted",
+            "emailStatus": "Email status",
+            "approve": "Approve",
+            "reject": "Reject",
+            "approveTitle": "Approve {name}?",
+            "approveBody": "The organizer can sign in to Creator Studio right away. A notification email is sent to {email}.",
+            "rejectTitle": "Reject {name}?",
+            "rejectBody": "The reason is emailed to the organizer and shown when they try to sign in. They can apply again.",
+            "reasonLabel": "Rejection reason",
+            "reasonPlaceholder": "E.g. the social media link does not open, please attach the official profile.",
+            "reasonHint": "At least 10 characters, at most 500.",
+            "reasonTooShort": "The reason needs at least 10 characters.",
+            "reasonTooLong": "The reason can be at most 500 characters.",
+            "cancel": "Cancel",
+            "saving": "Saving...",
+            "approved": "{name} approved",
+            "rejected": "{name} rejected",
+            "emailSent": "Notification email sent to {email}.",
+            "emailFailed": "The decision is saved, but the email to {email} could not be sent. Contact the organizer manually.",
+            "rejectedTitle": "Application rejected",
+            "reviewedAt": "Reviewed {date}"
         }
     },
     "InfoPages": {
@@ -1074,5 +1120,15 @@
             "title": "From picking a seat to the gate",
             "more": "Full guide"
         }
+    },
+    "OrganizerLogin": {
+        "pendingTitle": "Your account is waiting for verification",
+        "pendingBody": "We received your partnership application and an admin is reviewing it. We will email this address once it has been reviewed. You cannot sign in until the account is approved.",
+        "rejectedTitle": "Application not approved",
+        "rejectedBody": "An admin could not approve your partnership application yet. Fix the details and apply again with the same email.",
+        "reasonLabel": "Reason from the admin",
+        "reapply": "Apply again",
+        "suspendedTitle": "Account suspended",
+        "suspendedBody": "Your organizer account has been suspended by an admin. Contact the Wavy admin for more information."
     }
 }

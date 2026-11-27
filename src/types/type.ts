@@ -154,6 +154,7 @@ export interface OrganizerDashboardStats {
 
 export interface AdminStats {
   organizer_count: number;
+  pending_organizer_count: number;
   customer_count: number;
   event_count: number;
   order_count: number;
@@ -170,23 +171,43 @@ export interface AdminCustomer {
   spend: number;
 }
 
-export interface AdminOrganizer {
+export type OrganizerStatus = "active" | "suspended" | "pending_verification" | "rejected";
+
+// field verifikasi (PATCH /admin/organizers/:id): email_verified_at dari OTP pendaftaran,
+// reviewed_at = waktu admin setujui/tolak, rejection_reason = alasan yang dikirim ke EO
+type OrganizerReview = {
+  email_verified_at: string | null;
+  reviewed_at: string | null;
+  rejection_reason: string | null;
+};
+
+export interface AdminOrganizer extends OrganizerReview {
   id: number;
   name: string;
   email: string;
-  status: "active" | "suspended" | "pending_verification";
+  status: OrganizerStatus;
   created_at: string;
+  whatsapp: string;
+  event_types: string;
+  social_link: string;
   event_count: number;
   revenue: number;
 }
 
+export interface SetOrganizerStatusResult {
+  message: string;
+  status: OrganizerStatus;
+  previous_status: OrganizerStatus;
+  email_sent: boolean | null;
+}
+
 // GET /admin/organizers/:id
 export interface AdminOrganizerDetail {
-  organizer: {
+  organizer: OrganizerReview & {
     id: number;
     name: string;
     email: string;
-    status: AdminOrganizer["status"];
+    status: OrganizerStatus;
     created_at: string;
     whatsapp: string;
     event_types: string;

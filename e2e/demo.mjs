@@ -60,6 +60,14 @@ async function step(name, fn) {
   }
 }
 
+async function waitFor(check, ms = 5000) {
+  for (const end = Date.now() + ms; Date.now() < end; ) {
+    if (check()) return true;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  return check();
+}
+
 function expect(cond, message) {
   if (!cond) throw new Error(message);
 }
@@ -328,6 +336,66 @@ async function main() {
     await eo.waitForTimeout(1000);
     expect(eo.url().includes("reason=suspended"), `URL EO setelah suspend: ${eo.url()}`);
     await eo.getByText(msg.Studio.session.suspended).waitFor({ timeout: 5000 });
+  });
+
+  await step("6b. verifikasi organizer: login pending dijelaskan, admin setujui -> EO bisa masuk", async () => {
+    const pend = { email: `eo-pending-${RUN}@wavy.test`, password: "eo-pending-123", name: `EO Pending ${RUN}` };
+    await sql`INSERT INTO organizers (name, email, password, status, whatsapp, event_types, created_at)
+              VALUES (${pend.name}, ${pend.email}, crypt(${pend.password}, gen_salt('bf', 10)), 'pending_verification', '081234567890', 'Konser', now())`;
+    const eoLogin = async () => {
+      await eo.goto(`${WEB}/id/organizer/login`);
+      await eo.locator('input[type="email"]').fill(pend.email);
+      await eo.locator('input[type="password"]').fill(pend.password);
+      await eo.locator('button[type="submit"]').click();
+    };
+    await eoLogin();
+    await eo.getByText(msg.OrganizerLogin.pendingTitle).waitFor({ timeout: 10000 });
+
+    const v = msg.Admin.verification;
+    const r = msg.Admin.review;
+    await admin.goto(`${WEB}/id/admin/verification`);
+    // badge jumlah pending di sidebar
+    // badge jumlah pending di sidebar (teks sr-only)
+    await admin.getByText(v.badge.replace("{n}", ""), { exact: false }).first().waitFor({ state: "attached", timeout: 10000 });
+    const card = admin.locator("article", { hasText: pend.email });
+    await card.getByRole("button", { name: r.approve, exact: true }).click();
+    await admin.getByRole("alertdialog").getByRole("button", { name: r.approve, exact: true }).click();
+    await card.waitFor({ state: "detached", timeout: 10000 });
+    const [o] = await sql`SELECT status, reviewed_at FROM organizers WHERE email = ${pend.email}`;
+    expect(o.status === "active" && o.reviewed_at, `status ${o.status}`);
+    expect(o && (await waitFor(() => smtp.recipients.includes(pend.email))), "email persetujuan tidak terkirim ke EO");
+
+    await eoLogin();
+    await eo.waitForURL(/\/organizer\/dashboard/, { timeout: 20000 });
+    await eo.evaluate(() => localStorage.clear());
+  });
+
+  await step("6c. admin tolak dengan alasan -> alasan tampil di login EO", async () => {
+    const rej = { email: `eo-reject-${RUN}@wavy.test`, password: "eo-reject-123", name: `EO Tolak ${RUN}` };
+    const reason = "Tautan media sosial tidak bisa dibuka.";
+    await sql`INSERT INTO organizers (name, email, password, status, whatsapp, event_types, created_at)
+              VALUES (${rej.name}, ${rej.email}, crypt(${rej.password}, gen_salt('bf', 10)), 'pending_verification', '081234567890', 'Konser', now())`;
+    const [{ id }] = await sql`SELECT id FROM organizers WHERE email = ${rej.email}`;
+    const r = msg.Admin.review;
+    await admin.goto(`${WEB}/id/admin/organizers/${id}`);
+    await admin.getByRole("button", { name: r.reject, exact: true }).click();
+    const dialog = admin.getByRole("alertdialog");
+    // alasan kosong -> pesan per field, tidak terkirim
+    await dialog.getByRole("button", { name: r.reject, exact: true }).click();
+    await dialog.getByText(r.reasonTooShort).waitFor({ timeout: 5000 });
+    await dialog.locator("textarea").fill(reason);
+    await dialog.getByRole("button", { name: r.reject, exact: true }).click();
+    await admin.getByText(r.rejectedTitle).waitFor({ timeout: 10000 });
+    const [o] = await sql`SELECT status, rejection_reason FROM organizers WHERE id = ${id}`;
+    expect(o.status === "rejected" && o.rejection_reason === reason, `status ${o.status} / ${o.rejection_reason}`);
+    expect(await waitFor(() => smtp.recipients.includes(rej.email)), "email penolakan tidak terkirim ke EO");
+
+    await eo.goto(`${WEB}/id/organizer/login`);
+    await eo.locator('input[type="email"]').fill(rej.email);
+    await eo.locator('input[type="password"]').fill(rej.password);
+    await eo.locator('button[type="submit"]').click();
+    await eo.getByText(msg.OrganizerLogin.rejectedTitle).waitFor({ timeout: 10000 });
+    await eo.getByText(reason).waitFor({ timeout: 5000 });
   });
 
   await step("7. backend mati -> frontend menampilkan error, bukan data palsu", async () => {

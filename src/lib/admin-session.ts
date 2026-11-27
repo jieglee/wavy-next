@@ -56,3 +56,9 @@ export const adminGet = <T>(path: string) => adminRequest<T>(path);
 
 export const adminPatch = <T>(path: string, data?: unknown) =>
   adminRequest<T>(path, { method: "PATCH", body: data === undefined ? undefined : JSON.stringify(data) });
+
+// Antrean verifikasi berubah (setujui/tolak/suspend): shell admin memuat ulang badge jumlah pending.
+export const ADMIN_ORGANIZERS_CHANGED = "wavy:admin-organizers-changed";
+export const notifyOrganizersChanged = () => {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(ADMIN_ORGANIZERS_CHANGED));
+};

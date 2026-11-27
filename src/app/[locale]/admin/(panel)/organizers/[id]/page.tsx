@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeft, CalendarX } from "lucide-react";
+import { ArrowLeft, CalendarX, CircleAlert } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { adminGet } from "@/lib/admin-session";
 import { formatIDR } from "@/lib/price";
@@ -13,6 +13,7 @@ import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import { StudioPageHeader } from "@/components/studio/studio-shell";
 import { EventStatusBadge } from "@/components/studio/studio-ui";
 import { OrganizerStatusBadge } from "@/components/admin/organizer-status-badge";
+import { EmailVerifiedChip, OrganizerReviewActions } from "@/components/admin/organizer-review";
 import type { AdminOrganizerDetail } from "@/types/type";
 
 /** Detail organizer (DESIGN §4 Modular): profil + KPI penjualan → daftar event (tabel md+, card di bawahnya). */
@@ -37,14 +38,15 @@ export default function AdminOrganizerDetailPage({ params }: { params: Promise<{
     <>
       {!detail.data && <div>{back}</div>}
       <AsyncContent resource={detail} loadingRows={5} isEmpty={() => false}>
-        {(d) => <Detail data={d} back={back} />}
+        {(d) => <Detail data={d} back={back} onChanged={detail.reload} />}
       </AsyncContent>
     </>
   );
 }
 
-function Detail({ data, back }: { data: AdminOrganizerDetail; back: React.ReactNode }) {
+function Detail({ data, back, onChanged }: { data: AdminOrganizerDetail; back: React.ReactNode; onChanged: () => void }) {
   const t = useTranslations("Admin.organizerDetail");
+  const tr = useTranslations("Admin.review");
   const locale = useLocale();
   const { organizer: org, events, summary } = data;
 
@@ -63,13 +65,36 @@ function Detail({ data, back }: { data: AdminOrganizerDetail; back: React.ReactN
       ),
     },
     { label: t("joined"), value: <span className="font-mono">{formatWib(org.created_at, locale)}</span> },
+    { label: tr("emailStatus"), value: <EmailVerifiedChip verifiedAt={org.email_verified_at} /> },
   ];
+  const pendingReview = org.status === "pending_verification";
 
   return (
     <>
       <StudioPageHeader title={org.name} back={back} actions={<OrganizerStatusBadge status={org.status} />} />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+        {pendingReview && (
+          <section className="flex flex-col gap-4 rounded-xl border border-warning/40 bg-warning/5 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6 md:col-span-12">
+            <div className="min-w-0">
+              <h2 className="font-display text-base font-bold tracking-tight text-foreground">{tr("title")}</h2>
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{tr("caption")}</p>
+            </div>
+            <OrganizerReviewActions organizer={org} onDone={onChanged} />
+          </section>
+        )}
+        {org.status === "rejected" && (
+          <section role="note" className="flex gap-3 rounded-xl border border-border bg-surface p-4 sm:p-6 md:col-span-12">
+            <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+            <div className="min-w-0">
+              <h2 className="font-display text-base font-bold tracking-tight text-foreground">{tr("rejectedTitle")}</h2>
+              {org.reviewed_at && (
+                <p className="mt-1 font-mono text-[11px] text-muted-foreground">{tr("reviewedAt", { date: formatWib(org.reviewed_at, locale) })}</p>
+              )}
+              <p className="mt-2 whitespace-pre-line break-words text-sm text-foreground">{org.rejection_reason || "—"}</p>
+            </div>
+          </section>
+        )}
         <div className="grid grid-cols-2 gap-4 md:col-span-12 lg:grid-cols-4">
           <Kpi label={t("revenue")} value={formatIDR(Number(summary.revenue))} note={t("revenueNote")} />
           <Kpi label={t("ticketsSold")} value={String(summary.ticket_sold)} note={t("paidOrders", { n: summary.paid_order_count })} />

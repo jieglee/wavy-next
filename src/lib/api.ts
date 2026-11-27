@@ -4,29 +4,33 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1420/api/v
 export class ApiError extends Error {
   status: number;
   code?: string;
+  /** data tambahan pada error berkode, mis. { reason } untuk ORGANIZER_REJECTED */
+  details: Record<string, unknown>;
 
-  constructor(status: number, message: string, code?: string) {
+  constructor(status: number, message: string, code?: string, details: Record<string, unknown> = {}) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.code = code;
+    this.details = details;
   }
 }
 
 // Backend mengirim dua bentuk error:
 //   { error: "pesan" }                       -> error lama
-//   { error: { code: "SALES_CLOSED", message } } -> aturan bisnis (PRD §4)
+//   { error: { code: "SALES_CLOSED", message, ...details } } -> aturan bisnis (PRD §4)
 // Selalu hasilkan message berupa string, jangan pernah "[object Object]".
 export function parseApiError(status: number, body: unknown): ApiError {
   const fallback = `Request failed (${status})`;
   const err = body && typeof body === "object" ? (body as { error?: unknown }).error : undefined;
   if (typeof err === "string" && err.trim()) return new ApiError(status, err);
   if (err && typeof err === "object") {
-    const { code, message } = err as { code?: unknown; message?: unknown };
+    const { code, message, ...details } = err as { code?: unknown; message?: unknown } & Record<string, unknown>;
     return new ApiError(
       status,
       typeof message === "string" && message.trim() ? message : fallback,
-      typeof code === "string" ? code : undefined
+      typeof code === "string" ? code : undefined,
+      details
     );
   }
   return new ApiError(status, fallback);

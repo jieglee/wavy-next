@@ -7,6 +7,7 @@ const STATUS_TONE: Record<string, string> = {
   active: "bg-success/10 text-success",
   suspended: "bg-destructive/10 text-destructive",
   pending_verification: "bg-warning/10 text-warning",
+  rejected: "bg-muted text-muted-foreground",
 };
 
 export function OrganizerStatusBadge({ status }: { status: string }) {

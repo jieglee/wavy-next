@@ -1,17 +1,19 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { Building2, LayoutDashboard, LogOut } from "lucide-react";
+import { Building2, LayoutDashboard, LogOut, UserCheck } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { cn } from "@/lib/utils";
-import { adminGet } from "@/lib/admin-session";
+import { ADMIN_ORGANIZERS_CHANGED, adminGet } from "@/lib/admin-session";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAdminSession, useAdminUnauthorized } from "@/hooks/use-admin-session";
+import type { AdminStats } from "@/types/type";
 
 const NAV = [
   { href: "/admin/dashboard", key: "dashboard", icon: LayoutDashboard },
+  { href: "/admin/verification", key: "verification", icon: UserCheck },
   { href: "/admin/organizers", key: "organizers", icon: Building2 },
 ] as const;
 
@@ -22,7 +24,16 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const session = useAdminSession();
   // profil dari GET /admin/me (bukan hanya data login yang tersimpan); 401 -> ke login admin
   const me = useApiResource(session.ready ? "admin-me" : null, () => adminGet<{ id: number; name: string; email: string }>("/admin/me"));
-  useAdminUnauthorized(me.error);
+  // badge antrean verifikasi; dimuat ulang saat admin menyetujui/menolak (event dari halaman)
+  const stats = useApiResource(session.ready ? "admin-shell-stats" : null, () => adminGet<AdminStats>("/admin/stats"));
+  const reloadStats = stats.reload;
+  useEffect(() => {
+    window.addEventListener(ADMIN_ORGANIZERS_CHANGED, reloadStats);
+    return () => window.removeEventListener(ADMIN_ORGANIZERS_CHANGED, reloadStats);
+  }, [reloadStats]);
+  // saat memuat ulang, angka terakhir tidak dipertahankan: badge disembunyikan sampai data baru tiba
+  const pending = stats.data?.pending_organizer_count ?? 0;
+  useAdminUnauthorized(me.error, stats.error);
   const adminName = me.data?.name || me.data?.email || session.name || session.email;
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
@@ -56,7 +67,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 )}
               >
                 <Icon className="h-4 w-4" />
-                {t(`nav.${key}`)}
+                <span className="min-w-0 flex-1 truncate">{t(`nav.${key}`)}</span>
+                {key === "verification" && pending > 0 && (
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold",
+                      isActive(href) ? "bg-background text-foreground" : "bg-warning text-background"
+                    )}
+                  >
+                    <span aria-hidden>{pending}</span>
+                    <span className="sr-only">{t("verification.badge", { n: pending })}</span>
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
@@ -96,16 +118,22 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
       <nav
         aria-label={t("navLabel")}
-        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
       >
         {NAV.map(({ href, key, icon: Icon }) => (
           <Link
             key={href}
             href={href}
             aria-current={isActive(href) ? "page" : undefined}
-            className={cn("flex flex-col items-center gap-1 py-2 text-[11px] font-medium", isActive(href) ? "text-primary" : "text-muted-foreground")}
+            className={cn("relative flex flex-col items-center gap-1 py-2 text-[11px] font-medium", isActive(href) ? "text-primary" : "text-muted-foreground")}
           >
             <Icon className="h-5 w-5" />
+            {key === "verification" && pending > 0 && (
+              <span className="absolute left-1/2 top-1 ml-2 rounded-full bg-warning px-1.5 font-mono text-[10px] font-semibold leading-4 text-background">
+                <span aria-hidden>{pending}</span>
+                <span className="sr-only">{t("verification.badge", { n: pending })}</span>
+              </span>
+            )}
             <span className="max-w-full truncate px-1">{t(`nav.${key}`)}</span>
           </Link>
         ))}
