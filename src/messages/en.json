@@ -1049,7 +1049,7 @@
     "Landing": {
         "hero": {
             "eyebrow": "#EveryConcert",
-            "title": "The lights go down. Your ticket is ready.",
+            "title": "The lights go down. <accent>Your ticket is ready.</accent>",
             "subtitle": "Find a concert, book in minutes, and get through the gate with the QR on your phone.",
             "cta": "Browse concerts",
             "secondary": "How to buy",

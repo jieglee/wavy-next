@@ -1049,7 +1049,7 @@
     "Landing": {
         "hero": {
             "eyebrow": "#EveryConcert",
-            "title": "Lampu meredup. Tiketmu sudah siap.",
+            "title": "Lampu meredup. <accent>Tiketmu sudah siap.</accent>",
             "subtitle": "Cari konser, pesan dalam hitungan menit, dan masuk gate cukup dengan QR di ponselmu.",
             "cta": "Jelajahi konser",
             "secondary": "Cara beli tiket",
