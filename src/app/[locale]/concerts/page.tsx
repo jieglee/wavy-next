@@ -6,7 +6,7 @@ import { Search, Ticket, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
-import ConcertCard from "@/components/concerts/concert-card";
+import EventCard from "@/components/concerts/event-card";
 import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { ErrorState } from "@/components/states/async-states";
@@ -155,14 +155,14 @@ function ConcertsPageInner() {
 
         {/* Concerts Grid — same card as landing (FeaturedEvents) */}
         {loading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-4/5 w-full rounded-xl bg-border" />
+                <div className="aspect-[2.26/1] w-full rounded-lg bg-border" />
                 <div className="mt-3 h-3 w-1/2 rounded bg-border" />
                 <div className="mt-2 h-4 w-3/4 rounded bg-border" />
                 <div className="mt-1 h-3 w-2/3 rounded bg-border" />
-                <div className="mt-3 border-t border-border pt-2.5">
+                <div className="mt-3 border-t border-dashed border-border pt-3">
                   <div className="h-3 w-16 rounded bg-border" />
                   <div className="mt-1 h-4 w-24 rounded bg-border" />
                 </div>
@@ -189,23 +189,10 @@ function ConcertsPageInner() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {concerts.map((concert) => {
-              const priceStr = concert.min_price ? Number(concert.min_price).toLocaleString("id-ID") : null;
-              return (
-                <ConcertCard
-                  key={concert.id}
-                  id={concert.id}
-                  title={concert.title}
-                  location={concert.venue || "Indonesia"}
-                  organizer={concert.organizer_name || concert.artist_name || "Event Organizer"}
-                  price={priceStr}
-                  poster_url={concert.poster_url || undefined}
-                  date={concert.date}
-                  salesStatus={concert.sales_status}
-                />
-              );
-            })}
+          <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {concerts.map((concert) => (
+              <EventCard key={concert.id} concert={concert} />
+            ))}
           </div>
         )}
       </main>
