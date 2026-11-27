@@ -13,6 +13,9 @@ const mix = (color: string, pct: number) => `color-mix(in oklab, ${color} ${pct}
 const PINK = "var(--primary)";
 const BLUE = "var(--info)";
 const WHITE = "var(--background)";
+// Turunan token: campuran oklch pink→biru lewat jalur hue magenta/violet (bukan abu-abu).
+const MAGENTA = `color-mix(in oklch, ${PINK} 68%, ${BLUE})`;
+const VIOLET = `color-mix(in oklch, ${PINK} 38%, ${BLUE})`;
 
 // 1+2. Latar putih bersih + ambient glow tipis (pink kiri, biru kanan), tengah tetap terang.
 const BASE: CSSProperties = {
@@ -27,26 +30,33 @@ const BASE: CSSProperties = {
 
 type Beam = {
   x: string; // posisi sumber dari kiri
-  w: string; // lebar ujung cone
+  w: string; // lebar kotak berkas (cone-nya sendiri ditentukan `spread`)
   color: string;
-  from: string;
-  to: string;
-  dur: number;
+  spread: number; // setengah sudut bukaan cone (deg)
+  a: number; // tiga titik sapuan (deg): a → b → c → a
+  b: number;
+  c: number;
+  dur: number; // durasi satu siklus sapuan (s)
   delay: number;
+  pulse: number; // durasi siklus intensitas (s), sengaja tidak kelipatan `dur`
   op: number;
-  primary?: boolean; // berkas utama tampil juga di mobile; sekunder hanya sm+
+  tier: "main" | "side" | "back"; // main tampil di mobile; side & back hanya sm+
 };
 
-// Sumber lampu di kiri dan kanan atas. CSS rotate negatif = berlawanan jarum jam, jadi berkas
-// kiri menyorot ke kanan-bawah dan saling menyilang dengan berkas kanan.
+// Sumber lampu di kiri, kanan, dan dua lampu belakang yang tipis. CSS rotate negatif = berlawanan
+// jarum jam, jadi berkas kiri menyorot ke kanan-bawah dan menyilang dengan berkas kanan.
+// Durasi, delay, dan arah tiap berkas berbeda supaya tidak pernah bergerak serempak.
+const W = { main: "clamp(320px,46vw,760px)", side: "clamp(220px,32vw,520px)", back: "clamp(140px,20vw,320px)" };
 const BEAMS: Beam[] = [
-  // sapuan pelan dan tidak jauh dari posisi tengahnya; kiri & kanan beda durasi supaya tidak seragam
-  { x: "6%", w: "clamp(180px,26vw,420px)", color: PINK, from: "-42deg", to: "-27deg", dur: 16, delay: 0, op: 0.95, primary: true },
-  { x: "14%", w: "clamp(120px,16vw,260px)", color: BLUE, from: "-23deg", to: "-33deg", dur: 21, delay: -7, op: 0.7 },
-  { x: "2%", w: "clamp(90px,11vw,180px)", color: PINK, from: "-57deg", to: "-50deg", dur: 26, delay: -3, op: 0.55 },
-  { x: "94%", w: "clamp(180px,26vw,420px)", color: BLUE, from: "40deg", to: "25deg", dur: 18, delay: -5, op: 0.95, primary: true },
-  { x: "86%", w: "clamp(120px,16vw,260px)", color: PINK, from: "21deg", to: "31deg", dur: 23, delay: -11, op: 0.7 },
-  { x: "98%", w: "clamp(90px,11vw,180px)", color: BLUE, from: "55deg", to: "48deg", dur: 29, delay: -14, op: 0.55 },
+  { x: "5%", w: W.main, color: PINK, spread: 10, a: -38, b: -23, c: -32, dur: 9, delay: 0, pulse: 4.2, op: 0.9, tier: "main" },
+  { x: "12%", w: W.side, color: VIOLET, spread: 6, a: -19, b: -34, c: -25, dur: 7.4, delay: -3, pulse: 3.4, op: 0.7, tier: "side" },
+  { x: "1%", w: W.side, color: MAGENTA, spread: 5, a: -56, b: -46, c: -59, dur: 10.6, delay: -6, pulse: 5.1, op: 0.55, tier: "side" },
+  { x: "95%", w: W.main, color: BLUE, spread: 10, a: 36, b: 22, c: 31, dur: 9.8, delay: -2.5, pulse: 4.7, op: 0.9, tier: "main" },
+  { x: "88%", w: W.side, color: MAGENTA, spread: 6, a: 18, b: 33, c: 24, dur: 8.1, delay: -5, pulse: 3.7, op: 0.7, tier: "side" },
+  { x: "99%", w: W.side, color: VIOLET, spread: 5, a: 53, b: 44, c: 58, dur: 11.2, delay: -8, pulse: 5.5, op: 0.55, tier: "side" },
+  // lampu belakang: tipis, redup, saling menyilang di atas — memberi kedalaman tanpa menutupi judul
+  { x: "34%", w: W.back, color: VIOLET, spread: 3.5, a: -14, b: 9, c: -5, dur: 6.6, delay: -1.5, pulse: 3.1, op: 0.32, tier: "back" },
+  { x: "66%", w: W.back, color: PINK, spread: 3.5, a: 13, b: -9, c: 4, dur: 7.2, delay: -4.2, pulse: 2.9, op: 0.32, tier: "back" },
 ];
 
 // Partikel cahaya halus di area lampu (posisi tetap supaya SSR = klien). Separuhnya hanya sm+.
@@ -69,10 +79,13 @@ const beamStyle = (b: Beam) =>
     width: b.w,
     opacity: b.op,
     "--beam": b.color,
-    "--from": b.from,
-    "--to": b.to,
+    "--spread": `${b.spread}deg`,
+    "--a": `${b.a}deg`,
+    "--b": `${b.b}deg`,
+    "--c": `${b.c}deg`,
     "--dur": `${b.dur}s`,
     "--delay": `${b.delay}s`,
+    "--pulse": `${b.pulse}s`,
     "--op": b.op,
   }) as CSSProperties;
 
@@ -117,21 +130,30 @@ export function SpotlightHero() {
           {/* ambient glow pink & biru di sisi, intensitas naik-turun perlahan */}
           <div
             className="hero-breathe absolute -left-[10%] top-[10%] h-[70%] w-[45%]"
-            style={{ ...vars({ "--dur": "11s", "--lo": 0.35, "--hi": 0.9 }), background: `radial-gradient(closest-side, ${mix(PINK, 16)}, transparent)` }}
+            style={{ ...vars({ "--dur": "6s", "--lo": 0.4, "--hi": 0.9 }), background: `radial-gradient(closest-side, ${mix(PINK, 16)}, ${mix(MAGENTA, 6)} 60%, transparent)` }}
           />
           <div
             className="hero-breathe absolute -right-[10%] top-[10%] h-[70%] w-[45%]"
-            style={{ ...vars({ "--dur": "13s", "--delay": "-6s", "--lo": 0.35, "--hi": 0.9 }), background: `radial-gradient(closest-side, ${mix(BLUE, 15)}, transparent)` }}
+            style={{ ...vars({ "--dur": "7s", "--delay": "-3s", "--lo": 0.4, "--hi": 0.9 }), background: `radial-gradient(closest-side, ${mix(BLUE, 15)}, ${mix(VIOLET, 6)} 60%, transparent)` }}
+          />
+          {/* rona violet tipis di atas tengah, menyatukan sisi pink & biru */}
+          <div
+            className="hero-breathe absolute left-1/2 -top-[20%] h-[55%] w-[70%] -translate-x-1/2"
+            style={{ ...vars({ "--dur": "5s", "--delay": "-2s", "--lo": 0.3, "--hi": 0.7 }), background: `radial-gradient(closest-side, ${mix(VIOLET, 12)}, transparent)` }}
           />
           {BEAMS.map((b, i) => (
-            <span key={i} className={`hero-beam ${b.primary ? "" : "max-sm:hidden"}`} style={beamStyle(b)} />
+            <span key={i} className={`hero-beam ${b.tier === "main" ? "" : "max-sm:hidden"}`} style={beamStyle(b)} />
           ))}
-          {/* glow hanya di sumber cahaya */}
-          {BEAMS.filter((b) => b.primary).map((b, i) => (
+          {/* glow di sumber cahaya, berdenyut seirama intensitas berkasnya */}
+          {BEAMS.filter((b) => b.tier !== "back").map((b, i) => (
             <span
               key={i}
-              className="hero-breathe absolute -top-12 size-28 -translate-x-1/2 rounded-full blur-xl sm:size-40"
-              style={{ ...vars({ "--dur": `${b.dur / 2}s`, "--lo": 0.7, "--hi": 1 }), left: b.x, background: `radial-gradient(circle, ${WHITE} 0%, ${mix(b.color, 55)} 35%, transparent 70%)` }}
+              className={`hero-breathe absolute -top-12 -translate-x-1/2 rounded-full ${b.tier === "main" ? "size-28 sm:size-40" : "size-20 max-sm:hidden"}`}
+              style={{
+                ...vars({ "--dur": `${b.pulse / 2}s`, "--delay": `${b.delay}s`, "--lo": 0.65, "--hi": 1 }),
+                left: b.x,
+                background: `radial-gradient(circle, ${WHITE} 0%, ${mix(b.color, 60)} 28%, ${mix(b.color, 18)} 50%, transparent 70%)`,
+              }}
             />
           ))}
           {/* area tengah tetap bersih & terang di belakang headline (berkas memudar di sini) */}
@@ -150,7 +172,7 @@ export function SpotlightHero() {
           {/* haze tipis di atas kerumunan, tanpa blur */}
           <div
             className="absolute inset-x-0 bottom-0 h-[45%]"
-            style={{ background: `linear-gradient(to top, ${mix(PINK, 14)} 0%, ${mix(BLUE, 8)} 45%, transparent 100%)` }}
+            style={{ background: `linear-gradient(to top, ${mix(PINK, 14)} 0%, ${mix(VIOLET, 10)} 30%, ${mix(BLUE, 7)} 55%, transparent 100%)` }}
           />
         </motion.div>
 
@@ -165,8 +187,8 @@ export function SpotlightHero() {
             <div
               className="hero-breathe absolute inset-x-0 top-[44%] h-[34%] blur-2xl"
               style={{
-                ...vars({ "--dur": "9s", "--lo": 0.45, "--hi": 0.9 }),
-                background: `radial-gradient(40% 100% at 25% 60%, ${mix(PINK, 40)}, transparent), radial-gradient(40% 100% at 75% 60%, ${mix(BLUE, 40)}, transparent)`,
+                ...vars({ "--dur": "4.5s", "--lo": 0.5, "--hi": 0.95 }),
+                background: `radial-gradient(40% 100% at 25% 60%, ${mix(PINK, 40)}, transparent), radial-gradient(30% 90% at 50% 70%, ${mix(VIOLET, 30)}, transparent), radial-gradient(40% 100% at 75% 60%, ${mix(BLUE, 40)}, transparent)`,
               }}
             />
             <Image
@@ -179,10 +201,10 @@ export function SpotlightHero() {
               className="block h-auto w-full"
             />
             {/* pantulan lampu hanya pada bentuk crowd: pink dari kiri, biru dari kanan.
-                Intensitasnya naik-turun seirama durasi berkas utama kiri (16s) dan kanan (18s). */}
+                Intensitasnya naik-turun seirama denyut berkas utama kiri (4.2s) dan kanan (4.7s). */}
             {[
-              { bg: `linear-gradient(90deg, ${mix(PINK, 50)} 0%, transparent 45%)`, dur: "8s", delay: "0s" },
-              { bg: `linear-gradient(270deg, ${mix(BLUE, 50)} 0%, transparent 45%)`, dur: "9s", delay: "-5s" },
+              { bg: `linear-gradient(90deg, ${mix(PINK, 50)} 0%, ${mix(MAGENTA, 15)} 30%, transparent 48%)`, dur: "4.2s", delay: "0s" },
+              { bg: `linear-gradient(270deg, ${mix(BLUE, 50)} 0%, ${mix(VIOLET, 15)} 30%, transparent 48%)`, dur: "4.7s", delay: "-2.5s" },
             ].map((r, i) => (
               <div
                 key={i}
