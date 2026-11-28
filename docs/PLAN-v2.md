@@ -3,6 +3,8 @@
 > Status: **disetujui Kalsah 2026-11-27, direvisi 2026-11-28** — fitur venue & pemilih section (3D/2D) **ditunda** (§7).
 > Dasar: `docs/PRD.md`, `docs/DESIGN.md`, `docs/AUDIT.md`, kode di `origin/main` ketiga repo.
 > Skema final ada di `docs/DATABASE.md` (dibuat di branch `docs/prd-v2`).
+> **Implementasi 2026-11-28:** semua branch §4 sudah dibuat dan di-commit (ditambah `fix/admin-stats-cancelled` di backend);
+> e2e 2 role (`e2e/demo.mjs`) lolos 18/18. Urutan merge & langkah reset Neon ada di laporan sesi.
 
 ## 0. Ringkasan perubahan
 

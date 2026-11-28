@@ -43,7 +43,7 @@ Didefinisikan sekali di `wavy-next/src/app/globals.css`, di-expose lewat `@theme
 (`bg-primary`, `text-muted-foreground`, `border-border`, dst.).
 
 - **`:root` (terang)** = tema yang dipakai halaman sekarang. Nilainya diambil dari hex yang paling sering dipakai, supaya tampilan tidak berubah.
-- **`.dark` ("Concert Spotlight")** = arah nilai di tabel atas. Aktif lewat class `.dark` pada ancestor. Saat ini dipakai shell admin dan layar scan tiket organizer.
+- **`.dark` ("Concert Spotlight")** = arah nilai di tabel atas. Aktif lewat class `.dark` pada ancestor. Saat ini belum dipakai halaman mana pun (shell admin & scan memakai tema terang).
 - Token turunan (`--card-foreground`, `--popover`, `--chart-*`, dll.) dideklarasikan ulang di `:root, .dark`, jadi area `.dark` ikut memakai nilai gelap.
 
 | Token | `:root` (terang) | `.dark` | Catatan |
@@ -128,15 +128,13 @@ Di inline style, konstanta JS, atribut SVG, dan stop gradient, hex yang nilainya
 | `pink-50` | `primary/5` |
 | `hover:bg-*-700` | `hover:bg-<token>/90` |
 
-  Area gelap (shell admin, layar scan) ada di dalam scope `.dark`. Shade `-300/-400` di sana jadi token yang sama, dan otomatis memakai nilai gelapnya (`--success` gelap = emerald-400, `--destructive` gelap = red-400).
+  Area di dalam scope `.dark` (saat ini belum ada) memakai nilai gelap: shade `-300/-400` di sana jadi token yang sama, dan otomatis memakai nilai gelapnya (`--success` gelap = emerald-400, `--destructive` gelap = red-400).
 
 ### 2.4 Pengecualian yang diizinkan (boleh tetap hex)
 
 | Hex | Dipakai untuk | Lokasi |
 |---|---|---|
-| `#25D366` | Warna brand WhatsApp | `concert-organizer-share`, link/tombol bantuan WhatsApp di `organizer/register` |
-| `#1877F2` | Warna brand Facebook | `concert-organizer-share` |
-| `#FFB800` | Bintang rating (termasuk bekas `amber-400` di review & hotel) | `concert-reviews`, `concert-review-modal`, `hotels/[id]`, `landing/traveler-mode` |
+| `#FFB800` | Bintang rating (termasuk bekas `amber-400` di review) | `concert-reviews`, `concert-review-modal` |
 | `#FF8A65` `#FF3B30` `#FF7A7A` `#7AA8FF` `#7FC4A0` | Aksen bar per negara | `landing/discover-countries` (section "Jelajahi Event di Kotamu") |
 
 Di luar daftar ini, hex di halaman dilarang.
@@ -147,7 +145,7 @@ Semua poster/banner event yang kosong (atau gagal dimuat) memakai satu komponen:
 
 - Latar: `bg-linear-to-br from-stage to-primary-glow` (token, tanpa hex).
 - Isi: judul event (`font-display`, `text-primary-foreground`) rata kiri-bawah; ukuran `sm` (thumbnail kecil) hanya memuat inisial.
-- Dipakai di: kartu konser, "Event untuk kamu", featured events, lineup landing, hasil pencarian, featured picks, hero & banner checkout, daftar event Creator Studio, detail order.
+- Dipakai di: kartu konser, "Event untuk kamu", featured events, lineup landing, hasil pencarian, featured picks, hero & banner checkout, daftar event portal admin, detail order.
 - Slide promo tanpa gambar (`landing/promo-carousel`) memakai gradient dari `stage`, `primary`, `primary-glow`.
 
 Gradient placeholder hex lama (`#7DD3E8`, `#8B0000`, `#211F2B`, `#C084FC`, dst.) sudah dihapus. Keputusan `--stage` maroon atau tidak (catatan §2.1) masih terbuka.
@@ -185,20 +183,26 @@ Setiap halaman memakai satu grid system utama yang **sengaja terlihat**. Grid da
 | Riwayat order | **Baseline** | Daftar rapat berirama 4px; tanggal & kode mono rata kiri, status & total rata kanan. Mobile: tiap baris jadi card. |
 | Profil / level | **Radial** | Progress level sebagai ring di tengah, statistik mengelilingi. |
 
-### Creator Studio (EO) & Admin
+### Portal admin (`/admin`)
 
-Shell: sidebar kiri (desktop) → bottom nav / drawer (mobile). Header halaman: judul Space Grotesk + aksi utama kanan.
+Satu role pengelola (v2): fitur Creator Studio lama ada di sini. Shell: sidebar kiri (desktop) → bottom nav 5 menu
+(Dasbor, Event, Order, Scan, Artis) di mobile. Header halaman: judul Space Grotesk + aksi utama kanan (`AdminPageHeader`).
 
 | Halaman | Grid | Komposisi |
 |---|---|---|
-| Dashboard EO | **Modular** (bento) | Baris KPI (4 tile) → chart penjualan besar (8) + kuota terisi radial (4) → tabel order terbaru. |
+| Dashboard admin | **Modular** (bento) | KPI 8 tile (4 kolom desktop, 2 di mobile: pendapatan & tiket dengan tren 7 hari, pending aktif, check-in, order, event tayang, sisa kuota, customer) → pendapatan per hari (8) + kuota terisi radial (4) → event terlaris (7) + order per status (5) → order terbaru (12). |
 | Daftar event | **Modular / Column** | Toggle grid kartu ↔ tabel. |
 | Form event (buat/edit) | **Column** | Form 8 kolom dibagi section (info, jadwal & tenggat, kategori tiket); **preview kartu konser live** sticky 4 kolom. |
 | Kategori tiket & kuota | **Baseline** | Tabel dengan bar kuota (terjual / pending / sisa). |
 | Verifikasi pembayaran | **Baseline** | Antrian tabel; detail di panel samping (drawer di mobile). |
 | Scan tiket | **Axial** | Kamera di tengah, hasil valid/invalid besar di bawahnya. |
-| Dashboard admin | **Modular** | Sama pola dengan EO, metrik level platform. |
-| Kelola organizer | **Baseline** + detail **Hierarchical** | Tabel → halaman detail dengan profil dominan + daftar event. |
+| Artis | **Baseline** | Tabel artis + form; artis yang dipakai event tidak bisa dihapus. |
+| Login admin | **Column** | Panel foto kiri (desktop) + form kanan, sama dengan login customer. |
+
+### Login customer
+
+Satu alur, tiga langkah di kartu yang sama: email → OTP 6 kotak (muat di 360px, label per digit) → isi nama
+(hanya akun baru). Tidak ada halaman daftar terpisah; mobile (`wavy-mobile`) memakai alur yang sama.
 
 ## 5. Dashboard & chart (Bklit)
 
@@ -212,7 +216,7 @@ Shell: sidebar kiri (desktop) → bottom nav / drawer (mobile). Header halaman: 
 
 - Radius: 12px card, 8px input/tombol, full untuk badge/pill.
 - Card: background `--surface`, border `--border`, tanpa shadow tebal. Card aktif/disorot boleh glow tipis `--primary-glow`.
-- Badge status order/tiket: pending (`bg-warning/10 text-warning`), paid (`bg-success/10 text-success`), expired (`bg-muted text-muted-foreground`), cancelled/ditolak (`bg-destructive/10 text-destructive`). Teks mono uppercase.
+- Badge status order/tiket: pending (`bg-warning/10 text-warning`), paid (`bg-success/10 text-success`), expired & cancelled (`bg-muted text-muted-foreground`), ditolak & refund (`bg-destructive/10 text-destructive`). Teks mono uppercase.
 - Tabel → card list di bawah breakpoint `md`.
 - Ikon: satu set saja (yang sudah dipakai di project).
 

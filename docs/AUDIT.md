@@ -10,6 +10,10 @@ Snapshot yang diaudit:
 | wavy-next | `feat/checkout-tnc-kategori-dob` | `9aa024a` (1 commit di depan `main`) |
 | wavy-backend | `feat/order-attendee-data` | `ac54d0a` (1 commit di depan `main`) |
 
+> **Catatan v2 (2026-11-28):** audit ini snapshot **sebelum** v2. Role organizer, Creator Studio `/organizer/*`,
+> verifikasi organizer, waiting room/list, hotel, dan data scrape sudah dihapus; fiturnya pindah ke portal admin.
+> Acuan terbaru: `docs/PRD.md`, `docs/DATABASE.md`, `docs/PLAN-v2.md`.
+
 Keterangan status: **Ada** = berfungsi end-to-end, **Sebagian** = ada tapi kurang/bermasalah, **Belum** = tidak ada.
 
 ---
