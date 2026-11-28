@@ -8,7 +8,6 @@ export interface Concert {
   banner_url?: string;
   status: string;
   artist_name: string;
-  organizer_name: string;
   min_price: string | number | null;
   remaining: number;
   /** dihitung backend (GET /concerts dan /concerts/:id) */

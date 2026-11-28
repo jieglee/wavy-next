@@ -14,7 +14,7 @@ const extractConcerts = (data: unknown): Concert[] => {
   if (data && typeof data === "object") { const d = data as Record<string, unknown>; if (Array.isArray(d.concerts)) return d.concerts as Concert[]; if (Array.isArray(d.data)) return d.data as Concert[]; if (Array.isArray(d.events)) return d.events as Concert[]; if (d.concerts && typeof d.concerts === "object" && Array.isArray((d.concerts as Record<string, unknown>).data)) return (d.concerts as Record<string, unknown>).data as Concert[]; }
   return [];
 };
-const toDisplay = (c: Concert): DisplayEvent => ({ id: c.id, title: c.title, organizer: c.organizer_name || c.artist_name || "", location: c.venue || "", price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null, poster_url: c.poster_url, date: c.date, salesStatus: c.sales_status });
+const toDisplay = (c: Concert): DisplayEvent => ({ id: c.id, title: c.title, organizer: c.artist_name || "", location: c.venue || "", price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null, poster_url: c.poster_url, date: c.date, salesStatus: c.sales_status });
 // /concerts dulu; kalau kosong pakai /homepage. Tanpa data karangan.
 async function loadForYou(excludeId: string | number): Promise<DisplayEvent[]> {
   const notSelf = (c: Concert) => String(c.id) !== String(excludeId);

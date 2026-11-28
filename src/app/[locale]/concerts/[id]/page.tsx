@@ -12,7 +12,6 @@ import ConcertDescription from "@/components/concerts/concert-description";
 import ConcertGallery from "@/components/concerts/concert-gallery";
 import ConcertArtist from "@/components/concerts/concert-artist";
 import ConcertTerms from "@/components/concerts/concert-terms";
-import ConcertOrganizerShare from "@/components/concerts/concert-organizer-share";
 import ConcertForYou from "@/components/concerts/concert-for-you";
 import ConcertStickyBar from "@/components/concerts/concert-sticky-bar";
 import ConcertReviewModal from "@/components/concerts/concert-review-modal";
@@ -220,7 +219,7 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                         salesStatus={concert.sales_status}
                         salesStartAt={concert.sales_start_at}
                         salesEndAt={concert.sales_end_at}
-                        organizerName={concert.organizer_name}
+                        eventTitle={concert.title}
                       />
                     </div>
                   )}
@@ -247,11 +246,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 onWriteReview={() => setReviewModal(true)}
               /> */}
 
-              <div className="lg:hidden">
-                <ConcertOrganizerShare
-                  eventTitle={concert.title}
-                />
-              </div>
             </div>
           </div>
 
@@ -299,19 +293,12 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
 
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[16px] font-bold text-primary">
-                    {concert.organizer_name?.[0]?.toUpperCase()}
+                    {concert.artist_name?.[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] text-muted-foreground">{tDetail("organizedBy")}</p>
-                    <p className="truncate text-[14px] font-semibold text-foreground">{concert.organizer_name}</p>
+                    <p className="text-[11px] text-muted-foreground">{tDetail("performer")}</p>
+                    <p className="truncate text-[14px] font-semibold text-foreground">{concert.artist_name}</p>
                   </div>
-                </div>
-
-                <div className="mt-5">
-                  <ConcertOrganizerShare
-                    eventTitle={concert.title}
-                    inline
-                  />
                 </div>
 
               </div>

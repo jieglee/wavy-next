@@ -364,13 +364,12 @@
         "loading": "Loading concert info...",
         "ticket": {
             "title": "Tickets",
-            "summary": "{count, plural, =1 {# ticket category} other {# ticket categories}} - Price starting from {price}",
-            "organizerFallback": "Organizer"
+            "summary": "{count, plural, =1 {# ticket category} other {# ticket categories}} - Price starting from {price}"
         },
         "priceFrom": "Price starting from",
         "priceFromShort": "From",
         "schedule": "{date}, {start} - {end} WIB",
-        "organizedBy": "Organized by",
+        "performer": "Performer",
         "seatmap": "Seat map",
         "defaultTerms": "- Purchased tickets cannot be exchanged or refunded.\n- The promoter is not responsible for tickets bought outside the official platform.\n- Fan benefits apply only to certain ticket categories.\n- Professional cameras & livestreaming are not allowed without permission.\n- No admission for infants & children below 7 years old.",
         "tabs": {
@@ -405,13 +404,6 @@
             "title": "Terms & Conditions",
             "expand": "Show more",
             "collapse": "Show less"
-        },
-        "share": {
-            "title": "Share event",
-            "fallbackTitle": "Event on Wavy",
-            "copy": "Copy link",
-            "copied": "Event link copied",
-            "copyFailed": "Couldn't copy the link"
         },
         "review": {
             "title": "Write a concert review",

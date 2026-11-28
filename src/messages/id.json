@@ -364,13 +364,12 @@
         "loading": "Memuat informasi konser...",
         "ticket": {
             "title": "Tiket",
-            "summary": "{count} kategori tiket - Harga mulai dari {price}",
-            "organizerFallback": "Penyelenggara"
+            "summary": "{count} kategori tiket - Harga mulai dari {price}"
         },
         "priceFrom": "Harga mulai dari",
         "priceFromShort": "Mulai dari",
         "schedule": "{date}, {start} - {end} WIB",
-        "organizedBy": "Diselenggarakan oleh",
+        "performer": "Penampil",
         "seatmap": "Denah tempat duduk",
         "defaultTerms": "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- Anak di bawah 7 tahun tidak diperbolehkan masuk.",
         "tabs": {
@@ -405,13 +404,6 @@
             "title": "Syarat & Ketentuan",
             "expand": "Lihat selengkapnya",
             "collapse": "Tutup"
-        },
-        "share": {
-            "title": "Bagikan event",
-            "fallbackTitle": "Event di Wavy",
-            "copy": "Salin link",
-            "copied": "Link event disalin",
-            "copyFailed": "Gagal menyalin link"
         },
         "review": {
             "title": "Tulis ulasan konser",
