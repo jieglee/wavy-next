@@ -124,6 +124,9 @@ async function customerLogin(page, email, name) {
 /** Checkout lewat UI; mengembalikan id order baru, atau null bila tetap di halaman checkout. */
 async function checkout(page, eventId, categoryName, qty) {
   await page.goto(`${WEB}/id/concerts/${eventId}/checkout`);
+  // draft checkout sebelumnya (sessionStorage) dipulihkan halaman; mulai dari langkah 1 setiap kali
+  await page.evaluate((key) => sessionStorage.removeItem(key), `wavy-checkout-${eventId}`);
+  await page.reload();
   // select jumlah di baris kategori yang namanya persis categoryName
   const qtySelect = page
     .locator(`xpath=//*[text()[normalize-space()='${categoryName}']]/ancestor::*[.//select][1]//select`)
@@ -291,7 +294,8 @@ async function main() {
   });
 
   await step("3b. customer B batalkan order pending -> cancelled, kuota langsung kembali; admin melihat cancelled", async () => {
-    const regulerId = ctx.categoryIds[1];
+    const before0 = await api(`/concerts/${ctx.eventId}`);
+    const regulerId = before0.json.ticket_categories.find((c) => c.name === "Reguler").id;
     const before = await api(`/concerts/${ctx.eventId}`);
     const remainingBefore = before.json.ticket_categories.find((c) => c.id === regulerId).remaining;
     const orderId = await checkout(buyerB, ctx.eventId, "Reguler", 2);
@@ -308,7 +312,7 @@ async function main() {
     expect((await sql`SELECT status FROM orders WHERE id = ${orderId}`)[0].status === "pending_payment", "order berubah padahal batal diurungkan");
     await buyerB.getByRole("button", { name: c.cta }).click();
     await buyerB.getByRole("alertdialog").getByRole("button", { name: c.confirm }).click();
-    await buyerB.getByText(msg.OrderDetail.cancelledTitle).waitFor({ timeout: 10000 });
+    await buyerB.getByText(msg.OrderDetail.cancelledTitle).first().waitFor({ timeout: 10000 });
     const [o] = await sql`SELECT status FROM orders WHERE id = ${orderId}`;
     expect(o.status === "cancelled", `status ${o.status}`);
     const after = await api(`/concerts/${ctx.eventId}`);
