@@ -41,6 +41,11 @@ for (const key of Object.keys(flat.id)) {
     problems.push(`[placeholder] "${key}": id {${placeholders(flat.id[key])}} vs en {${placeholders(flat.en[key])}}`);
 }
 
+// en sama persis dengan id dan berisi kata Indonesia = belum diterjemahkan
+const ID_WORDS = /\b(dan|yang|untuk|tidak|belum|dengan|kamu|dari|tiket|pesanan|konser|bayar|masuk|lihat|semua|hapus|simpan|batal|sudah|akan|bisa|harus|atau)\b/i;
+for (const key of Object.keys(flat.id))
+  if (flat.en[key] === flat.id[key] && ID_WORDS.test(String(flat.id[key]))) problems.push(`[belum diterjemahkan] en.json "${key}" = "${String(flat.en[key]).slice(0, 60)}"`);
+
 // ---------- 2 & 3. pindai kode ----------
 const SKIP_DIRS = [path.join("src", "components", "charts")]; // komponen vendor Bklit (bukan teks UI)
 const files = [];
