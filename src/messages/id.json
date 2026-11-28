@@ -49,10 +49,8 @@
     "Navbar": {
         "kategori": "Kategori",
         "searchPlaceholder": "Cari konser, artist, atau venue",
-        "kerjasama": "Kerjasama dengan kami",
         "akun": "Akun",
         "tickets": "Tiket Saya",
-        "organizer": "Portal EO",
         "logout": "Keluar"
     },
     "Auth": {
@@ -76,13 +74,7 @@
         "resendButton": "Kirim ulang kode",
         "verifying": "Memverifikasi...",
         "signIn": "Masuk",
-        "loginSuccess": "Berhasil masuk! Selamat datang kembali.",
-        "roleSwitch": {
-            "label": "Masuk sebagai",
-            "customer": "Pelanggan",
-            "organizer": "Organizer",
-            "admin": "Admin"
-        }
+        "loginSuccess": "Berhasil masuk! Selamat datang kembali."
     },
     "FeaturedEvents": {
         "title": "Event Seru Untukmu",
@@ -99,7 +91,6 @@
         "searchPlaceholder": "Cari konser favoritmu...",
         "myTickets": "Tiket Saya",
         "profileLevel": "Profil & Level",
-        "organizerPortal": "Portal Organizer",
         "logout": "Keluar"
     },
     "AppFooter": {
@@ -164,12 +155,10 @@
         "guide": "Panduan",
         "paymentOptions": "Pilihan Pembayaran",
         "aboutUs": "Tentang Kami",
-        "becomeOrganizer": "Daftar jadi Organizer",
         "costSimulation": "Simulasi Biaya",
         "help": "Bantuan",
         "howToBuy": "Cara Beli Tiket",
         "ticketProtection": "Ticket Protection",
-        "organizerGuide": "Panduan Organizer",
         "privacy": "Kebijakan Privasi",
         "terms": "Syarat & Ketentuan",
         "rights": "All rights reserved.",
@@ -192,14 +181,11 @@
             "SALES_ENDED": "Masa penjualan tiket untuk konser ini sudah berakhir.",
             "QUOTA_EXCEEDED": "Sisa tiket tidak cukup untuk jumlah yang kamu pilih.",
             "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
-            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan.",
             "INVALID_QUANTITY": "Jumlah tiket tidak valid. Pilih 1 sampai 4 tiket.",
             "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu.",
             "ORDER_NOT_PENDING": "Pesanan ini sudah tidak menunggu pembayaran.",
             "PAYMENT_NOT_CONFIGURED": "Pembayaran online belum aktif. Tunggu verifikasi dari penyelenggara.",
             "PAYMENT_GATEWAY_ERROR": "Layanan pembayaran sedang bermasalah. Coba lagi sebentar lagi.",
-            "ORGANIZER_PENDING": "Akun organizer masih menunggu verifikasi admin.",
-            "ORGANIZER_REJECTED": "Pengajuan organizer ini tidak disetujui.",
             "INVALID_STATUS_TRANSITION": "Status organizer sudah berubah. Muat ulang halaman lalu coba lagi."
         }
     },
@@ -208,7 +194,8 @@
         "paid": "Lunas",
         "expired": "Kedaluwarsa",
         "rejected": "Ditolak",
-        "refunded": "Refund"
+        "refunded": "Refund",
+        "cancelled": "Dibatalkan"
     },
     "Profile": {
         "defaultName": "Customer Wavy",
@@ -254,9 +241,7 @@
         },
         "favorites": {
             "artists": "Musisi favorit",
-            "artistsEmpty": "Belum ada musisi yang diikuti.",
-            "organizers": "Organizer favorit",
-            "organizersEmpty": "Belum ada organizer yang diikuti."
+            "artistsEmpty": "Belum ada musisi yang diikuti."
         },
         "notifications": {
             "title": "Kotak notifikasi",
@@ -364,13 +349,12 @@
         "loading": "Memuat informasi konser...",
         "ticket": {
             "title": "Tiket",
-            "summary": "{count} kategori tiket - Harga mulai dari {price}",
-            "organizerFallback": "Penyelenggara"
+            "summary": "{count} kategori tiket - Harga mulai dari {price}"
         },
         "priceFrom": "Harga mulai dari",
         "priceFromShort": "Mulai dari",
         "schedule": "{date}, {start} - {end} WIB",
-        "organizedBy": "Diselenggarakan oleh",
+        "performer": "Penampil",
         "seatmap": "Denah tempat duduk",
         "defaultTerms": "- Tiket yang sudah dibeli tidak dapat ditukar atau dikembalikan.\n- Promotor tidak bertanggung jawab atas tiket di luar platform resmi.\n- Fan benefit hanya berlaku untuk kategori tiket tertentu.\n- Kamera profesional & livestream tidak diizinkan tanpa izin.\n- Anak di bawah 7 tahun tidak diperbolehkan masuk.",
         "tabs": {
@@ -405,13 +389,6 @@
             "title": "Syarat & Ketentuan",
             "expand": "Lihat selengkapnya",
             "collapse": "Tutup"
-        },
-        "share": {
-            "title": "Bagikan event",
-            "fallbackTitle": "Event di Wavy",
-            "copy": "Salin link",
-            "copied": "Link event disalin",
-            "copyFailed": "Gagal menyalin link"
         },
         "review": {
             "title": "Tulis ulasan konser",
@@ -513,27 +490,6 @@
         "retry": "Coba lagi",
         "noEvents": "Belum ada event."
     },
-    "AdminDashboard": {
-        "emptyOrganizers": "Belum ada organizer terdaftar.",
-        "emptyEvents": "Belum ada event.",
-        "emptyCustomers": "Belum ada customer."
-    },
-    "OrganizerDashboard": {
-        "noData": "Belum ada data"
-    },
-    "DevCharts": {
-        "title": "Uji Chart (internal)",
-        "subtitle": "Halaman uji Bklit UI. Data di bawah adalah contoh statis, bukan data penjualan.",
-        "salesTitle": "Penjualan per hari",
-        "salesCaption": "Area chart · tiket terjual",
-        "revenueTitle": "Pendapatan per kategori",
-        "revenueCaption": "Bar chart · juta rupiah",
-        "quotaTitle": "Kuota terisi",
-        "quotaCaption": "Ring chart · terjual / kuota",
-        "quotaCenter": "Tiket terjual",
-        "sold": "Terjual",
-        "revenue": "Pendapatan"
-    },
     "Sales": {
         "badge": {
             "open": "Tersedia",
@@ -555,59 +511,6 @@
         "buy": "Beli Tiket"
     },
     "Studio": {
-        "brand": "Wavy Studio",
-        "organizer": "Organizer",
-        "navLabel": "Navigasi Creator Studio",
-        "logout": "Keluar",
-        "nav": {
-            "dashboard": "Dashboard",
-            "events": "Event",
-            "orders": "Verifikasi pembayaran",
-            "scan": "Scan tiket",
-            "artists": "Artis"
-        },
-        "navShort": {
-            "dashboard": "Dasbor",
-            "events": "Event",
-            "orders": "Order",
-            "scan": "Scan",
-            "artists": "Artis"
-        },
-        "session": {
-            "suspended": "Akun organizer kamu sedang dinonaktifkan admin. Hubungi admin Wavy untuk mengaktifkannya kembali.",
-            "expired": "Sesi kamu sudah berakhir. Silakan masuk lagi."
-        },
-        "dashboard": {
-            "title": "Dashboard",
-            "subtitle": "Ringkasan penjualan semua event kamu.",
-            "newEvent": "Buat event",
-            "revenue": "Pendapatan",
-            "sold": "Tiket terjual",
-            "remaining": "Sisa kuota",
-            "peakHour": "Jam ramai",
-            "pending": "Pending aktif",
-            "pendingNote": "Menahan kuota ≤ 15 menit",
-            "checkedIn": "Check-in",
-            "checkedInNote": "dari {sold} tiket terjual",
-            "delta": "{pct}% vs 7 hari lalu",
-            "deltaNew": "baru minggu ini",
-            "salesTitle": "Penjualan per hari",
-            "salesCaption": "Tiket terjual · {days} hari terakhir",
-            "rangeLabel": "Rentang waktu",
-            "rangeDays": "{n}H",
-            "salesEmpty": "Belum ada penjualan",
-            "salesEmptyText": "Grafik muncul setelah ada order yang dibayar.",
-            "quotaTitle": "Kuota terisi",
-            "quotaCaption": "Terjual + pending / kuota",
-            "quotaCenter": "{pct}% terisi",
-            "quotaEmpty": "Belum ada kategori tiket",
-            "revenueTitle": "Pendapatan per kategori tiket",
-            "revenueCaption": "Rupiah · order lunas",
-            "revenueEmpty": "Belum ada pendapatan",
-            "recentTitle": "Order terbaru",
-            "recentAll": "Lihat semua",
-            "recentEmpty": "Belum ada order"
-        },
         "eventStatus": {
             "draft": "Draft",
             "published": "Dipublish",
@@ -627,7 +530,6 @@
             "INVALID_QR": "QR tidak valid.",
             "QR_EXPIRED": "QR sudah kedaluwarsa.",
             "TICKET_NOT_FOUND": "Tiket tidak ditemukan.",
-            "WRONG_ORGANIZER": "Tiket ini bukan untuk event kamu.",
             "ALREADY_SCANNED": "Tiket ini sudah pernah dipindai.",
             "EVENT_ENDED": "Event sudah selesai.",
             "validation": "Data belum valid: {message}"
@@ -696,6 +598,7 @@
             "close": "Tutup penjualan",
             "delete": "Hapus",
             "published": "Event dipublish.",
+            "reopened": "Penjualan dibuka lagi.",
             "closed": "Penjualan ditutup.",
             "deleted": "Event dihapus.",
             "confirmClose": "Tutup penjualan sekarang? Pembeli tidak bisa order lagi sampai kamu membukanya kembali.",
@@ -819,14 +722,17 @@
         "logout": "Keluar",
         "nav": {
             "dashboard": "Dashboard",
-            "organizers": "Organizer",
-            "verification": "Verifikasi"
+            "events": "Event",
+            "orders": "Verifikasi pembayaran",
+            "scan": "Scan tiket",
+            "artists": "Artis"
         },
-        "status": {
-            "active": "Aktif",
-            "suspended": "Disuspend",
-            "pending_verification": "Menunggu verifikasi",
-            "rejected": "Ditolak"
+        "navShort": {
+            "dashboard": "Dasbor",
+            "events": "Event",
+            "orders": "Order",
+            "scan": "Scan",
+            "artists": "Artis"
         },
         "login": {
             "title": "Masuk admin",
@@ -842,29 +748,27 @@
             "hidePassword": "Sembunyikan kata sandi"
         },
         "dashboard": {
-            "title": "Dashboard platform",
-            "subtitle": "Ringkasan seluruh organizer, event, dan transaksi.",
-            "manageOrganizers": "Kelola organizer",
+            "title": "Dashboard",
+            "subtitle": "Ringkasan penjualan, kuota, dan transaksi seluruh event.",
+            "newEvent": "Buat event",
+            "verifyPayments": "Verifikasi pembayaran",
             "revenue": "Pendapatan",
-            "revenueNote": "Order lunas",
-            "orders": "Order",
-            "queueTitle": "Antrean verifikasi",
-            "queueCaption": "{n} menunggu persetujuan",
-            "queueEmpty": "Tidak ada pengajuan yang menunggu.",
-            "queueAll": "Lihat antrean",
             "ticketsSold": "Tiket terjual",
-            "ticketsSoldNote": "Dari order lunas",
+            "pending": "Pending aktif",
+            "pendingNote": "Menahan kuota ≤ 15 menit",
+            "checkedIn": "Check-in",
+            "checkedInNote": "dari {sold} tiket terjual",
+            "orders": "Order",
             "ordersNote": "{n} lunas",
             "publishedEvents": "Event tayang",
             "publishedNote": "dari {n} event",
+            "remaining": "Sisa kuota",
+            "remainingNote": "Semua kategori tiket",
             "customers": "Customer",
             "customersNote": "Akun terdaftar",
-            "activeOrganizers": "Organizer aktif",
-            "organizersNote": "dari {n} organizer",
-            "pendingOrganizers": "Perlu verifikasi",
-            "pendingNote": "Perlu ditinjau",
-            "suspendedOrganizers": "Disuspend",
-            "suspendedNote": "Akses dicabut",
+            "delta": "{pct}% vs 7 hari lalu",
+            "deltaNew": "baru minggu ini",
+            "deltaNone": "0 dalam 14 hari",
             "dailyTitle": "Pendapatan per hari",
             "dailyCaption": "{days} hari terakhir, order lunas (WIB)",
             "dailyTickets": "{n} tiket",
@@ -872,17 +776,24 @@
             "dailyEmptyText": "Grafik muncul setelah ada order yang lunas.",
             "rangeLabel": "Rentang hari",
             "rangeDays": "{n} hr",
-            "ordersTitle": "Order per status",
-            "ordersCaption": "Semua order",
-            "ordersCenter": "{n} order",
-            "ordersEmpty": "Belum ada order.",
+            "quotaTitle": "Kuota terisi",
+            "quotaCaption": "Terjual + pending / kuota",
+            "quotaCenter": "{pct}% terisi",
+            "quotaEmpty": "Belum ada kategori tiket",
+            "quotaEmptyText": "Buat event dan kategori tiket untuk mulai berjualan.",
+            "quotaMore": "+{n} kategori lain ikut dihitung di persentase",
             "topTitle": "Event terlaris",
             "topCaption": "5 teratas, tiket terjual",
             "topEmpty": "Belum ada tiket terjual",
             "topEmptyText": "Peringkat muncul setelah ada order yang lunas.",
             "topTickets": "{n} tiket",
+            "ordersTitle": "Order per status",
+            "ordersCaption": "Semua order",
+            "ordersCenter": "{n} order",
+            "ordersEmpty": "Belum ada order.",
             "recentTitle": "Order terbaru",
-            "recentCaption": "8 order terakhir di platform",
+            "recentCaption": "8 order terakhir",
+            "recentAll": "Lihat semua",
             "recentEmpty": "Belum ada order.",
             "qty": "{n} tiket",
             "col": {
@@ -891,91 +802,6 @@
                 "status": "Status",
                 "total": "Total"
             }
-        },
-        "organizers": {
-            "title": "Kelola organizer",
-            "subtitle": "Suspend berlaku langsung: organizer tidak bisa membuka Creator Studio.",
-            "empty": "Belum ada organizer terdaftar.",
-            "col": {
-                "organizer": "Organizer",
-                "joined": "Bergabung",
-                "events": "Event",
-                "revenue": "Pendapatan",
-                "status": "Status",
-                "action": "Aksi"
-            },
-            "suspend": "Suspend",
-            "activate": "Aktifkan",
-            "cancel": "Batal",
-            "saving": "Menyimpan...",
-            "suspended": "{name} disuspend",
-            "activated": "{name} diaktifkan",
-            "confirmSuspendTitle": "Suspend {name}?",
-            "confirmSuspendBody": "Organizer langsung kehilangan akses ke Creator Studio. Event dan order yang ada tidak dihapus.",
-            "confirmActivateTitle": "Aktifkan {name}?",
-            "confirmActivateBody": "Organizer bisa masuk dan mengelola event lagi.",
-            "review": "Tinjau"
-        },
-        "organizerDetail": {
-            "back": "Semua organizer",
-            "profile": "Profil",
-            "email": "Email",
-            "whatsapp": "WhatsApp",
-            "eventTypes": "Jenis event",
-            "social": "Media sosial",
-            "joined": "Bergabung",
-            "revenue": "Pendapatan",
-            "revenueNote": "Order lunas",
-            "ticketsSold": "Tiket terjual",
-            "paidOrders": "{n} order lunas",
-            "events": "Event",
-            "published": "{n} dipublikasikan",
-            "pending": "Menunggu bayar",
-            "pendingNote": "Order pending aktif",
-            "eventsTitle": "Event organizer",
-            "eventsEmpty": "Organizer ini belum membuat event.",
-            "col": {
-                "event": "Event",
-                "status": "Status",
-                "sold": "Terjual",
-                "revenue": "Pendapatan"
-            }
-        },
-        "verification": {
-            "title": "Antrean verifikasi",
-            "subtitle": "Organizer baru yang menunggu persetujuan. Terlama di atas.",
-            "empty": "Tidak ada pengajuan yang menunggu",
-            "emptyText": "Pengajuan organizer baru akan muncul di sini.",
-            "badge": "{n} menunggu verifikasi",
-            "submitted": "Diajukan {date}",
-            "emailVerified": "Email terverifikasi",
-            "emailUnverified": "Email belum diverifikasi",
-            "review": "Tinjau"
-        },
-        "review": {
-            "title": "Data pendaftaran",
-            "caption": "Periksa sebelum menyetujui",
-            "submitted": "Diajukan",
-            "emailStatus": "Status email",
-            "approve": "Setujui",
-            "reject": "Tolak",
-            "approveTitle": "Setujui {name}?",
-            "approveBody": "Organizer bisa langsung masuk ke Creator Studio. Email pemberitahuan dikirim ke {email}.",
-            "rejectTitle": "Tolak {name}?",
-            "rejectBody": "Alasan dikirim ke organizer lewat email dan tampil saat mereka mencoba masuk. Organizer bisa mengajukan ulang.",
-            "reasonLabel": "Alasan penolakan",
-            "reasonPlaceholder": "Mis. tautan media sosial tidak bisa dibuka, mohon lampirkan profil resmi.",
-            "reasonHint": "Minimal 10 karakter, maksimal 500.",
-            "reasonTooShort": "Alasan minimal 10 karakter.",
-            "reasonTooLong": "Alasan maksimal 500 karakter.",
-            "cancel": "Batal",
-            "saving": "Menyimpan...",
-            "approved": "{name} disetujui",
-            "rejected": "{name} ditolak",
-            "emailSent": "Email pemberitahuan terkirim ke {email}.",
-            "emailFailed": "Keputusan tersimpan, tetapi email ke {email} gagal terkirim. Hubungi organizer secara manual.",
-            "rejectedTitle": "Pengajuan ditolak",
-            "reviewedAt": "Ditinjau {date}"
         }
     },
     "InfoPages": {
@@ -1124,51 +950,6 @@
                     ]
                 }
             ]
-        },
-        "organizerGuide": {
-            "title": "Panduan organizer",
-            "updated": "20 November 2026",
-            "intro": "Langkah singkat menjual tiket konser lewat Creator Studio Wavy.",
-            "ctaText": "Belum punya akun organizer?",
-            "ctaLabel": "Daftar jadi organizer",
-            "sections": [
-                {
-                    "title": "Daftar dan verifikasi",
-                    "body": [
-                        "Daftar dengan nama, email, dan kata sandi, lalu verifikasi email. Setelah aktif, kamu bisa masuk ke Creator Studio."
-                    ]
-                },
-                {
-                    "title": "Buat event",
-                    "body": [
-                        "Isi judul, artis, venue, tanggal konser, serta tenggat penjualan (mulai dan berakhir). Event tersimpan sebagai draft dulu."
-                    ]
-                },
-                {
-                    "title": "Tambah kategori tiket",
-                    "body": [
-                        "Tambahkan minimal satu kategori dengan harga dan kuota. Event tanpa kategori tiket tidak bisa dipublikasikan."
-                    ]
-                },
-                {
-                    "title": "Publikasikan dan pantau",
-                    "body": [
-                        "Setelah dipublikasikan, penjualan terbuka sesuai tenggat. Kamu bisa menutup dan membuka lagi penjualan kapan saja, dan memantau penjualan di dashboard."
-                    ]
-                },
-                {
-                    "title": "Verifikasi pembayaran",
-                    "body": [
-                        "Pembayaran Midtrans yang berhasil membuat pesanan lunas otomatis. Sebagai cadangan, kamu bisa menyetujui atau menolak pesanan secara manual di menu Pembayaran."
-                    ]
-                },
-                {
-                    "title": "Scan tiket di gate",
-                    "body": [
-                        "Buka menu Scan, arahkan kamera ke QR atau ketik kodenya. Tiket yang sudah dipindai atau milik event lain akan ditolak."
-                    ]
-                }
-            ]
         }
     },
     "Landing": {
@@ -1202,16 +983,72 @@
             "eyebrow": "Cara beli",
             "title": "Dari pilih kursi sampai gate",
             "more": "Panduan lengkap"
+        },
+        "benefits": {
+            "title": "Kenapa Wavy?",
+            "subtitle": "Beli tiket konser tanpa drama, dari cari sampai masuk venue",
+            "items": {
+                "account": {
+                    "title": "Satu akun, cukup email",
+                    "desc": "Masuk pakai email dan kode OTP. Nggak perlu ingat kata sandi, dan nggak perlu daftar ulang di tiap event."
+                },
+                "quota": {
+                    "title": "Kuota jujur, nggak oversell",
+                    "desc": "Sisa tiket dihitung langsung dari pesanan. Tiket yang kamu tahan saat checkout aman selama 15 menit."
+                },
+                "payment": {
+                    "title": "Bayar aman, status jelas",
+                    "desc": "Bayar lewat Midtrans atau transfer yang diverifikasi tim Wavy. Status pesanan selalu bisa kamu cek."
+                },
+                "alerts": {
+                    "title": "Nggak ketinggalan rilis",
+                    "desc": "Ikuti artis favorit dan aktifkan pengingat. Kamu dapat notifikasi begitu penjualan tiket dibuka."
+                }
+            }
+        },
+        "howItWorks": {
+            "title": "Cara Kerjanya",
+            "subtitle": "Dari cari konser sampai masuk venue, cuma 3 langkah",
+            "steps": {
+                "find": {
+                    "title": "Cari Konser",
+                    "desc": "Jelajahi konser berdasarkan kategori, artis, atau tanggal. Cek jadwal penjualan dan sisa kuota tiap kategori."
+                },
+                "order": {
+                    "title": "Pesan Tiket",
+                    "desc": "Pilih kategori tiket (maksimal 4 per pesanan), isi data, lalu bayar. E-ticket langsung tersimpan di akunmu."
+                },
+                "scan": {
+                    "title": "Scan & Masuk",
+                    "desc": "Tunjukkan QR e-ticket di pintu masuk. Tiap QR hanya berlaku sekali, jadi tiketmu nggak bisa dipakai orang lain."
+                }
+            }
+        },
+        "testimonials": {
+            "title": "Kata Mereka",
+            "subtitle": "Cerita penonton yang udah beli tiket lewat Wavy",
+            "items": {
+                "dinda": {
+                    "quote": "Dulu harus pantau beberapa website buat satu konser. Sekarang tinggal ikuti artisnya di Wavy, notifikasi masuk pas tiket dibuka.",
+                    "name": "Dinda Putri",
+                    "role": "Mahasiswa"
+                },
+                "rizky": {
+                    "quote": "Beli empat tiket buat rombongan, datanya diisi sekali, e-ticket langsung muncul di akun. Masuk venue tinggal scan.",
+                    "name": "Rizky Pratama",
+                    "role": "Penonton festival"
+                },
+                "andre": {
+                    "quote": "Yang bikin tenang: sisa kuota kelihatan jelas dan status pembayaran selalu ter-update. Nggak ada lagi tebak-tebakan.",
+                    "name": "Andre Wijaya",
+                    "role": "Kolektor konser"
+                }
+            }
+        },
+        "cta": {
+            "title": "Siap nonton konser berikutnya?",
+            "text": "Cari konser favoritmu, amankan tiketnya, dan simpan e-ticket di satu tempat.",
+            "button": "Cari Konser Sekarang"
         }
-    },
-    "OrganizerLogin": {
-        "pendingTitle": "Akun Anda menunggu verifikasi",
-        "pendingBody": "Pengajuan kerja sama sudah kami terima dan sedang ditinjau admin. Kami kirim email ke alamat ini setelah ditinjau. Anda belum bisa masuk sampai akun disetujui.",
-        "rejectedTitle": "Pengajuan belum disetujui",
-        "rejectedBody": "Admin belum bisa menyetujui pengajuan kerja sama Anda. Perbaiki data lalu ajukan ulang dengan email yang sama.",
-        "reasonLabel": "Alasan dari admin",
-        "reapply": "Ajukan ulang",
-        "suspendedTitle": "Akun ditangguhkan",
-        "suspendedBody": "Akun organizer Anda sedang ditangguhkan admin. Hubungi admin Wavy untuk informasi lebih lanjut."
     }
 }

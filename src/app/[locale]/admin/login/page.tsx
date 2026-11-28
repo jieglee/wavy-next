@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
-import { LoginRoleSwitch } from "@/components/auth/login-role-switch";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "@/components/landing/wavy-icon-animated";
 import { ApiError, apiPost } from "@/lib/api";
@@ -61,7 +60,7 @@ function AdminLoginForm() {
 
   return (
     <div className="flex min-h-screen w-full">
-      {/* Panel kiri: full-bleed, background foto — konsisten dengan login customer & EO */}
+      {/* Panel kiri: full-bleed, background foto — konsisten dengan login customer */}
       <div
         className="relative hidden w-[55%] items-center justify-center overflow-hidden md:flex"
         style={{ backgroundImage: "url(/images/login-otp.png)", backgroundSize: "cover", backgroundPosition: "center" }}
@@ -111,7 +110,6 @@ function AdminLoginForm() {
               <WavyIcon size={28} />
               <span className="font-display text-xl font-bold tracking-tight text-foreground">Wavy</span>
             </div>
-            <LoginRoleSwitch current="admin" className="mb-6" />
             <h1 className="font-display text-2xl font-bold text-foreground">{t("title")}</h1>
             <p className="mt-2 text-sm text-muted-foreground">{t("subtitle")}</p>
 

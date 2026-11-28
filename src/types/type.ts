@@ -8,7 +8,6 @@ export interface Concert {
   banner_url?: string;
   status: string;
   artist_name: string;
-  organizer_name: string;
   min_price: string | number | null;
   remaining: number;
   /** dihitung backend (GET /concerts dan /concerts/:id) */
@@ -24,7 +23,7 @@ export interface TicketCategory {
   sold: number;
   remaining?: number;
   benefits?: string;
-  // dikirim GET /concerts/:id; tidak ada di endpoint organizer
+  // dikirim GET /concerts/:id; tidak ada di endpoint admin
   sales_status?: SalesStatus;
 }
 
@@ -42,7 +41,6 @@ export interface Review {
 }
 
 export interface ConcertDetail extends Concert {
-  organizer_id: number;
   artist_id: number;
   description: string;
   genre: string;
@@ -87,10 +85,9 @@ export interface Order {
 }
 
 // status order dari backend; "expired" = pending yang lewat 15 menit (lazy expiry)
-export type OrderStatus = "pending_payment" | "paid" | "rejected" | "refunded" | "expired";
+export type OrderStatus = "pending_payment" | "paid" | "rejected" | "refunded" | "expired" | "cancelled";
 
 export interface FavoritesResponse {
-  organizers: { favorite_id: number; id: number; name: string }[];
   artists: { favorite_id: number; id: number; name: string; genre: string; photo_url: string }[];
 }
 
@@ -116,23 +113,11 @@ export interface CustomerLevel {
 
 export interface Artist {
   id: number;
-  organizer_id?: number;
   name: string;
   genre: string;
   photo_url: string;
   bio: string;
   follower_count?: number;
-}
-
-export interface Organizer {
-  id: number;
-  name: string;
-  email?: string;
-  status?: "active" | "suspended";
-  created_at?: string;
-  follower_count?: number;
-  event_count?: number;
-  revenue?: number;
 }
 
 export interface NotificationItem {
@@ -144,21 +129,8 @@ export interface NotificationItem {
   created_at: string;
 }
 
-export interface OrganizerDashboardStats {
-  revenue: number;
-  ticket_sold: number;
-  remaining_ticket: number;
-  popular_category: string;
-  peak_purchase_hour: number;
-}
-
 // GET /admin/stats
 export interface AdminStats {
-  organizer_count: number;
-  active_organizer_count: number;
-  pending_organizer_count: number;
-  suspended_organizer_count: number;
-  rejected_organizer_count: number;
   customer_count: number;
   event_count: number;
   published_event_count: number;
@@ -166,7 +138,7 @@ export interface AdminStats {
   paid_order_count: number;
   revenue: number;
   ticket_sold: number;
-  orders_by_status: Record<"pending_payment" | "paid" | "expired" | "rejected" | "refunded", number>;
+  orders_by_status: Record<OrderStatus, number>;
 }
 
 // GET /admin/stats/daily?days=
@@ -182,7 +154,7 @@ export interface AdminTopEvent {
   id: number;
   title: string;
   status: string;
-  organizer_name: string;
+  artist_name: string | null;
   tickets_sold: number;
   revenue: number;
 }
@@ -197,7 +169,6 @@ export interface AdminRecentOrder {
   paid_at: string | null;
   event_id: number;
   event_title: string;
-  organizer_name: string;
   customer_name: string;
 }
 
@@ -208,68 +179,4 @@ export interface AdminCustomer {
   created_at: string;
   order_count: number;
   spend: number;
-}
-
-export type OrganizerStatus = "active" | "suspended" | "pending_verification" | "rejected";
-
-// field verifikasi (PATCH /admin/organizers/:id): email_verified_at dari OTP pendaftaran,
-// reviewed_at = waktu admin setujui/tolak, rejection_reason = alasan yang dikirim ke EO
-type OrganizerReview = {
-  email_verified_at: string | null;
-  reviewed_at: string | null;
-  rejection_reason: string | null;
-};
-
-export interface AdminOrganizer extends OrganizerReview {
-  id: number;
-  name: string;
-  email: string;
-  status: OrganizerStatus;
-  created_at: string;
-  whatsapp: string;
-  event_types: string;
-  social_link: string;
-  event_count: number;
-  revenue: number;
-}
-
-export interface SetOrganizerStatusResult {
-  message: string;
-  status: OrganizerStatus;
-  previous_status: OrganizerStatus;
-  email_sent: boolean | null;
-}
-
-// GET /admin/organizers/:id
-export interface AdminOrganizerDetail {
-  organizer: OrganizerReview & {
-    id: number;
-    name: string;
-    email: string;
-    status: OrganizerStatus;
-    created_at: string;
-    whatsapp: string;
-    event_types: string;
-    social_link: string;
-  };
-  events: {
-    id: number;
-    title: string;
-    category: string;
-    venue: string;
-    date: string | null;
-    status: "draft" | "published" | "closed";
-    poster_url: string | null;
-    quota: number;
-    sold: number;
-    revenue: number;
-  }[];
-  summary: {
-    event_count: number;
-    published_count: number;
-    paid_order_count: number;
-    pending_order_count: number;
-    ticket_sold: number;
-    revenue: number;
-  };
 }

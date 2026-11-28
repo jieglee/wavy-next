@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * QR tiket yang benar-benar bisa dipindai: dirender dari `code` (JWT tiket dari backend,
- * yang sama dengan yang divalidasi POST /organizer/scan/validate).
+ * yang sama dengan yang divalidasi POST /admin/scan/validate).
  * Hitam di atas putih + quiet zone agar terbaca kamera/scanner; level M cukup untuk token ~200 karakter.
  */
 export function TicketQr({ code, used, className }: { code: string; used?: boolean; className?: string }) {

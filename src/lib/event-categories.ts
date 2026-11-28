@@ -30,7 +30,7 @@ import type { Concert } from "@/types/type";
  * Comedy, Lifestyle), dan banyak event non-musik ikut ditandai "Music". Karena itu kategori
  * dicocokkan dari dua sumber:
  *  1. nilai `category` di database (`db`), dan
- *  2. kata kunci di judul / organizer / venue.
+ *  2. kata kunci di judul / artis / venue.
  * Kategori `exclusive` (olahraga, otomotif) menang atas tag database: event lari yang
  * ditandai "Music" tidak ikut muncul di kategori Musik.
  * Satu event boleh masuk beberapa kategori (mis. konser worship = Musik + Agama).
@@ -63,7 +63,7 @@ type CategoryRule = {
   /** nilai kolom `category` di database (case-insensitive) */
   db?: string[];
   title?: RegExp;
-  organizer?: RegExp;
+  artist?: RegExp;
   venue?: RegExp;
   /** kalau kata kuncinya cocok, tag database event diabaikan */
   exclusive?: boolean;
@@ -76,14 +76,14 @@ export const EVENT_CATEGORIES: CategoryRule[] = [
     slug: "agama",
     icon: MoonStar,
     title: /\b(worship|hillsong|rohani|religi|religious|sholawat|shalawat|kajian|pengajian|dzikir|natal|christmas|ramadh?an|gereja|church|spiritual|nasyid|snada)\b/i,
-    organizer: /\b(church|gereja|ministry|masjid)\b/i,
+    artist: /\b(church|gereja|ministry|masjid)\b/i,
     aliases: ["agama"],
   },
   {
     slug: "sekolah-kampus",
     icon: Backpack,
     title: /\b(campus|kampus|school|sekolah|schoolicious|university|universitas|mahasiswa|pelajar|graduation|wisuda|osis|pensi)\b/i,
-    organizer: /\b(school|sekolah|uns|ugm|itb|universitas|university|osis)\b/i,
+    artist: /\b(school|sekolah|uns|ugm|itb|universitas|university|osis)\b/i,
     venue: /\b(sman|smkn|sma|smk|smp|universitas|kampus|campus)\b/i,
     aliases: ["sekolah"],
   },
@@ -124,7 +124,7 @@ export const EVENT_CATEGORIES: CategoryRule[] = [
     icon: Drama,
     db: ["comedy"],
     title: /\b(comedy|komedi|stand ?up|standup|comika|roast|lawak|teater|theat(er|re)|drama|pertunjukan)\b/i,
-    organizer: /\b(comika)\b/i,
+    artist: /\b(comika)\b/i,
     aliases: ["komedi"],
   },
   {
@@ -156,8 +156,8 @@ export const EVENT_CATEGORIES: CategoryRule[] = [
     slug: "olahraga",
     icon: Dumbbell,
     title: /\b(run|running|lari|berlari|marathon|padel|tennis|futsal|football|sepak ?bola|badminton|basket(ball)?|voli|volleyball|go-?kart|gokart|karting|cycling|sepeda|gowes|fitness|gym|pilates|sports?|olahraga|turnamen|tournament)\b/i,
-    // "sports" sengaja tidak dicek di organizer: "Ilgan Sports" (koran) menyelenggarakan KGMA
-    organizer: /\b(padel|running|fitness)\b/i,
+    // "sports" sengaja tidak dicek di nama artis (terlalu umum)
+    artist: /\b(padel|running|fitness)\b/i,
     exclusive: true,
     aliases: ["olahraga", "sport", "sports"],
   },
@@ -229,7 +229,7 @@ export function resolveCategorySlug(value: string | null | undefined): EventCate
 function keywordHit(rule: CategoryRule, c: Concert): boolean {
   return Boolean(
     rule.title?.test(c.title ?? "") ||
-      rule.organizer?.test(c.organizer_name ?? "") ||
+      rule.artist?.test(c.artist_name ?? "") ||
       rule.venue?.test(c.venue ?? "")
   );
 }

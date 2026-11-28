@@ -15,7 +15,7 @@ import type { Concert } from "@/types/type";
  */
 export default function EventCard({ concert: c, className }: { concert: Concert; className?: string }) {
   const t = useTranslations("FeaturedEvents");
-  const organizer = c.organizer_name || c.artist_name || "";
+  const organizer = c.artist_name || "";
   const price = c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null;
   return (
     <Link href={`/concerts/${c.id}`} className={`group block h-full ${className ?? ""}`}>

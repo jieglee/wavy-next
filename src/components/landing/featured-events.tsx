@@ -38,7 +38,7 @@ const extractConcerts = (data: unknown): Concert[] => {
 const toDisplay = (c: Concert): DisplayEvent => ({
   id: c.id,
   title: c.title,
-  organizer: c.organizer_name || c.artist_name || "",
+  organizer: c.artist_name || "",
   location: c.venue || "",
   price: c.min_price ? Number(c.min_price).toLocaleString("id-ID") : null,
   poster_url: c.poster_url,

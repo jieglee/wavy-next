@@ -1,6 +1,6 @@
-// Sesi admin terpisah dari sesi customer/EO (yang memakai localStorage "wavy_auth_*").
+// Sesi admin terpisah dari sesi customer (yang memakai localStorage "wavy_auth_*").
 // Token admin disimpan di cookie supaya proxy bisa menolak /admin/* sebelum halaman dirender;
-// login sebagai customer/EO tidak menyentuh cookie ini, dan login admin tidak menyentuh sesi customer/EO.
+// login sebagai customer tidak menyentuh cookie ini, dan login admin tidak menyentuh sesi customer.
 import { ApiError, api } from "@/lib/api";
 import { ADMIN_TOKEN_COOKIE, isAdminTokenUsable } from "@/lib/admin-token";
 const ADMIN_USER_KEY = "wavy_admin_user";
@@ -45,7 +45,7 @@ export function getAdminProfile(): AdminProfile | null {
   }
 }
 
-// Request admin selalu memakai token admin — tidak pernah jatuh ke token customer/EO.
+// Request admin selalu memakai token admin — tidak pernah jatuh ke token customer.
 function adminRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = getAdminToken();
   if (!token) return Promise.reject(new ApiError(401, "admin session missing"));
@@ -54,11 +54,12 @@ function adminRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const adminGet = <T>(path: string) => adminRequest<T>(path);
 
-export const adminPatch = <T>(path: string, data?: unknown) =>
-  adminRequest<T>(path, { method: "PATCH", body: data === undefined ? undefined : JSON.stringify(data) });
+const withBody = (method: string, data?: unknown): RequestInit => ({
+  method,
+  body: data === undefined ? undefined : JSON.stringify(data),
+});
 
-// Antrean verifikasi berubah (setujui/tolak/suspend): shell admin memuat ulang badge jumlah pending.
-export const ADMIN_ORGANIZERS_CHANGED = "wavy:admin-organizers-changed";
-export const notifyOrganizersChanged = () => {
-  if (typeof window !== "undefined") window.dispatchEvent(new Event(ADMIN_ORGANIZERS_CHANGED));
-};
+export const adminPost = <T>(path: string, data?: unknown) => adminRequest<T>(path, withBody("POST", data));
+export const adminPut = <T>(path: string, data?: unknown) => adminRequest<T>(path, withBody("PUT", data));
+export const adminPatch = <T>(path: string, data?: unknown) => adminRequest<T>(path, withBody("PATCH", data));
+export const adminDelete = <T>(path: string) => adminRequest<T>(path, { method: "DELETE" });

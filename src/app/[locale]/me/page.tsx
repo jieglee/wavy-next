@@ -165,18 +165,11 @@ export default function CustomerProfilePage() {
           ) : favorites.error || !favorites.data ? (
             <ErrorState error={favorites.error} onRetry={favorites.reload} />
           ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-              <FavoriteList
-                title={t("favorites.artists")}
-                empty={t("favorites.artistsEmpty")}
-                items={favorites.data.artists.map((a) => ({ id: a.id, name: a.name, meta: a.genre }))}
-              />
-              <FavoriteList
-                title={t("favorites.organizers")}
-                empty={t("favorites.organizersEmpty")}
-                items={favorites.data.organizers.map((o) => ({ id: o.id, name: o.name }))}
-              />
-            </div>
+            <FavoriteList
+              title={t("favorites.artists")}
+              empty={t("favorites.artistsEmpty")}
+              items={favorites.data.artists.map((a) => ({ id: a.id, name: a.name, meta: a.genre }))}
+            />
           ))}
 
         {/* Notifikasi */}

@@ -49,10 +49,8 @@
     "Navbar": {
         "kategori": "Category",
         "searchPlaceholder": "Search concerts, artists, or venues",
-        "kerjasama": "Kerjasama dengan kami",
         "akun": "Account",
         "tickets": "My Tickets",
-        "organizer": "EO Portal",
         "logout": "Logout"
     },
     "Auth": {
@@ -76,13 +74,7 @@
         "resendButton": "Resend code",
         "verifying": "Verifying...",
         "signIn": "Sign In",
-        "loginSuccess": "Signed in! Welcome back.",
-        "roleSwitch": {
-            "label": "Sign in as",
-            "customer": "Customer",
-            "organizer": "Organizer",
-            "admin": "Admin"
-        }
+        "loginSuccess": "Signed in! Welcome back."
     },
     "FeaturedEvents": {
         "title": "Exciting Events For You",
@@ -99,7 +91,6 @@
         "searchPlaceholder": "Search your favorite concerts...",
         "myTickets": "My Tickets",
         "profileLevel": "Profile & Level",
-        "organizerPortal": "Organizer Portal",
         "logout": "Log Out"
     },
     "AppFooter": {
@@ -164,12 +155,10 @@
         "guide": "Guide",
         "paymentOptions": "Payment Options",
         "aboutUs": "About Us",
-        "becomeOrganizer": "Become an Organizer",
         "costSimulation": "Cost Simulation",
         "help": "Help",
         "howToBuy": "How to Buy Tickets",
         "ticketProtection": "Ticket Protection",
-        "organizerGuide": "Organizer Guide",
         "privacy": "Privacy Policy",
         "terms": "Terms & Conditions",
         "rights": "All rights reserved.",
@@ -192,14 +181,11 @@
             "SALES_ENDED": "The ticket sales period for this concert has ended.",
             "QUOTA_EXCEEDED": "Not enough tickets left for the quantity you selected.",
             "ORDER_EXPIRED": "This order has expired. Please place a new order.",
-            "ORGANIZER_SUSPENDED": "This organizer account is suspended.",
             "INVALID_QUANTITY": "Invalid ticket quantity. Choose 1 to 4 tickets.",
             "VALIDATION_ERROR": "The data you sent is not valid. Please check your input.",
             "ORDER_NOT_PENDING": "This order is no longer waiting for payment.",
             "PAYMENT_NOT_CONFIGURED": "Online payment isn't active yet. Please wait for the organizer to verify.",
             "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly.",
-            "ORGANIZER_PENDING": "This organizer account is still waiting for admin verification.",
-            "ORGANIZER_REJECTED": "This organizer application was not approved.",
             "INVALID_STATUS_TRANSITION": "The organizer status has already changed. Reload the page and try again."
         }
     },
@@ -208,7 +194,8 @@
         "paid": "Paid",
         "expired": "Expired",
         "rejected": "Rejected",
-        "refunded": "Refunded"
+        "refunded": "Refunded",
+        "cancelled": "Cancelled"
     },
     "Profile": {
         "defaultName": "Wavy Customer",
@@ -254,9 +241,7 @@
         },
         "favorites": {
             "artists": "Favorite artists",
-            "artistsEmpty": "You don't follow any artists yet.",
-            "organizers": "Favorite organizers",
-            "organizersEmpty": "You don't follow any organizers yet."
+            "artistsEmpty": "You don't follow any artists yet."
         },
         "notifications": {
             "title": "Notifications",
@@ -364,13 +349,12 @@
         "loading": "Loading concert info...",
         "ticket": {
             "title": "Tickets",
-            "summary": "{count, plural, =1 {# ticket category} other {# ticket categories}} - Price starting from {price}",
-            "organizerFallback": "Organizer"
+            "summary": "{count, plural, =1 {# ticket category} other {# ticket categories}} - Price starting from {price}"
         },
         "priceFrom": "Price starting from",
         "priceFromShort": "From",
         "schedule": "{date}, {start} - {end} WIB",
-        "organizedBy": "Organized by",
+        "performer": "Performer",
         "seatmap": "Seat map",
         "defaultTerms": "- Purchased tickets cannot be exchanged or refunded.\n- The promoter is not responsible for tickets bought outside the official platform.\n- Fan benefits apply only to certain ticket categories.\n- Professional cameras & livestreaming are not allowed without permission.\n- No admission for infants & children below 7 years old.",
         "tabs": {
@@ -405,13 +389,6 @@
             "title": "Terms & Conditions",
             "expand": "Show more",
             "collapse": "Show less"
-        },
-        "share": {
-            "title": "Share event",
-            "fallbackTitle": "Event on Wavy",
-            "copy": "Copy link",
-            "copied": "Event link copied",
-            "copyFailed": "Couldn't copy the link"
         },
         "review": {
             "title": "Write a concert review",
@@ -513,27 +490,6 @@
         "retry": "Try again",
         "noEvents": "No events yet."
     },
-    "AdminDashboard": {
-        "emptyOrganizers": "No organizers registered yet.",
-        "emptyEvents": "No events yet.",
-        "emptyCustomers": "No customers yet."
-    },
-    "OrganizerDashboard": {
-        "noData": "No data yet"
-    },
-    "DevCharts": {
-        "title": "Chart test (internal)",
-        "subtitle": "Bklit UI test page. The data below is static sample data, not real sales.",
-        "salesTitle": "Sales per day",
-        "salesCaption": "Area chart · tickets sold",
-        "revenueTitle": "Revenue per category",
-        "revenueCaption": "Bar chart · million rupiah",
-        "quotaTitle": "Quota filled",
-        "quotaCaption": "Ring chart · sold / quota",
-        "quotaCenter": "Tickets sold",
-        "sold": "Sold",
-        "revenue": "Revenue"
-    },
     "Sales": {
         "badge": {
             "open": "Available",
@@ -555,59 +511,6 @@
         "buy": "Buy Ticket"
     },
     "Studio": {
-        "brand": "Wavy Studio",
-        "organizer": "Organizer",
-        "navLabel": "Creator Studio navigation",
-        "logout": "Sign out",
-        "nav": {
-            "dashboard": "Dashboard",
-            "events": "Events",
-            "orders": "Payment verification",
-            "scan": "Scan tickets",
-            "artists": "Artists"
-        },
-        "navShort": {
-            "dashboard": "Home",
-            "events": "Events",
-            "orders": "Orders",
-            "scan": "Scan",
-            "artists": "Artists"
-        },
-        "session": {
-            "suspended": "Your organizer account has been suspended by an admin. Contact Wavy admin to reactivate it.",
-            "expired": "Your session has ended. Please sign in again."
-        },
-        "dashboard": {
-            "title": "Dashboard",
-            "subtitle": "Sales summary across all your events.",
-            "newEvent": "Create event",
-            "revenue": "Revenue",
-            "sold": "Tickets sold",
-            "remaining": "Remaining quota",
-            "peakHour": "Peak hour",
-            "pending": "Active pending",
-            "pendingNote": "Holds quota ≤ 15 minutes",
-            "checkedIn": "Checked in",
-            "checkedInNote": "of {sold} tickets sold",
-            "delta": "{pct}% vs previous 7 days",
-            "deltaNew": "new this week",
-            "salesTitle": "Sales per day",
-            "salesCaption": "Tickets sold · last {days} days",
-            "rangeLabel": "Time range",
-            "rangeDays": "{n}D",
-            "salesEmpty": "No sales yet",
-            "salesEmptyText": "The chart appears once there are paid orders.",
-            "quotaTitle": "Quota filled",
-            "quotaCaption": "Sold + pending / quota",
-            "quotaCenter": "{pct}% filled",
-            "quotaEmpty": "No ticket categories yet",
-            "revenueTitle": "Revenue per ticket category",
-            "revenueCaption": "Rupiah · paid orders",
-            "revenueEmpty": "No revenue yet",
-            "recentTitle": "Latest orders",
-            "recentAll": "See all",
-            "recentEmpty": "No orders yet"
-        },
         "eventStatus": {
             "draft": "Draft",
             "published": "Published",
@@ -627,7 +530,6 @@
             "INVALID_QR": "Invalid QR code.",
             "QR_EXPIRED": "This QR code has expired.",
             "TICKET_NOT_FOUND": "Ticket not found.",
-            "WRONG_ORGANIZER": "This ticket is not for your event.",
             "ALREADY_SCANNED": "This ticket has already been scanned.",
             "EVENT_ENDED": "The event has already ended.",
             "validation": "Invalid data: {message}"
@@ -696,6 +598,7 @@
             "close": "Close sales",
             "delete": "Delete",
             "published": "Event published.",
+            "reopened": "Sales reopened.",
             "closed": "Sales closed.",
             "deleted": "Event deleted.",
             "confirmClose": "Close sales now? Buyers can't order until you reopen sales.",
@@ -819,14 +722,17 @@
         "logout": "Log out",
         "nav": {
             "dashboard": "Dashboard",
-            "organizers": "Organizers",
-            "verification": "Verification"
+            "events": "Events",
+            "orders": "Payment verification",
+            "scan": "Scan tickets",
+            "artists": "Artists"
         },
-        "status": {
-            "active": "Active",
-            "suspended": "Suspended",
-            "pending_verification": "Pending review",
-            "rejected": "Rejected"
+        "navShort": {
+            "dashboard": "Home",
+            "events": "Events",
+            "orders": "Orders",
+            "scan": "Scan",
+            "artists": "Artists"
         },
         "login": {
             "title": "Admin sign in",
@@ -842,47 +748,52 @@
             "hidePassword": "Hide password"
         },
         "dashboard": {
-            "title": "Platform dashboard",
-            "subtitle": "Overview of all organizers, events, and transactions.",
-            "manageOrganizers": "Manage organizers",
+            "title": "Dashboard",
+            "subtitle": "Sales, quota, and transactions across all events.",
+            "newEvent": "Create event",
+            "verifyPayments": "Verify payments",
             "revenue": "Revenue",
-            "revenueNote": "Paid orders",
-            "orders": "Orders",
-            "queueTitle": "Verification queue",
-            "queueCaption": "{n} waiting for approval",
-            "queueEmpty": "No applications waiting.",
-            "queueAll": "Open queue",
             "ticketsSold": "Tickets sold",
-            "ticketsSoldNote": "From paid orders",
+            "pending": "Active pending",
+            "pendingNote": "Holds quota ≤ 15 minutes",
+            "checkedIn": "Checked in",
+            "checkedInNote": "of {sold} tickets sold",
+            "orders": "Orders",
             "ordersNote": "{n} paid",
             "publishedEvents": "Live events",
             "publishedNote": "of {n} events",
+            "remaining": "Remaining quota",
+            "remainingNote": "All ticket categories",
             "customers": "Customers",
             "customersNote": "Registered accounts",
-            "activeOrganizers": "Active organizers",
-            "organizersNote": "of {n} organizers",
-            "pendingOrganizers": "Pending review",
-            "pendingNote": "Needs review",
-            "suspendedOrganizers": "Suspended",
-            "suspendedNote": "Access revoked",
+            "delta": "{pct}% vs previous 7 days",
+            "deltaNew": "new this week",
+            "deltaNone": "0 in 14 days",
             "dailyTitle": "Revenue per day",
             "dailyCaption": "Last {days} days, paid orders (WIB)",
             "dailyTickets": "{n} tickets",
-            "dailyEmpty": "No revenue in this range yet",
+            "dailyEmpty": "No revenue in this range",
             "dailyEmptyText": "The chart appears once orders are paid.",
             "rangeLabel": "Day range",
             "rangeDays": "{n}d",
+            "quotaTitle": "Quota filled",
+            "quotaCaption": "Sold + pending / quota",
+            "quotaCenter": "{pct}% filled",
+            "quotaEmpty": "No ticket categories yet",
+            "quotaEmptyText": "Create an event and ticket categories to start selling.",
+            "quotaMore": "+{n} more categories counted in the percentage",
+            "topTitle": "Top events",
+            "topCaption": "Top 5 by tickets sold",
+            "topEmpty": "No tickets sold yet",
+            "topEmptyText": "The ranking appears once orders are paid.",
+            "topTickets": "{n} tickets",
             "ordersTitle": "Orders by status",
             "ordersCaption": "All orders",
             "ordersCenter": "{n} orders",
             "ordersEmpty": "No orders yet.",
-            "topTitle": "Best-selling events",
-            "topCaption": "Top 5, tickets sold",
-            "topEmpty": "No tickets sold yet",
-            "topEmptyText": "The ranking appears once orders are paid.",
-            "topTickets": "{n} tickets",
             "recentTitle": "Latest orders",
-            "recentCaption": "Last 8 orders on the platform",
+            "recentCaption": "Last 8 orders",
+            "recentAll": "View all",
             "recentEmpty": "No orders yet.",
             "qty": "{n} tickets",
             "col": {
@@ -891,91 +802,6 @@
                 "status": "Status",
                 "total": "Total"
             }
-        },
-        "organizers": {
-            "title": "Manage organizers",
-            "subtitle": "Suspension applies immediately: the organizer loses access to Creator Studio.",
-            "empty": "No organizers registered yet.",
-            "col": {
-                "organizer": "Organizer",
-                "joined": "Joined",
-                "events": "Events",
-                "revenue": "Revenue",
-                "status": "Status",
-                "action": "Action"
-            },
-            "suspend": "Suspend",
-            "activate": "Activate",
-            "cancel": "Cancel",
-            "saving": "Saving...",
-            "suspended": "{name} suspended",
-            "activated": "{name} activated",
-            "confirmSuspendTitle": "Suspend {name}?",
-            "confirmSuspendBody": "The organizer immediately loses access to Creator Studio. Existing events and orders are kept.",
-            "confirmActivateTitle": "Activate {name}?",
-            "confirmActivateBody": "The organizer can sign in and manage events again.",
-            "review": "Review"
-        },
-        "organizerDetail": {
-            "back": "All organizers",
-            "profile": "Profile",
-            "email": "Email",
-            "whatsapp": "WhatsApp",
-            "eventTypes": "Event types",
-            "social": "Social media",
-            "joined": "Joined",
-            "revenue": "Revenue",
-            "revenueNote": "Paid orders",
-            "ticketsSold": "Tickets sold",
-            "paidOrders": "{n, plural, one {# paid order} other {# paid orders}}",
-            "events": "Events",
-            "published": "{n} published",
-            "pending": "Awaiting payment",
-            "pendingNote": "Active pending orders",
-            "eventsTitle": "Organizer events",
-            "eventsEmpty": "This organizer hasn't created any events yet.",
-            "col": {
-                "event": "Event",
-                "status": "Status",
-                "sold": "Sold",
-                "revenue": "Revenue"
-            }
-        },
-        "verification": {
-            "title": "Verification queue",
-            "subtitle": "New organizers waiting for approval. Oldest first.",
-            "empty": "No applications waiting",
-            "emptyText": "New organizer applications will show up here.",
-            "badge": "{n} waiting for verification",
-            "submitted": "Submitted {date}",
-            "emailVerified": "Email verified",
-            "emailUnverified": "Email not verified",
-            "review": "Review"
-        },
-        "review": {
-            "title": "Application details",
-            "caption": "Check before approving",
-            "submitted": "Submitted",
-            "emailStatus": "Email status",
-            "approve": "Approve",
-            "reject": "Reject",
-            "approveTitle": "Approve {name}?",
-            "approveBody": "The organizer can sign in to Creator Studio right away. A notification email is sent to {email}.",
-            "rejectTitle": "Reject {name}?",
-            "rejectBody": "The reason is emailed to the organizer and shown when they try to sign in. They can apply again.",
-            "reasonLabel": "Rejection reason",
-            "reasonPlaceholder": "E.g. the social media link does not open, please attach the official profile.",
-            "reasonHint": "At least 10 characters, at most 500.",
-            "reasonTooShort": "The reason needs at least 10 characters.",
-            "reasonTooLong": "The reason can be at most 500 characters.",
-            "cancel": "Cancel",
-            "saving": "Saving...",
-            "approved": "{name} approved",
-            "rejected": "{name} rejected",
-            "emailSent": "Notification email sent to {email}.",
-            "emailFailed": "The decision is saved, but the email to {email} could not be sent. Contact the organizer manually.",
-            "rejectedTitle": "Application rejected",
-            "reviewedAt": "Reviewed {date}"
         }
     },
     "InfoPages": {
@@ -1124,51 +950,6 @@
                     ]
                 }
             ]
-        },
-        "organizerGuide": {
-            "title": "Organizer guide",
-            "updated": "November 20, 2026",
-            "intro": "A short guide to selling concert tickets with Wavy Creator Studio.",
-            "ctaText": "No organizer account yet?",
-            "ctaLabel": "Become an organizer",
-            "sections": [
-                {
-                    "title": "Sign up and verify",
-                    "body": [
-                        "Sign up with your name, email, and password, then verify your email. Once active, you can open Creator Studio."
-                    ]
-                },
-                {
-                    "title": "Create an event",
-                    "body": [
-                        "Enter the title, artist, venue, concert date, and sales window (start and end). The event is saved as a draft first."
-                    ]
-                },
-                {
-                    "title": "Add ticket categories",
-                    "body": [
-                        "Add at least one category with a price and quota. Events without ticket categories cannot be published."
-                    ]
-                },
-                {
-                    "title": "Publish and monitor",
-                    "body": [
-                        "Once published, sales open within the sales window. You can close and reopen sales at any time and follow sales on the dashboard."
-                    ]
-                },
-                {
-                    "title": "Verify payments",
-                    "body": [
-                        "Successful Midtrans payments mark orders as paid automatically. As a fallback, you can approve or reject orders manually under Payments."
-                    ]
-                },
-                {
-                    "title": "Scan tickets at the gate",
-                    "body": [
-                        "Open Scan, point the camera at the QR or type the code. Tickets already scanned or from another event are rejected."
-                    ]
-                }
-            ]
         }
     },
     "Landing": {
@@ -1202,16 +983,72 @@
             "eyebrow": "How to buy",
             "title": "From picking a seat to the gate",
             "more": "Full guide"
+        },
+        "benefits": {
+            "title": "Why Wavy?",
+            "subtitle": "Buy concert tickets without the drama, from search to venue",
+            "items": {
+                "account": {
+                    "title": "One account, just your email",
+                    "desc": "Sign in with your email and a one-time code. No password to remember, no signing up again for every event."
+                },
+                "quota": {
+                    "title": "Honest quota, no overselling",
+                    "desc": "Remaining tickets are counted straight from orders. Tickets you hold at checkout stay reserved for 15 minutes."
+                },
+                "payment": {
+                    "title": "Safe payment, clear status",
+                    "desc": "Pay through Midtrans or by transfer verified by the Wavy team. You can always check your order status."
+                },
+                "alerts": {
+                    "title": "Never miss a release",
+                    "desc": "Follow your favorite artists and turn on reminders. You get notified as soon as ticket sales open."
+                }
+            }
+        },
+        "howItWorks": {
+            "title": "How It Works",
+            "subtitle": "From finding a concert to entering the venue, in 3 steps",
+            "steps": {
+                "find": {
+                    "title": "Find a Concert",
+                    "desc": "Browse concerts by category, artist, or date. Check sales dates and remaining quota for each category."
+                },
+                "order": {
+                    "title": "Order Tickets",
+                    "desc": "Pick a ticket category (up to 4 per order), fill in your details, and pay. Your e-ticket is saved to your account."
+                },
+                "scan": {
+                    "title": "Scan & Enter",
+                    "desc": "Show your e-ticket QR at the gate. Each QR works only once, so nobody else can use your ticket."
+                }
+            }
+        },
+        "testimonials": {
+            "title": "What People Say",
+            "subtitle": "Stories from fans who bought tickets on Wavy",
+            "items": {
+                "dinda": {
+                    "quote": "I used to watch several websites for one concert. Now I just follow the artist on Wavy and get notified when tickets open.",
+                    "name": "Dinda Putri",
+                    "role": "University student"
+                },
+                "rizky": {
+                    "quote": "Bought four tickets for our group, filled in the details once, and the e-tickets showed up in my account. Entry was just a scan.",
+                    "name": "Rizky Pratama",
+                    "role": "Festival goer"
+                },
+                "andre": {
+                    "quote": "What puts me at ease: remaining quota is clear and payment status is always up to date. No more guessing.",
+                    "name": "Andre Wijaya",
+                    "role": "Concert collector"
+                }
+            }
+        },
+        "cta": {
+            "title": "Ready for your next concert?",
+            "text": "Find your favorite concert, secure your tickets, and keep your e-tickets in one place.",
+            "button": "Find Concerts Now"
         }
-    },
-    "OrganizerLogin": {
-        "pendingTitle": "Your account is waiting for verification",
-        "pendingBody": "We received your partnership application and an admin is reviewing it. We will email this address once it has been reviewed. You cannot sign in until the account is approved.",
-        "rejectedTitle": "Application not approved",
-        "rejectedBody": "An admin could not approve your partnership application yet. Fix the details and apply again with the same email.",
-        "reasonLabel": "Reason from the admin",
-        "reapply": "Apply again",
-        "suspendedTitle": "Account suspended",
-        "suspendedBody": "Your organizer account has been suspended by an admin. Contact the Wavy admin for more information."
     }
 }
