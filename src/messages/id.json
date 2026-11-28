@@ -243,7 +243,14 @@
             "remaining": "{count} konser lagi",
             "tiersLabel": "Tingkatan level",
             "tierShort": "Lv {level}",
-            "tierMin": "{count}+"
+            "tierMin": "{count}+",
+            "labels": {
+                "l1": "Pengunjung",
+                "l2": "Newbie",
+                "l3": "Fan",
+                "l4": "Super Fan",
+                "l5": "Legend"
+            }
         },
         "orders": {
             "title": "Riwayat pembelian tiket",

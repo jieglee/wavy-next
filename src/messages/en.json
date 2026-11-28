@@ -243,7 +243,14 @@
             "remaining": "{count, plural, one {# more concert} other {# more concerts}}",
             "tiersLabel": "Level tiers",
             "tierShort": "Lv {level}",
-            "tierMin": "{count}+"
+            "tierMin": "{count}+",
+            "labels": {
+                "l1": "Visitor",
+                "l2": "Newbie",
+                "l3": "Fan",
+                "l4": "Super Fan",
+                "l5": "Legend"
+            }
         },
         "orders": {
             "title": "Ticket purchase history",

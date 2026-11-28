@@ -239,7 +239,8 @@ function LevelRadial({ data, orders }: { data: CustomerLevel; orders?: number })
   const max = next ?? Math.max(data.attended_concerts, 1);
   const ring = [{ label: t("ringLabel"), value: Math.min(data.attended_concerts, max), maxValue: max, color: "var(--chart-1)" }];
   const stats = [
-    { key: "level", label: t("statLevel"), value: data.level_label },
+    // nama level diterjemahkan di klien; level_label backend hanya cadangan untuk level di luar 1..5
+    { key: "level", label: t("statLevel"), value: t.has(`labels.l${data.level}`) ? t(`labels.l${data.level}`) : data.level_label },
     { key: "attended", label: t("statAttended"), value: String(data.attended_concerts) },
     { key: "next", label: t("statNext"), value: next === undefined ? t("max") : t("remaining", { count: Math.max(0, next - data.attended_concerts) }) },
     { key: "orders", label: t("statOrders"), value: orders === undefined ? "-" : String(orders) },
