@@ -96,7 +96,8 @@ export interface DashboardCategory {
   revenue: number;
 }
 
-export interface StudioDashboard {
+/** GET /admin/dashboard — kuota per kategori, check-in, tren 7 hari. */
+export interface SalesDashboard {
   revenue: number;
   ticket_sold: number;
   remaining_ticket: number;
