@@ -10,6 +10,7 @@ import { apiPost, ApiError, setAuthToken, setAuthUser } from "@/lib/api";
 import { NAME_MAX, nameError, updateProfile } from "@/lib/profile";
 import { useErrorMessage } from "@/lib/error-message";
 import { WavyIcon } from "@/components/landing/wavy-icon";
+import { LocaleToggle } from "@/components/i18n/locale-switcher";
 import { WavyIconAnimated } from "../landing/wavy-icon-animated";
 
 // satu alur masuk/daftar: email -> OTP -> (akun baru / nama kosong) isi nama
@@ -217,7 +218,7 @@ export default function LoginOtpCard() {
 
             {/* Panel kanan: form */}
             <div className="flex w-full flex-col bg-background px-8 sm:px-16 md:w-[45%] md:px-20">
-                <div className="pt-6">
+                <div className="flex items-center justify-between gap-3 pt-6">
                     <button
                         type="button"
                         onClick={() => router.back()}
@@ -226,6 +227,7 @@ export default function LoginOtpCard() {
                         <ArrowLeft className="h-3.5 w-3.5" />
                         {t("back")}
                     </button>
+                    <LocaleToggle />
                 </div>
                 <div className="flex flex-1 items-center">
                     <div className="w-full max-w-sm pb-10">

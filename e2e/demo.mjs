@@ -33,6 +33,7 @@ fs.mkdirSync(OUT, { recursive: true });
 }
 
 const msg = JSON.parse(fs.readFileSync(path.join(here, "../src/messages/id.json"), "utf8"));
+const msgEn = JSON.parse(fs.readFileSync(path.join(here, "../src/messages/en.json"), "utf8"));
 const sql = postgres(DB_URL, { onnotice: () => {} });
 const RUN = Date.now().toString(36);
 const ADMIN = { email: `admin-${RUN}@wavy.test`, password: "admin-demo-123" };
@@ -51,8 +52,11 @@ async function step(name, fn) {
     results.push({ name, ok: true, ms: Date.now() - started });
     console.log(`  ✓ ${name}`);
   } catch (err) {
-    results.push({ name, ok: false, ms: Date.now() - started, error: String(err?.message ?? err).split("\n")[0] });
-    console.log(`  ✗ ${name}\n      ${String(err?.message ?? err).split("\n")[0]}`);
+    // baris pertama + baris "waiting for ..." dari Playwright (locator mana yang gagal)
+    const lines = String(err?.message ?? err).split("\n");
+    const detail = [lines[0], lines.find((l) => /waiting for/.test(l))?.trim()].filter(Boolean).join(" | ");
+    results.push({ name, ok: false, ms: Date.now() - started, error: detail });
+    console.log(`  ✗ ${name}\n      ${detail}`);
     for (const [label, page] of Object.entries(ctx.pages ?? {})) {
       await page.screenshot({ path: path.join(OUT, `fail-${results.length}-${label}.png`), fullPage: true }).catch(() => {});
     }
@@ -400,6 +404,39 @@ async function main() {
     }
     const old = await api("/auth/organizer/login", { method: "POST", body: { email: "x@y.z", password: "x" } });
     expect(old.status === 404, `POST /auth/organizer/login -> ${old.status}, harusnya 404`);
+  });
+
+  await step("6c. ganti bahasa ke EN di shell admin & /me; pilihan tersimpan (cookie NEXT_LOCALE)", async () => {
+    // label radiogroup ikut bahasa halaman: "Bahasa" (id) / "Language" (en)
+    const lang = (page, m = msg) => page.getByRole("radiogroup", { name: m.Locale.label });
+    // admin: sidebar desktop
+    await admin.goto(`${WEB}/id/admin/orders`);
+    await lang(admin).first().getByRole("radio", { name: msg.Locale.name.en }).click();
+    await admin.waitForURL(/\/en\/admin\/orders/, { timeout: 15000 });
+    await admin.getByRole("heading", { name: msgEn.Studio.orders.title }).waitFor({ timeout: 10000 });
+    const cookie = (await admin.context().cookies()).find((c) => c.name === "NEXT_LOCALE");
+    expect(cookie?.value === "en", `cookie NEXT_LOCALE = ${cookie?.value}`);
+    expect(cookie.expires > Date.now() / 1000 + 300 * 24 * 3600, "cookie bahasa tidak persisten (cookie sesi)");
+    // /admin tanpa prefix mengikuti bahasa tersimpan
+    await admin.goto(`${WEB}/admin`);
+    await admin.waitForURL(/\/en\/admin\/dashboard/, { timeout: 15000 });
+    await admin.getByRole("heading", { name: msgEn.Admin.dashboard.title }).waitFor({ timeout: 10000 });
+    await lang(admin, msgEn).first().getByRole("radio", { name: msgEn.Locale.name.id }).click();
+    await admin.waitForURL(/\/id\/admin\/dashboard/, { timeout: 15000 });
+
+    // customer: /me
+    await buyerA.goto(`${WEB}/id/me`);
+    await lang(buyerA).first().getByRole("radio", { name: msg.Locale.name.en }).click();
+    await buyerA.waitForURL(/\/en\/me/, { timeout: 15000 });
+    await buyerA.getByText(msgEn.Profile.logout).first().waitFor({ timeout: 10000 });
+    await buyerA.goto(`${WEB}/`);
+    await buyerA.waitForURL(/\/en(\/|$)/, { timeout: 15000 });
+    // menu user navbar juga punya pilihan bahasa
+    await buyerA.goto(`${WEB}/en/tickets`);
+    await buyerA.getByRole("button", { name: msgEn.Navbar.accountMenu }).click();
+    await lang(buyerA, msgEn).first().getByRole("radio", { name: msgEn.Locale.name.id }).click();
+    await buyerA.waitForURL(/\/id\/tickets/, { timeout: 15000 });
+    await buyerA.getByRole("heading", { name: msg.Tickets.title }).first().waitFor({ timeout: 10000 });
   });
 
   await step("7. backend mati -> frontend menampilkan error, bukan data palsu", async () => {

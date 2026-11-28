@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
+import { LocaleToggle } from "@/components/i18n/locale-switcher";
 import { WavyIconAnimated } from "@/components/landing/wavy-icon-animated";
 import { ApiError, apiPost } from "@/lib/api";
 import { setAdminSession } from "@/lib/admin-session";
@@ -93,7 +94,7 @@ function AdminLoginForm() {
 
       {/* Panel kanan: form */}
       <div className="flex w-full flex-col bg-background px-8 sm:px-16 md:w-[45%] md:px-20">
-        <div className="pt-6">
+        <div className="flex items-center justify-between gap-3 pt-6">
           <button
             type="button"
             onClick={() => router.push("/")}
@@ -102,6 +103,7 @@ function AdminLoginForm() {
             <ArrowLeft className="h-3.5 w-3.5" />
             {t("backHome")}
           </button>
+          <LocaleToggle />
         </div>
 
         <div className="flex flex-1 items-center">

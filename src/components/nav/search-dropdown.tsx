@@ -74,10 +74,10 @@ export default function SearchDropdown({
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_48px_-8px_color-mix(in_oklab,var(--foreground)_22%,transparent)]">
       <div className="max-h-[min(72vh,520px)] overflow-y-auto p-4">
-        <p className="mb-3 text-[13px] font-bold text-foreground">Banyak Dicari</p>
+        <p className="mb-3 text-[13px] font-bold text-foreground">{t("trending")}</p>
         <div className="mb-4 flex flex-wrap gap-2">
           {filteredTrending.length === 0 ? (
-            <p className="text-xs text-muted-foreground/80">Tidak ada hasil untuk &quot;{query}&quot;</p>
+            <p className="text-xs text-muted-foreground/80">{t("noTrending", { q: query })}</p>
           ) : (
             filteredTrending.map((term) => (
               <Link
@@ -94,7 +94,7 @@ export default function SearchDropdown({
         </div>
 
         <div className="rounded-xl border border-border bg-white">
-          <p className="px-3 pt-3 text-[13px] font-bold text-foreground sm:px-4">Event Populer</p>
+          <p className="px-3 pt-3 text-[13px] font-bold text-foreground sm:px-4">{t("popular")}</p>
           {popularRes.loading && <p className="px-3 py-3 text-xs text-muted-foreground sm:px-4">{t("loading")}</p>}
           {popularRes.error !== undefined && (
             <div className="flex flex-wrap items-center gap-2 px-3 py-3 text-xs text-muted-foreground sm:px-4" role="alert">

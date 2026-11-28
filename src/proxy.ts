@@ -6,17 +6,19 @@ import { ADMIN_TOKEN_COOKIE, isAdminTokenUsable } from "./lib/admin-token";
 
 const intlProxy = createMiddleware(routing);
 
-// /admin, /id/admin/..., /en/admin/... -> { locale, rest } ; selain itu null
-function matchAdmin(pathname: string) {
+// /admin, /id/admin/..., /en/admin/... -> { locale, rest } ; selain itu null.
+// Tanpa prefix locale: pakai bahasa yang tersimpan di cookie NEXT_LOCALE (pilihan terakhir user).
+function matchAdmin(pathname: string, savedLocale: string | undefined) {
   const m = pathname.match(/^(?:\/(id|en))?\/admin(\/.*)?$/);
   if (!m) return null;
-  return { locale: m[1] ?? routing.defaultLocale, rest: (m[2] ?? "").replace(/\/+$/, "") };
+  const saved = (routing.locales as readonly string[]).includes(savedLocale ?? "") ? savedLocale! : routing.defaultLocale;
+  return { locale: m[1] ?? saved, rest: (m[2] ?? "").replace(/\/+$/, "") };
 }
 
 export function proxy(request: NextRequest) {
-  // Portal admin: wajib sesi admin (cookie terpisah dari sesi customer/EO).
+  // Portal admin: wajib sesi admin (cookie terpisah dari sesi customer).
   // Ini cek optimistis; backend tetap memverifikasi token admin di setiap request.
-  const admin = matchAdmin(request.nextUrl.pathname);
+  const admin = matchAdmin(request.nextUrl.pathname, request.cookies.get("NEXT_LOCALE")?.value);
   if (admin) {
     const loggedIn = isAdminTokenUsable(request.cookies.get(ADMIN_TOKEN_COOKIE)?.value);
     const onLogin = admin.rest === "/login";

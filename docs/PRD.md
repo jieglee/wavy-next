@@ -64,7 +64,7 @@ Tidak ada role organizer/EO. Tidak ada halaman daftar terpisah: masuk & daftar c
 
 - **Responsif** mobile-first; semua halaman (termasuk portal admin) harus layak di lebar 360px.
 - **Error harus kelihatan.** Dilarang fallback ke data mock dan dilarang toast sukses palsu saat API gagal.
-- **i18n** id/en untuk semua teks UI baru.
+- **i18n** id/en untuk semua teks UI. Pilihan bahasa ada di navbar, menu user, `/me`, shell admin, halaman login (web, tersimpan di cookie `NEXT_LOCALE` 1 tahun) dan di Profil (mobile, tersimpan di storage). Cek: `npm run i18n:check` di wavy-next & wavy-mobile.
 - **Konsistensi desain** mengikuti `docs/DESIGN.md` (token, bukan hex langsung).
 - **Skema database** hanya dari `db/migrations/*.sql`; semua relasi FK, nilai terbatas CHECK (`docs/DATABASE.md`).
 

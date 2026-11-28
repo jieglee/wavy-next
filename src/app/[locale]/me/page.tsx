@@ -14,6 +14,7 @@ import { Ring } from "@/components/charts/ring";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAuthToken } from "@/hooks/use-auth-session";
 import { ProfileName } from "@/components/profile/profile-name";
+import { LocaleToggle } from "@/components/i18n/locale-switcher";
 import type { CustomerProfile } from "@/lib/profile";
 import { useErrorMessage } from "@/lib/error-message";
 import { cn } from "@/lib/utils";
@@ -82,7 +83,7 @@ export default function CustomerProfilePage() {
         {/* Profil (DESIGN §4 Radial): ring level di tengah, statistik mengelilingi */}
         <section className="rounded-2xl border border-border bg-background p-4 sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div className="flex min-w-0 flex-1 basis-full items-center gap-3 sm:basis-auto">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-xl font-bold text-primary-foreground">
                 {(me.data?.name || me.data?.email || "W").charAt(0).toUpperCase()}
               </div>
@@ -97,13 +98,19 @@ export default function CustomerProfilePage() {
                 <ProfileName profile={me.data} onSaved={(p) => me.mutate(() => p)} />
               )}
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-lg border border-destructive/30 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive/10"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              {t("logout")}
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] font-medium uppercase tracking-widest text-muted-foreground">{t("language")}</span>
+                <LocaleToggle />
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 rounded-lg border border-destructive/30 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive/10"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                {t("logout")}
+              </button>
+            </div>
           </div>
 
           <div className="mt-6">
@@ -232,7 +239,8 @@ function LevelRadial({ data, orders }: { data: CustomerLevel; orders?: number })
   const max = next ?? Math.max(data.attended_concerts, 1);
   const ring = [{ label: t("ringLabel"), value: Math.min(data.attended_concerts, max), maxValue: max, color: "var(--chart-1)" }];
   const stats = [
-    { key: "level", label: t("statLevel"), value: data.level_label },
+    // nama level diterjemahkan di klien; level_label backend hanya cadangan untuk level di luar 1..5
+    { key: "level", label: t("statLevel"), value: t.has(`labels.l${data.level}`) ? t(`labels.l${data.level}`) : data.level_label },
     { key: "attended", label: t("statAttended"), value: String(data.attended_concerts) },
     { key: "next", label: t("statNext"), value: next === undefined ? t("max") : t("remaining", { count: Math.max(0, next - data.attended_concerts) }) },
     { key: "orders", label: t("statOrders"), value: orders === undefined ? "-" : String(orders) },

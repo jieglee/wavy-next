@@ -64,6 +64,7 @@ function ThreadsIcon({ className }: { className?: string }) {
 }
 
 // href null = halaman belum ada; link disembunyikan sampai tujuannya nyata (bukan "#")
+// label = nama merek media sosial, sama di semua bahasa
 const socials = [
   { icon: InstagramIcon, href: null, label: "Instagram" },
   { icon: FacebookIcon, href: null, label: "Facebook" },

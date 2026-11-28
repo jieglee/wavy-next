@@ -44,14 +44,25 @@
         "emptyTitle": "Tidak ada konser ditemukan",
         "emptyBody": "Coba ubah kata kunci pencarian atau kategori filter kamu.",
         "emptyCountry": "Belum ada konser di {country}.",
-        "seeAll": "Lihat semua event"
+        "seeAll": "Lihat semua event",
+        "backHome": "Kembali ke Beranda",
+        "title": "Jelajahi Semua Konser",
+        "subtitle": "Temukan konser musik terfavorit dari musisi top dunia & Indonesia",
+        "countryChip": "Jelajahi: {country}",
+        "clearCountry": "Hapus filter negara"
     },
     "Navbar": {
         "kategori": "Kategori",
         "searchPlaceholder": "Cari konser, artist, atau venue",
         "akun": "Akun",
         "tickets": "Tiket Saya",
-        "logout": "Keluar"
+        "logout": "Keluar",
+        "closeMenu": "Tutup menu",
+        "signedInAs": "Masuk sebagai",
+        "roleCustomer": "Customer",
+        "profile": "Profil & Level",
+        "language": "Bahasa",
+        "accountMenu": "Menu akun"
     },
     "Auth": {
         "welcomeBack": "Selamat datang kembali!",
@@ -97,19 +108,6 @@
         "loading": "Memuat event...",
         "empty": "Belum ada event yang tersedia."
     },
-    "AppNav": {
-        "browse": "Jelajah Konser",
-        "searchPlaceholder": "Cari konser favoritmu...",
-        "myTickets": "Tiket Saya",
-        "profileLevel": "Profil & Level",
-        "logout": "Keluar"
-    },
-    "AppFooter": {
-        "browse": "Jelajah Konser",
-        "myTickets": "Tiket Saya",
-        "profile": "Profil & Level",
-        "rights": "Hak cipta dilindungi."
-    },
     "Home": {
         "greeting": "Halo, {name}!",
         "greetingFallback": "Halo!",
@@ -148,7 +146,22 @@
             "title": "Semua Tiket dalam Satu Genggaman",
             "subtitle": "Semua konser yang kamu beli di Wavy",
             "ctaLabel": "Lihat fitur QR Wallet"
-        }
+        },
+        "onSale": {
+            "eyebrow": "Tiket sudah dijual",
+            "title": "Jelajahi konser terkurasi",
+            "subtitle": "Amankan tiketmu sebelum kehabisan",
+            "ctaLabel": "Lihat konser",
+            "pill": "Tiket konser idola udah open sale",
+            "pillCTA": "Amankan sekarang!"
+        },
+        "bts": {
+            "eyebrow": "Event favoritmu ada di sini: BTS",
+            "pill": "ARMY, BTS kembali",
+            "pillCTA": "Amankan tiketmu!"
+        },
+        "defaultPill": "Siapa yang kangen {name}?",
+        "defaultPillCTA": "Klik untuk dapatkan tiketmu"
     },
     "DiscoverCountries": {
         "title": "Jelajahi Event di Kotamu"
@@ -231,7 +244,14 @@
             "remaining": "{count} konser lagi",
             "tiersLabel": "Tingkatan level",
             "tierShort": "Lv {level}",
-            "tierMin": "{count}+"
+            "tierMin": "{count}+",
+            "labels": {
+                "l1": "Pengunjung",
+                "l2": "Newbie",
+                "l3": "Fan",
+                "l4": "Super Fan",
+                "l5": "Legend"
+            }
         },
         "orders": {
             "title": "Riwayat pembelian tiket",
@@ -257,7 +277,8 @@
         "save": "Simpan",
         "saving": "Menyimpan...",
         "cancel": "Batal",
-        "nameSaved": "Nama diperbarui."
+        "nameSaved": "Nama diperbarui.",
+        "language": "Bahasa"
     },
     "Checkout": {
         "oneCategoryHint": "Satu transaksi untuk satu kategori tiket, maksimal 4 tiket.",
@@ -504,12 +525,22 @@
     "FeaturedPicks": {
         "loading": "Memuat event...",
         "empty": "Belum ada event yang tersedia.",
-        "emptyThisWeek": "Tidak ada event dalam 7 hari ke depan."
+        "emptyThisWeek": "Tidak ada event dalam 7 hari ke depan.",
+        "title": "Event4u",
+        "more": "Lebih Banyak Event",
+        "tabPopular": "Populer",
+        "tabThisWeek": "Minggu ini",
+        "allTitle": "Semua Event",
+        "close": "Tutup"
     },
     "Search": {
         "loading": "Memuat event populer...",
         "retry": "Coba lagi",
-        "noEvents": "Belum ada event."
+        "noEvents": "Belum ada event.",
+        "trending": "Banyak Dicari",
+        "noTrending": "Tidak ada hasil untuk \"{q}\"",
+        "popular": "Event Populer",
+        "placeholderPrefix": "Cari event"
     },
     "Sales": {
         "badge": {
@@ -823,7 +854,8 @@
                 "status": "Status",
                 "total": "Total"
             }
-        }
+        },
+        "language": "Bahasa"
     },
     "InfoPages": {
         "eyebrow": "Informasi Wavy",
@@ -1005,5 +1037,19 @@
             "title": "Dari pilih kursi sampai gate",
             "more": "Panduan lengkap"
         }
+    },
+    "Locale": {
+        "label": "Bahasa",
+        "short": {
+            "id": "ID",
+            "en": "EN"
+        },
+        "name": {
+            "id": "Bahasa Indonesia",
+            "en": "English"
+        }
+    },
+    "Common": {
+        "scrollTop": "Kembali ke atas"
     }
 }
