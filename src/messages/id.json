@@ -982,6 +982,72 @@
             "eyebrow": "Cara beli",
             "title": "Dari pilih kursi sampai gate",
             "more": "Panduan lengkap"
+        },
+        "benefits": {
+            "title": "Kenapa Wavy?",
+            "subtitle": "Beli tiket konser tanpa drama, dari cari sampai masuk venue",
+            "items": {
+                "account": {
+                    "title": "Satu akun, cukup email",
+                    "desc": "Masuk pakai email dan kode OTP. Nggak perlu ingat kata sandi, dan nggak perlu daftar ulang di tiap event."
+                },
+                "quota": {
+                    "title": "Kuota jujur, nggak oversell",
+                    "desc": "Sisa tiket dihitung langsung dari pesanan. Tiket yang kamu tahan saat checkout aman selama 15 menit."
+                },
+                "payment": {
+                    "title": "Bayar aman, status jelas",
+                    "desc": "Bayar lewat Midtrans atau transfer yang diverifikasi tim Wavy. Status pesanan selalu bisa kamu cek."
+                },
+                "alerts": {
+                    "title": "Nggak ketinggalan rilis",
+                    "desc": "Ikuti artis favorit dan aktifkan pengingat. Kamu dapat notifikasi begitu penjualan tiket dibuka."
+                }
+            }
+        },
+        "howItWorks": {
+            "title": "Cara Kerjanya",
+            "subtitle": "Dari cari konser sampai masuk venue, cuma 3 langkah",
+            "steps": {
+                "find": {
+                    "title": "Cari Konser",
+                    "desc": "Jelajahi konser berdasarkan kategori, artis, atau tanggal. Cek jadwal penjualan dan sisa kuota tiap kategori."
+                },
+                "order": {
+                    "title": "Pesan Tiket",
+                    "desc": "Pilih kategori tiket (maksimal 4 per pesanan), isi data, lalu bayar. E-ticket langsung tersimpan di akunmu."
+                },
+                "scan": {
+                    "title": "Scan & Masuk",
+                    "desc": "Tunjukkan QR e-ticket di pintu masuk. Tiap QR hanya berlaku sekali, jadi tiketmu nggak bisa dipakai orang lain."
+                }
+            }
+        },
+        "testimonials": {
+            "title": "Kata Mereka",
+            "subtitle": "Cerita penonton yang udah beli tiket lewat Wavy",
+            "items": {
+                "dinda": {
+                    "quote": "Dulu harus pantau beberapa website buat satu konser. Sekarang tinggal ikuti artisnya di Wavy, notifikasi masuk pas tiket dibuka.",
+                    "name": "Dinda Putri",
+                    "role": "Mahasiswa"
+                },
+                "rizky": {
+                    "quote": "Beli empat tiket buat rombongan, datanya diisi sekali, e-ticket langsung muncul di akun. Masuk venue tinggal scan.",
+                    "name": "Rizky Pratama",
+                    "role": "Penonton festival"
+                },
+                "andre": {
+                    "quote": "Yang bikin tenang: sisa kuota kelihatan jelas dan status pembayaran selalu ter-update. Nggak ada lagi tebak-tebakan.",
+                    "name": "Andre Wijaya",
+                    "role": "Kolektor konser"
+                }
+            }
+        },
+        "cta": {
+            "title": "Siap nonton konser berikutnya?",
+            "text": "Cari konser favoritmu, amankan tiketnya, dan simpan e-ticket di satu tempat.",
+            "button": "Cari Konser Sekarang"
         }
     }
 }
