@@ -61,7 +61,8 @@
         "signedInAs": "Masuk sebagai",
         "roleCustomer": "Customer",
         "profile": "Profil & Level",
-        "language": "Bahasa"
+        "language": "Bahasa",
+        "accountMenu": "Menu akun"
     },
     "Auth": {
         "welcomeBack": "Selamat datang kembali!",

@@ -61,7 +61,8 @@
         "signedInAs": "Signed in as",
         "roleCustomer": "Customer",
         "profile": "Profile & Level",
-        "language": "Language"
+        "language": "Language",
+        "accountMenu": "Account menu"
     },
     "Auth": {
         "welcomeBack": "Welcome back!",

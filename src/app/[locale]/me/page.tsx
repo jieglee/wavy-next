@@ -83,7 +83,7 @@ export default function CustomerProfilePage() {
         {/* Profil (DESIGN §4 Radial): ring level di tengah, statistik mengelilingi */}
         <section className="rounded-2xl border border-border bg-background p-4 sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div className="flex min-w-0 flex-1 basis-full items-center gap-3 sm:basis-auto">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-xl font-bold text-primary-foreground">
                 {(me.data?.name || me.data?.email || "W").charAt(0).toUpperCase()}
               </div>

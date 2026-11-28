@@ -47,6 +47,7 @@ export function LocaleToggle({ className, tone = "default" }: { className?: stri
             role="radio"
             aria-checked={active}
             lang={l}
+            aria-label={t(`name.${l}`)}
             title={t(`name.${l}`)}
             disabled={pending}
             onClick={() => !active && switchTo(l)}

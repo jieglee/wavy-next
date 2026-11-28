@@ -202,6 +202,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               onClick={() => setUserOpen(!userOpen)}
               aria-haspopup="menu"
               aria-expanded={userOpen}
+              aria-label={t("accountMenu")}
               className="flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40"
             >
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-xs text-white">

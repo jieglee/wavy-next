@@ -235,4 +235,4 @@ Satu alur, tiga langkah di kartu yang sama: email → OTP 6 kotak (muat di 360px
 - [ ] Tidak ada gradient ungu generik di luar `--primary-glow`
 - [ ] State loading / kosong / error ada dan tidak pakai data mock
 - [ ] Rapi di lebar 360px, 768px, 1280px
-- [ ] Teks lewat next-intl (id/en)
+- [ ] Teks lewat next-intl (id/en); `npm run i18n:check` lolos (key id/en sama, tidak ada teks hardcode)
