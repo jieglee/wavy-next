@@ -1,7 +1,7 @@
-// Skenario demo UKK (docs/PRD.md §7) end-to-end, headless.
+// Skenario demo UKK (docs/PRD.md §7) end-to-end, headless. Dua role: admin (web) dan customer.
 //
 // Prasyarat (lihat e2e/README.md):
-//   - backend wavy-backend (feat/organizer-api atau lebih baru) jalan ke Postgres LOKAL *_test,
+//   - backend wavy-backend (skema v2, mis. chore/seed-demo-v2 atau lebih baru) jalan ke Postgres LOKAL *_test,
 //     dengan SMTP_HOST=127.0.0.1 SMTP_PORT=$E2E_SMTP_PORT (sink SMTP dijalankan skrip ini)
 //   - frontend wavy-next jalan dengan NEXT_PUBLIC_API_URL menunjuk ke backend itu
 //
@@ -35,7 +35,6 @@ fs.mkdirSync(OUT, { recursive: true });
 const msg = JSON.parse(fs.readFileSync(path.join(here, "../src/messages/id.json"), "utf8"));
 const sql = postgres(DB_URL, { onnotice: () => {} });
 const RUN = Date.now().toString(36);
-const EO = { email: `eo-${RUN}@wavy.test`, password: "eo-demo-123", name: `EO Demo ${RUN}` };
 const ADMIN = { email: `admin-${RUN}@wavy.test`, password: "admin-demo-123" };
 const BUYER_A = `buyer-a-${RUN}@wavy.test`;
 const BUYER_B = `buyer-b-${RUN}@wavy.test`;
@@ -60,14 +59,6 @@ async function step(name, fn) {
   }
 }
 
-async function waitFor(check, ms = 5000) {
-  for (const end = Date.now() + ms; Date.now() < end; ) {
-    if (check()) return true;
-    await new Promise((r) => setTimeout(r, 100));
-  }
-  return check();
-}
-
 function expect(cond, message) {
   if (!cond) throw new Error(message);
 }
@@ -90,19 +81,19 @@ async function newPage(browser, label, viewport = { width: 1280, height: 900 }) 
   return page;
 }
 
+const overflowX = (page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+
 async function seed() {
   await sql`CREATE EXTENSION IF NOT EXISTS pgcrypto`;
-  await sql`INSERT INTO organizers (name, email, password, status, created_at)
-            VALUES (${EO.name}, ${EO.email}, crypt(${EO.password}, gen_salt('bf', 10)), 'active', now())`;
-  const [org] = await sql`SELECT id FROM organizers WHERE email = ${EO.email}`;
-  ctx.organizerId = org.id;
-  const [artist] = await sql`INSERT INTO artists (organizer_id, name, genre, photo_url, bio)
-                             VALUES (${org.id}, ${"Band Demo " + RUN}, 'Rock', '', '') RETURNING id`;
-  ctx.artistId = artist.id;
-  await sql`INSERT INTO admins (name, email, password) VALUES ('Admin Demo', ${ADMIN.email}, crypt(${ADMIN.password}, gen_salt('bf', 10)))`;
+  const [artist] = await sql`INSERT INTO artists (name, genre) VALUES (${"Band Demo " + RUN}, 'Rock') RETURNING id`;
+  ctx.artistId = Number(artist.id);
+  const [a] = await sql`INSERT INTO admins (name, email, password)
+                        VALUES ('Admin Demo', ${ADMIN.email}, crypt(${ADMIN.password}, gen_salt('bf', 10))) RETURNING id`;
+  ctx.adminId = Number(a.id);
 }
 
-async function customerLogin(page, email) {
+/** Login customer lewat OTP (kode dari DB). `name` diisi = akun baru: langkah isi nama wajib muncul. */
+async function customerLogin(page, email, name) {
   await page.goto(`${WEB}/id/auth/login`);
   await page.locator('input[type="email"]').fill(email);
   await page.getByRole("button", { name: msg.Auth.continue, exact: true }).click();
@@ -117,6 +108,16 @@ async function customerLogin(page, email) {
   expect(code, "kode OTP tidak ditemukan di otp_codes");
   for (let i = 0; i < 6; i++) await boxes.nth(i).fill(code[i]);
   await page.getByRole("button", { name: msg.Auth.signIn, exact: true }).click();
+  if (name) {
+    const input = page.locator("#customer-name");
+    await input.waitFor({ timeout: 15000 });
+    // nama terlalu pendek -> pesan per field, tidak terkirim
+    await input.fill("A");
+    await page.getByRole("button", { name: msg.Auth.nameSubmit, exact: true }).click();
+    await page.getByText(msg.Auth.nameTooShort).waitFor({ timeout: 5000 });
+    await input.fill(name);
+    await page.getByRole("button", { name: msg.Auth.nameSubmit, exact: true }).click();
+  }
   await page.waitForURL(/\/home/, { timeout: 20000 });
 }
 
@@ -160,88 +161,113 @@ async function main() {
   ctx.pages = {};
   console.log(`Wavy demo e2e — run ${RUN}\n  web ${WEB}\n  api ${API}\n`);
 
-  await step("0. seed EO, artis, admin di DB uji", seed);
+  await step("0. seed artis & admin di DB uji", seed);
 
-  const eo = await newPage(browser, "eo");
-  await step("1a. EO login", async () => {
-    await eo.goto(`${WEB}/id/organizer/login`);
-    await eo.locator('input[type="email"]').fill(EO.email);
-    await eo.locator('input[type="password"]').fill(EO.password);
-    await eo.locator('button[type="submit"]').click();
-    await eo.waitForURL(/\/organizer\/dashboard/, { timeout: 20000 });
-    const login = await api("/auth/organizer/login", { method: "POST", body: { email: EO.email, password: EO.password } });
-    ctx.eoToken = login.json.access_token;
+  const admin = await newPage(browser, "admin");
+  await step("1a. admin login", async () => {
+    await admin.goto(`${WEB}/id/admin/login`);
+    await admin.locator('input[type="email"]').fill(ADMIN.email);
+    await admin.locator('input[type="password"]').fill(ADMIN.password);
+    await admin.locator('button[type="submit"]').click();
+    await admin.waitForURL(/\/admin\/dashboard/, { timeout: 20000 });
+    // sesi admin terpisah: login admin tidak mengisi slot sesi customer
+    expect((await admin.evaluate(() => localStorage.getItem("wavy_auth_token"))) === null, "login admin mengisi sesi customer");
+    const login = await api("/admin/login", { method: "POST", body: { email: ADMIN.email, password: ADMIN.password } });
+    ctx.adminToken = login.json.access_token;
+    expect(ctx.adminToken, `POST /admin/login -> ${login.status}`);
   });
 
-  await step("1b. EO buat event (draft) dengan tenggat penjualan", async () => {
-    const f = msg.Studio.form;
+  await step("1b. admin buat event (draft) dengan tenggat penjualan", async () => {
     const now = new Date();
-    await eo.goto(`${WEB}/id/organizer/events/new`);
-    await eo.locator("#ev-title").fill(`Konser Demo ${RUN}`);
-    await eo.locator("#ev-artist").selectOption(String(ctx.artistId));
-    await eo.locator("#ev-category").fill("Music");
-    await eo.locator("#ev-venue").fill("Jakarta");
-    await eo.locator("#ev-date").fill(wibInput(new Date(now.getTime() + 30 * 24 * H)));
-    await eo.locator("#ev-sales-start").fill(wibInput(new Date(now.getTime() - H)));
-    await eo.locator("#ev-sales-end").fill(wibInput(new Date(now.getTime() + 20 * 24 * H)));
-    await eo.getByRole("button", { name: f.createDraft }).click();
-    await eo.waitForURL(/\/organizer\/events\/\d+$/, { timeout: 20000 });
-    ctx.eventId = Number(eo.url().match(/events\/(\d+)$/)[1]);
-    const ev = await api(`/organizer/events/${ctx.eventId}`, { token: ctx.eoToken });
+    await admin.goto(`${WEB}/id/admin/events/new`);
+    await admin.locator("#ev-title").fill(`Konser Demo ${RUN}`);
+    await admin.locator("#ev-artist").selectOption(String(ctx.artistId));
+    await admin.locator("#ev-category").fill("Music");
+    await admin.locator("#ev-venue").fill("Jakarta");
+    await admin.locator("#ev-date").fill(wibInput(new Date(now.getTime() + 30 * 24 * H)));
+    await admin.locator("#ev-sales-start").fill(wibInput(new Date(now.getTime() - H)));
+    await admin.locator("#ev-sales-end").fill(wibInput(new Date(now.getTime() + 20 * 24 * H)));
+    await admin.getByRole("button", { name: msg.Studio.form.createDraft }).click();
+    await admin.waitForURL(/\/admin\/events\/\d+$/, { timeout: 20000 });
+    ctx.eventId = Number(admin.url().match(/events\/(\d+)$/)[1]);
+    const ev = await api(`/admin/events/${ctx.eventId}`, { token: ctx.adminToken });
     expect(ev.json.status === "draft", `status event ${ev.json.status}, harusnya draft`);
     expect(ev.json.sales_end_at, "sales_end_at tidak tersimpan");
+    const [row] = await sql`SELECT created_by FROM events WHERE id = ${ctx.eventId}`;
+    expect(Number(row.created_by) === ctx.adminId, `created_by ${row.created_by}, harusnya ${ctx.adminId}`);
   });
 
   await step("1c. publish tanpa kategori ditolak", async () => {
-    await eo.getByRole("button", { name: msg.Studio.detail.publish, exact: true }).click();
-    await eo.getByText(msg.Studio.errors.NO_TICKET_CATEGORY).waitFor({ timeout: 10000 });
-    const ev = await api(`/organizer/events/${ctx.eventId}`, { token: ctx.eoToken });
+    await admin.getByRole("button", { name: msg.Studio.detail.publish, exact: true }).click();
+    await admin.getByText(msg.Studio.errors.NO_TICKET_CATEGORY).waitFor({ timeout: 10000 });
+    const ev = await api(`/admin/events/${ctx.eventId}`, { token: ctx.adminToken });
     expect(ev.json.status === "draft", "event berubah status padahal tanpa kategori");
   });
 
-  await step("1d. EO tambah 2 kategori tiket (kuota 3)", async () => {
+  await step("1d. admin tambah 2 kategori tiket (kuota 3)", async () => {
     const c = msg.Studio.categories;
     for (const [name, price] of [["VIP", "250000"], ["Reguler", "100000"]]) {
-      await eo.getByRole("button", { name: c.add }).click();
-      await eo.locator("#cat-name").fill(name);
-      await eo.locator("#cat-price").fill(price);
-      await eo.locator("#cat-quota").fill("3");
-      await eo.getByRole("button", { name: c.save, exact: true }).click();
-      await eo.getByText(name, { exact: true }).first().waitFor({ timeout: 10000 });
-      await eo.getByRole("button", { name: c.add }).waitFor({ timeout: 10000 });
+      await admin.getByRole("button", { name: c.add }).click();
+      await admin.locator("#cat-name").fill(name);
+      await admin.locator("#cat-price").fill(price);
+      await admin.locator("#cat-quota").fill("3");
+      await admin.getByRole("button", { name: c.save, exact: true }).click();
+      await admin.getByText(name, { exact: true }).first().waitFor({ timeout: 10000 });
+      await admin.getByRole("button", { name: c.add }).waitFor({ timeout: 10000 });
     }
-    const ev = await api(`/organizer/events/${ctx.eventId}`, { token: ctx.eoToken });
+    const ev = await api(`/admin/events/${ctx.eventId}`, { token: ctx.adminToken });
     expect(ev.json.ticket_categories?.length === 2, `jumlah kategori ${ev.json.ticket_categories?.length}`);
   });
 
-  await step("1e. EO publish -> penjualan terbuka", async () => {
-    await eo.getByRole("button", { name: msg.Studio.detail.publish, exact: true }).click();
-    await eo.getByRole("button", { name: msg.Studio.detail.close }).waitFor({ timeout: 10000 });
+  await step("1e. admin publish -> penjualan terbuka", async () => {
+    await admin.getByRole("button", { name: msg.Studio.detail.publish, exact: true }).click();
+    await admin.getByRole("button", { name: msg.Studio.detail.close }).waitFor({ timeout: 10000 });
     const pub = await api(`/concerts/${ctx.eventId}`);
     expect(pub.json.sales_status === "open", `sales_status publik ${pub.json.sales_status}`);
+    expect(!("organizer_name" in pub.json), "respons konser masih memuat organizer_name");
     ctx.categoryIds = pub.json.ticket_categories.map((c) => c.id);
   });
 
-  const buyerA = await newPage(browser, "buyerA", { width: 390, height: 844 });
-  await step("2a. customer A login OTP (kode dari DB)", () => customerLogin(buyerA, BUYER_A));
+  const buyerA = await newPage(browser, "buyerA", { width: 360, height: 800 });
+  await step("2a. customer A baru: email -> OTP -> isi nama (360px)", async () => {
+    await customerLogin(buyerA, BUYER_A, "Pembeli A");
+    const [c] = await sql`SELECT name FROM customers WHERE email = ${BUYER_A}`;
+    expect(c?.name === "Pembeli A", `nama customer ${c?.name}`);
+    expect((await overflowX(buyerA)) <= 0, "halaman melebar di 360px");
+  });
 
-  await step("2b. customer A checkout 2 tiket VIP -> order pending", async () => {
+  await step("2b. login ulang akun lama tanpa langkah nama; ubah nama di /me", async () => {
+    await buyerA.evaluate(() => localStorage.clear());
+    await customerLogin(buyerA, BUYER_A);
+    await buyerA.goto(`${WEB}/id/me`);
+    await buyerA.getByRole("heading", { name: "Pembeli A", exact: true }).waitFor({ timeout: 15000 });
+    await buyerA.getByRole("button", { name: msg.Profile.editName }).click();
+    await buyerA.locator("#profile-name").fill("Pembeli A Baru");
+    await buyerA.getByRole("button", { name: msg.Profile.save, exact: true }).click();
+    await buyerA.getByRole("heading", { name: "Pembeli A Baru", exact: true }).waitFor({ timeout: 10000 });
+    const [c] = await sql`SELECT name FROM customers WHERE email = ${BUYER_A}`;
+    expect(c.name === "Pembeli A Baru", `nama setelah ubah ${c.name}`);
+    expect((await overflowX(buyerA)) <= 0, "/me melebar di 360px");
+  });
+
+  await step("2c. customer A checkout 2 tiket VIP -> order pending", async () => {
     ctx.orderA = await checkout(buyerA, ctx.eventId, "VIP", 2);
     expect(ctx.orderA, "tidak diarahkan ke halaman order setelah checkout");
     const [o] = await sql`SELECT status FROM orders WHERE id = ${ctx.orderA}`;
     expect(o.status === "pending_payment", `status order ${o.status}`);
   });
 
-  await step("2c. EO approve pembayaran (verifikasi manual)", async () => {
-    await eo.goto(`${WEB}/id/organizer/orders`);
-    await eo.getByText(`#${ctx.orderA} ·`).first().click();
-    await eo.getByRole("button", { name: msg.Studio.orders.approve }).click();
-    await eo.getByText(msg.Studio.orders.approved).first().waitFor({ timeout: 10000 });
-    const [o] = await sql`SELECT status, paid_at FROM orders WHERE id = ${ctx.orderA}`;
+  await step("2d. admin approve pembayaran (verifikasi manual, verified_by tercatat)", async () => {
+    await admin.goto(`${WEB}/id/admin/orders`);
+    await admin.getByText(`#${ctx.orderA} ·`).first().click();
+    await admin.getByRole("button", { name: msg.Studio.orders.approve }).click();
+    await admin.getByText(msg.Studio.orders.approved).first().waitFor({ timeout: 10000 });
+    const [o] = await sql`SELECT status, paid_at, verified_by FROM orders WHERE id = ${ctx.orderA}`;
     expect(o.status === "paid" && o.paid_at, `status ${o.status}, paid_at ${o.paid_at}`);
+    expect(Number(o.verified_by) === ctx.adminId, `verified_by ${o.verified_by}`);
   });
 
-  await step("2d. tiket + QR muncul di Tiket saya", async () => {
+  await step("2e. tiket + QR muncul di Tiket saya", async () => {
     await buyerA.goto(`${WEB}/id/tickets`);
     const show = buyerA.getByRole("link", { name: msg.Tickets.showQr });
     await show.first().waitFor({ timeout: 15000 });
@@ -256,7 +282,7 @@ async function main() {
 
   const buyerB = await newPage(browser, "buyerB", { width: 390, height: 844 });
   await step("3. customer B beli melebihi sisa kuota -> ditolak dengan pesan jelas", async () => {
-    await customerLogin(buyerB, BUYER_B);
+    await customerLogin(buyerB, BUYER_B, "Pembeli B");
     const orderId = await checkout(buyerB, ctx.eventId, "VIP", 2); // VIP sisa 1
     expect(orderId === null, `order ${orderId} malah dibuat`);
     await buyerB.getByText(msg.Errors.codes.QUOTA_EXCEEDED).first().waitFor({ timeout: 10000 });
@@ -264,10 +290,10 @@ async function main() {
     expect(c.n === 1, `jumlah order aktif ${c.n}, harusnya 1`);
   });
 
-  await step("4. EO close sales -> order customer ditolak", async () => {
-    await eo.goto(`${WEB}/id/organizer/events/${ctx.eventId}`);
-    await eo.getByRole("button", { name: msg.Studio.detail.close }).click();
-    await eo.getByRole("button", { name: msg.Studio.detail.reopen }).waitFor({ timeout: 10000 });
+  await step("4. admin close sales -> order ditolak; buka lagi -> terbuka tanpa notifikasi ulang", async () => {
+    await admin.goto(`${WEB}/id/admin/events/${ctx.eventId}`);
+    await admin.getByRole("button", { name: msg.Studio.detail.close }).click();
+    await admin.getByRole("button", { name: msg.Studio.detail.reopen }).waitFor({ timeout: 10000 });
     const buyerToken = await buyerB.evaluate(() => localStorage.getItem("wavy_auth_token"));
     const res = await api("/orders", {
       token: buyerToken,
@@ -275,127 +301,71 @@ async function main() {
       body: { event_id: ctx.eventId, ticket_category_id: ctx.categoryIds[1], quantity: 1, full_name: "B", email: BUYER_B, phone: "81223333444", id_number: "1", birth_date: "2000-01-01", gender: "L", wa_consent: "Tidak" },
     });
     expect(res.status >= 400 && res.status < 500 && res.json.error?.code === "SALES_CLOSED", `POST /orders -> ${res.status} ${JSON.stringify(res.json)}`);
-    // UI: tombol pesan nonaktif / pesan penjualan ditutup
     await buyerB.goto(`${WEB}/id/concerts/${ctx.eventId}/checkout`);
     await buyerB.getByText(msg.Errors.codes.SALES_CLOSED).first().waitFor({ timeout: 20000 });
+
+    const [{ n: before }] = await sql`SELECT COUNT(*)::int AS n FROM notifications`;
+    await admin.getByRole("button", { name: msg.Studio.detail.reopen }).click();
+    await admin.getByRole("button", { name: msg.Studio.detail.close }).waitFor({ timeout: 10000 });
+    const pub = await api(`/concerts/${ctx.eventId}`);
+    expect(pub.json.sales_status === "open", `sales_status setelah buka lagi ${pub.json.sales_status}`);
+    const [{ n: after }] = await sql`SELECT COUNT(*)::int AS n FROM notifications`;
+    expect(after === before, `buka lagi mengirim ${after - before} notifikasi`);
   });
 
-  await step("5a. EO scan QR -> valid", async () => {
+  await step("5a. admin scan QR -> valid (scanned_at & scanned_by tercatat)", async () => {
     const [t] = await sql`SELECT qr_code FROM tickets WHERE order_id = ${ctx.orderA} ORDER BY id LIMIT 1`;
     ctx.qr = t.qr_code;
-    await eo.goto(`${WEB}/id/organizer/scan`);
-    await eo.locator("#scan-manual").fill(ctx.qr);
-    await eo.getByRole("button", { name: msg.Studio.scan.check }).click();
-    await eo.getByText(msg.Studio.scan.valid).waitFor({ timeout: 10000 });
+    await admin.goto(`${WEB}/id/admin/scan`);
+    await admin.locator("#scan-manual").fill(ctx.qr);
+    await admin.getByRole("button", { name: msg.Studio.scan.check }).click();
+    await admin.getByText(msg.Studio.scan.valid).waitFor({ timeout: 10000 });
+    const [s] = await sql`SELECT is_scanned, scanned_at, scanned_by FROM tickets WHERE qr_code = ${ctx.qr}`;
+    expect(s.is_scanned && s.scanned_at && Number(s.scanned_by) === ctx.adminId, `scan ${JSON.stringify(s)}`);
   });
 
   await step("5b. scan ulang -> ditolak (duplikat)", async () => {
-    await eo.waitForTimeout(3200); // lewati debounce kamera 3 detik
-    await eo.locator("#scan-manual").fill(ctx.qr);
-    await eo.getByRole("button", { name: msg.Studio.scan.check }).click();
-    await eo.getByText(msg.Studio.errors.ALREADY_SCANNED).first().waitFor({ timeout: 10000 });
+    await admin.waitForTimeout(3200); // lewati debounce kamera 3 detik
+    await admin.locator("#scan-manual").fill(ctx.qr);
+    await admin.getByRole("button", { name: msg.Studio.scan.check }).click();
+    await admin.getByText(msg.Studio.errors.ALREADY_SCANNED).first().waitFor({ timeout: 10000 });
     const [t] = await sql`SELECT COUNT(*)::int AS n FROM tickets WHERE order_id = ${ctx.orderA} AND is_scanned`;
     expect(t.n === 1, `tiket ter-scan ${t.n}, harusnya 1`);
   });
 
-  const admin = await newPage(browser, "admin");
-  await step("6a. /admin/* wajib sesi admin; sesi customer tidak membuka admin", async () => {
-    for (const p of ["/id/admin", "/id/admin/dashboard", "/id/admin/organizers"]) {
-      await admin.goto(`${WEB}${p}`);
-      await admin.waitForURL(/\/id\/admin\/login$/, { timeout: 15000 });
+  await step("6a. dashboard admin: KPI sesuai data, tidak melebar di 360px", async () => {
+    const d = msg.Admin.dashboard;
+    await admin.goto(`${WEB}/id/admin/dashboard`);
+    await admin.getByText(d.checkedInNote.split("{sold}")[0].trim()).first().waitFor({ timeout: 15000 });
+    const dash = await api("/admin/dashboard", { token: ctx.adminToken });
+    const stats = await api("/admin/stats", { token: ctx.adminToken });
+    expect(dash.json.kpi.checked_in >= 1, `checked_in ${dash.json.kpi.checked_in}`);
+    expect(stats.json.ticket_sold >= 2, `ticket_sold ${stats.json.ticket_sold}`);
+    const sum = Object.values(stats.json.orders_by_status).reduce((a, b) => a + b, 0);
+    expect(sum === stats.json.order_count, `orders_by_status ${sum} != order_count ${stats.json.order_count}`);
+    await admin.screenshot({ path: path.join(OUT, "admin-dashboard-desktop.png"), fullPage: true });
+    await admin.setViewportSize({ width: 360, height: 800 });
+    await admin.waitForTimeout(500);
+    expect((await overflowX(admin)) <= 0, "dashboard melebar di 360px");
+    await admin.screenshot({ path: path.join(OUT, "admin-dashboard-360.png"), fullPage: true });
+    await admin.setViewportSize({ width: 1280, height: 900 });
+  });
+
+  await step("6b. /admin/* wajib sesi admin; sesi customer tidak membuka admin; halaman & endpoint EO hilang", async () => {
+    const guest = await newPage(browser, "guest");
+    for (const p of ["/id/admin", "/id/admin/dashboard", "/id/admin/events"]) {
+      await guest.goto(`${WEB}${p}`);
+      await guest.waitForURL(/\/id\/admin\/login$/, { timeout: 15000 });
     }
-    // buyerA sedang login sebagai customer
     expect(await buyerA.evaluate(() => !!localStorage.getItem("wavy_auth_token")), "buyerA tidak punya sesi customer");
     await buyerA.goto(`${WEB}/id/admin/dashboard`);
     await buyerA.waitForURL(/\/id\/admin\/login$/, { timeout: 15000 });
-  });
-
-  await step("6. admin suspend EO -> EO langsung keluar dari dashboard", async () => {
-    await admin.goto(`${WEB}/id/admin/login`);
-    await admin.locator('input[type="email"]').fill(ADMIN.email);
-    await admin.locator('input[type="password"]').fill(ADMIN.password);
-    await admin.locator('button[type="submit"]').click();
-    await admin.waitForURL(/\/admin\/dashboard/, { timeout: 20000 });
-    // sesi admin terpisah: login admin tidak mengisi slot sesi customer/EO
-    expect(await admin.evaluate(() => localStorage.getItem("wavy_auth_token")) === null, "login admin mengisi sesi customer");
-    await admin.goto(`${WEB}/id/admin/login`);
-    await admin.waitForURL(/\/admin\/dashboard/, { timeout: 15000 });
-    const ao = msg.Admin.organizers;
-    await admin.goto(`${WEB}/id/admin/organizers`);
-    const row = admin.locator("tr", { hasText: EO.email });
-    await row.getByRole("button", { name: ao.suspend, exact: true }).click();
-    await admin.getByRole("alertdialog").getByRole("button", { name: ao.suspend, exact: true }).click();
-    await row.getByRole("button", { name: ao.activate, exact: true }).waitFor({ timeout: 10000 });
-    const [o] = await sql`SELECT status FROM organizers WHERE id = ${ctx.organizerId}`;
-    expect(o.status === "suspended", `status organizer ${o.status}`);
-    // token EO lama langsung tidak berlaku
-    const me = await api("/organizer/me", { token: ctx.eoToken });
-    expect(me.status === 403 && me.json.error?.code === "ORGANIZER_SUSPENDED", `/organizer/me -> ${me.status}`);
-    await eo.goto(`${WEB}/id/organizer/dashboard`);
-    await eo.waitForURL(/\/organizer\/login/, { timeout: 15000 });
-    await eo.waitForTimeout(1000);
-    expect(eo.url().includes("reason=suspended"), `URL EO setelah suspend: ${eo.url()}`);
-    await eo.getByText(msg.Studio.session.suspended).waitFor({ timeout: 5000 });
-  });
-
-  await step("6b. verifikasi organizer: login pending dijelaskan, admin setujui -> EO bisa masuk", async () => {
-    const pend = { email: `eo-pending-${RUN}@wavy.test`, password: "eo-pending-123", name: `EO Pending ${RUN}` };
-    await sql`INSERT INTO organizers (name, email, password, status, whatsapp, event_types, created_at)
-              VALUES (${pend.name}, ${pend.email}, crypt(${pend.password}, gen_salt('bf', 10)), 'pending_verification', '081234567890', 'Konser', now())`;
-    const eoLogin = async () => {
-      await eo.goto(`${WEB}/id/organizer/login`);
-      await eo.locator('input[type="email"]').fill(pend.email);
-      await eo.locator('input[type="password"]').fill(pend.password);
-      await eo.locator('button[type="submit"]').click();
-    };
-    await eoLogin();
-    await eo.getByText(msg.OrganizerLogin.pendingTitle).waitFor({ timeout: 10000 });
-
-    const v = msg.Admin.verification;
-    const r = msg.Admin.review;
-    await admin.goto(`${WEB}/id/admin/verification`);
-    // badge jumlah pending di sidebar
-    // badge jumlah pending di sidebar (teks sr-only)
-    await admin.getByText(v.badge.replace("{n}", ""), { exact: false }).first().waitFor({ state: "attached", timeout: 10000 });
-    const card = admin.locator("article", { hasText: pend.email });
-    await card.getByRole("button", { name: r.approve, exact: true }).click();
-    await admin.getByRole("alertdialog").getByRole("button", { name: r.approve, exact: true }).click();
-    await card.waitFor({ state: "detached", timeout: 10000 });
-    const [o] = await sql`SELECT status, reviewed_at FROM organizers WHERE email = ${pend.email}`;
-    expect(o.status === "active" && o.reviewed_at, `status ${o.status}`);
-    expect(o && (await waitFor(() => smtp.recipients.includes(pend.email))), "email persetujuan tidak terkirim ke EO");
-
-    await eoLogin();
-    await eo.waitForURL(/\/organizer\/dashboard/, { timeout: 20000 });
-    await eo.evaluate(() => localStorage.clear());
-  });
-
-  await step("6c. admin tolak dengan alasan -> alasan tampil di login EO", async () => {
-    const rej = { email: `eo-reject-${RUN}@wavy.test`, password: "eo-reject-123", name: `EO Tolak ${RUN}` };
-    const reason = "Tautan media sosial tidak bisa dibuka.";
-    await sql`INSERT INTO organizers (name, email, password, status, whatsapp, event_types, created_at)
-              VALUES (${rej.name}, ${rej.email}, crypt(${rej.password}, gen_salt('bf', 10)), 'pending_verification', '081234567890', 'Konser', now())`;
-    const [{ id }] = await sql`SELECT id FROM organizers WHERE email = ${rej.email}`;
-    const r = msg.Admin.review;
-    await admin.goto(`${WEB}/id/admin/organizers/${id}`);
-    await admin.getByRole("button", { name: r.reject, exact: true }).click();
-    const dialog = admin.getByRole("alertdialog");
-    // alasan kosong -> pesan per field, tidak terkirim
-    await dialog.getByRole("button", { name: r.reject, exact: true }).click();
-    await dialog.getByText(r.reasonTooShort).waitFor({ timeout: 5000 });
-    await dialog.locator("textarea").fill(reason);
-    await dialog.getByRole("button", { name: r.reject, exact: true }).click();
-    await admin.getByText(r.rejectedTitle).waitFor({ timeout: 10000 });
-    const [o] = await sql`SELECT status, rejection_reason FROM organizers WHERE id = ${id}`;
-    expect(o.status === "rejected" && o.rejection_reason === reason, `status ${o.status} / ${o.rejection_reason}`);
-    expect(await waitFor(() => smtp.recipients.includes(rej.email)), "email penolakan tidak terkirim ke EO");
-
-    await eo.goto(`${WEB}/id/organizer/login`);
-    await eo.locator('input[type="email"]').fill(rej.email);
-    await eo.locator('input[type="password"]').fill(rej.password);
-    await eo.locator('button[type="submit"]').click();
-    await eo.getByText(msg.OrganizerLogin.rejectedTitle).waitFor({ timeout: 10000 });
-    await eo.getByText(reason).waitFor({ timeout: 5000 });
+    for (const p of ["/id/organizer/login", "/id/organizer/dashboard", "/id/organizer-guide"]) {
+      const res = await guest.goto(`${WEB}${p}`);
+      expect(res.status() === 404, `${p} -> ${res.status()}, harusnya 404`);
+    }
+    const old = await api("/auth/organizer/login", { method: "POST", body: { email: "x@y.z", password: "x" } });
+    expect(old.status === 404, `POST /auth/organizer/login -> ${old.status}, harusnya 404`);
   });
 
   await step("7. backend mati -> frontend menampilkan error, bukan data palsu", async () => {

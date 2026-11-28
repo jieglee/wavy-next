@@ -5,13 +5,13 @@ terhadap backend + Postgres **lokal** `*_test`. Tidak pernah ke Neon.
 
 ## Langkah
 
-1. Backend (repo `wavy-backend`, branch `feat/organizer-api` atau lebih baru), DB lokal `wavy_test`
-   yang skemanya sudah dibangun oleh `bun test` (lihat TESTING.md di backend):
+1. Backend (repo `wavy-backend`, skema v2: `chore/seed-demo-v2` atau lebih baru), DB lokal `wavy_test`
+   yang skemanya sudah dibangun oleh `bun test` (`db/migrations/*.sql`):
 
    ```sh
    PORT=3002 DATABASE_URL=postgres://postgres:postgres@localhost:5432/wavy_test DATABASE_SSL=disable \
    SMTP_HOST=127.0.0.1 SMTP_PORT=2525 SMTP_USER=e2e SMTP_PASS=e2e SMTP_FROM=e2e@wavy.test \
-   JWT_SECRET=e2e-secret bun src/index.ts
+   JWT_SECRET=e2e-secret MIDTRANS_SERVER_KEY= bun src/index.ts
    ```
 
    Email OTP diterima sink SMTP palsu milik skrip (`smtp-sink.mjs`); kode OTP dibaca dari tabel `otp_codes`.
@@ -30,6 +30,10 @@ terhadap backend + Postgres **lokal** `*_test`. Tidak pernah ke Neon.
 
 Env opsional: `E2E_WEB`, `E2E_API`, `E2E_DB_URL` (wajib localhost + nama `*_test`), `E2E_SMTP_PORT`,
 `CHROMIUM_PATH`, `E2E_HEADED=1`.
+
+Skenario memakai dua role: **admin** (buat event, kategori, publish, verifikasi bayar, tutup/buka lagi
+penjualan, scan, dashboard) dan **customer** (email -> OTP -> isi nama untuk akun baru, ubah nama di `/me`,
+checkout, tiket QR). Juga dicek: halaman & endpoint EO lama 404, tidak melebar di 360px.
 
 Hasil per langkah tercetak di terminal dan disimpan di `e2e/artifacts/result.json`; screenshot
 kegagalan di `e2e/artifacts/fail-*.png`.
