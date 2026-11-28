@@ -1,7 +1,7 @@
 {
     "Metadata": {
         "title": "Wavy — One Platform. Every Concert. Every Moment.",
-        "description": "A concert ticket marketplace connecting Event Organizers with customers in one ecosystem."
+        "description": "A concert ticket platform: find concerts, buy tickets, and keep QR e-tickets in one app."
     },
     "EventCategories": {
         "title": "Event Categories",
@@ -125,12 +125,6 @@
             "subtitle": "For the first 1,000 tickets at every event",
             "ctaLabel": "Click here for more info"
         },
-        "slide2": {
-            "eyebrow": "For Event Organizers",
-            "title": "Only 1.5% per Ticket Sold",
-            "subtitle": "Including VAT, no hidden fees",
-            "ctaLabel": "Apply for partnership"
-        },
         "slide3": {
             "eyebrow": "New Feature",
             "title": "Smart Queue: Fair Ticket War",
@@ -152,7 +146,7 @@
         "slide6": {
             "eyebrow": "Wavy Wallet",
             "title": "All Tickets in One Hand",
-            "subtitle": "Even from different organizers",
+            "subtitle": "Every concert you buy on Wavy",
             "ctaLabel": "View QR Wallet feature"
         }
     },
@@ -195,9 +189,8 @@
             "INVALID_QUANTITY": "Invalid ticket quantity. Choose 1 to 4 tickets.",
             "VALIDATION_ERROR": "The data you sent is not valid. Please check your input.",
             "ORDER_NOT_PENDING": "This order is no longer waiting for payment.",
-            "PAYMENT_NOT_CONFIGURED": "Online payment isn't active yet. Please wait for the organizer to verify.",
-            "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly.",
-            "INVALID_STATUS_TRANSITION": "The organizer status has already changed. Reload the page and try again."
+            "PAYMENT_NOT_CONFIGURED": "Online payment isn't active yet. Please wait for the Wavy team to verify.",
+            "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly."
         }
     },
     "OrderStatus": {
@@ -270,7 +263,7 @@
         "oneCategoryHint": "One ticket category per transaction, up to 4 tickets.",
         "oneCategorySwitched": "Ticket category changed. Each transaction covers one category only.",
         "paymentNotice": "After your order is created, you can pay with Midtrans (sandbox) on the order page. Complete it within 15 minutes.",
-        "paymentNoticeManual": "After your order is created, the organizer verifies your payment manually. Complete it within 15 minutes.",
+        "paymentNoticeManual": "After your order is created, the Wavy team verifies your payment manually. Complete it within 15 minutes.",
         "created": "{count, plural, =1 {Order created, continue to payment} other {# orders created, continue to payment}}",
         "orderError": {
             "title": "Couldn't create your order",
@@ -837,7 +830,7 @@
         "updated": "Updated {date}",
         "howToBuy": {
             "title": "How to buy tickets",
-            "updated": "November 20, 2026",
+            "updated": "November 28, 2026",
             "intro": "Buying concert tickets on Wavy takes a few steps. All tickets are digital and live in your account.",
             "ctaText": "Ready to find a concert?",
             "ctaLabel": "Browse concerts",
@@ -865,7 +858,7 @@
                     "title": "Pay within 15 minutes",
                     "body": [
                         "Your tickets are held for 15 minutes. On the order page, click Pay now to pay with Midtrans (sandbox mode, no real money). If time runs out, the order expires and the quota is released.",
-                        "If online payment is not active, the organizer verifies your payment manually."
+                        "If online payment is not active, the Wavy team verifies your payment manually."
                     ]
                 },
                 {
@@ -878,7 +871,7 @@
         },
         "terms": {
             "title": "Terms & conditions",
-            "updated": "November 20, 2026",
+            "updated": "November 28, 2026",
             "intro": "Wavy is a school competency exam (UKK) project for a concert ticketing system. By using Wavy you agree to these terms.",
             "sections": [
                 {
@@ -908,16 +901,16 @@
                     ]
                 },
                 {
-                    "title": "Organizers",
+                    "title": "Events & tickets",
                     "body": [
-                        "Event details, schedules, and quotas are managed by organizers. Wavy admins can suspend organizers who break the rules."
+                        "Event details, schedules, ticket categories, and quotas are managed by the Wavy team. The Wavy team can change an event, close its sales, or reopen them."
                     ]
                 }
             ]
         },
         "privacy": {
             "title": "Privacy policy",
-            "updated": "November 20, 2026",
+            "updated": "November 28, 2026",
             "intro": "This page explains what data Wavy stores and why. Wavy is a school (UKK) project, not a commercial service.",
             "sections": [
                 {
@@ -929,7 +922,7 @@
                 {
                     "title": "How it is used",
                     "body": [
-                        "Your data is used to create orders and issue tickets, and is shown to the organizer of the event you bought for, for verification."
+                        "Your data is used to create orders and issue tickets, and is seen by the Wavy team to verify payments and check tickets at the gate."
                     ]
                 },
                 {
@@ -954,7 +947,7 @@
         },
         "about": {
             "title": "About Wavy",
-            "updated": "November 20, 2026",
+            "updated": "November 28, 2026",
             "intro": "Wavy is a concert ticketing platform built as a school competency exam (UKK) project.",
             "ctaText": "See concerts on sale.",
             "ctaLabel": "Browse concerts",
@@ -962,13 +955,13 @@
                 {
                     "title": "What it does",
                     "body": [
-                        "Customers buy tickets and keep QR e-tickets. Organizers create events, set ticket categories and quotas, verify payments, and scan tickets at the gate. Admins manage organizer accounts."
+                        "Customers buy tickets and keep QR e-tickets. The Wavy team creates events, sets ticket categories and quotas, verifies payments, and scans tickets at the gate."
                     ]
                 },
                 {
                     "title": "Rules the system enforces",
                     "body": [
-                        "Sales only open within the window set by the organizer, quotas cannot be oversold, and orders unpaid after 15 minutes are released."
+                        "Sales only open within the window set by the Wavy team, quotas cannot be oversold, and orders unpaid after 15 minutes or cancelled are released."
                     ]
                 },
                 {
