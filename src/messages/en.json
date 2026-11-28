@@ -74,7 +74,18 @@
         "resendButton": "Resend code",
         "verifying": "Verifying...",
         "signIn": "Sign In",
-        "loginSuccess": "Signed in! Welcome back."
+        "loginSuccess": "Signed in! Welcome back.",
+        "back": "Back",
+        "nameTitle": "One more step",
+        "namePrompt": "Your account is ready. Enter the name shown on your profile and orders.",
+        "nameLabel": "Full name",
+        "namePlaceholder": "Your name",
+        "nameSubmit": "Save & continue",
+        "saving": "Saving...",
+        "nameTooShort": "Name must be at least 2 characters.",
+        "nameTooLong": "Name must be at most {max} characters.",
+        "welcomeNew": "Welcome to Wavy, {name}!",
+        "otpDigit": "OTP digit {n}"
     },
     "FeaturedEvents": {
         "title": "Exciting Events For You",
@@ -247,7 +258,13 @@
             "title": "Notifications",
             "empty": "No notifications.",
             "unread": "Unread"
-        }
+        },
+        "editName": "Edit name",
+        "nameLabel": "Name",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "nameSaved": "Name updated."
     },
     "Checkout": {
         "oneCategoryHint": "One ticket category per transaction, up to 4 tickets.",
