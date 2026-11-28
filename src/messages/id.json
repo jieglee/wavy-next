@@ -441,13 +441,24 @@
         "checkStatus": "Cek status pembayaran",
         "openTickets": "Buka tiket saya",
         "paymentOnline": "Bayar lewat Midtrans (mode sandbox untuk proyek UKK): transfer bank/VA, QRIS, atau e-wallet. Status pesanan diperbarui setelah pembayaran berhasil.",
-        "paymentManual": "Pembayaran online belum aktif. Pembayaran diverifikasi manual oleh penyelenggara, lalu tiket terbit otomatis.",
-        "manualFallback": "Ada kendala saat membayar? Penyelenggara tetap bisa memverifikasi pembayaran kamu secara manual.",
+        "paymentManual": "Pembayaran online belum aktif. Pembayaran diverifikasi manual oleh tim Wavy, lalu tiket terbit otomatis.",
+        "manualFallback": "Ada kendala saat membayar? Tim Wavy tetap bisa memverifikasi pembayaran kamu secara manual.",
         "pay": {
             "cta": "Bayar sekarang",
             "processing": "Membuka pembayaran...",
             "failed": "Pembayaran gagal. Coba lagi atau pilih metode lain.",
             "snapUnavailable": "Halaman pembayaran Midtrans tidak bisa dimuat. Periksa koneksi lalu coba lagi."
+        },
+        "cancelledTitle": "Pesanan dibatalkan",
+        "cancelledBody": "Kamu membatalkan pesanan ini, jadi tiketnya dilepas kembali ke kuota. Silakan pesan ulang jika masih tersedia.",
+        "cancel": {
+            "cta": "Batalkan pesanan",
+            "confirmTitle": "Batalkan pesanan ini?",
+            "confirmBody": "Tiket dilepas kembali ke kuota dan pesanan tidak bisa dibayar lagi. Tindakan ini tidak bisa diurungkan.",
+            "confirm": "Ya, batalkan",
+            "keep": "Tidak, simpan pesanan",
+            "cancelling": "Membatalkan...",
+            "done": "Pesanan dibatalkan."
         }
     },
     "Tickets": {

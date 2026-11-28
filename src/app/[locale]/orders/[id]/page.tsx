@@ -15,6 +15,7 @@ import Footer from "@/components/landing/footer";
 import { apiGet, getAuthToken } from "@/lib/api";
 import { MIDTRANS_ENABLED } from "@/lib/midtrans";
 import { PayNowButton } from "@/components/orders/pay-now-button";
+import { CancelOrderButton } from "@/components/orders/cancel-order-button";
 import { useErrorMessage } from "@/lib/error-message";
 import { useFormatter, useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
@@ -83,6 +84,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const isPaid = status === "paid";
   const isPending = status === "pending_payment";
   const isExpired = status === "expired";
+  const isCancelled = status === "cancelled";
 
   return (
     <div className="min-h-screen bg-surface">
@@ -131,6 +133,23 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   {tOrder("expiredTitle")}
                 </div>
                 <p className="text-xs text-muted-foreground">{tOrder("expiredBody")}</p>
+                <Link
+                  href={`/concerts/${order.event_id}`}
+                  className="inline-flex rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:brightness-110"
+                >
+                  {tOrder("orderAgain")}
+                </Link>
+              </div>
+            )}
+
+            {/* Dibatalkan customer */}
+            {isCancelled && (
+              <div role="status" className="mt-6 space-y-2 rounded-2xl border border-border bg-muted p-4">
+                <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  {tOrder("cancelledTitle")}
+                </div>
+                <p className="text-xs text-muted-foreground">{tOrder("cancelledBody")}</p>
                 <Link
                   href={`/concerts/${order.event_id}`}
                   className="inline-flex rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:brightness-110"
@@ -216,6 +235,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   </p>
                 )}
                 {MIDTRANS_ENABLED && <p className="text-[11px] text-muted-foreground">{tOrder("manualFallback")}</p>}
+
+                <div className="border-t border-border pt-4">
+                  <CancelOrderButton orderId={order.id} onSettled={orderRes.reload} />
+                </div>
               </div>
             )}
 

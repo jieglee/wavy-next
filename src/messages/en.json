@@ -441,13 +441,24 @@
         "checkStatus": "Check payment status",
         "openTickets": "Open my tickets",
         "paymentOnline": "Pay with Midtrans (sandbox mode for this school project): bank transfer/VA, QRIS, or e-wallet. Your order updates once the payment succeeds.",
-        "paymentManual": "Online payment isn't active yet. The organizer verifies your payment manually, then your tickets are issued automatically.",
-        "manualFallback": "Trouble paying? The organizer can still verify your payment manually.",
+        "paymentManual": "Online payment is not active yet. Payments are verified manually by the Wavy team, then tickets are issued automatically.",
+        "manualFallback": "Trouble paying? The Wavy team can still verify your payment manually.",
         "pay": {
             "cta": "Pay now",
             "processing": "Opening payment...",
             "failed": "Payment failed. Try again or choose another method.",
             "snapUnavailable": "Couldn't load the Midtrans payment page. Check your connection and try again."
+        },
+        "cancelledTitle": "Order cancelled",
+        "cancelledBody": "You cancelled this order, so its tickets went back to the quota. Order again if they are still available.",
+        "cancel": {
+            "cta": "Cancel order",
+            "confirmTitle": "Cancel this order?",
+            "confirmBody": "The tickets go back to the quota and the order can no longer be paid. This cannot be undone.",
+            "confirm": "Yes, cancel",
+            "keep": "No, keep order",
+            "cancelling": "Cancelling...",
+            "done": "Order cancelled."
         }
     },
     "Tickets": {

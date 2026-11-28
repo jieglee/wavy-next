@@ -290,6 +290,36 @@ async function main() {
     expect(c.n === 1, `jumlah order aktif ${c.n}, harusnya 1`);
   });
 
+  await step("3b. customer B batalkan order pending -> cancelled, kuota langsung kembali; admin melihat cancelled", async () => {
+    const regulerId = ctx.categoryIds[1];
+    const before = await api(`/concerts/${ctx.eventId}`);
+    const remainingBefore = before.json.ticket_categories.find((c) => c.id === regulerId).remaining;
+    const orderId = await checkout(buyerB, ctx.eventId, "Reguler", 2);
+    expect(orderId, "order Reguler tidak dibuat");
+    const held = await api(`/concerts/${ctx.eventId}`);
+    expect(held.json.ticket_categories.find((c) => c.id === regulerId).remaining === remainingBefore - 2, "kuota tidak tertahan");
+
+    const c = msg.OrderDetail.cancel;
+    await buyerB.getByRole("button", { name: c.cta }).click();
+    const dialog = buyerB.getByRole("alertdialog");
+    await dialog.getByText(c.confirmTitle).waitFor({ timeout: 5000 });
+    // "Tidak" = order tetap pending
+    await dialog.getByRole("button", { name: c.keep }).click();
+    expect((await sql`SELECT status FROM orders WHERE id = ${orderId}`)[0].status === "pending_payment", "order berubah padahal batal diurungkan");
+    await buyerB.getByRole("button", { name: c.cta }).click();
+    await buyerB.getByRole("alertdialog").getByRole("button", { name: c.confirm }).click();
+    await buyerB.getByText(msg.OrderDetail.cancelledTitle).waitFor({ timeout: 10000 });
+    const [o] = await sql`SELECT status FROM orders WHERE id = ${orderId}`;
+    expect(o.status === "cancelled", `status ${o.status}`);
+    const after = await api(`/concerts/${ctx.eventId}`);
+    expect(after.json.ticket_categories.find((c) => c.id === regulerId).remaining === remainingBefore, "kuota tidak kembali setelah batal");
+    expect((await overflowX(buyerB)) <= 0, "detail order melebar");
+
+    await admin.goto(`${WEB}/id/admin/orders`);
+    await admin.getByRole("tab", { name: msg.OrderStatus.cancelled }).click();
+    await admin.getByText(`#${orderId} ·`).first().waitFor({ timeout: 10000 });
+  });
+
   await step("4. admin close sales -> order ditolak; buka lagi -> terbuka tanpa notifikasi ulang", async () => {
     await admin.goto(`${WEB}/id/admin/events/${ctx.eventId}`);
     await admin.getByRole("button", { name: msg.Studio.detail.close }).click();
