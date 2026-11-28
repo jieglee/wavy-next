@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { apiGet } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states/async-states";
@@ -30,13 +30,16 @@ interface FeaturedPicksProps {
     className?: string;
 }
 
-function toPick(c: Concert): PickEvent {
+// tanggal mengikuti bahasa aktif, zona WIB
+function toPick(c: Concert, locale: string): PickEvent {
     const d = new Date(c.date);
     const valid = !isNaN(d.getTime());
-    const day = valid ? String(d.getDate()).padStart(2, "0") : "--";
-    const month = valid ? d.toLocaleString("en-US", { month: "short" }).toUpperCase() : "---";
+    const tag = locale === "en" ? "en-GB" : "id-ID";
+    const tz = { timeZone: "Asia/Jakarta" } as const;
+    const day = valid ? d.toLocaleDateString(tag, { ...tz, day: "2-digit" }) : "--";
+    const month = valid ? d.toLocaleDateString(tag, { ...tz, month: "short" }).replace(".", "").toUpperCase() : "---";
     const dateStr = valid
-        ? d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })
+        ? d.toLocaleDateString(tag, { ...tz, day: "2-digit", month: "short", year: "numeric" })
         : c.date;
     return {
         id: String(c.id),
@@ -46,17 +49,17 @@ function toPick(c: Concert): PickEvent {
         meta: `${dateStr} • ${c.venue}`,
         image: c.poster_url || "",
         href: `/concerts/${c.id}`,
-        weekday: valid ? d.toLocaleDateString("id-ID", { weekday: "short" }).toUpperCase().replace(".", "") : "",
+        weekday: valid ? d.toLocaleDateString(tag, { ...tz, weekday: "short" }).toUpperCase().replace(".", "") : "",
         ts: d.getTime(),
     };
 }
 
-async function loadPicks(): Promise<PickEvent[]> {
+async function loadPicks(locale: string): Promise<PickEvent[]> {
     const data = await apiGet<unknown>("/concerts");
     const list: Concert[] = Array.isArray(data)
         ? (data as Concert[])
         : ((data as Record<string, unknown>)?.concerts as Concert[]) ?? ((data as Record<string, unknown>)?.data as Concert[]) ?? [];
-    return list.map(toPick);
+    return list.map((c) => toPick(c, locale));
 }
 
 const WEEK_MS = 7 * 24 * 3600 * 1000;
@@ -72,10 +75,11 @@ export default function FeaturedPicks({
     className = "",
 }: FeaturedPicksProps) {
     const t = useTranslations("FeaturedPicks");
+    const locale = useLocale();
     const fromProps = !!(popularProp && thisWeekProp);
     // data asli saja; kalau sedikit ya tampil sedikit (tanpa mengisi dengan event karangan)
     const picksRes = useApiResource(fromProps ? "featured-picks-props" : "featured-picks", () =>
-        fromProps ? Promise.resolve([...(popularProp ?? []), ...(thisWeekProp ?? [])]) : loadPicks()
+        fromProps ? Promise.resolve([...(popularProp ?? []), ...(thisWeekProp ?? [])]) : loadPicks(locale)
     );
     const all = useMemo(() => picksRes.data ?? [], [picksRes.data]);
     const [now] = useState(() => Date.now());
@@ -133,10 +137,10 @@ export default function FeaturedPicks({
                             <path d="M0 0h1024v1024H0z" fill="none" />
                             <path fill="currentColor" d="M128 384v512h768V192H768v32a32 32 0 1 1-64 0v-32H320v32a32 32 0 0 1-64 0v-32H128v128h768v64zm192-256h384V96a32 32 0 1 1 64 0v32h160a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h160V96a32 32 0 0 1 64 0zm-32 384h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64m192-192h64a32 32 0 1 1 0 64h-64a32 32 0 0 1 0-64m0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64" />
                         </svg>
-                        Event4u
+                        {t("title")}
                     </h3>
                     <button onClick={() => setShowAll(true)} className="text-sm font-medium text-primary hover:underline">
-                        Lebih Banyak Event ›
+                        {t("more")} ›
                     </button>
                 </div>
 
@@ -150,7 +154,7 @@ export default function FeaturedPicks({
                                 : "border-border bg-white text-muted-foreground hover:border-input"
                                 }`}
                         >
-                            {key === "popular" ? "🔥 Populer" : "🏆 Minggu ini"}
+                            {key === "popular" ? `🔥 ${t("tabPopular")}` : `🏆 ${t("tabThisWeek")}`}
                         </button>
                     ))}
                 </div>
@@ -248,16 +252,16 @@ export default function FeaturedPicks({
             opacity: 1;
             transform: translateY(0);
           }
-        }F
+        }
       `}</style>
 
             {showAll && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <button aria-label="Close" onClick={() => setShowAll(false)} className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+                    <button aria-label={t("close")} onClick={() => setShowAll(false)} className="absolute inset-0 bg-foreground/50 backdrop-blur-[2px]" />
                     <div className="relative flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
                         <div className="flex items-center justify-between border-b border-border px-6 py-4">
-                            <h4 className="text-base font-bold text-foreground">Semua Event</h4>
-                            <button onClick={() => setShowAll(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-border">✕</button>
+                            <h4 className="text-base font-bold text-foreground">{t("allTitle")}</h4>
+                            <button onClick={() => setShowAll(false)} aria-label={t("close")} className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-border">✕</button>
                         </div>
                         <div className="overflow-y-auto px-6 py-2">
                             {(() => {

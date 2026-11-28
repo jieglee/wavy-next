@@ -44,7 +44,12 @@
         "emptyTitle": "No concerts found",
         "emptyBody": "Try a different search keyword or category filter.",
         "emptyCountry": "No concerts in {country} yet.",
-        "seeAll": "See all events"
+        "seeAll": "See all events",
+        "backHome": "Back to Home",
+        "title": "Explore All Concerts",
+        "subtitle": "Find your favorite concerts from top artists around the world & Indonesia",
+        "countryChip": "Explore: {country}",
+        "clearCountry": "Clear country filter"
     },
     "Navbar": {
         "kategori": "Category",
@@ -140,7 +145,22 @@
             "title": "All Tickets in One Hand",
             "subtitle": "Every concert you buy on Wavy",
             "ctaLabel": "View QR Wallet feature"
-        }
+        },
+        "onSale": {
+            "eyebrow": "Ticket On Sale Now",
+            "title": "Explore curated concerts",
+            "subtitle": "Secure your tickets before they sell out",
+            "ctaLabel": "See concerts",
+            "pill": "Tickets for your idol's concert are on sale",
+            "pillCTA": "Grab yours now!"
+        },
+        "bts": {
+            "eyebrow": "Your favorite event is here: BTS",
+            "pill": "ARMY, BTS is back",
+            "pillCTA": "Secure your seat!"
+        },
+        "defaultPill": "Who misses seeing {name}?",
+        "defaultPillCTA": "Click to get your tickets"
     },
     "DiscoverCountries": {
         "title": "Explore Events Around the World"
@@ -497,12 +517,22 @@
     "FeaturedPicks": {
         "loading": "Loading events...",
         "empty": "No events available yet.",
-        "emptyThisWeek": "No events in the next 7 days."
+        "emptyThisWeek": "No events in the next 7 days.",
+        "title": "Event4u",
+        "more": "More Events",
+        "tabPopular": "Popular",
+        "tabThisWeek": "This week",
+        "allTitle": "All Events",
+        "close": "Close"
     },
     "Search": {
         "loading": "Loading popular events...",
         "retry": "Try again",
-        "noEvents": "No events yet."
+        "noEvents": "No events yet.",
+        "trending": "Trending Searches",
+        "noTrending": "No results for \"{q}\"",
+        "popular": "Popular Events",
+        "placeholderPrefix": "Search events"
     },
     "Sales": {
         "badge": {
@@ -1010,5 +1040,8 @@
             "id": "Bahasa Indonesia",
             "en": "English"
         }
+    },
+    "Common": {
+        "scrollTop": "Back to top"
     }
 }

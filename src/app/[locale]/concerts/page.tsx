@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Ticket, ArrowLeft, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   EVENT_CATEGORIES,
@@ -35,12 +35,13 @@ function extractConcerts(data: unknown): Concert[] {
   return [];
 }
 
-const COUNTRY_LABELS: Record<string, string> = {
-  id: "Indonesia",
-  sg: "Singapore",
-  my: "Malaysia",
-  th: "Thailand",
-  kr: "South Korea",
+// nama negara dari Intl sesuai bahasa aktif (id: "Korea Selatan", en: "South Korea")
+const countryName = (code: string, locale: string) => {
+  try {
+    return new Intl.DisplayNames([locale], { type: "region" }).of(code.toUpperCase()) ?? code;
+  } catch {
+    return code;
+  }
 };
 
 const COUNTRY_KEYWORDS: Record<string, string[]> = {
@@ -61,6 +62,7 @@ function byCountry(c: Concert, country: string): boolean {
 function ConcertsPageInner() {
   const t = useTranslations("ConcertsExplore");
   const tc = useTranslations("EventCategories");
+  const locale = useLocale();
   const searchParams = useSearchParams();
 
   // URL = satu-satunya sumber state filter, jadi modal Category / search di navbar langsung
@@ -114,14 +116,12 @@ function ConcertsPageInner() {
               className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground/80 hover:text-foreground"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Kembali ke Beranda
+              {t("backHome")}
             </Link>
             <h1 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Jelajahi Semua Konser
+              {t("title")}
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Temukan konser musik terfavorit dari musisi top dunia & Indonesia
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
           </div>
         </div>
 
@@ -171,13 +171,13 @@ function ConcertsPageInner() {
             {country && (
               <>
                 <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary">
-                  Explore: {COUNTRY_LABELS[country] ?? country}
+                  {t("countryChip", { country: countryName(country, locale) })}
                 </span>
                 <button
                   onClick={() => setFilters({ country: "" })}
                   className="rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground hover:border-foreground/20 hover:text-foreground"
                 >
-                  Hapus filter negara
+                  {t("clearCountry")}
                 </button>
               </>
             )}
@@ -220,7 +220,7 @@ function ConcertsPageInner() {
                 : selectedCat
                   ? t("emptyCategoryBody")
                   : country
-                    ? t("emptyCountry", { country: COUNTRY_LABELS[country] ?? country })
+                    ? t("emptyCountry", { country: countryName(country, locale) })
                     : t("emptyBody")}
             </p>
             <button

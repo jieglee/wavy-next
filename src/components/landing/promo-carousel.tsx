@@ -64,27 +64,27 @@ export default function PromoCarousel() {
     () => [
       {
         id: "ticket-onsale",
-        eyebrow: "Ticket On Sale Now",
-        title: "Jelajahi konser terkurasi",
-        subtitle: "Amankan kursimu sebelum kehabisan",
-        ctaLabel: "Lihat konser",
+        eyebrow: t("onSale.eyebrow"),
+        title: t("onSale.title"),
+        subtitle: t("onSale.subtitle"),
+        ctaLabel: t("onSale.ctaLabel"),
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/ticket-on-sale-now.png",
-        pill: "Tiket konser idola udah open sale ",
-        pillCTA: "Grab yours now!",
+        pill: `${t("onSale.pill")} `,
+        pillCTA: t("onSale.pillCTA"),
       },
       {
         id: "bts-banner",
-        eyebrow: "Your favorite event is here BTS",
-        title: "BTS",
+        eyebrow: t("bts.eyebrow"),
+        title: "BTS", // i18n-ignore nama artis
         subtitle: "",
-        ctaLabel: "Lihat konser",
+        ctaLabel: t("onSale.ctaLabel"),
         ctaHref: "/concerts",
         gradient: slideGradients[0],
         image: "/images/banner/your-favorite-bts.png",
-        pill: "ARMY, BTS kembali ",
-        pillCTA: "Secure your seat!",
+        pill: `${t("bts.pill")} `,
+        pillCTA: t("bts.pillCTA"),
       },
       {
         id: "promo-1",
@@ -173,8 +173,8 @@ export default function PromoCarousel() {
                   className="absolute bottom-3 left-1/2 z-10 flex w-[70%] max-w-xl -translate-x-1/2 items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/85 px-4 py-2.5 text-center shadow-lg backdrop-blur-md sm:bottom-6 sm:px-6 sm:py-3"
                 >
                   <p className="text-xs font-medium leading-snug text-foreground/85 sm:text-sm">
-                    {slide.pill ?? `Who misses seeing ${slide.title || slide.eyebrow}? `}
-                    <span className="font-semibold text-primary">{slide.pillCTA ?? "Click to get your tickets"}</span>
+                    {slide.pill ?? `${t("defaultPill", { name: slide.title || slide.eyebrow })} `}
+                    <span className="font-semibold text-primary">{slide.pillCTA ?? t("defaultPillCTA")}</span>
                   </p>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-primary">
                     <path d="M0 0h24v24H0z" fill="none" />
