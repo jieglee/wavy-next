@@ -65,7 +65,11 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
                     type="button"
                     disabled={busy !== null}
                     className={btn.primary}
-                    onClick={() => run("publish", () => adminPost(`/admin/events/${ev.id}/publish`), t("published"))}
+                    onClick={() =>
+                      ev.status === "closed"
+                        ? run("publish", () => adminPost(`/admin/events/${ev.id}/reopen-sales`), t("reopened"))
+                        : run("publish", () => adminPost(`/admin/events/${ev.id}/publish`), t("published"))
+                    }
                   >
                     {ev.status === "closed" ? t("reopen") : t("publish")}
                   </button>
