@@ -97,19 +97,6 @@
         "loading": "Loading events...",
         "empty": "No events available yet."
     },
-    "AppNav": {
-        "browse": "Browse Concerts",
-        "searchPlaceholder": "Search your favorite concerts...",
-        "myTickets": "My Tickets",
-        "profileLevel": "Profile & Level",
-        "logout": "Log Out"
-    },
-    "AppFooter": {
-        "browse": "Browse Concerts",
-        "myTickets": "My Tickets",
-        "profile": "Profile & Level",
-        "rights": "All rights reserved."
-    },
     "Home": {
         "greeting": "Hi, {name}!",
         "greetingFallback": "Hi there!",

@@ -239,13 +239,6 @@ export default function ConcertDetailPage({ params }: { params: Promise<{ id: st
                 onFollow={handleFollowArtist}
               />
 
-              {/* <ConcertReviews
-                reviews={concert.reviews}
-                avgRating={concert.avg_rating}
-                reviewCount={concert.review_count}
-                onWriteReview={() => setReviewModal(true)}
-              /> */}
-
             </div>
           </div>
 

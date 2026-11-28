@@ -97,19 +97,6 @@
         "loading": "Memuat event...",
         "empty": "Belum ada event yang tersedia."
     },
-    "AppNav": {
-        "browse": "Jelajah Konser",
-        "searchPlaceholder": "Cari konser favoritmu...",
-        "myTickets": "Tiket Saya",
-        "profileLevel": "Profil & Level",
-        "logout": "Keluar"
-    },
-    "AppFooter": {
-        "browse": "Jelajah Konser",
-        "myTickets": "Tiket Saya",
-        "profile": "Profil & Level",
-        "rights": "Hak cipta dilindungi."
-    },
     "Home": {
         "greeting": "Halo, {name}!",
         "greetingFallback": "Halo!",
