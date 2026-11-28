@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { Link, useRouter } from "@/i18n/navigation";
-import { apiGet, apiPost, apiPut } from "@/lib/api";
-import { fromWibInput, toWibInput, type StudioArtist, type StudioEvent } from "@/lib/organizer";
+import { adminGet, adminPost, adminPut } from "@/lib/admin-session";
+import { fromWibInput, toWibInput, type StudioArtist, type StudioEvent } from "@/lib/backoffice";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken } from "@/hooks/use-auth-session";
-import { useStudioError } from "@/hooks/use-studio-error";
+import { useAdminSession } from "@/hooks/use-admin-session";
+import { useAdminError } from "@/hooks/use-admin-error";
 import ConcertCard from "@/components/concerts/concert-card";
 import { ErrorState, LoadingState } from "@/components/states/async-states";
-import { btn, inputCls, labelCls } from "@/components/studio/studio-ui";
+import { btn, inputCls, labelCls } from "@/components/admin/admin-ui";
 
 type FormState = {
   title: string;
@@ -43,9 +43,9 @@ const CATEGORY_SUGGESTIONS = ["Music", "Festival", "Concert", "Jazz", "K-Pop", "
 export function EventForm({ event }: { event?: StudioEvent }) {
   const t = useTranslations("Studio.form");
   const router = useRouter();
-  const studioError = useStudioError();
-  const authed = !!useAuthToken();
-  const artists = useApiResource(authed ? "studio-artists" : null, () => apiGet<StudioArtist[]>("/organizer/artists"));
+  const adminError = useAdminError();
+  const authed = useAdminSession().ready;
+  const artists = useApiResource(authed ? "studio-artists" : null, () => adminGet<StudioArtist[]>("/admin/artists"));
   const [form, setForm] = useState<FormState>(() => fromEvent(event));
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -81,16 +81,16 @@ export function EventForm({ event }: { event?: StudioEvent }) {
     };
     try {
       if (event) {
-        await apiPut<StudioEvent>(`/organizer/events/${event.id}`, payload);
+        await adminPut<StudioEvent>(`/admin/events/${event.id}`, payload);
         toast.success(t("updated"));
-        router.push(`/organizer/events/${event.id}`);
+        router.push(`/admin/events/${event.id}`);
       } else {
-        const created = await apiPost<StudioEvent>("/organizer/events", payload);
+        const created = await adminPost<StudioEvent>("/admin/events", payload);
         toast.success(t("created"));
-        router.push(`/organizer/events/${created.id}`);
+        router.push(`/admin/events/${created.id}`);
       }
     } catch (err) {
-      setFormError(studioError(err));
+      setFormError(adminError(err));
     } finally {
       setSubmitting(false);
     }
@@ -122,7 +122,7 @@ export function EventForm({ event }: { event?: StudioEvent }) {
             ) : (
               <p className="rounded-lg border border-dashed border-border px-3 py-2 text-sm text-muted-foreground">
                 {t("noArtist")}{" "}
-                <Link href="/organizer/artists" className="font-semibold text-primary hover:underline">
+                <Link href="/admin/artists" className="font-semibold text-primary hover:underline">
                   {t("addArtist")}
                 </Link>
               </p>
@@ -165,7 +165,7 @@ export function EventForm({ event }: { event?: StudioEvent }) {
 
         <Section title={t("sectionTickets")} hint={event ? t("ticketsOnDetail") : t("ticketsAfterSave")}>
           {event && (
-            <Link href={`/organizer/events/${event.id}`} className={btn.outline}>
+            <Link href={`/admin/events/${event.id}`} className={btn.outline}>
               {t("manageTickets")}
             </Link>
           )}
@@ -178,7 +178,7 @@ export function EventForm({ event }: { event?: StudioEvent }) {
         )}
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Link href={event ? `/organizer/events/${event.id}` : "/organizer/events"} className={btn.outline}>
+          <Link href={event ? `/admin/events/${event.id}` : "/admin/events"} className={btn.outline}>
             {t("cancel")}
           </Link>
           <button type="submit" disabled={submitting} className={btn.primary}>

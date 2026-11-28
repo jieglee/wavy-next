@@ -1,9 +1,10 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import SalesBadge from "@/components/concerts/sales-badge";
-import type { EventStatus } from "@/lib/organizer";
+import type { EventStatus } from "@/lib/backoffice";
 import type { SalesStatus } from "@/types/type";
 
 const eventTone: Record<EventStatus, string> = {
@@ -88,3 +89,27 @@ export const inputCls =
   "w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-ring/30";
 
 export const labelCls = "mb-1.5 block font-mono text-[11px] font-medium uppercase tracking-widest text-muted-foreground";
+
+/** Judul halaman portal admin + aksi di kanan (DESIGN §4). */
+export function AdminPageHeader({
+  title,
+  description,
+  actions,
+  back,
+}: {
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+  back?: ReactNode;
+}) {
+  return (
+    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        {back}
+        <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{title}</h1>
+        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </div>
+  );
+}

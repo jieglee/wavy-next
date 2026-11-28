@@ -4,17 +4,17 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { Check, RotateCcw, X } from "lucide-react";
-import { apiGet, apiPost } from "@/lib/api";
+import { adminGet, adminPost } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/price";
-import { formatWib, toNumber, type StudioOrder, type StudioOrderDetail } from "@/lib/organizer";
+import { formatWib, toNumber, type StudioOrder, type StudioOrderDetail } from "@/lib/backoffice";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken } from "@/hooks/use-auth-session";
-import { useStudioError } from "@/hooks/use-studio-error";
+import { useAdminSession } from "@/hooks/use-admin-session";
+import { useAdminError } from "@/hooks/use-admin-error";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
 import { OrderStatusBadge } from "@/components/orders/order-status-badge";
-import { StudioPageHeader } from "@/components/studio/studio-shell";
-import { btn, labelCls } from "@/components/studio/studio-ui";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { btn, labelCls } from "@/components/admin/admin-ui";
 
 const FILTERS = ["pending_payment", "paid", "expired", "rejected", "refunded", "all"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -24,15 +24,15 @@ export default function StudioOrdersPage() {
   const t = useTranslations("Studio.orders");
   const tStatus = useTranslations("OrderStatus");
   const locale = useLocale();
-  const authed = !!useAuthToken();
+  const authed = useAdminSession().ready;
   const [filter, setFilter] = useState<Filter>("pending_payment");
   const [selected, setSelected] = useState<number | null>(null);
-  const path = filter === "all" ? "/organizer/orders" : `/organizer/orders?status=${filter}`;
-  const orders = useApiResource(authed ? path : null, () => apiGet<StudioOrder[]>(path));
+  const path = filter === "all" ? "/admin/orders" : `/admin/orders?status=${filter}`;
+  const orders = useApiResource(authed ? path : null, () => adminGet<StudioOrder[]>(path));
 
   return (
     <>
-      <StudioPageHeader title={t("title")} description={t("subtitle")} />
+      <AdminPageHeader title={t("title")} description={t("subtitle")} />
 
       <div role="tablist" aria-label={t("filterLabel")} className="-mx-4 mb-4 flex gap-1 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
         {FILTERS.map((f) => (
@@ -115,8 +115,8 @@ export default function StudioOrdersPage() {
 function OrderPanel({ id, onClose, onChanged }: { id: number; onClose: () => void; onChanged: () => void }) {
   const t = useTranslations("Studio.orders");
   const locale = useLocale();
-  const studioError = useStudioError();
-  const detail = useApiResource(`studio-order-${id}`, () => apiGet<StudioOrderDetail>(`/organizer/orders/${id}`));
+  const adminError = useAdminError();
+  const detail = useApiResource(`studio-order-${id}`, () => adminGet<StudioOrderDetail>(`/admin/orders/${id}`));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,12 +125,12 @@ function OrderPanel({ id, onClose, onChanged }: { id: number; onClose: () => voi
     setBusy(true);
     setError(null);
     try {
-      await apiPost(path, body);
+      await adminPost(path, body);
       toast.success(success);
       detail.reload();
       onChanged();
     } catch (err) {
-      setError(studioError(err));
+      setError(adminError(err));
       detail.reload();
     } finally {
       setBusy(false);
@@ -208,7 +208,7 @@ function OrderPanel({ id, onClose, onChanged }: { id: number; onClose: () => voi
                     type="button"
                     disabled={busy}
                     className={btn.danger}
-                    onClick={() => act(`/organizer/orders/${o.id}/verify`, { approve: false }, t("rejected"), t("confirmReject", { id: o.id }))}
+                    onClick={() => act(`/admin/orders/${o.id}/verify`, { approve: false }, t("rejected"), t("confirmReject", { id: o.id }))}
                   >
                     <X className="h-4 w-4" />
                     {t("reject")}
@@ -217,7 +217,7 @@ function OrderPanel({ id, onClose, onChanged }: { id: number; onClose: () => voi
                     type="button"
                     disabled={busy}
                     className={btn.primary}
-                    onClick={() => act(`/organizer/orders/${o.id}/verify`, { approve: true }, t("approved"), t("confirmApprove", { id: o.id }))}
+                    onClick={() => act(`/admin/orders/${o.id}/verify`, { approve: true }, t("approved"), t("confirmApprove", { id: o.id }))}
                   >
                     <Check className="h-4 w-4" />
                     {t("approve")}
@@ -229,7 +229,7 @@ function OrderPanel({ id, onClose, onChanged }: { id: number; onClose: () => voi
                   type="button"
                   disabled={busy}
                   className={`${btn.danger} w-full`}
-                  onClick={() => act(`/organizer/orders/${o.id}/refund`, undefined, t("refunded"), t("confirmRefund", { id: o.id }))}
+                  onClick={() => act(`/admin/orders/${o.id}/refund`, undefined, t("refunded"), t("confirmRefund", { id: o.id }))}
                 >
                   <RotateCcw className="h-4 w-4" />
                   {t("refund")}

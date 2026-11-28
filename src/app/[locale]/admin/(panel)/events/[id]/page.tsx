@@ -5,15 +5,15 @@ import { useLocale, useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
-import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api";
+import { adminDelete, adminGet, adminPost, adminPut } from "@/lib/admin-session";
 import { formatIDR } from "@/lib/price";
-import { formatWib, toNumber, type StudioCategory, type StudioEventDetail } from "@/lib/organizer";
+import { formatWib, toNumber, type StudioCategory, type StudioEventDetail } from "@/lib/backoffice";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken } from "@/hooks/use-auth-session";
-import { useStudioError } from "@/hooks/use-studio-error";
+import { useAdminSession } from "@/hooks/use-admin-session";
+import { useAdminError } from "@/hooks/use-admin-error";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
-import { StudioPageHeader } from "@/components/studio/studio-shell";
-import { btn, EventBadges, inputCls, labelCls, QuotaBar } from "@/components/studio/studio-ui";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { btn, EventBadges, inputCls, labelCls, QuotaBar } from "@/components/admin/admin-ui";
 import SalesBadge from "@/components/concerts/sales-badge";
 
 export default function StudioEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -21,9 +21,9 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
   const t = useTranslations("Studio.detail");
   const locale = useLocale();
   const router = useRouter();
-  const studioError = useStudioError();
-  const authed = !!useAuthToken();
-  const event = useApiResource(authed ? `studio-event-${id}` : null, () => apiGet<StudioEventDetail>(`/organizer/events/${id}`));
+  const adminError = useAdminError();
+  const authed = useAdminSession().ready;
+  const event = useApiResource(authed ? `studio-event-${id}` : null, () => adminGet<StudioEventDetail>(`/admin/events/${id}`));
   const [busy, setBusy] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -36,7 +36,7 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
       if (after) after();
       else event.reload();
     } catch (err) {
-      setActionError(studioError(err));
+      setActionError(adminError(err));
     } finally {
       setBusy(null);
     }
@@ -46,17 +46,17 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
     <AsyncContent resource={event} isEmpty={() => false}>
       {(ev) => (
         <>
-          <StudioPageHeader
+          <AdminPageHeader
             title={ev.title}
             back={
-              <Link href="/organizer/events" className="mb-2 inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground">
+              <Link href="/admin/events" className="mb-2 inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="h-3.5 w-3.5" />
                 {t("back")}
               </Link>
             }
             actions={
               <>
-                <Link href={`/organizer/events/${ev.id}/edit`} className={btn.outline}>
+                <Link href={`/admin/events/${ev.id}/edit`} className={btn.outline}>
                   <Pencil className="h-4 w-4" />
                   {t("edit")}
                 </Link>
@@ -65,7 +65,7 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
                     type="button"
                     disabled={busy !== null}
                     className={btn.primary}
-                    onClick={() => run("publish", () => apiPost(`/organizer/events/${ev.id}/publish`), t("published"))}
+                    onClick={() => run("publish", () => adminPost(`/admin/events/${ev.id}/publish`), t("published"))}
                   >
                     {ev.status === "closed" ? t("reopen") : t("publish")}
                   </button>
@@ -76,7 +76,7 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
                     className={btn.dark}
                     onClick={() => {
                       if (window.confirm(t("confirmClose")))
-                        run("close", () => apiPost(`/organizer/events/${ev.id}/close-sales`), t("closed"));
+                        run("close", () => adminPost(`/admin/events/${ev.id}/close-sales`), t("closed"));
                     }}
                   >
                     {t("close")}
@@ -88,7 +88,7 @@ export default function StudioEventDetailPage({ params }: { params: Promise<{ id
                   className={btn.danger}
                   onClick={() => {
                     if (window.confirm(t("confirmDelete", { title: ev.title })))
-                      run("delete", () => apiDelete(`/organizer/events/${ev.id}`), t("deleted"), () => router.push("/organizer/events"));
+                      run("delete", () => adminDelete(`/admin/events/${ev.id}`), t("deleted"), () => router.push("/admin/events"));
                   }}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -144,7 +144,7 @@ const emptyDraft: Draft = { name: "", price: "", quota: "" };
 /** Kategori tiket & kuota — Baseline: tabel rapat dengan bar kuota, tambah/edit/hapus inline. */
 function CategorySection({ event, onChanged }: { event: StudioEventDetail; onChanged: () => void }) {
   const t = useTranslations("Studio.categories");
-  const studioError = useStudioError();
+  const adminError = useAdminError();
   const [editing, setEditing] = useState<number | "new" | null>(null);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [saving, setSaving] = useState(false);
@@ -167,13 +167,13 @@ function CategorySection({ event, onChanged }: { event: StudioEventDetail; onCha
     setError(null);
     try {
       const body = { name: draft.name.trim(), price, quota };
-      if (editing === "new") await apiPost(`/organizer/events/${event.id}/ticket-categories`, body);
-      else await apiPut(`/organizer/ticket-categories/${editing}`, body);
+      if (editing === "new") await adminPost(`/admin/events/${event.id}/ticket-categories`, body);
+      else await adminPut(`/admin/ticket-categories/${editing}`, body);
       toast.success(editing === "new" ? t("added") : t("updated"));
       setEditing(null);
       onChanged();
     } catch (err) {
-      setError(studioError(err));
+      setError(adminError(err));
     } finally {
       setSaving(false);
     }
@@ -183,11 +183,11 @@ function CategorySection({ event, onChanged }: { event: StudioEventDetail; onCha
     if (!window.confirm(t("confirmDelete", { name: c.name }))) return;
     setError(null);
     try {
-      await apiDelete(`/organizer/ticket-categories/${c.id}`);
+      await adminDelete(`/admin/ticket-categories/${c.id}`);
       toast.success(t("deleted"));
       onChanged();
     } catch (err) {
-      setError(studioError(err));
+      setError(adminError(err));
     }
   }
 

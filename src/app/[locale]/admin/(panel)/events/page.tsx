@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { CalendarPlus, LayoutGrid, List, MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { apiGet } from "@/lib/api";
+import { adminGet } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
-import { formatWib, type StudioEvent } from "@/lib/organizer";
+import { formatWib, type StudioEvent } from "@/lib/backoffice";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken } from "@/hooks/use-auth-session";
+import { useAdminSession } from "@/hooks/use-admin-session";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
-import { StudioPageHeader } from "@/components/studio/studio-shell";
-import { btn, EventBadges, QuotaBar } from "@/components/studio/studio-ui";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { btn, EventBadges, QuotaBar } from "@/components/admin/admin-ui";
 import { EventPoster } from "@/components/concerts/event-poster";
 
 type View = "grid" | "table";
@@ -19,12 +19,12 @@ type View = "grid" | "table";
 export default function StudioEventsPage() {
   const t = useTranslations("Studio.events");
   const locale = useLocale();
-  const authed = !!useAuthToken();
+  const authed = useAdminSession().ready;
   const [view, setView] = useState<View>("grid");
-  const events = useApiResource(authed ? "studio-events" : null, () => apiGet<StudioEvent[]>("/organizer/events"));
+  const events = useApiResource(authed ? "studio-events" : null, () => adminGet<StudioEvent[]>("/admin/events"));
 
   const newBtn = (
-    <Link href="/organizer/events/new" className={btn.primary}>
+    <Link href="/admin/events/new" className={btn.primary}>
       <CalendarPlus className="h-4 w-4" />
       {t("new")}
     </Link>
@@ -32,7 +32,7 @@ export default function StudioEventsPage() {
 
   return (
     <>
-      <StudioPageHeader
+      <AdminPageHeader
         title={t("title")}
         description={t("subtitle")}
         actions={
@@ -69,7 +69,7 @@ export default function StudioEventsPage() {
               {list.map((ev) => (
                 <Link
                   key={ev.id}
-                  href={`/organizer/events/${ev.id}`}
+                  href={`/admin/events/${ev.id}`}
                   className="group flex flex-col overflow-hidden rounded-xl border border-border bg-background transition-colors hover:border-primary/40"
                 >
                   <div className="relative aspect-16/7 bg-stage">
@@ -112,7 +112,7 @@ export default function StudioEventsPage() {
                   {list.map((ev) => (
                     <tr key={ev.id} className="hover:bg-surface">
                       <td className="max-w-xs px-4 py-3">
-                        <Link href={`/organizer/events/${ev.id}`} className="block truncate font-semibold text-foreground hover:text-primary">
+                        <Link href={`/admin/events/${ev.id}`} className="block truncate font-semibold text-foreground hover:text-primary">
                           {ev.title}
                         </Link>
                         <span className="block truncate text-xs text-muted-foreground">{ev.venue}</span>
@@ -136,7 +136,7 @@ export default function StudioEventsPage() {
               <ul className="divide-y divide-border md:hidden">
                 {list.map((ev) => (
                   <li key={ev.id}>
-                    <Link href={`/organizer/events/${ev.id}`} className="block space-y-2 p-4">
+                    <Link href={`/admin/events/${ev.id}`} className="block space-y-2 p-4">
                       <div className="flex items-start justify-between gap-2">
                         <span className="min-w-0 truncate font-semibold text-foreground">{ev.title}</span>
                       </div>

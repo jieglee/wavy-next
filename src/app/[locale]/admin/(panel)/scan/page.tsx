@@ -4,12 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Camera, CameraOff, CheckCircle2, Keyboard, XCircle } from "lucide-react";
 import type QrScannerType from "qr-scanner";
-import { apiPost } from "@/lib/api";
+import { adminPost } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
-import { formatWib } from "@/lib/organizer";
-import { useStudioError } from "@/hooks/use-studio-error";
-import { StudioPageHeader } from "@/components/studio/studio-shell";
-import { btn, inputCls, labelCls } from "@/components/studio/studio-ui";
+import { formatWib } from "@/lib/backoffice";
+import { useAdminError } from "@/hooks/use-admin-error";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { btn, inputCls, labelCls } from "@/components/admin/admin-ui";
 
 type ScanTicket = { id: number; order_id: number; event_id: number; title: string; date: string; venue: string; category_name?: string };
 type Result = { ok: true; ticket: ScanTicket; at: Date } | { ok: false; message: string; at: Date };
@@ -19,7 +19,7 @@ type CameraState = "idle" | "starting" | "on" | "denied" | "unavailable";
 export default function StudioScanPage() {
   const t = useTranslations("Studio.scan");
   const locale = useLocale();
-  const studioError = useStudioError();
+  const adminError = useAdminError();
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerRef = useRef<QrScannerType | null>(null);
   const busyRef = useRef(false);
@@ -42,11 +42,11 @@ export default function StudioScanPage() {
       setChecking(true);
       let r: Result;
       try {
-        const res = await apiPost<{ message: string; ticket: ScanTicket }>("/organizer/scan/validate", { qr_code: qr });
+        const res = await adminPost<{ message: string; ticket: ScanTicket }>("/admin/scan/validate", { qr_code: qr });
         r = { ok: true, ticket: res.ticket, at: new Date() };
         navigator.vibrate?.(80);
       } catch (err) {
-        r = { ok: false, message: studioError(err), at: new Date() };
+        r = { ok: false, message: adminError(err), at: new Date() };
         navigator.vibrate?.([60, 60, 60]);
       }
       setResult(r);
@@ -54,7 +54,7 @@ export default function StudioScanPage() {
       setChecking(false);
       busyRef.current = false;
     },
-    [studioError]
+    [adminError]
   );
 
   async function startCamera() {
@@ -98,7 +98,7 @@ export default function StudioScanPage() {
 
   return (
     <>
-      <StudioPageHeader title={t("title")} description={t("subtitle")} />
+      <AdminPageHeader title={t("title")} description={t("subtitle")} />
 
       <div className="mx-auto flex max-w-md flex-col items-stretch gap-4">
         <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-stage">

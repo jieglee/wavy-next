@@ -23,7 +23,7 @@ const STUDIO_CODES = [
  * Pesan error untuk aksi studio: kode dikenal -> teks i18n; 4xx lain -> pesan
  * backend (validasi, mis. "sales_end_at must be ..."); sisanya pesan umum.
  */
-export function useStudioError() {
+export function useAdminError() {
   const t = useTranslations("Studio.errors");
   const base = useErrorMessage();
   return useCallback(

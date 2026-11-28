@@ -4,23 +4,23 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { Mic2, Pencil, Plus, Trash2 } from "lucide-react";
-import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api";
-import type { StudioArtist } from "@/lib/organizer";
+import { adminDelete, adminGet, adminPost, adminPut } from "@/lib/admin-session";
+import type { StudioArtist } from "@/lib/backoffice";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken } from "@/hooks/use-auth-session";
-import { useStudioError } from "@/hooks/use-studio-error";
+import { useAdminSession } from "@/hooks/use-admin-session";
+import { useAdminError } from "@/hooks/use-admin-error";
 import { AsyncContent, EmptyState } from "@/components/states/async-states";
-import { StudioPageHeader } from "@/components/studio/studio-shell";
-import { btn, inputCls, labelCls } from "@/components/studio/studio-ui";
+import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { btn, inputCls, labelCls } from "@/components/admin/admin-ui";
 
 type Draft = { name: string; genre: string; photo_url: string; bio: string };
 const empty: Draft = { name: "", genre: "", photo_url: "", bio: "" };
 
 export default function StudioArtistsPage() {
   const t = useTranslations("Studio.artists");
-  const studioError = useStudioError();
-  const authed = !!useAuthToken();
-  const artists = useApiResource(authed ? "studio-artists" : null, () => apiGet<StudioArtist[]>("/organizer/artists"));
+  const adminError = useAdminError();
+  const authed = useAdminSession().ready;
+  const artists = useApiResource(authed ? "studio-artists" : null, () => adminGet<StudioArtist[]>("/admin/artists"));
   const [editing, setEditing] = useState<number | "new" | null>(null);
   const [draft, setDraft] = useState<Draft>(empty);
   const [saving, setSaving] = useState(false);
@@ -40,17 +40,17 @@ export default function StudioArtistsPage() {
     const body = { name: draft.name.trim(), genre: draft.genre.trim(), photo_url: draft.photo_url.trim(), bio: draft.bio.trim() };
     try {
       if (editing === "new") {
-        const created = await apiPost<StudioArtist>("/organizer/artists", body);
+        const created = await adminPost<StudioArtist>("/admin/artists", body);
         artists.mutate((list) => [created, ...list]);
         toast.success(t("added"));
       } else {
-        const updated = await apiPut<StudioArtist>(`/organizer/artists/${editing}`, body);
+        const updated = await adminPut<StudioArtist>(`/admin/artists/${editing}`, body);
         artists.mutate((list) => list.map((a) => (a.id === updated.id ? updated : a)));
         toast.success(t("updated"));
       }
       setEditing(null);
     } catch (err) {
-      setError(studioError(err));
+      setError(adminError(err));
     } finally {
       setSaving(false);
     }
@@ -60,11 +60,11 @@ export default function StudioArtistsPage() {
     if (!window.confirm(t("confirmDelete", { name: a.name }))) return;
     setError(null);
     try {
-      await apiDelete(`/organizer/artists/${a.id}`);
+      await adminDelete(`/admin/artists/${a.id}`);
       artists.mutate((list) => list.filter((x) => x.id !== a.id));
       toast.success(t("deleted"));
     } catch (err) {
-      setError(studioError(err));
+      setError(adminError(err));
     }
   }
 
@@ -77,7 +77,7 @@ export default function StudioArtistsPage() {
 
   return (
     <>
-      <StudioPageHeader title={t("title")} description={t("subtitle")} actions={addBtn} />
+      <AdminPageHeader title={t("title")} description={t("subtitle")} actions={addBtn} />
 
       {error && editing === null && (
         <p role="alert" className="mb-4 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
