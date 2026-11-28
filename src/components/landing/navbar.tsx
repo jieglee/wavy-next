@@ -2,14 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Search, Globe, ChevronDown, User, Ticket, LogOut } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { Search, ChevronDown, User, Ticket, LogOut } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { getAuthToken, getAuthRole, getAuthUser, clearAuthSession } from "@/lib/api";
 import CategoryDropdown from "@/components/nav/category-dropdown";
 import SearchDropdown from "@/components/nav/search-dropdown";
 import AnimatedSearchPlaceholder from "@/components/nav/animated-search-placeholder";
+import { LocaleMenu, LocaleToggle } from "@/components/i18n/locale-switcher";
 
 const NAVY = "var(--foreground)";
 const PINK = "var(--primary)";
@@ -17,11 +18,9 @@ const WAVY_BLUE = "var(--primary)";
 
 export default function Navbar({ sticky = true, hideUser = false }: { sticky?: boolean; hideUser?: boolean } = {}) {
   const t = useTranslations("Navbar");
-  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
 
-  const [langOpen, setLangOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,7 +29,6 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
   const [currentRole, setCurrentRole] = useState<string | null>(null);
   const catRef = useRef<HTMLDivElement>(null);
   const searchWrapRef = useRef<HTMLDivElement>(null);
-  const langRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,14 +50,12 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
       const target = e.target as Node;
       if (catRef.current && !catRef.current.contains(target)) setCatOpen(false);
       if (searchWrapRef.current && !searchWrapRef.current.contains(target)) setSearchOpen(false);
-      if (langRef.current && !langRef.current.contains(target)) setLangOpen(false);
       if (userRef.current && !userRef.current.contains(target)) setUserOpen(false);
     }
     function onEsc(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setCatOpen(false);
         setSearchOpen(false);
-        setLangOpen(false);
         setUserOpen(false);
       }
     }
@@ -70,11 +66,6 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
       document.removeEventListener("keydown", onEsc);
     };
   }, []);
-
-  function switchLocale(nextLocale: string) {
-    router.replace(pathname, { locale: nextLocale });
-    setLangOpen(false);
-  }
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -115,7 +106,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
         {showBackdrop && (
           <motion.button
             key="nav-backdrop"
-            aria-label="Close dropdown"
+            aria-label={t("closeMenu")}
             onClick={() => { setCatOpen(false); setSearchOpen(false); }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -141,7 +132,6 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
             type="button"
             onClick={() => {
               setCatOpen((v) => !v);
-              setLangOpen(false);
               setUserOpen(false);
               setSearchOpen(false);
             }}
@@ -203,45 +193,15 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           )}
         </div>
 
-        <div ref={langRef} className="relative shrink-0">
-          <button
-            onClick={() => {
-              setLangOpen(!langOpen);
-              setUserOpen(false);
-            }}
-            className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <Globe className="h-4 w-4" />
-            {locale === "id" ? "ID" : "EN"}
-            <ChevronDown className="h-3.5 w-3.5" />
-          </button>
-          {langOpen && (
-            <div className="absolute right-0 mt-2 w-32 overflow-hidden rounded-xl border border-border bg-white shadow-xl">
-              <button
-                onClick={() => switchLocale("id")}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-surface ${locale === "id" ? "font-medium text-foreground" : "text-muted-foreground"}`}
-              >
-                Indonesia
-              </button>
-              <button
-                onClick={() => switchLocale("en")}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-surface ${locale === "en" ? "font-medium text-foreground" : "text-muted-foreground"}`}
-              >
-                English
-              </button>
-
-            </div>
-          )}
-        </div>
+        <LocaleMenu onOpen={() => setUserOpen(false)} />
 
         {!hideUser && (
         <div ref={userRef} className="relative shrink-0">
           {currentUser ? (
             <button
-              onClick={() => {
-                setUserOpen(!userOpen);
-                setLangOpen(false);
-              }}
+              onClick={() => setUserOpen(!userOpen)}
+              aria-haspopup="menu"
+              aria-expanded={userOpen}
               className="flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40"
             >
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-xs text-white">
@@ -264,10 +224,10 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           {userOpen && (
             <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-border bg-white py-1 shadow-2xl">
               <div className="border-b border-border px-4 py-2.5">
-                <p className="text-xs text-muted-foreground/80">Masuk sebagai</p>
+                <p className="text-xs text-muted-foreground/80">{t("signedInAs")}</p>
                 <p className="truncate text-sm font-bold text-foreground">{currentUser?.email}</p>
                 <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase">
-                  {currentRole}
+                  {currentRole === "customer" ? t("roleCustomer") : currentRole}
                 </span>
               </div>
 
@@ -277,7 +237,7 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
                 <Ticket className="h-4 w-4 text-primary" />
-                Tiket Saya
+                {t("tickets")}
               </Link>
 
               <Link
@@ -286,16 +246,21 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
                 <User className="h-4 w-4 text-foreground" />
-                Profil & Level
+                {t("profile")}
               </Link>
 
-              <div className="border-t border-border mt-1 pt-1">
+              <div className="flex items-center justify-between gap-2 border-t border-border px-4 py-2.5">
+                <span className="text-xs text-muted-foreground">{t("language")}</span>
+                <LocaleToggle />
+              </div>
+
+              <div className="border-t border-border pt-1">
                 <button
                   onClick={handleLogout}
                   className="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-semibold text-destructive hover:bg-destructive/5"
                 >
                   <LogOut className="h-4 w-4" />
-                  Keluar
+                  {t("logout")}
                 </button>
               </div>
             </div>

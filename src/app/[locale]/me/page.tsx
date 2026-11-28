@@ -14,6 +14,7 @@ import { Ring } from "@/components/charts/ring";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useAuthToken } from "@/hooks/use-auth-session";
 import { ProfileName } from "@/components/profile/profile-name";
+import { LocaleToggle } from "@/components/i18n/locale-switcher";
 import type { CustomerProfile } from "@/lib/profile";
 import { useErrorMessage } from "@/lib/error-message";
 import { cn } from "@/lib/utils";
@@ -97,13 +98,19 @@ export default function CustomerProfilePage() {
                 <ProfileName profile={me.data} onSaved={(p) => me.mutate(() => p)} />
               )}
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-lg border border-destructive/30 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive/10"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              {t("logout")}
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] font-medium uppercase tracking-widest text-muted-foreground">{t("language")}</span>
+                <LocaleToggle />
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 rounded-lg border border-destructive/30 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive/10"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                {t("logout")}
+              </button>
+            </div>
           </div>
 
           <div className="mt-6">

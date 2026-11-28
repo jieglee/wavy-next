@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CalendarDays, LayoutDashboard, LogOut, Mic2, QrCode, ReceiptText } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
+import { LocaleToggle } from "@/components/i18n/locale-switcher";
 import { cn } from "@/lib/utils";
 import { adminGet } from "@/lib/admin-session";
 import { useApiResource } from "@/hooks/use-api-resource";
@@ -65,14 +66,20 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
 
-        <button
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2 px-3">
+            <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{t("language")}</span>
+            <LocaleToggle />
+          </div>
+          <button
           type="button"
           onClick={session.logout}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
         >
           <LogOut className="h-4 w-4" />
           {t("logout")}
         </button>
+        </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -82,7 +89,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <span className="font-display font-bold text-foreground">{t("brand")}</span>
           </Link>
           <div className="flex min-w-0 items-center gap-2">
-            <span className="truncate text-xs font-medium text-muted-foreground">{adminName}</span>
+            <LocaleToggle className="shrink-0" />
+            <span className="hidden truncate text-xs font-medium text-muted-foreground min-[400px]:inline">{adminName}</span>
             <button
               type="button"
               onClick={session.logout}

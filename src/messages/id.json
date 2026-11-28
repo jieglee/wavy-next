@@ -51,7 +51,12 @@
         "searchPlaceholder": "Cari konser, artist, atau venue",
         "akun": "Akun",
         "tickets": "Tiket Saya",
-        "logout": "Keluar"
+        "logout": "Keluar",
+        "closeMenu": "Tutup menu",
+        "signedInAs": "Masuk sebagai",
+        "roleCustomer": "Customer",
+        "profile": "Profil & Level",
+        "language": "Bahasa"
     },
     "Auth": {
         "welcomeBack": "Selamat datang kembali!",
@@ -244,7 +249,8 @@
         "save": "Simpan",
         "saving": "Menyimpan...",
         "cancel": "Batal",
-        "nameSaved": "Nama diperbarui."
+        "nameSaved": "Nama diperbarui.",
+        "language": "Bahasa"
     },
     "Checkout": {
         "oneCategoryHint": "Satu transaksi untuk satu kategori tiket, maksimal 4 tiket.",
@@ -810,7 +816,8 @@
                 "status": "Status",
                 "total": "Total"
             }
-        }
+        },
+        "language": "Bahasa"
     },
     "InfoPages": {
         "eyebrow": "Informasi Wavy",
@@ -991,6 +998,17 @@
             "eyebrow": "Cara beli",
             "title": "Dari pilih kursi sampai gate",
             "more": "Panduan lengkap"
+        }
+    },
+    "Locale": {
+        "label": "Bahasa",
+        "short": {
+            "id": "ID",
+            "en": "EN"
+        },
+        "name": {
+            "id": "Bahasa Indonesia",
+            "en": "English"
         }
     }
 }

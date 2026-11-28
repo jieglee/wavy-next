@@ -51,7 +51,12 @@
         "searchPlaceholder": "Search concerts, artists, or venues",
         "akun": "Account",
         "tickets": "My Tickets",
-        "logout": "Logout"
+        "logout": "Logout",
+        "closeMenu": "Close menu",
+        "signedInAs": "Signed in as",
+        "roleCustomer": "Customer",
+        "profile": "Profile & Level",
+        "language": "Language"
     },
     "Auth": {
         "welcomeBack": "Welcome back!",
@@ -244,7 +249,8 @@
         "save": "Save",
         "saving": "Saving...",
         "cancel": "Cancel",
-        "nameSaved": "Name updated."
+        "nameSaved": "Name updated.",
+        "language": "Language"
     },
     "Checkout": {
         "oneCategoryHint": "One ticket category per transaction, up to 4 tickets.",
@@ -810,7 +816,8 @@
                 "status": "Status",
                 "total": "Total"
             }
-        }
+        },
+        "language": "Language"
     },
     "InfoPages": {
         "eyebrow": "Wavy info",
@@ -991,6 +998,17 @@
             "eyebrow": "How to buy",
             "title": "From picking a seat to the gate",
             "more": "Full guide"
+        }
+    },
+    "Locale": {
+        "label": "Language",
+        "short": {
+            "id": "ID",
+            "en": "EN"
+        },
+        "name": {
+            "id": "Bahasa Indonesia",
+            "en": "English"
         }
     }
 }
