@@ -16,7 +16,7 @@ import { OrderStatusBadge } from "@/components/orders/order-status-badge";
 import { AdminPageHeader } from "@/components/admin/admin-ui";
 import { btn, labelCls } from "@/components/admin/admin-ui";
 
-const FILTERS = ["pending_payment", "paid", "expired", "rejected", "refunded", "all"] as const;
+const FILTERS = ["pending_payment", "paid", "expired", "rejected", "refunded", "cancelled", "all"] as const;
 type Filter = (typeof FILTERS)[number];
 
 /** Verifikasi pembayaran (DESIGN §4: Baseline) — antrian + panel detail (drawer di mobile). */

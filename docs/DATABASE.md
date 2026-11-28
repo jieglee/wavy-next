@@ -175,7 +175,7 @@ Kolom lengkap ada di §3. Diagram hanya menampilkan kolom utama.
 | `orders` | `id`, `customer_id`, `event_id`, `ticket_category_id`, `quantity`, `total_price`, `status`, `expires_at`, `created_at`, `paid_at`, `payment_ref`, `payment_type`, `verified_by`, data pemesan (`full_name`, `email`, `phone`, `id_number`, `birth_date`, `gender`, `wa_consent`) | FK customer/event `RESTRICT`; **FK komposit `(ticket_category_id, event_id) → ticket_categories(id, event_id)`** (kategori pasti milik event order); `quantity BETWEEN 1 AND 4`; `status IN ('pending_payment','paid','expired','rejected','refunded','cancelled')`; pending wajib punya `expires_at`; paid wajib punya `paid_at`; `gender IN ('','L','P')`; `wa_consent IN ('','Ya','Tidak')`; `verified_by` FK admins `SET NULL` |
 | `tickets` | `id`, `order_id`, `owner_id`, `qr_code`, `is_scanned`, `scanned_at`, `scanned_by`, `created_at` | `order_id` FK `CASCADE`; `owner_id` FK customers (berubah saat transfer); `qr_code` UNIQUE; `scanned_by` FK admins `SET NULL` |
 
-Status `cancelled` disiapkan di skema dan dihitung di dashboard admin, tetapi belum ada alur yang mengisinya.
+Status `cancelled` diisi saat customer membatalkan order pending miliknya (`POST /orders/:id/cancel`).
 
 ### Interaksi customer
 
@@ -192,6 +192,7 @@ Status `cancelled` disiapkan di skema dan dihitung di dashboard admin, tetapi be
 - **Lazy expiry:** order pending yang lewat `expires_at` diubah ke `expired` saat dibaca (daftar order, dashboard, checkout); tidak ada cron.
 - **Paid:** webhook Midtrans atau verifikasi admin → `status = 'paid'`, `paid_at`, `sold += quantity`, tiket + QR terbit (satu transaksi).
 - **Refund:** `paid → refunded`, `sold -= quantity`.
+- **Batal oleh customer:** `pending_payment → cancelled` dalam transaksi (lock order lalu kategori); kuota langsung lepas karena hanya `pending_payment` yang dihitung. Bila order sudah membuka Midtrans: status dicek dulu (lunas → batal ditolak), transaksi pending di-expire.
 - **Scan:** `is_scanned = true`, `scanned_at`, `scanned_by`; scan kedua ditolak `ALREADY_SCANNED`.
 
 ## 5. Migrasi, reset, dan data demo

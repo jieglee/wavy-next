@@ -34,6 +34,7 @@ Tidak ada role organizer/EO. Tidak ada halaman daftar terpisah: masuk & daftar c
 - Detail konser: info, artis, kategori tiket + harga + sisa kuota + status penjualan
 - Checkout: pilih **satu kategori** & jumlah (maks 4), data pemesan, setuju S&K, bayar (Midtrans) atau tunggu verifikasi manual
 - Tiket saya: daftar tiket + **QR yang benar-benar dirender**, transfer tiket ke email lain
+- Batalkan order `pending_payment` miliknya (konfirmasi dulu); kuota langsung kembali
 - Riwayat order + detail order (status: `pending_payment` / `paid` / `expired` / `rejected` / `refunded` / `cancelled`)
 - Profil: ubah nama, level (`/me/level`), favorit artis, notifikasi, "ingatkan saya" (notify-me), review
 
@@ -54,6 +55,7 @@ Tidak ada role organizer/EO. Tidak ada halaman daftar terpisah: masuk & daftar c
 2. **`POST /orders` menolak** order untuk event yang closed / di luar tenggat / kuota habis (error berkode, bukan 500). Kategori wajib milik event order (FK komposit di DB).
 3. **Anti-oversell:** kuota terpakai = order `paid` + order `pending_payment` yang belum expired. Cek & reservasi dalam satu transaksi SQL (row lock pada kategori tiket).
 4. **Order pending expired setelah 15 menit.** Dicek saat query (lazy expiry) — tidak butuh cron. Order expired melepas kuota.
+   Customer juga bisa **membatalkan** order pending miliknya (`cancelled`, dalam transaksi + row lock); kuota langsung lepas, transaksi Midtrans yang masih pending ditutup.
 5. **Sesi admin terpisah dari sesi customer.** Semua `/admin/*` (kecuali login) wajib JWT admin; token customer ditolak. Proxy web menolak `/admin/*` tanpa cookie admin.
 6. **Pembayaran:** Midtrans Snap (sandbox). Webhook memverifikasi signature → order `paid` → tiket + QR terbit. Expired/deny → order `expired`, kuota kembali. Verifikasi manual admin tetap ada sebagai cadangan.
 7. **Nama customer** 2–80 karakter, divalidasi di backend (`PATCH /me`) dan klien; `customers.name` NULL sampai diisi.
