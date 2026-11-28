@@ -767,7 +767,7 @@
             "customersNote": "Registered accounts",
             "delta": "{pct}% vs previous 7 days",
             "deltaNew": "new this week",
-            "deltaNone": "none in the last 14 days",
+            "deltaNone": "0 in 14 days",
             "dailyTitle": "Revenue per day",
             "dailyCaption": "Last {days} days, paid orders (WIB)",
             "dailyTickets": "{n} tickets",

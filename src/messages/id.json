@@ -767,7 +767,7 @@
             "customersNote": "Akun terdaftar",
             "delta": "{pct}% vs 7 hari lalu",
             "deltaNew": "baru minggu ini",
-            "deltaNone": "belum ada 14 hari terakhir",
+            "deltaNone": "0 dalam 14 hari",
             "dailyTitle": "Pendapatan per hari",
             "dailyCaption": "{days} hari terakhir, order lunas (WIB)",
             "dailyTickets": "{n} tiket",
