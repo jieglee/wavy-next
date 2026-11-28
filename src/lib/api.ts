@@ -54,6 +54,13 @@ export function setAuthToken(token: string, role?: string, user?: object) {
   if (user) localStorage.setItem("wavy_auth_user", JSON.stringify(user));
 }
 
+/** Perbarui profil tersimpan (mis. setelah PATCH /me) dan kabari hook useAuthUser di tab yang sama. */
+export function setAuthUser(user: object) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("wavy_auth_user", JSON.stringify(user));
+  window.dispatchEvent(new StorageEvent("storage", { key: "wavy_auth_user" }));
+}
+
 export function clearAuthSession() {
   if (typeof window === "undefined") return;
   localStorage.removeItem("wavy_auth_token");

@@ -74,7 +74,18 @@
         "resendButton": "Kirim ulang kode",
         "verifying": "Memverifikasi...",
         "signIn": "Masuk",
-        "loginSuccess": "Berhasil masuk! Selamat datang kembali."
+        "loginSuccess": "Berhasil masuk! Selamat datang kembali.",
+        "back": "Kembali",
+        "nameTitle": "Satu langkah lagi",
+        "namePrompt": "Akunmu sudah dibuat. Isi nama yang akan tampil di profil dan pesananmu.",
+        "nameLabel": "Nama lengkap",
+        "namePlaceholder": "Nama kamu",
+        "nameSubmit": "Simpan & lanjut",
+        "saving": "Menyimpan...",
+        "nameTooShort": "Nama minimal 2 karakter.",
+        "nameTooLong": "Nama maksimal {max} karakter.",
+        "welcomeNew": "Selamat datang di Wavy, {name}!",
+        "otpDigit": "Digit OTP ke-{n}"
     },
     "FeaturedEvents": {
         "title": "Event Seru Untukmu",
@@ -247,7 +258,13 @@
             "title": "Kotak notifikasi",
             "empty": "Tidak ada notifikasi.",
             "unread": "Belum dibaca"
-        }
+        },
+        "editName": "Ubah nama",
+        "nameLabel": "Nama",
+        "save": "Simpan",
+        "saving": "Menyimpan...",
+        "cancel": "Batal",
+        "nameSaved": "Nama diperbarui."
     },
     "Checkout": {
         "oneCategoryHint": "Satu transaksi untuk satu kategori tiket, maksimal 4 tiket.",

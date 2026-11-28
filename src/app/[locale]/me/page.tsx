@@ -12,7 +12,9 @@ import { OrderHistoryList } from "@/components/orders/order-history-list";
 import { RingChart } from "@/components/charts/ring-chart";
 import { Ring } from "@/components/charts/ring";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { useAuthToken, useAuthUser } from "@/hooks/use-auth-session";
+import { useAuthToken } from "@/hooks/use-auth-session";
+import { ProfileName } from "@/components/profile/profile-name";
+import type { CustomerProfile } from "@/lib/profile";
 import { useErrorMessage } from "@/lib/error-message";
 import { cn } from "@/lib/utils";
 import { apiGet, apiPost, clearAuthSession, getAuthToken } from "@/lib/api";
@@ -40,7 +42,8 @@ export default function CustomerProfilePage() {
 
   // token null (server / render hidrasi pertama) -> semua resource dianggap loading
   const authed = !!useAuthToken();
-  const currentUser = useAuthUser<{ name?: string; email?: string }>();
+  // profil dari GET /me (sumber utama), bukan salinan di localStorage
+  const me = useApiResource(authed ? "me-profile" : null, () => apiGet<CustomerProfile>("/me"));
 
   const level = useApiResource(authed ? "me-level" : null, () => apiGet<CustomerLevel>("/me/level"));
   const orders = useApiResource(authed ? "orders-history" : null, () => apiGet<Order[]>("/orders/history"));
@@ -79,14 +82,20 @@ export default function CustomerProfilePage() {
         {/* Profil (DESIGN §4 Radial): ring level di tengah, statistik mengelilingi */}
         <section className="rounded-2xl border border-border bg-background p-4 sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-xl font-bold text-primary-foreground">
-                {(currentUser?.name || currentUser?.email || "W").charAt(0).toUpperCase()}
+                {(me.data?.name || me.data?.email || "W").charAt(0).toUpperCase()}
               </div>
-              <div className="min-w-0">
-                <h1 className="truncate font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">{currentUser?.name || t("defaultName")}</h1>
-                {currentUser?.email && <p className="truncate font-mono text-xs text-muted-foreground">{currentUser.email}</p>}
-              </div>
+              {me.loading ? (
+                <div className="space-y-2" role="status" aria-busy>
+                  <div className="h-6 w-40 animate-pulse rounded bg-muted" />
+                  <div className="h-3 w-28 animate-pulse rounded bg-muted" />
+                </div>
+              ) : me.error !== undefined || !me.data ? (
+                <ErrorState error={me.error} onRetry={me.reload} className="border-0 p-0 py-2" />
+              ) : (
+                <ProfileName profile={me.data} onSaved={(p) => me.mutate(() => p)} />
+              )}
             </div>
             <button
               onClick={handleLogout}

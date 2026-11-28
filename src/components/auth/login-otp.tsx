@@ -6,11 +6,14 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { apiPost, ApiError, setAuthToken } from "@/lib/api";
+import { apiPost, ApiError, setAuthToken, setAuthUser } from "@/lib/api";
+import { NAME_MAX, nameError, updateProfile } from "@/lib/profile";
+import { useErrorMessage } from "@/lib/error-message";
 import { WavyIcon } from "@/components/landing/wavy-icon";
 import { WavyIconAnimated } from "../landing/wavy-icon-animated";
 
-type Step = "email" | "otp";
+// satu alur masuk/daftar: email -> OTP -> (akun baru / nama kosong) isi nama
+type Step = "email" | "otp" | "name";
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
@@ -18,13 +21,14 @@ const RESEND_SECONDS = 60;
 interface VerifyResult {
     access_token: string;
     customer: { id: number; name: string | null; email: string };
+    needs_name: boolean;
 }
 
 async function sendOtp(email: string): Promise<void> {
     await apiPost("/auth/send-otp", { email });
 }
 
-async function verifyOtp(email: string, otp: string): Promise<boolean> {
+async function verifyOtp(email: string, otp: string): Promise<VerifyResult | null> {
     try {
         const res = await apiPost<VerifyResult>("/auth/verify-otp", { email, code: otp });
         setAuthToken(res.access_token, "customer", res.customer);
@@ -33,9 +37,9 @@ async function verifyOtp(email: string, otp: string): Promise<boolean> {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ access_token: res.access_token, customer: res.customer }),
         });
-        return true;
+        return res;
     } catch (e) {
-        if (e instanceof ApiError && e.status === 401) return false;
+        if (e instanceof ApiError && e.status === 401) return null;
         throw e;
     }
 }
@@ -49,6 +53,8 @@ export default function LoginOtpCard() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [resendIn, setResendIn] = useState(0);
+    const [name, setName] = useState("");
+    const errorMessage = useErrorMessage();
     const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
     useEffect(() => {
@@ -122,15 +128,40 @@ export default function LoginOtpCard() {
         setError("");
         setLoading(true);
         try {
-            const ok = await verifyOtp(email, code);
-            if (!ok) {
+            const res = await verifyOtp(email, code);
+            if (!res) {
                 setError(t("otpWrong"));
+                return;
+            }
+            if (res.needs_name) {
+                setStep("name");
                 return;
             }
             toast.success(t("loginSuccess"));
             router.replace("/home");
         } catch {
             setError(t("otpVerifyFailed"));
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleSaveName(e: React.FormEvent) {
+        e.preventDefault();
+        const invalid = nameError(name);
+        if (invalid) {
+            setError(t(invalid, { max: NAME_MAX }));
+            return;
+        }
+        setError("");
+        setLoading(true);
+        try {
+            const profile = await updateProfile({ name: name.trim() });
+            setAuthUser({ id: profile.id, name: profile.name, email: profile.email });
+            toast.success(t("welcomeNew", { name: profile.name ?? "" }));
+            router.replace("/home");
+        } catch (err) {
+            setError(errorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -193,7 +224,7 @@ export default function LoginOtpCard() {
                         className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
                     >
                         <ArrowLeft className="h-3.5 w-3.5" />
-                        Kembali
+                        {t("back")}
                     </button>
                 </div>
                 <div className="flex flex-1 items-center">
@@ -257,6 +288,55 @@ export default function LoginOtpCard() {
                                     </button>
                                 </form>
                             </motion.div>
+                        ) : step === "name" ? (
+                            <motion.div
+                                key="name"
+                                initial={{ opacity: 0, x: 12 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 12 }}
+                                transition={{ duration: 0.25 }}
+                            >
+                                <h1 className="font-display text-2xl font-bold text-foreground">{t("nameTitle")}</h1>
+                                <p className="mt-2 text-sm text-muted-foreground">{t("namePrompt")}</p>
+
+                                <form onSubmit={handleSaveName} className="mt-8 flex flex-col gap-4" noValidate>
+                                    <div>
+                                        <label htmlFor="customer-name" className="mb-1.5 block text-sm font-medium text-foreground">
+                                            {t("nameLabel")}
+                                        </label>
+                                        <input
+                                            id="customer-name"
+                                            autoFocus
+                                            autoComplete="name"
+                                            maxLength={NAME_MAX}
+                                            placeholder={t("namePlaceholder")}
+                                            value={name}
+                                            onChange={(e) => {
+                                                setName(e.target.value);
+                                                setError("");
+                                            }}
+                                            aria-invalid={!!error}
+                                            aria-describedby={error ? "customer-name-error" : undefined}
+                                            className="w-full rounded-lg bg-muted px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
+                                        />
+                                    </div>
+
+                                    {error && (
+                                        <p id="customer-name-error" role="alert" className="text-xs text-destructive">
+                                            {error}
+                                        </p>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={loading || !name.trim()}
+                                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100"
+                                    >
+                                        <ArrowRight className="h-4 w-4" />
+                                        {loading ? t("saving") : t("nameSubmit")}
+                                    </button>
+                                </form>
+                            </motion.div>
                         ) : (
                             <motion.div
                                 key="otp"
@@ -287,7 +367,7 @@ export default function LoginOtpCard() {
                                 </p>
 
                                 <form onSubmit={handleVerify} className="mt-8 flex flex-col gap-4">
-                                    <div className="flex gap-3">
+                                    <div className="flex gap-2 sm:gap-3">
                                         {otp.map((digit, i) => (
                                             <input
                                                 key={i}
@@ -301,7 +381,8 @@ export default function LoginOtpCard() {
                                                 onChange={(e) => handleOtpChange(i, e.target.value)}
                                                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
                                                 onPaste={handleOtpPaste}
-                                                className="h-14 w-12 rounded-xl border-2 border-border bg-transparent text-center font-mono text-xl text-foreground outline-none transition-colors focus:border-primary"
+                                                aria-label={t("otpDigit", { n: i + 1 })}
+                                                className="h-14 w-full min-w-0 flex-1 rounded-xl border-2 border-border bg-transparent text-center font-mono text-xl text-foreground outline-none transition-colors focus:border-primary"
                                             />
                                         ))}
                                     </div>
