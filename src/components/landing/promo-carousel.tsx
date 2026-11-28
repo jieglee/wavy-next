@@ -96,15 +96,6 @@ export default function PromoCarousel() {
         gradient: slideGradients[0],
       },
       {
-        id: "promo-2",
-        eyebrow: t("slide2.eyebrow"),
-        title: t("slide2.title"),
-        subtitle: t("slide2.subtitle"),
-        ctaLabel: t("slide2.ctaLabel"),
-        ctaHref: "#",
-        gradient: slideGradients[1],
-      },
-      {
         id: "promo-3",
         eyebrow: t("slide3.eyebrow"),
         title: t("slide3.title"),

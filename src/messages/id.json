@@ -1,7 +1,7 @@
 {
     "Metadata": {
         "title": "Wavy — Satu Platform. Setiap Konser. Setiap Momen.",
-        "description": "Platform marketplace tiket konser yang menghubungkan Event Organizer dengan customer dalam satu ekosistem."
+        "description": "Platform tiket konser: cari konser, beli tiket, dan simpan e-tiket ber-QR dalam satu aplikasi."
     },
     "EventCategories": {
         "title": "Kategori Event",
@@ -125,12 +125,6 @@
             "subtitle": "Untuk 1.000 tiket pertama di setiap event",
             "ctaLabel": "Klik di sini untuk info lanjut"
         },
-        "slide2": {
-            "eyebrow": "Buat Event Organizer",
-            "title": "Cuma 1,5% dari Setiap Tiket Terjual",
-            "subtitle": "Sudah termasuk PPN, tanpa biaya tersembunyi",
-            "ctaLabel": "Ajukan kerjasama"
-        },
         "slide3": {
             "eyebrow": "Fitur Baru",
             "title": "Smart Queue: War Tiket Jadi Adil",
@@ -152,7 +146,7 @@
         "slide6": {
             "eyebrow": "Wavy Wallet",
             "title": "Semua Tiket dalam Satu Genggaman",
-            "subtitle": "Walau beli dari EO berbeda-beda",
+            "subtitle": "Semua konser yang kamu beli di Wavy",
             "ctaLabel": "Lihat fitur QR Wallet"
         }
     },
@@ -195,9 +189,8 @@
             "INVALID_QUANTITY": "Jumlah tiket tidak valid. Pilih 1 sampai 4 tiket.",
             "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu.",
             "ORDER_NOT_PENDING": "Pesanan ini sudah tidak menunggu pembayaran.",
-            "PAYMENT_NOT_CONFIGURED": "Pembayaran online belum aktif. Tunggu verifikasi dari penyelenggara.",
-            "PAYMENT_GATEWAY_ERROR": "Layanan pembayaran sedang bermasalah. Coba lagi sebentar lagi.",
-            "INVALID_STATUS_TRANSITION": "Status organizer sudah berubah. Muat ulang halaman lalu coba lagi."
+            "PAYMENT_NOT_CONFIGURED": "Pembayaran online belum aktif. Tunggu verifikasi dari tim Wavy.",
+            "PAYMENT_GATEWAY_ERROR": "Layanan pembayaran sedang bermasalah. Coba lagi sebentar lagi."
         }
     },
     "OrderStatus": {
@@ -270,7 +263,7 @@
         "oneCategoryHint": "Satu transaksi untuk satu kategori tiket, maksimal 4 tiket.",
         "oneCategorySwitched": "Kategori tiket diganti. Satu transaksi hanya untuk satu kategori.",
         "paymentNotice": "Setelah pesanan dibuat, kamu bisa membayar lewat Midtrans (sandbox) di halaman pesanan. Selesaikan dalam 15 menit.",
-        "paymentNoticeManual": "Setelah pesanan dibuat, penyelenggara memverifikasi pembayaran kamu secara manual. Selesaikan dalam 15 menit.",
+        "paymentNoticeManual": "Setelah pesanan dibuat, tim Wavy memverifikasi pembayaran kamu secara manual. Selesaikan dalam 15 menit.",
         "created": "{count, plural, =1 {Pesanan dibuat, lanjut ke pembayaran} other {# pesanan dibuat, lanjut ke pembayaran}}",
         "orderError": {
             "title": "Pesanan gagal dibuat",
@@ -837,7 +830,7 @@
         "updated": "Diperbarui {date}",
         "howToBuy": {
             "title": "Cara beli tiket",
-            "updated": "20 November 2026",
+            "updated": "28 November 2026",
             "intro": "Beli tiket konser di Wavy dalam beberapa langkah. Semua tiket bersifat digital dan masuk ke akunmu.",
             "ctaText": "Siap mencari konser?",
             "ctaLabel": "Jelajahi konser",
@@ -865,7 +858,7 @@
                     "title": "Bayar dalam 15 menit",
                     "body": [
                         "Kuota tiket ditahan selama 15 menit. Di halaman pesanan, klik Bayar sekarang untuk membayar lewat Midtrans (mode sandbox, tanpa uang sungguhan). Jika waktu habis, pesanan kedaluwarsa dan kuota dilepas.",
-                        "Bila pembayaran online belum aktif, penyelenggara memverifikasi pembayaranmu secara manual."
+                        "Bila pembayaran online belum aktif, tim Wavy memverifikasi pembayaranmu secara manual."
                     ]
                 },
                 {
@@ -878,7 +871,7 @@
         },
         "terms": {
             "title": "Syarat & ketentuan",
-            "updated": "20 November 2026",
+            "updated": "28 November 2026",
             "intro": "Wavy adalah proyek Uji Kompetensi Keahlian (UKK) untuk sistem penjualan tiket konser. Dengan memakai Wavy, kamu menyetujui ketentuan berikut.",
             "sections": [
                 {
@@ -908,16 +901,16 @@
                     ]
                 },
                 {
-                    "title": "Penyelenggara",
+                    "title": "Event & tiket",
                     "body": [
-                        "Isi event, jadwal, dan kuota dikelola oleh penyelenggara (EO). Admin Wavy dapat menangguhkan penyelenggara yang melanggar aturan."
+                        "Isi event, jadwal, kategori tiket, dan kuota dikelola oleh tim Wavy. Tim Wavy dapat mengubah, menutup, atau membuka kembali penjualan sebuah event."
                     ]
                 }
             ]
         },
         "privacy": {
             "title": "Kebijakan privasi",
-            "updated": "20 November 2026",
+            "updated": "28 November 2026",
             "intro": "Halaman ini menjelaskan data apa yang disimpan Wavy dan untuk apa. Wavy adalah proyek UKK, bukan layanan komersial.",
             "sections": [
                 {
@@ -929,7 +922,7 @@
                 {
                     "title": "Untuk apa data dipakai",
                     "body": [
-                        "Data dipakai untuk membuat pesanan, menerbitkan tiket, dan ditampilkan ke penyelenggara event yang kamu beli tiketnya untuk verifikasi."
+                        "Data dipakai untuk membuat pesanan, menerbitkan tiket, dan dilihat tim Wavy untuk verifikasi pembayaran dan pemeriksaan tiket di gate."
                     ]
                 },
                 {
@@ -954,7 +947,7 @@
         },
         "about": {
             "title": "Tentang Wavy",
-            "updated": "20 November 2026",
+            "updated": "28 November 2026",
             "intro": "Wavy adalah platform tiket konser yang dibuat sebagai proyek Uji Kompetensi Keahlian (UKK).",
             "ctaText": "Lihat konser yang sedang dijual.",
             "ctaLabel": "Jelajahi konser",
@@ -962,13 +955,13 @@
                 {
                     "title": "Apa yang bisa dilakukan",
                     "body": [
-                        "Customer membeli tiket dan menyimpan e-tiket ber-QR. Penyelenggara (EO) membuat event, mengatur kategori tiket dan kuota, memverifikasi pembayaran, dan memindai tiket di gate. Admin mengelola akun penyelenggara."
+                        "Customer membeli tiket dan menyimpan e-tiket ber-QR. Tim Wavy membuat event, mengatur kategori tiket dan kuota, memverifikasi pembayaran, dan memindai tiket di gate."
                     ]
                 },
                 {
                     "title": "Aturan yang dijaga sistem",
                     "body": [
-                        "Penjualan hanya terbuka di dalam tenggat yang diatur EO, kuota tidak bisa terjual melebihi batas, dan pesanan yang tidak dibayar dalam 15 menit dilepas kembali."
+                        "Penjualan hanya terbuka di dalam tenggat yang diatur tim Wavy, kuota tidak bisa terjual melebihi batas, dan pesanan yang tidak dibayar dalam 15 menit atau dibatalkan dilepas kembali."
                     ]
                 },
                 {
