@@ -11,7 +11,8 @@
 ## Baca dulu sebelum kerja
 1. `docs/PRD.md` — scope, aturan bisnis, fase
 2. `docs/DESIGN.md` — token, tipografi, grid per halaman, motion
-3. `docs/AUDIT.md` — kondisi terakhir & bug yang diketahui
+3. `docs/DATABASE.md` — skema v2, ERD, constraint, script migrate/reset/seed
+4. `docs/AUDIT.md` — snapshot sebelum v2 & bug yang diketahui saat itu
 
 ## Alur kerja (wajib)
 - Setiap fitur/fix = **branch baru dari `main`** di repo yang relevan (mis. `fix/order-validation`, `feat/creator-studio-dashboard`).
