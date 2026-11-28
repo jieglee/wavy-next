@@ -85,7 +85,7 @@ export interface Order {
 }
 
 // status order dari backend; "expired" = pending yang lewat 15 menit (lazy expiry)
-export type OrderStatus = "pending_payment" | "paid" | "rejected" | "refunded" | "expired";
+export type OrderStatus = "pending_payment" | "paid" | "rejected" | "refunded" | "expired" | "cancelled";
 
 export interface FavoritesResponse {
   artists: { favorite_id: number; id: number; name: string; genre: string; photo_url: string }[];
@@ -138,7 +138,7 @@ export interface AdminStats {
   paid_order_count: number;
   revenue: number;
   ticket_sold: number;
-  orders_by_status: Record<"pending_payment" | "paid" | "expired" | "rejected" | "refunded", number>;
+  orders_by_status: Record<OrderStatus, number>;
 }
 
 // GET /admin/stats/daily?days=

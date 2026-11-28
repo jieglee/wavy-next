@@ -26,13 +26,14 @@ import { RingCenter } from "@/components/charts/ring-center";
 import type { AdminDailyPoint, AdminRecentOrder, AdminStats, AdminTopEvent } from "@/types/type";
 
 const RANGES = [7, 30, 90] as const;
-const ORDER_STATUSES = ["paid", "pending_payment", "expired", "rejected", "refunded"] as const;
+const ORDER_STATUSES = ["paid", "pending_payment", "expired", "rejected", "refunded", "cancelled"] as const;
 const ORDER_COLORS: Record<(typeof ORDER_STATUSES)[number], string> = {
   paid: "var(--chart-1)",
   pending_payment: "var(--chart-4)",
   expired: "var(--chart-5)",
   rejected: "var(--chart-2)",
   refunded: "var(--chart-3)",
+  cancelled: "var(--muted-foreground)",
 };
 const QUOTA_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)"];
 

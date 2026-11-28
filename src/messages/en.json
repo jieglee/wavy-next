@@ -194,7 +194,8 @@
         "paid": "Paid",
         "expired": "Expired",
         "rejected": "Rejected",
-        "refunded": "Refunded"
+        "refunded": "Refunded",
+        "cancelled": "Cancelled"
     },
     "Profile": {
         "defaultName": "Wavy Customer",

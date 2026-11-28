@@ -194,7 +194,8 @@
         "paid": "Lunas",
         "expired": "Kedaluwarsa",
         "rejected": "Ditolak",
-        "refunded": "Refund"
+        "refunded": "Refund",
+        "cancelled": "Dibatalkan"
     },
     "Profile": {
         "defaultName": "Customer Wavy",
