@@ -5,10 +5,10 @@ import Footer from "@/components/landing/footer";
 
 type Section = { title: string; body: string[] };
 
-export type InfoPageKey = "howToBuy" | "terms" | "privacy" | "about" | "organizerGuide";
+export type InfoPageKey = "howToBuy" | "terms" | "privacy" | "about";
 
 /**
- * Halaman informasi statis (Cara Beli, S&K, Privasi, Tentang, Panduan Organizer).
+ * Halaman informasi statis (Cara Beli, S&K, Privasi, Tentang).
  * Grid: baseline — satu kolom baca ~65ch, nomor section mono di kiri (desktop) agar ritme terasa.
  * Konten di messages `InfoPages.<key>` (title, intro, updated, sections[], cta?).
  */

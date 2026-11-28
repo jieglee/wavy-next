@@ -82,7 +82,6 @@ export default function Footer() {
   const t = useTranslations("Footer");
   const menuLinks = withTarget([
     { label: t("aboutUs"), href: "/about" },
-    { label: t("becomeOrganizer"), href: "/organizer/register" },
     { label: t("costSimulation"), href: null },
     { label: t("help"), href: null },
   ]);
@@ -90,7 +89,6 @@ export default function Footer() {
   const panduanLinks = withTarget([
     { label: t("howToBuy"), href: "/how-to-buy" },
     { label: t("ticketProtection"), href: null },
-    { label: t("organizerGuide"), href: "/organizer-guide" },
   ]);
 
   const legalLinks = withTarget([

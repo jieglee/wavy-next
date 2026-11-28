@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Search, Handshake, Globe, ChevronDown, User, Ticket, LogOut, Calendar } from "lucide-react";
+import { Search, Globe, ChevronDown, User, Ticket, LogOut } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
@@ -203,15 +203,6 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
           )}
         </div>
 
-        <Link
-          href="/organizer/login"
-          className="hidden shrink-0 items-center gap-1.5 text-sm font-bold transition-colors hover:opacity-70 sm:flex lg:text-base"
-          style={{ color: "var(--foreground)" }}
-        >
-          <Handshake className="h-4 w-4" style={{ color: "var(--foreground)" }} />
-          {t("kerjasama")}
-        </Link>
-
         <div ref={langRef} className="relative shrink-0">
           <button
             onClick={() => {
@@ -296,15 +287,6 @@ export default function Navbar({ sticky = true, hideUser = false }: { sticky?: b
               >
                 <User className="h-4 w-4 text-foreground" />
                 Profil & Level
-              </Link>
-
-              <Link
-                href="/organizer/dashboard"
-                onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
-              >
-                <Calendar className="h-4 w-4 text-foreground" />
-                Portal Organizer
               </Link>
 
               <div className="border-t border-border mt-1 pt-1">

@@ -87,18 +87,6 @@ export default function PromoCarousel() {
         pillCTA: "Secure your seat!",
       },
       {
-        id: "tampilkan-eventmu",
-        eyebrow: "Tampilkan Eventmu",
-        title: "Eventmu",
-        subtitle: "",
-        ctaLabel: "Lihat konser",
-        ctaHref: "/concerts",
-        gradient: slideGradients[0],
-        image: "/images/banner/tampilkan-eventmu.png",
-        pill: "Yuk tampilkan eventmu di Wavy ",
-        pillCTA: "Mulai sekarang!",
-      },
-      {
         id: "promo-1",
         eyebrow: t("slide1.eyebrow"),
         title: t("slide1.title"),

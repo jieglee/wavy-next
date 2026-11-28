@@ -49,10 +49,8 @@
     "Navbar": {
         "kategori": "Category",
         "searchPlaceholder": "Search concerts, artists, or venues",
-        "kerjasama": "Kerjasama dengan kami",
         "akun": "Account",
         "tickets": "My Tickets",
-        "organizer": "EO Portal",
         "logout": "Logout"
     },
     "Auth": {
@@ -76,13 +74,7 @@
         "resendButton": "Resend code",
         "verifying": "Verifying...",
         "signIn": "Sign In",
-        "loginSuccess": "Signed in! Welcome back.",
-        "roleSwitch": {
-            "label": "Sign in as",
-            "customer": "Customer",
-            "organizer": "Organizer",
-            "admin": "Admin"
-        }
+        "loginSuccess": "Signed in! Welcome back."
     },
     "FeaturedEvents": {
         "title": "Exciting Events For You",
@@ -99,7 +91,6 @@
         "searchPlaceholder": "Search your favorite concerts...",
         "myTickets": "My Tickets",
         "profileLevel": "Profile & Level",
-        "organizerPortal": "Organizer Portal",
         "logout": "Log Out"
     },
     "AppFooter": {
@@ -164,12 +155,10 @@
         "guide": "Guide",
         "paymentOptions": "Payment Options",
         "aboutUs": "About Us",
-        "becomeOrganizer": "Become an Organizer",
         "costSimulation": "Cost Simulation",
         "help": "Help",
         "howToBuy": "How to Buy Tickets",
         "ticketProtection": "Ticket Protection",
-        "organizerGuide": "Organizer Guide",
         "privacy": "Privacy Policy",
         "terms": "Terms & Conditions",
         "rights": "All rights reserved.",
@@ -192,14 +181,11 @@
             "SALES_ENDED": "The ticket sales period for this concert has ended.",
             "QUOTA_EXCEEDED": "Not enough tickets left for the quantity you selected.",
             "ORDER_EXPIRED": "This order has expired. Please place a new order.",
-            "ORGANIZER_SUSPENDED": "This organizer account is suspended.",
             "INVALID_QUANTITY": "Invalid ticket quantity. Choose 1 to 4 tickets.",
             "VALIDATION_ERROR": "The data you sent is not valid. Please check your input.",
             "ORDER_NOT_PENDING": "This order is no longer waiting for payment.",
             "PAYMENT_NOT_CONFIGURED": "Online payment isn't active yet. Please wait for the organizer to verify.",
             "PAYMENT_GATEWAY_ERROR": "The payment service is having trouble. Try again shortly.",
-            "ORGANIZER_PENDING": "This organizer account is still waiting for admin verification.",
-            "ORGANIZER_REJECTED": "This organizer application was not approved.",
             "INVALID_STATUS_TRANSITION": "The organizer status has already changed. Reload the page and try again."
         }
     },
@@ -254,9 +240,7 @@
         },
         "favorites": {
             "artists": "Favorite artists",
-            "artistsEmpty": "You don't follow any artists yet.",
-            "organizers": "Favorite organizers",
-            "organizersEmpty": "You don't follow any organizers yet."
+            "artistsEmpty": "You don't follow any artists yet."
         },
         "notifications": {
             "title": "Notifications",
@@ -545,7 +529,6 @@
             "INVALID_QR": "Invalid QR code.",
             "QR_EXPIRED": "This QR code has expired.",
             "TICKET_NOT_FOUND": "Ticket not found.",
-            "WRONG_ORGANIZER": "This ticket is not for your event.",
             "ALREADY_SCANNED": "This ticket has already been scanned.",
             "EVENT_ENDED": "The event has already ended.",
             "validation": "Invalid data: {message}"
@@ -963,51 +946,6 @@
                     "title": "Honest about limits",
                     "body": [
                         "Payments use Midtrans sandbox mode, so no real money moves. Some event data is sample data for the demo."
-                    ]
-                }
-            ]
-        },
-        "organizerGuide": {
-            "title": "Organizer guide",
-            "updated": "November 20, 2026",
-            "intro": "A short guide to selling concert tickets with Wavy Creator Studio.",
-            "ctaText": "No organizer account yet?",
-            "ctaLabel": "Become an organizer",
-            "sections": [
-                {
-                    "title": "Sign up and verify",
-                    "body": [
-                        "Sign up with your name, email, and password, then verify your email. Once active, you can open Creator Studio."
-                    ]
-                },
-                {
-                    "title": "Create an event",
-                    "body": [
-                        "Enter the title, artist, venue, concert date, and sales window (start and end). The event is saved as a draft first."
-                    ]
-                },
-                {
-                    "title": "Add ticket categories",
-                    "body": [
-                        "Add at least one category with a price and quota. Events without ticket categories cannot be published."
-                    ]
-                },
-                {
-                    "title": "Publish and monitor",
-                    "body": [
-                        "Once published, sales open within the sales window. You can close and reopen sales at any time and follow sales on the dashboard."
-                    ]
-                },
-                {
-                    "title": "Verify payments",
-                    "body": [
-                        "Successful Midtrans payments mark orders as paid automatically. As a fallback, you can approve or reject orders manually under Payments."
-                    ]
-                },
-                {
-                    "title": "Scan tickets at the gate",
-                    "body": [
-                        "Open Scan, point the camera at the QR or type the code. Tickets already scanned or from another event are rejected."
                     ]
                 }
             ]

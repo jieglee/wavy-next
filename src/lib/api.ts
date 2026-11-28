@@ -4,7 +4,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1420/api/v
 export class ApiError extends Error {
   status: number;
   code?: string;
-  /** data tambahan pada error berkode, mis. { reason } untuk ORGANIZER_REJECTED */
+  /** data tambahan pada error berkode, mis. { reason } */
   details: Record<string, unknown>;
 
   constructor(status: number, message: string, code?: string, details: Record<string, unknown> = {}) {
@@ -99,10 +99,6 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const body: unknown = await res.json().catch(() => ({}));
   if (!res.ok) {
     const err = parseApiError(res.status, body);
-    // suspend berlaku langsung (PRD §4.5): shell Creator Studio mendengarkan event ini
-    if (err.code === "ORGANIZER_SUSPENDED" && typeof window !== "undefined") {
-      window.dispatchEvent(new Event("wavy:organizer-suspended"));
-    }
     throw err;
   }
   return body as T;

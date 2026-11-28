@@ -1,12 +1,11 @@
-// Tipe & helper Creator Studio. Bentuk respons mengikuti backend
-// wavy-backend fix/organizer-rules + feat/organizer-api.
+// Tipe & helper portal admin (event, kategori, artis, order, scan, dashboard).
+// Bentuk respons mengikuti backend wavy-backend src/modules/backoffice.
 import type { SalesStatus } from "@/types/type";
 
 export type EventStatus = "draft" | "published" | "closed";
 
 export interface StudioEvent {
   id: number;
-  organizer_id: number;
   artist_id: number;
   artist_name?: string | null;
   title: string;

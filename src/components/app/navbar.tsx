@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search, LayoutGrid, Ticket, User, LogOut, Calendar } from "lucide-react";
+import { Search, LayoutGrid, Ticket, User, LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { WavyIcon } from "@/components/landing/wavy-icon";
@@ -155,15 +155,6 @@ export default function AppNavbar() {
               >
                 <Ticket className="h-4 w-4 text-foreground" />
                 {t("myTickets")}
-              </Link>
-
-              <Link
-                href="/organizer/dashboard"
-                onClick={() => setUserOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
-              >
-                <Calendar className="h-4 w-4 text-foreground" />
-                {t("organizerPortal")}
               </Link>
 
               <div className="mt-1 border-t border-border pt-1">

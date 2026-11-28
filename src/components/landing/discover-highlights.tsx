@@ -15,7 +15,6 @@ import { useLandingConcerts } from "./motion/landing-data";
 const BANNERS = [
   { id: "on-sale", src: "/images/banner/ticket-on-sale-now.png", w: 2145, h: 733, href: "/concerts" },
   { id: "bts", src: "/images/banner/your-favorite-bts.png", w: 2172, h: 724, href: "/concerts?q=bts" },
-  { id: "eventmu", src: "/images/banner/tampilkan-eventmu.png", w: 2172, h: 724, href: "/organizer-guide" },
 ] as const;
 
 const AUTO_MS = 6000;

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { ApiError } from "@/lib/api";
 import { useErrorMessage } from "@/lib/error-message";
 
-// Kode error Creator Studio dari backend yang punya teks sendiri (Studio.errors.*).
+// Kode error portal admin dari backend yang punya teks sendiri (Studio.errors.*).
 const STUDIO_CODES = [
   "NO_TICKET_CATEGORY",
   "QUOTA_BELOW_RESERVED",
@@ -14,13 +14,12 @@ const STUDIO_CODES = [
   "INVALID_QR",
   "QR_EXPIRED",
   "TICKET_NOT_FOUND",
-  "WRONG_ORGANIZER",
   "ALREADY_SCANNED",
   "EVENT_ENDED",
 ] as const;
 
 /**
- * Pesan error untuk aksi studio: kode dikenal -> teks i18n; 4xx lain -> pesan
+ * Pesan error untuk aksi admin: kode dikenal -> teks i18n; 4xx lain -> pesan
  * backend (validasi, mis. "sales_end_at must be ..."); sisanya pesan umum.
  */
 export function useAdminError() {

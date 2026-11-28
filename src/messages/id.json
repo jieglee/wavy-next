@@ -49,10 +49,8 @@
     "Navbar": {
         "kategori": "Kategori",
         "searchPlaceholder": "Cari konser, artist, atau venue",
-        "kerjasama": "Kerjasama dengan kami",
         "akun": "Akun",
         "tickets": "Tiket Saya",
-        "organizer": "Portal EO",
         "logout": "Keluar"
     },
     "Auth": {
@@ -76,13 +74,7 @@
         "resendButton": "Kirim ulang kode",
         "verifying": "Memverifikasi...",
         "signIn": "Masuk",
-        "loginSuccess": "Berhasil masuk! Selamat datang kembali.",
-        "roleSwitch": {
-            "label": "Masuk sebagai",
-            "customer": "Pelanggan",
-            "organizer": "Organizer",
-            "admin": "Admin"
-        }
+        "loginSuccess": "Berhasil masuk! Selamat datang kembali."
     },
     "FeaturedEvents": {
         "title": "Event Seru Untukmu",
@@ -99,7 +91,6 @@
         "searchPlaceholder": "Cari konser favoritmu...",
         "myTickets": "Tiket Saya",
         "profileLevel": "Profil & Level",
-        "organizerPortal": "Portal Organizer",
         "logout": "Keluar"
     },
     "AppFooter": {
@@ -164,12 +155,10 @@
         "guide": "Panduan",
         "paymentOptions": "Pilihan Pembayaran",
         "aboutUs": "Tentang Kami",
-        "becomeOrganizer": "Daftar jadi Organizer",
         "costSimulation": "Simulasi Biaya",
         "help": "Bantuan",
         "howToBuy": "Cara Beli Tiket",
         "ticketProtection": "Ticket Protection",
-        "organizerGuide": "Panduan Organizer",
         "privacy": "Kebijakan Privasi",
         "terms": "Syarat & Ketentuan",
         "rights": "All rights reserved.",
@@ -192,14 +181,11 @@
             "SALES_ENDED": "Masa penjualan tiket untuk konser ini sudah berakhir.",
             "QUOTA_EXCEEDED": "Sisa tiket tidak cukup untuk jumlah yang kamu pilih.",
             "ORDER_EXPIRED": "Pesanan ini sudah kedaluwarsa. Silakan pesan ulang.",
-            "ORGANIZER_SUSPENDED": "Akun organizer ini sedang dinonaktifkan.",
             "INVALID_QUANTITY": "Jumlah tiket tidak valid. Pilih 1 sampai 4 tiket.",
             "VALIDATION_ERROR": "Data yang dikirim tidak valid. Periksa lagi isian kamu.",
             "ORDER_NOT_PENDING": "Pesanan ini sudah tidak menunggu pembayaran.",
             "PAYMENT_NOT_CONFIGURED": "Pembayaran online belum aktif. Tunggu verifikasi dari penyelenggara.",
             "PAYMENT_GATEWAY_ERROR": "Layanan pembayaran sedang bermasalah. Coba lagi sebentar lagi.",
-            "ORGANIZER_PENDING": "Akun organizer masih menunggu verifikasi admin.",
-            "ORGANIZER_REJECTED": "Pengajuan organizer ini tidak disetujui.",
             "INVALID_STATUS_TRANSITION": "Status organizer sudah berubah. Muat ulang halaman lalu coba lagi."
         }
     },
@@ -254,9 +240,7 @@
         },
         "favorites": {
             "artists": "Musisi favorit",
-            "artistsEmpty": "Belum ada musisi yang diikuti.",
-            "organizers": "Organizer favorit",
-            "organizersEmpty": "Belum ada organizer yang diikuti."
+            "artistsEmpty": "Belum ada musisi yang diikuti."
         },
         "notifications": {
             "title": "Kotak notifikasi",
@@ -545,7 +529,6 @@
             "INVALID_QR": "QR tidak valid.",
             "QR_EXPIRED": "QR sudah kedaluwarsa.",
             "TICKET_NOT_FOUND": "Tiket tidak ditemukan.",
-            "WRONG_ORGANIZER": "Tiket ini bukan untuk event kamu.",
             "ALREADY_SCANNED": "Tiket ini sudah pernah dipindai.",
             "EVENT_ENDED": "Event sudah selesai.",
             "validation": "Data belum valid: {message}"
@@ -963,51 +946,6 @@
                     "title": "Jujur soal batasan",
                     "body": [
                         "Pembayaran memakai Midtrans mode sandbox, jadi tidak ada uang sungguhan. Sebagian data event berasal dari data contoh untuk demo."
-                    ]
-                }
-            ]
-        },
-        "organizerGuide": {
-            "title": "Panduan organizer",
-            "updated": "20 November 2026",
-            "intro": "Langkah singkat menjual tiket konser lewat Creator Studio Wavy.",
-            "ctaText": "Belum punya akun organizer?",
-            "ctaLabel": "Daftar jadi organizer",
-            "sections": [
-                {
-                    "title": "Daftar dan verifikasi",
-                    "body": [
-                        "Daftar dengan nama, email, dan kata sandi, lalu verifikasi email. Setelah aktif, kamu bisa masuk ke Creator Studio."
-                    ]
-                },
-                {
-                    "title": "Buat event",
-                    "body": [
-                        "Isi judul, artis, venue, tanggal konser, serta tenggat penjualan (mulai dan berakhir). Event tersimpan sebagai draft dulu."
-                    ]
-                },
-                {
-                    "title": "Tambah kategori tiket",
-                    "body": [
-                        "Tambahkan minimal satu kategori dengan harga dan kuota. Event tanpa kategori tiket tidak bisa dipublikasikan."
-                    ]
-                },
-                {
-                    "title": "Publikasikan dan pantau",
-                    "body": [
-                        "Setelah dipublikasikan, penjualan terbuka sesuai tenggat. Kamu bisa menutup dan membuka lagi penjualan kapan saja, dan memantau penjualan di dashboard."
-                    ]
-                },
-                {
-                    "title": "Verifikasi pembayaran",
-                    "body": [
-                        "Pembayaran Midtrans yang berhasil membuat pesanan lunas otomatis. Sebagai cadangan, kamu bisa menyetujui atau menolak pesanan secara manual di menu Pembayaran."
-                    ]
-                },
-                {
-                    "title": "Scan tiket di gate",
-                    "body": [
-                        "Buka menu Scan, arahkan kamera ke QR atau ketik kodenya. Tiket yang sudah dipindai atau milik event lain akan ditolak."
                     ]
                 }
             ]

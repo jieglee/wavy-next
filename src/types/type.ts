@@ -23,7 +23,7 @@ export interface TicketCategory {
   sold: number;
   remaining?: number;
   benefits?: string;
-  // dikirim GET /concerts/:id; tidak ada di endpoint organizer
+  // dikirim GET /concerts/:id; tidak ada di endpoint admin
   sales_status?: SalesStatus;
 }
 
@@ -41,7 +41,6 @@ export interface Review {
 }
 
 export interface ConcertDetail extends Concert {
-  organizer_id: number;
   artist_id: number;
   description: string;
   genre: string;
@@ -89,7 +88,6 @@ export interface Order {
 export type OrderStatus = "pending_payment" | "paid" | "rejected" | "refunded" | "expired";
 
 export interface FavoritesResponse {
-  organizers: { favorite_id: number; id: number; name: string }[];
   artists: { favorite_id: number; id: number; name: string; genre: string; photo_url: string }[];
 }
 
@@ -115,23 +113,11 @@ export interface CustomerLevel {
 
 export interface Artist {
   id: number;
-  organizer_id?: number;
   name: string;
   genre: string;
   photo_url: string;
   bio: string;
   follower_count?: number;
-}
-
-export interface Organizer {
-  id: number;
-  name: string;
-  email?: string;
-  status?: "active" | "suspended";
-  created_at?: string;
-  follower_count?: number;
-  event_count?: number;
-  revenue?: number;
 }
 
 export interface NotificationItem {
@@ -141,14 +127,6 @@ export interface NotificationItem {
   message: string;
   read: boolean;
   created_at: string;
-}
-
-export interface OrganizerDashboardStats {
-  revenue: number;
-  ticket_sold: number;
-  remaining_ticket: number;
-  popular_category: string;
-  peak_purchase_hour: number;
 }
 
 // GET /admin/stats
